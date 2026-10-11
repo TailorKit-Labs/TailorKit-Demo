@@ -4,14 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "ready": "pnpm check && pnpm --filter website test:db && pnpm build",
+    "ready": "pnpm check && pnpm test && pnpm build",
     "dev": "vp run website#dev",
     "prepare": "vp config",
     "check": "vp check",
     "lint": "vp lint",
     "format": "vp fmt",
     "build": "pnpm --filter website build",
-    "test": "pnpm --filter website test:db"
+    "test": "pnpm --filter website test:db && pnpm --filter website test:agent"
   },
   "devDependencies": {
     "vercel": "catalog:",

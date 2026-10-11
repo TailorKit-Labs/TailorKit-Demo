@@ -2,7 +2,28 @@ import { and, asc, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "./drizzle";
 import { deals } from "./schema";
-import { lockTenant, logActivity } from "./mutation-guards";
+import { checkContact, checkLimit, lockTenant, logActivity } from "./mutation-guards";
+
+export const dealInput = z.object({
+  title: z.string().trim().min(2).max(120),
+  contactId: z.string().nullable(),
+  value: z.coerce.number().int().min(0).max(10000000),
+  stage: z.enum(["qualified", "proposal", "negotiation", "won", "lost"]),
+  closeDate: z.coerce.date(),
+});
+
+export async function createDealRecord(tenantId: string, input: z.input<typeof dealInput>) {
+  const data = dealInput.parse(input);
+  return db.transaction(async (tx) => {
+    await lockTenant(tx, tenantId);
+    await checkLimit(tx, deals, tenantId);
+    await checkContact(tx, tenantId, data.contactId);
+    const id = crypto.randomUUID();
+    await tx.insert(deals).values({ ...data, id, tenantId });
+    await logActivity(tx, tenantId, "deal", "Deal created", data.title, data.contactId);
+    return id;
+  });
+}
 
 const moveInput = z.object({
   id: z.string().min(1),
