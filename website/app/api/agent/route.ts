@@ -1,10 +1,16 @@
-import { createAgentUIStreamResponse } from "ai";
+import { consumeStream, createAgentUIStreamResponse } from "ai";
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { checkBotId } from "botid/server";
 import { requireTenant } from "@/lib/workspace";
 import { createCrmAgent } from "@/lib/agents/crm-agent";
 import { agentRequest, isSameOriginRequest } from "@/lib/agents/agent-request";
+import {
+  beginAgentChat,
+  ChatConflict,
+  finishAgentMessages,
+  saveAgentChat,
+} from "@/lib/agents/agent-chat-store";
 import {
   agentIpKey,
   reserveAgentTokens,
@@ -91,7 +97,15 @@ export async function POST(request: Request) {
   }
   const { reservation } = admission;
   let tokenUsage: number | undefined;
+  let streamConsumption: Promise<void> | undefined;
   after(async () => {
+    // Drain on the server so disconnects still run persistence callbacks, while
+    // request.signal continues to cancel model generation and tool execution.
+    try {
+      await streamConsumption;
+    } catch (error) {
+      console.error("Agent stream consumption failed:", error);
+    }
     try {
       await settleAgentTokens(reservation, tokenUsage);
       await pruneAgentBuckets();
@@ -100,6 +114,15 @@ export async function POST(request: Request) {
       console.error("Agent usage settlement failed:", error);
     }
   });
+  let chatTurn;
+  try {
+    chatTurn = await beginAgentChat(tenant.id, input.chatId, input.messages);
+  } catch (error) {
+    tokenUsage = 0;
+    if (error instanceof ChatConflict) return new Response(error.message, { status: error.status });
+    console.error("Agent chat could not be saved:", error);
+    return new Response("This chat could not be saved. Please try again.", { status: 503 });
+  }
   try {
     return await createAgentUIStreamResponse({
       agent: createCrmAgent(
@@ -117,7 +140,20 @@ export async function POST(request: Request) {
           },
         },
       ),
-      uiMessages: input.messages,
+      uiMessages: chatTurn.messages,
+      consumeSseStream: ({ stream }) => {
+        streamConsumption = consumeStream({ stream });
+      },
+      onUIMessageStepEnd: ({ messages }) => saveAgentChat(chatTurn, messages),
+      onEnd: ({ messages, outcome, isAborted, isCancelled }) =>
+        saveAgentChat(
+          chatTurn,
+          finishAgentMessages(
+            messages,
+            isAborted || !!isCancelled || outcome.status !== "completed",
+          ),
+          true,
+        ),
       abortSignal: request.signal,
       timeout: 45000,
       onStepEnd: ({ toolResults }) => {
@@ -129,6 +165,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Agent request failed:", error);
+    await saveAgentChat(chatTurn, chatTurn.messages, true);
     return new Response("The agent could not start this request. Please try again.", {
       status: 500,
     });

@@ -6,6 +6,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { ChevronDownIcon, MousePointer2Icon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
+import type { AgentHistory, AgentChatSummary, SavedAgentChat } from "@/lib/agents/agent-chat-types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -31,10 +32,15 @@ import {
 import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
 
-type SavedChat = { id: string; title: string; messages: CrmAgentMessage[] };
 const transport = new DefaultChatTransport<CrmAgentMessage>({ api: "/api/agent" });
 
-export function AgentWorkspace({ children }: { children: React.ReactNode }) {
+export function AgentWorkspace({
+  children,
+  initialHistory,
+}: {
+  children: React.ReactNode;
+  initialHistory: AgentHistory;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
@@ -44,11 +50,14 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [docked, setDocked] = useState(false);
   const [input, setInput] = useState("");
-  const [history, setHistory] = useState<SavedChat[]>([]);
+  const [chatId, setChatId] = useState<string | null>(initialHistory.latest?.id ?? null);
+  const [loadingChat, setLoadingChat] = useState(false);
+  const [historyError, setHistoryError] = useState<Error>();
   const [historyOpen, setHistoryOpen] = useState(false);
   const { messages, setMessages, sendMessage, status, stop, error, clearError } =
     useChat<CrmAgentMessage>({
       transport,
+      messages: initialHistory.latest?.messages ?? [],
       // Refresh even after cancellation: a tool may already have committed a change.
       onFinish: () => router.refresh(),
       onError: () => router.refresh(),
@@ -62,43 +71,44 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     if (!next) setHistoryOpen(false);
   }
 
-  function archiveCurrentChat() {
-    if (!messages.length) return;
-    const title =
-      messages
-        .find((message) => message.role === "user")
-        ?.parts.filter((part) => part.type === "text")
-        .map((part) => part.text)
-        .join(" ") ?? "Chat";
-    const id = messages[0].id;
-    setHistory((previous) =>
-      [{ id, title, messages }, ...previous.filter((chat) => chat.id !== id)].slice(0, 8),
-    );
-  }
-
   function newChat() {
-    if (busy) return;
-    archiveCurrentChat();
+    if (busy || loadingChat) return;
+    setChatId(null);
     setMessages([]);
     setInput("");
     clearError();
+    setHistoryError(undefined);
     setHistoryOpen(false);
     setOpen(true);
   }
 
-  function restoreChat(chat: SavedChat) {
-    if (busy) return;
-    archiveCurrentChat();
-    setMessages(chat.messages);
-    setInput("");
-    clearError();
-    setHistoryOpen(false);
-    setOpen(true);
+  async function restoreChat(chat: AgentChatSummary) {
+    if (busy || loadingChat) return;
+    setLoadingChat(true);
+    setHistoryError(undefined);
+    try {
+      const response = await fetch(`/api/agent/chats/${chat.id}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(await response.text());
+      const saved: SavedAgentChat = await response.json();
+      setChatId(saved.id);
+      setMessages(saved.messages);
+      setInput("");
+      clearError();
+      setHistoryOpen(false);
+      setOpen(true);
+    } catch (error) {
+      setHistoryError(error instanceof Error ? error : new Error("This chat could not be loaded."));
+    } finally {
+      setLoadingChat(false);
+    }
   }
 
   async function submit(text: string) {
-    if (!text.trim() || busy) return;
+    if (!text.trim() || busy || loadingChat) return;
     clearError();
+    setHistoryError(undefined);
+    const id = chatId ?? crypto.randomUUID();
+    setChatId(id);
     setInput("");
     const now = new Date();
     const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
@@ -106,7 +116,12 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     await sendMessage(
       { text: text.trim() },
       {
-        body: { page, date, timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
+        body: {
+          chatId: id,
+          page,
+          date,
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
       },
     );
   }
@@ -118,19 +133,19 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
         .map((part) => part.text)
         .join(" ") || "Chat"
     : "New chat";
-  const recentChats = history.filter((saved) => saved.id !== messages[0]?.id);
+  const recentChats = initialHistory.chats;
   const chatTitle = (
     <DropdownMenu open={historyOpen} onOpenChange={setHistoryOpen}>
       <DropdownMenuTrigger
         render={<Button variant="ghost" size="sm" className="min-w-0 max-w-full" />}
         aria-label="Chat history"
       >
-        <span className="truncate">{currentTitle}</span>
+        <span className="truncate">{loadingChat ? "Loading chat…" : currentTitle}</span>
         <ChevronDownIcon data-icon="inline-end" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-72">
         <DropdownMenuGroup>
-          <DropdownMenuItem onClick={newChat} disabled={busy}>
+          <DropdownMenuItem onClick={newChat} disabled={busy || loadingChat}>
             <PlusIcon />
             New chat
           </DropdownMenuItem>
@@ -139,7 +154,13 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
         <DropdownMenuGroup>
           <DropdownMenuLabel>Recent chats</DropdownMenuLabel>
           {recentChats.map((saved) => (
-            <DropdownMenuItem key={saved.id} disabled={busy} onClick={() => restoreChat(saved)}>
+            <DropdownMenuItem
+              key={saved.id}
+              disabled={busy || loadingChat}
+              onClick={() => {
+                void restoreChat(saved);
+              }}
+            >
               <span className="truncate">{saved.title}</span>
             </DropdownMenuItem>
           ))}
@@ -159,7 +180,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
       onInputChange={setInput}
       onSubmit={submit}
       status={status}
-      error={error}
+      error={historyError ?? error}
       onStop={() => {
         void stop();
         router.refresh();

@@ -17,6 +17,7 @@
     "db:down": "docker compose down",
     "test:db": "tsx scripts/test-db.ts",
     "test:agent": "tsx scripts/test-agent.ts",
+    "test:agent-chats": "tsx scripts/test-agent-chats.ts",
     "test:agent-rate-limit": "tsx scripts/test-agent-rate-limit.ts"
   },
   "dependencies": {

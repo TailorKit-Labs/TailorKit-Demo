@@ -1,4 +1,5 @@
-import { boolean, index, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import type { UIMessage } from "ai";
+import { boolean, index, integer, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable("auth_user", {
   id: text("id").primaryKey(),
@@ -139,4 +140,19 @@ export const agentBuckets = pgTable(
     leaseExpiresAt: timestamp("lease_expires_at", { withTimezone: true }).notNull(),
   },
   (t) => [index("agent_buckets_reset_idx").on(t.resetAt)],
+);
+
+export const agentChats = pgTable(
+  "agent_chats",
+  {
+    id: text("id").primaryKey(),
+    tenantId: tenantId(),
+    title: text("title").notNull(),
+    messages: jsonb("messages").$type<UIMessage[]>().notNull(),
+    activeTurnId: text("active_turn_id"),
+    activeUntil: timestamp("active_until", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [index("agent_chats_tenant_updated_idx").on(t.tenantId, t.updatedAt)],
 );

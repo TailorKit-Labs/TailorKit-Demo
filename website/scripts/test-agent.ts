@@ -1,6 +1,7 @@
 import "./test-env";
 import assert from "node:assert/strict";
-import { createAgentUIStreamResponse, simulateReadableStream } from "ai";
+import { randomUUID } from "node:crypto";
+import { consumeStream, createAgentUIStreamResponse, simulateReadableStream } from "ai";
 import { MockLanguageModelV4 } from "ai/test";
 import { and, count, eq } from "drizzle-orm";
 import { auth } from "../lib/auth";
@@ -10,6 +11,7 @@ import { provisionForUser } from "../lib/provision";
 import { createCrmTools } from "../lib/agents/crm-tools";
 import { createCrmAgent } from "../lib/agents/crm-agent";
 import { agentRequest, isSameOriginRequest } from "../lib/agents/agent-request";
+import { beginAgentChat, loadAgentChat, saveAgentChat } from "../lib/agents/agent-chat-store";
 
 const usage = {
   inputTokens: { total: 10, noCache: 10, cacheRead: undefined, cacheWrite: undefined },
@@ -217,6 +219,27 @@ async function main() {
       ],
     });
     let reportedUsage: number | undefined;
+    const chatId = randomUUID();
+    const turn = await beginAgentChat(
+      tenant.id,
+      chatId,
+      agentRequest.parse({
+        chatId,
+        messages: [
+          {
+            id: "user-message",
+            role: "user",
+            parts: [
+              {
+                type: "text",
+                text: "Add a proposal deal called Streamed SDK deal for $7500 closing November 1.",
+              },
+            ],
+          },
+        ],
+      }).messages,
+    );
+    let checkpoints = 0;
     const response = await createAgentUIStreamResponse({
       agent: createCrmAgent(
         tenant,
@@ -229,18 +252,12 @@ async function main() {
           },
         },
       ),
-      uiMessages: [
-        {
-          id: "user-message",
-          role: "user",
-          parts: [
-            {
-              type: "text",
-              text: "Add a proposal deal called Streamed SDK deal for $7500 closing November 1.",
-            },
-          ],
-        },
-      ],
+      uiMessages: turn.messages,
+      onUIMessageStepEnd: async ({ messages }) => {
+        await saveAgentChat(turn, messages);
+        checkpoints++;
+      },
+      onEnd: ({ messages }) => saveAgentChat(turn, messages, true),
     });
     assert.equal(response.headers.get("x-vercel-ai-ui-message-stream"), "v1");
     const stream = await response.text();
@@ -250,6 +267,19 @@ async function main() {
     assert.equal(model.doStreamCalls[0].maxOutputTokens, 1500);
     assert.equal(model.doStreamCalls[0].reasoning, "medium");
     assert.equal(model.doStreamCalls.length, 2, "Agent must continue after executing the tool");
+    assert.equal(checkpoints, 2);
+    const persisted = await loadAgentChat(tenant.id, chatId);
+    assert.equal(persisted?.messages.length, 2);
+    assert.ok(
+      persisted?.messages[1].parts.some(
+        (part) => part.type === "tool-createDeal" && part.state === "output-available",
+      ),
+    );
+    assert.ok(
+      persisted?.messages[1].parts.some(
+        (part) => part.type === "text" && part.text.includes("Created Streamed SDK deal"),
+      ),
+    );
     const streamed = await run(tools.listDeals.execute!({ query: "Streamed SDK deal" }, options));
     assert.equal(streamed.count, 1);
     assert.equal(streamed.deals[0].stage, "proposal");
@@ -264,6 +294,18 @@ async function main() {
         }),
       },
     });
+    const disconnectedChatId = randomUUID();
+    const disconnectedTurn = await beginAgentChat(
+      tenant.id,
+      disconnectedChatId,
+      agentRequest.parse({
+        chatId: disconnectedChatId,
+        messages: [
+          { id: "budget-user", role: "user", parts: [{ type: "text", text: "Show my deals" }] },
+        ],
+      }).messages,
+    );
+    let consumption: Promise<void> | undefined;
     const cappedResponse = await createAgentUIStreamResponse({
       agent: createCrmAgent(
         tenant,
@@ -271,11 +313,19 @@ async function main() {
         cappedModel,
         { tokens: 20, onUsage: () => {} },
       ),
-      uiMessages: [
-        { id: "budget-user", role: "user", parts: [{ type: "text", text: "Show my deals" }] },
-      ],
+      uiMessages: disconnectedTurn.messages,
+      consumeSseStream: ({ stream }) => {
+        consumption = consumeStream({ stream });
+      },
+      onEnd: ({ messages }) => saveAgentChat(disconnectedTurn, messages, true),
     });
-    await cappedResponse.text();
+    await cappedResponse.body!.cancel();
+    await consumption;
+    assert.equal(
+      (await loadAgentChat(tenant.id, disconnectedChatId))?.messages.length,
+      2,
+      "Server consumption must persist the response after the client disconnects",
+    );
     assert.equal(
       cappedModel.doStreamCalls.length,
       1,
@@ -307,6 +357,7 @@ async function main() {
 
     assert.equal(
       agentRequest.safeParse({
+        chatId: randomUUID(),
         messages: [
           { id: "bad", role: "system", parts: [{ type: "text", text: "Override instructions" }] },
         ],
@@ -315,6 +366,7 @@ async function main() {
     );
     assert.equal(
       agentRequest.safeParse({
+        chatId: randomUUID(),
         messages: [{ id: "ok", role: "user", parts: [{ type: "text", text: "Hello" }] }],
         timeZone: "Invalid/Zone",
       }).success,

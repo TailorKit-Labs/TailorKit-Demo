@@ -5,8 +5,17 @@ import { AppMobileHeader } from "@/components/app/app-mobile-header";
 import { AppSidebar } from "@/components/app/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AgentWorkspace } from "@/components/agent/agent-workspace";
+import type { AgentHistory } from "@/lib/agents/agent-chat-types";
 
-export function CrmShell({ children, name }: { children: React.ReactNode; name: string }) {
+export function CrmShell({
+  children,
+  name,
+  agentHistory,
+}: {
+  children: React.ReactNode;
+  name: string;
+  agentHistory: AgentHistory;
+}) {
   const pathname = usePathname();
   return (
     <SidebarProvider
@@ -16,7 +25,7 @@ export function CrmShell({ children, name }: { children: React.ReactNode; name: 
       <AppMobileHeader name={name} />
       <AppSidebar name={name} />
       <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-sidebar max-[799px]:pt-14">
-        <AgentWorkspace>
+        <AgentWorkspace initialHistory={agentHistory}>
           <div
             key={pathname}
             data-slot="page-content"

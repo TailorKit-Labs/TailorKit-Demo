@@ -43,6 +43,8 @@ For local use, set `AI_GATEWAY_API_KEY` in `website/.env.local`, or use local OI
 
 `POST /api/agent` uses BotID Basic verification. `instrumentation-client.ts` protects the client request and `withBotId` supplies the required rewrites. Bot checks fail closed if verification is unavailable. Local development uses BotID's documented development behavior; production detection must be checked on a Vercel deployment.
 
+Chats are persisted in Postgres `agent_chats`, scoped to the authenticated workspace. The latest chat is restored on reload, and the history dropdown loads the 20 most recently updated chats. Starting a new chat preserves existing conversations. Messages use the SDK UI format, including tool results. The server saves admitted user messages before generation, checkpoints each completed tool step, and saves the final or interrupted reply while draining the stream independently of the browser. Closing the browser still cancels generation through the request signal; this does not resume an active stream. Stale tabs are rejected instead of overwriting newer messages, and per-chat leases recover after terminated requests. Clearing the anonymous session creates a different workspace and does not grant access to the old chats. Workspace deletion cascades to its chats.
+
 Agent limits are stored atomically in Postgres, shared across serverless instances and regions:
 
 - Each IP receives a bucket of 50,000 input + output model tokens. It fully resets five hours after the bucket starts, without gradual refill.
@@ -53,7 +55,7 @@ Agent limits are stored atomically in Postgres, shared across serverless instanc
 
 The IP key is an HMAC using `BETTER_AUTH_SECRET`; raw IPs are not stored in the bucket table. Vercel's trusted `x-vercel-forwarded-for` supplies the IP. Cookie resets and new anonymous workspaces do not reset a network's bucket. People sharing an IP share the allowance. Other production hosts are rejected unless a trusted IP source is explicitly implemented; local development uses one loopback bucket. Expired bucket records are pruned in batches after responses.
 
-Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration tests and a deterministic SDK tool-loop/streaming test that needs no provider key. Run `pnpm --filter website test:agent-rate-limit` for database-backed bucket, concurrency, accounting, reset, and IP identity tests. Live model quality, provider authentication, and production BotID verification require a configured deployment.
+Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration tests and a deterministic SDK tool-loop/streaming and persistence test that needs no provider key. Run `pnpm --filter website test:agent-chats` for chat history, workspace isolation, authoritative context, concurrency, interrupted replies, and lease recovery. Run `pnpm --filter website test:agent-rate-limit` for database-backed bucket, concurrency, accounting, reset, and IP identity tests. Live model quality, provider authentication, and production BotID verification require a configured deployment.
 
 ## Anonymous setup
 
