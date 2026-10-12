@@ -217,7 +217,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
             <PopoverTrigger
               id={agentTriggerId}
               render={
-                <Button size="icon-xl" className="size-14 rounded-full shadow-lg sm:size-14" />
+                <Button size="icon-xl" className="size-12 rounded-full shadow-lg sm:size-12" />
               }
               aria-label="Agent"
               title="Agent"
