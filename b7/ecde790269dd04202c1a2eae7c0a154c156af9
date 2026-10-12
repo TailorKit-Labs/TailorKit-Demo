@@ -1,0 +1,55 @@
+package.json
+  s_d0d8cb2386121f::t_e1250afccececf 14
+website/lib/agents/crm-agent.ts
+  s_d0d8cb2386121f::t_d0333fc61b8569 20-23
+  s_d0d8cb2386121f::t_db647297cf52ca 26
+  s_d0d8cb2386121f::t_039a272bdcba09 13-14,18-19,24-25,27-28
+website/lib/agents/agent-request.ts
+  s_d0d8cb2386121f::t_848f8cbd30c32a 17
+website/lib/agents/agent-rate-limit.ts
+  s_d0d8cb2386121f::t_039a272bdcba09 1-14,21-22,28-45,62-65,68-69,72-78,90-95,112-116,126
+  s_d0d8cb2386121f::t_d0333fc61b8569 15-20,23-27,46-61,66-67,70-71,79-89,96-111,117-125
+website/package.json
+  s_d0d8cb2386121f::t_dfbee84d81d0a6 34
+  s_d0d8cb2386121f::t_e1250afccececf 19-20
+website/scripts/test-agent-rate-limit.ts
+  s_d0d8cb2386121f::t_e1250afccececf 1-125,129,131-150,153,155-160,165-177
+  s_d0d8cb2386121f::t_aa6aa181b1de76 126-128,130,151-152,154,161-164
+website/lib/schema.ts
+  s_d0d8cb2386121f::t_039a272bdcba09 129-142
+pnpm-workspace.yaml
+  s_d0d8cb2386121f::t_dfbee84d81d0a6 21
+website/instrumentation-client.ts
+  s_d0d8cb2386121f::t_039a272bdcba09 1-2
+  s_d0d8cb2386121f::t_118610e19ac770 3-5
+website/next.config.ts
+  s_d0d8cb2386121f::t_039a272bdcba09 2,4,6
+website/.env.example
+  s_d0d8cb2386121f::t_039a272bdcba09 11
+website/app/api/agent/route.ts
+  s_d0d8cb2386121f::t_848f8cbd30c32a 3-4,21-23,27-28,33-34,38,49,73-80,91-102,122
+  s_d0d8cb2386121f::t_d0333fc61b8569 8-13,24-26,29-32,35-37,81-90,105-119
+website/scripts/test-agent.ts
+  s_d0d8cb2386121f::t_e1250afccececf 219,225-230,249-250,256-282
+  s_d0d8cb2386121f::t_d21252abc74dcf 283
+pnpm-lock.yaml
+  s_d0d8cb2386121f::t_519af8b7c7ff94 203-205,322-324,3496-3506,8446-8450
+website/README.md
+  s_d0d8cb2386121f::t_cbf57e6312f960 42,44-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b7ecde790269dd04202c1a2eae7c0a154c156af9",
+  "prompts": {},
+  "sessions": {
+    "s_d0d8cb2386121f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a12eaa-e4b0-7181-9f2a-e01a89b2c14f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
