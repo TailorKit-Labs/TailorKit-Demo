@@ -33,6 +33,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
 
 type ToolPart = Extract<CrmAgentMessage["parts"][number], { type: `tool-${string}` }>;
 const toolTitles = {
@@ -191,7 +192,7 @@ function RecordLink({ href, children }: { href: string; children: React.ReactNod
 }
 
 export function AgentChat({
-  historyControl,
+  chatTitle,
   messages,
   input,
   onInputChange,
@@ -205,7 +206,7 @@ export function AgentChat({
   docked,
   onDockChange,
 }: {
-  historyControl: React.ReactNode;
+  chatTitle: React.ReactNode;
   messages: CrmAgentMessage[];
   input: string;
   onInputChange: (value: string) => void;
@@ -225,16 +226,15 @@ export function AgentChat({
       className="flex h-full min-h-0 w-full flex-col"
       data-slot="agent-chat"
       onKeyDown={(event) => {
-        if (docked && event.key === "Escape") {
+        if (docked && event.key === "Escape" && !event.defaultPrevented) {
           event.preventDefault();
           onClose();
         }
       }}
     >
       <header className="flex h-14 shrink-0 items-center justify-between gap-2 px-4">
-        <h2 className="text-sm font-semibold">{messages.length ? "Agent" : "New chat"}</h2>
+        <h2 className="min-w-0">{chatTitle}</h2>
         <div className="flex items-center gap-1">
-          {historyControl}
           {messages.length ? (
             <Button
               variant="ghost"
@@ -275,7 +275,10 @@ export function AgentChat({
             {!messages.length ? (
               <ConversationEmptyState
                 data-slot="agent-welcome"
-                className="justify-end gap-4 px-1 pb-8 pt-12"
+                className={cn(
+                  "gap-4 px-1",
+                  docked ? "justify-center py-8" : "justify-end pb-8 pt-12",
+                )}
               >
                 <MousePointer2Icon className="mb-1 size-7 text-muted-foreground" />
                 <div className="flex flex-col gap-2 text-center">

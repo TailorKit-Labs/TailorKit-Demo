@@ -33,7 +33,7 @@ Every query and mutation derives the workspace from the authenticated session. R
 
 ## Agent
 
-The **Agent** button lives at the bottom of the screen, outside the page content, alongside navigation on mobile. It opens the chat popover immediately. On screens at least 1280px wide, a toggle switches between the popover and a side panel; smaller screens use the popover and hide that control. Drafts and conversations survive closing, docking, resizing, and in-app navigation. History is available inside the chat header, with up to eight archived conversations kept in memory for the current session.
+The **Agent** floating button lives in the bottom-right corner, above navigation on mobile, and hides while the side panel is open. It opens the chat popover immediately. On screens at least 1280px wide, a toggle switches between the popover and a side panel; smaller screens use the popover and hide that control. Drafts and conversations survive closing, docking, resizing, and in-app navigation. A history dropdown replaces the chat title, with up to eight archived conversations kept in memory for the current session.
 
 The agent uses AI SDK `ToolLoopAgent` and streams text and tool progress through `/api/agent`. It can search/view deals and contacts, create deals, move deals between stages, list/create follow-ups, and complete or reopen tasks. Its tools share the app's validated database operations, workspace isolation, activity logging, and collection limits. Successful writes refresh the visible page. Missing required information is requested in the conversation; new deals default to qualified, no contact, and an expected close in 30 days.
 

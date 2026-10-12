@@ -126,6 +126,50 @@ async function main() {
       /Contact not found/,
     );
 
+    // Search metacharacters must match literally in every searched column.
+    for (const query of ["%", "_", "\\", "\\%_"]) {
+      const title = `Literal ${query} fixture`;
+      await db.update(deals).set({ title }).where(eq(deals.id, created.deal.id));
+      const literalDeals = await run(tools.listDeals.execute!({ query }, options));
+      assert.deepEqual(
+        literalDeals.deals.map((deal) => deal.id),
+        [created.deal.id],
+      );
+      await db
+        .update(deals)
+        .set({ title: created.deal.title })
+        .where(eq(deals.id, created.deal.id));
+
+      for (const field of ["name", "company", "email"] as const) {
+        await db
+          .update(contacts)
+          .set({ [field]: title })
+          .where(eq(contacts.id, found.contacts[0].id));
+        const literalContacts = await run(tools.listContacts.execute!({ query }, options));
+        assert.deepEqual(
+          literalContacts.contacts.map((contact) => contact.id),
+          [found.contacts[0].id],
+        );
+        if (field !== "email") {
+          const linkedDeals = await run(tools.listDeals.execute!({ query }, options));
+          assert.ok(linkedDeals.count > 0);
+          assert.ok(linkedDeals.deals.every((deal) => deal.contactId === found.contacts[0].id));
+        }
+        await db
+          .update(contacts)
+          .set({ [field]: found.contacts[0][field] })
+          .where(eq(contacts.id, found.contacts[0].id));
+      }
+
+      await db.update(tasks).set({ title }).where(eq(tasks.id, task.task.id));
+      const literalTasks = await run(tools.listTasks.execute!({ query }, options));
+      assert.deepEqual(
+        literalTasks.tasks.map((task) => task.id),
+        [task.task.id],
+      );
+      await db.update(tasks).set({ title: task.task.title }).where(eq(tasks.id, task.task.id));
+    }
+
     // Exercise the actual SDK agent loop and UI stream with a deterministic model,
     // while its tools write real records. No provider credentials or API spend.
     const model = new MockLanguageModelV4({

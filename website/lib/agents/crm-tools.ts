@@ -9,6 +9,10 @@ import { createTaskRecord, setTaskCompletedRecord } from "../task-operations";
 const stage = z.enum(["qualified", "proposal", "negotiation", "won", "lost"]);
 const date = z.iso.date().describe("A calendar date in YYYY-MM-DD format.");
 const query = z.string().trim().max(120).optional();
+function substringPattern(query: string) {
+  return `%${query.replace(/[\\%_]/g, "\\$&")}%`;
+}
+
 const contactId = z
   .string()
   .min(1)
@@ -25,6 +29,7 @@ export function createCrmTools(tenantId: string) {
         "View or search the current workspace's deals, optionally by stage. Returns live records and total value in USD.",
       inputSchema: z.object({ query, stage: stage.optional() }),
       execute: async ({ query, stage }) => {
+        const pattern = query ? substringPattern(query) : undefined;
         const rows = await db
           .select({
             id: deals.id,
@@ -45,11 +50,11 @@ export function createCrmTools(tenantId: string) {
             and(
               eq(deals.tenantId, tenantId),
               stage ? eq(deals.stage, stage) : undefined,
-              query
+              pattern
                 ? or(
-                    ilike(deals.title, `%${query}%`),
-                    ilike(contacts.name, `%${query}%`),
-                    ilike(contacts.company, `%${query}%`),
+                    ilike(deals.title, pattern),
+                    ilike(contacts.name, pattern),
+                    ilike(contacts.company, pattern),
                   )
                 : undefined,
             ),
@@ -72,6 +77,7 @@ export function createCrmTools(tenantId: string) {
         "Find contacts by name, company, or email. Look up a contact here before using its ID in another tool.",
       inputSchema: z.object({ query }),
       execute: async ({ query }) => {
+        const pattern = query ? substringPattern(query) : undefined;
         const rows = await db
           .select({
             id: contacts.id,
@@ -85,11 +91,11 @@ export function createCrmTools(tenantId: string) {
           .where(
             and(
               eq(contacts.tenantId, tenantId),
-              query
+              pattern
                 ? or(
-                    ilike(contacts.name, `%${query}%`),
-                    ilike(contacts.company, `%${query}%`),
-                    ilike(contacts.email, `%${query}%`),
+                    ilike(contacts.name, pattern),
+                    ilike(contacts.company, pattern),
+                    ilike(contacts.email, pattern),
                   )
                 : undefined,
             ),
@@ -141,6 +147,7 @@ export function createCrmTools(tenantId: string) {
         "View follow-up tasks, optionally searching their title and filtering by completion status.",
       inputSchema: z.object({ query, completed: z.boolean().optional() }),
       execute: async ({ query, completed }) => {
+        const pattern = query ? substringPattern(query) : undefined;
         const rows = await db
           .select({
             id: tasks.id,
@@ -153,7 +160,7 @@ export function createCrmTools(tenantId: string) {
           .where(
             and(
               eq(tasks.tenantId, tenantId),
-              query ? ilike(tasks.title, `%${query}%`) : undefined,
+              pattern ? ilike(tasks.title, pattern) : undefined,
               completed === undefined ? undefined : eq(tasks.completed, completed),
             ),
           )

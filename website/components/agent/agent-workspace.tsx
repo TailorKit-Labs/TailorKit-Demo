@@ -4,11 +4,20 @@ import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { HistoryIcon, MousePointer2Icon, PlusIcon } from "lucide-react";
+import { ChevronDownIcon, MousePointer2Icon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
-import { Popover, PopoverPopup, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverPopup, PopoverTrigger } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
 
@@ -94,66 +103,49 @@ export function AgentWorkspace({
     );
   }
 
-  const chatHistory = (
-    <Popover open={historyOpen} onOpenChange={setHistoryOpen}>
-      <PopoverTrigger
-        render={<Button variant="ghost" size="icon-sm" />}
+  const currentTitle = messages.length
+    ? messages
+        .find((message) => message.role === "user")
+        ?.parts.filter((part) => part.type === "text")
+        .map((part) => part.text)
+        .join(" ") || "Chat"
+    : "New chat";
+  const recentChats = history.filter((saved) => saved.id !== messages[0]?.id);
+  const chatTitle = (
+    <DropdownMenu open={historyOpen} onOpenChange={setHistoryOpen}>
+      <DropdownMenuTrigger
+        render={<Button variant="ghost" size="sm" className="min-w-0 max-w-full" />}
         aria-label="Chat history"
-        title="Chat history"
       >
-        <HistoryIcon />
-      </PopoverTrigger>
-      <PopoverPopup side="top" align="end" sideOffset={10} className="w-72">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-2">
-            <PopoverTitle>Recent chats</PopoverTitle>
-            <Button
-              size="icon-sm"
-              variant="ghost"
-              onClick={newChat}
-              disabled={busy}
-              aria-label="Start a new chat"
-            >
-              <PlusIcon />
-            </Button>
-          </div>
-          <p className="text-xs text-muted-foreground">Chats from this session.</p>
-          {messages.length ? (
-            <Button
-              variant="ghost"
-              className="justify-start"
-              onClick={() => {
-                setHistoryOpen(false);
-                setOpen(true);
-              }}
-            >
-              Current chat
-            </Button>
-          ) : null}
-          {history.map((saved) => (
-            <Button
-              key={saved.id}
-              variant="ghost"
-              className="justify-start"
-              disabled={busy}
-              onClick={() => restoreChat(saved)}
-            >
+        <span className="truncate">{currentTitle}</span>
+        <ChevronDownIcon data-icon="inline-end" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-72">
+        <DropdownMenuGroup>
+          <DropdownMenuItem onClick={newChat} disabled={busy}>
+            <PlusIcon />
+            New chat
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Recent chats</DropdownMenuLabel>
+          {recentChats.map((saved) => (
+            <DropdownMenuItem key={saved.id} disabled={busy} onClick={() => restoreChat(saved)}>
               <span className="truncate">{saved.title}</span>
-            </Button>
+            </DropdownMenuItem>
           ))}
-          {!history.length && !messages.length ? (
-            <p className="py-4 text-center text-sm text-muted-foreground">
-              Your conversations will appear here.
-            </p>
+          {!recentChats.length ? (
+            <DropdownMenuItem disabled>No recent chats</DropdownMenuItem>
           ) : null}
-        </div>
-      </PopoverPopup>
-    </Popover>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 
   const chat = (
     <AgentChat
-      historyControl={chatHistory}
+      chatTitle={chatTitle}
       messages={messages}
       input={input}
       onInputChange={setInput}
@@ -177,7 +169,7 @@ export function AgentWorkspace({
 
   return (
     <>
-      <div className="flex min-h-0 min-w-0 flex-1 gap-2 md:px-2 md:pt-2">
+      <div className="flex min-h-0 min-w-0 flex-1 gap-2 md:p-2">
         <section
           aria-label="Workspace content"
           className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background md:rounded-2xl md:border md:shadow-xs"
@@ -194,46 +186,37 @@ export function AgentWorkspace({
         ) : null}
       </div>
       <footer
-        aria-label="Workspace tools"
-        className="flex shrink-0 items-center justify-end gap-1 px-3 max-md:border-t max-md:bg-background max-md:pt-2 max-md:pb-[max(0.5rem,env(safe-area-inset-bottom))] md:h-12 md:px-4"
+        aria-label="Mobile navigation tools"
+        className="flex shrink-0 border-t bg-background px-3 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] md:hidden"
       >
         {mobileNavigation}
-        <Popover open={open && !showPanel} onOpenChange={changeOpen}>
-          {showPanel ? (
-            <Button
-              variant="secondary"
-              size="sm"
-              aria-expanded
-              aria-label="Agent"
-              onClick={() => changeOpen(false)}
-            >
-              <MousePointer2Icon data-icon="inline-start" />
-              Agent
-            </Button>
-          ) : (
-            <PopoverTrigger
-              render={<Button variant={open ? "secondary" : "ghost"} size="sm" />}
-              aria-label="Agent"
-            >
-              <MousePointer2Icon data-icon="inline-start" />
-              Agent
-            </PopoverTrigger>
-          )}
-          <PopoverPopup
-            side="top"
-            align="end"
-            sideOffset={10}
-            aria-label="Agent chat"
-            initialFocus={false}
-            className="agent-popover h-[min(620px,calc(100dvh-140px))] w-[min(440px,calc(100vw-24px))] rounded-2xl shadow-xl"
-          >
-            {chat}
-          </PopoverPopup>
-        </Popover>
-        <span className={cn("sr-only", !busy && "hidden")} role="status">
-          Agent is working
-        </span>
       </footer>
+      <Popover open={open && !showPanel} onOpenChange={changeOpen}>
+        {!showPanel ? (
+          <div className="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-40 md:bottom-4">
+            <PopoverTrigger
+              render={<Button size="icon-xl" className="rounded-full shadow-lg" />}
+              aria-label="Agent"
+              title="Agent"
+            >
+              <MousePointer2Icon />
+            </PopoverTrigger>
+          </div>
+        ) : null}
+        <PopoverPopup
+          side="top"
+          align="end"
+          sideOffset={10}
+          aria-label="Agent chat"
+          initialFocus={false}
+          className="agent-popover h-[min(620px,calc(100dvh-140px))] w-[min(440px,calc(100vw-24px))] rounded-2xl shadow-xl"
+        >
+          {chat}
+        </PopoverPopup>
+      </Popover>
+      <span className={cn("sr-only", !busy && "hidden")} role="status">
+        Agent is working
+      </span>
     </>
   );
 }
