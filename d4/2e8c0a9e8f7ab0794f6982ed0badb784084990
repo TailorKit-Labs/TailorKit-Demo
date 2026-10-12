@@ -1,0 +1,29 @@
+website/components/agent/agent-chat.tsx
+  s_d0d8cb2386121f::t_9e058e183cd773 7,16,28-29,194,208,237,358-365,367,370-375,377,379-399
+website/components/crm-shell.tsx
+  s_d0d8cb2386121f::t_9475ccd5eb3a72 21,44
+  s_d0d8cb2386121f::t_9e058e183cd773 8,22
+website/components/app/app-mobile-footer.tsx
+  s_d0d8cb2386121f::t_9e058e183cd773 9
+website/components/agent/agent-workspace.tsx
+  s_d0d8cb2386121f::t_9e058e183cd773 12,18-24,97-153,156,180,198,200,228
+  s_d0d8cb2386121f::t_9475ccd5eb3a72 43-47,168,171-174,201,208
+website/README.md
+  s_d0d8cb2386121f::t_9e058e183cd773 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d42e8c0a9e8f7ab0794f6982ed0badb784084990",
+  "prompts": {},
+  "sessions": {
+    "s_d0d8cb2386121f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a12eaa-e4b0-7181-9f2a-e01a89b2c14f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
