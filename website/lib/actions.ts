@@ -6,8 +6,9 @@ import { db } from "./drizzle";
 import { deals, tasks } from "./schema";
 import { getCurrentSession, requireTenant } from "./workspace";
 import { provisionForUser } from "./provision";
-import { lockTenant, checkLimit, checkContact, logActivity } from "./mutation-guards";
-import { moveDealRecord, type MoveDealInput } from "./deal-operations";
+import { lockTenant, checkContact, logActivity } from "./mutation-guards";
+import { createDealRecord, dealInput, moveDealRecord, type MoveDealInput } from "./deal-operations";
+import { createTaskRecord, taskInput } from "./task-operations";
 import {
   createContactRecord,
   updateContactRecord,
@@ -15,18 +16,6 @@ import {
   contactInput,
 } from "./contact-operations";
 
-const dealInput = z.object({
-  title: z.string().trim().min(2).max(120),
-  contactId: z.string().nullable(),
-  value: z.coerce.number().int().min(0).max(10000000),
-  stage: z.enum(["qualified", "proposal", "negotiation", "won", "lost"]),
-  closeDate: z.coerce.date(),
-});
-const taskInput = z.object({
-  title: z.string().trim().min(2).max(120),
-  dueDate: z.coerce.date(),
-  contactId: z.string().nullable(),
-});
 export type ActionResult = { success: true; id?: string } | { success: false; error: string };
 async function action(fn: () => Promise<void | string>): Promise<ActionResult> {
   try {
@@ -78,17 +67,8 @@ export async function deleteContact(id: string) {
 }
 export async function createDeal(input: z.input<typeof dealInput>) {
   return action(async () => {
-    const data = dealInput.parse(input),
-      tenant = await requireTenant();
-    return db.transaction(async (tx) => {
-      await lockTenant(tx, tenant.id);
-      await checkLimit(tx, deals, tenant.id);
-      await checkContact(tx, tenant.id, data.contactId);
-      const id = crypto.randomUUID();
-      await tx.insert(deals).values({ ...data, id, tenantId: tenant.id });
-      await logActivity(tx, tenant.id, "deal", "Deal created", data.title, data.contactId);
-      return id;
-    });
+    const tenant = await requireTenant();
+    return createDealRecord(tenant.id, input);
   });
 }
 export async function updateDeal(id: string, input: z.input<typeof dealInput>) {
@@ -133,17 +113,8 @@ export async function movePipelineDeal(input: MoveDealInput) {
 }
 export async function createTask(input: z.input<typeof taskInput>) {
   return action(async () => {
-    const data = taskInput.parse(input),
-      tenant = await requireTenant();
-    return db.transaction(async (tx) => {
-      await lockTenant(tx, tenant.id);
-      await checkLimit(tx, tasks, tenant.id);
-      await checkContact(tx, tenant.id, data.contactId);
-      const id = crypto.randomUUID();
-      await tx.insert(tasks).values({ ...data, id, tenantId: tenant.id });
-      await logActivity(tx, tenant.id, "task", "Task added", data.title, data.contactId);
-      return id;
-    });
+    const tenant = await requireTenant();
+    return createTaskRecord(tenant.id, input);
   });
 }
 export async function toggleTask(id: string) {

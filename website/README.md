@@ -31,6 +31,32 @@ The env example contains a public development-only signing key: never copy that 
 
 Every query and mutation derives the workspace from the authenticated session. Record creation locks the tenant row before checking limits, so concurrent requests cannot exceed 50 contacts, deals, or tasks. User input is validated on the server. Activity history is capped at 50 entries.
 
+## Agent
+
+Below 800px, a floating bar at the bottom center contains **Agent** and a menu icon, opening separate Coss bottom drawers for chat and navigation. The mobile header has no sidebar toggle or bottom navigation tabs. On larger screens, the **Agent** floating button lives in the bottom-right corner and hides while the side panel is open. It opens a Coss bottom drawer below 800px and a chat popover on larger screens. On screens at least 1280px wide, a toggle switches between the popover and a side panel; smaller screens hide that control. Drafts and conversations survive closing, docking, resizing, and in-app navigation. A history dropdown replaces the chat title, with up to eight archived conversations kept in memory for the current session.
+
+The agent uses AI SDK `ToolLoopAgent` and streams text and tool progress through `/api/agent`. It can search/view deals and contacts, create deals, move deals between stages, list/create follow-ups, and complete or reopen tasks. Its tools share the app's validated database operations, workspace isolation, activity logging, and collection limits. Successful writes refresh the visible page. Missing required information is requested in the conversation; new deals default to qualified, no contact, and an expected close in 30 days.
+
+On Vercel, the AI SDK automatically authenticates through the deployment's [OIDC token](https://vercel.com/docs/ai-gateway/authentication-and-byok/oidc), including tokens supplied through trusted request context. Leave `AI_GATEWAY_API_KEY` unset to use OIDC; a configured API key takes priority. Your Vercel team must have available AI Gateway credits and any required billing verification completed. No manually managed model-provider key is needed.
+
+For local use, set `AI_GATEWAY_API_KEY` in `website/.env.local`, or use local OIDC: run `vercel link` and `vercel env pull .env.vercel.local` from `website`, then copy only the `VERCEL_OIDC_TOKEN` entry into your existing `.env.local` to preserve local database/auth settings. Local tokens expire after 12 hours; pull a fresh token when needed and restart the dev server. The agent defaults to `openai/gpt-6-luna` with medium reasoning. `AI_GATEWAY_MODEL` optionally overrides it with another tool-capable Gateway model. Credentials stay on the server. Without Gateway authentication the app still runs, and the chat displays a connection message when used.
+
+`POST /api/agent` uses BotID Basic verification. `instrumentation-client.ts` protects the client request and `withBotId` supplies the required rewrites. Bot checks fail closed if verification is unavailable. Local development uses BotID's documented development behavior; production detection must be checked on a Vercel deployment.
+
+Chats are persisted in Postgres `agent_chats`, scoped to the authenticated workspace. The latest chat is restored on reload, and the history dropdown loads the 20 most recently updated chats. Starting a new chat preserves existing conversations. Messages use the SDK UI format, including tool results. The server saves admitted user messages before generation, checkpoints each completed tool step, and saves the final or interrupted reply while draining the stream independently of the browser. Closing the browser still cancels generation through the request signal; this does not resume an active stream. Stale tabs are rejected instead of overwriting newer messages, and per-chat leases recover after terminated requests. Clearing the anonymous session creates a different workspace and does not grant access to the old chats. Workspace deletion cascades to its chats.
+
+Agent limits are stored atomically in Postgres, shared across serverless instances and regions:
+
+- Each IP receives a bucket of 50,000 input + output model tokens. It fully resets five hours after the bucket starts, without gradual refill.
+- Each turn reserves 10,000 tokens before inference; a completed turn refunds unused tokens or charges additional usage across all steps. Fewer than 10,000 remaining tokens prevents another turn. A final model step can cross its reservation; later requests are blocked when the bucket is depleted. This is a demo allowance, not an exact dollar cap.
+- Unknown usage, aborted requests, and failed requests retain the reservation. Only one response may run per IP; a 90-second lease recovers from terminated functions.
+- An IP may start five turns per minute. Rejections return HTTP 429 with `Retry-After`.
+- Turns stop after four steps or when measured usage reaches the turn reservation, with 1,500 output tokens per step, a 45-second generation timeout, and no automatic model retries. Requests are limited to 60 KB and 20 messages.
+
+The IP key is an HMAC using `BETTER_AUTH_SECRET`; raw IPs are not stored in the bucket table. Vercel's trusted `x-vercel-forwarded-for` supplies the IP. Cookie resets and new anonymous workspaces do not reset a network's bucket. People sharing an IP share the allowance. Other production hosts are rejected unless a trusted IP source is explicitly implemented; local development uses one loopback bucket. Expired bucket records are pruned in batches after responses.
+
+Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration tests and a deterministic SDK tool-loop/streaming and persistence test that needs no provider key. Run `pnpm --filter website test:agent-chats` for chat history, workspace isolation, authoritative context, concurrency, interrupted replies, and lease recovery. Run `pnpm --filter website test:agent-rate-limit` for database-backed bucket, concurrency, accounting, reset, and IP identity tests. Live model quality, provider authentication, and production BotID verification require a configured deployment.
+
 ## Anonymous setup
 
 Better Auth stores the account/session in Postgres and uses its signed HttpOnly session cookie. The session lasts 30 days with refresh on active use. No signup or sign-in forms are exposed. Clearing cookies creates a fresh workspace on the next visit.

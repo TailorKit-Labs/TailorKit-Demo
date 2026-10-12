@@ -1,4 +1,5 @@
-import { boolean, index, integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import type { UIMessage } from "ai";
+import { boolean, index, integer, jsonb, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable("auth_user", {
   id: text("id").primaryKey(),
@@ -125,4 +126,33 @@ export const activities = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [index("activities_tenant_idx").on(t.tenantId)],
+);
+
+export const agentBuckets = pgTable(
+  "agent_buckets",
+  {
+    key: text("key").primaryKey(),
+    tokens: integer("tokens").notNull(),
+    resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
+    requests: integer("requests").notNull(),
+    requestResetAt: timestamp("request_reset_at", { withTimezone: true }).notNull(),
+    leaseId: text("lease_id"),
+    leaseExpiresAt: timestamp("lease_expires_at", { withTimezone: true }).notNull(),
+  },
+  (t) => [index("agent_buckets_reset_idx").on(t.resetAt)],
+);
+
+export const agentChats = pgTable(
+  "agent_chats",
+  {
+    id: text("id").primaryKey(),
+    tenantId: tenantId(),
+    title: text("title").notNull(),
+    messages: jsonb("messages").$type<UIMessage[]>().notNull(),
+    activeTurnId: text("active_turn_id"),
+    activeUntil: timestamp("active_until", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => [index("agent_chats_tenant_updated_idx").on(t.tenantId, t.updatedAt)],
 );
