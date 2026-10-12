@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
@@ -38,6 +38,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
+  const agentTriggerId = useId();
   const canDock = useMediaQuery("xl");
   const useDrawer = useMediaQuery("max-md");
   const [open, setOpen] = useState(false);
@@ -211,18 +212,17 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
           <AppMobileNavigation onOpen={() => changeOpen(false)} />
         </div>
       ) : (
-        <Popover open={open && !showPanel} onOpenChange={changeOpen}>
-          {!showPanel ? (
-            <div className="fixed right-4 bottom-4 z-40">
-              <PopoverTrigger
-                render={<Button size="icon-xl" className="rounded-full shadow-lg" />}
-                aria-label="Agent"
-                title="Agent"
-              >
-                <MousePointer2Icon />
-              </PopoverTrigger>
-            </div>
-          ) : null}
+        <Popover open={open && !showPanel} onOpenChange={changeOpen} triggerId={agentTriggerId}>
+          <div className="fixed right-4 bottom-4 z-40" hidden={showPanel}>
+            <PopoverTrigger
+              id={agentTriggerId}
+              render={<Button size="icon-xl" className="rounded-full shadow-lg" />}
+              aria-label="Agent"
+              title="Agent"
+            >
+              <MousePointer2Icon />
+            </PopoverTrigger>
+          </div>
           <PopoverPopup
             side="top"
             align="end"
