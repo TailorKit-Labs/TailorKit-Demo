@@ -10,7 +10,7 @@ import { createCrmTools } from "./crm-tools";
 export function createCrmAgent(
   tenant: { id: string; name: string },
   context: { page: string; date: string; timeZone: string },
-  model: LanguageModel = gateway(process.env.AI_GATEWAY_MODEL || "xiaomi/mimo-v2.6-pro"),
+  model: LanguageModel = gateway(process.env.AI_GATEWAY_MODEL || "openai/gpt-6-luna"),
   budget?: { tokens: number; onUsage: (tokens: number | undefined) => void },
 ) {
   return new ToolLoopAgent({
@@ -23,7 +23,7 @@ export function createCrmAgent(
           budget.tokens,
     ],
     maxOutputTokens: 1500,
-    reasoning: "low",
+    reasoning: "medium",
     maxRetries: 0,
     onEnd: budget ? ({ usage }) => budget.onUsage(usage.totalTokens) : undefined,
     tools: createCrmTools(tenant.id),

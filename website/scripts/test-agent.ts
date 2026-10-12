@@ -248,6 +248,7 @@ async function main() {
     assert.ok(stream.includes("Created Streamed SDK deal for $7,500."));
     assert.equal(reportedUsage, 40, "Usage must include all model steps");
     assert.equal(model.doStreamCalls[0].maxOutputTokens, 1500);
+    assert.equal(model.doStreamCalls[0].reasoning, "medium");
     assert.equal(model.doStreamCalls.length, 2, "Agent must continue after executing the tool");
     const streamed = await run(tools.listDeals.execute!({ query: "Streamed SDK deal" }, options));
     assert.equal(streamed.count, 1);
