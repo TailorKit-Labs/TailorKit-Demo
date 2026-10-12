@@ -1,0 +1,19 @@
+website/components/agent/agent-chat.tsx
+  s_d0d8cb2386121f::t_d16ab9949ca5c9 346
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "eef1c50a27da7f487aa475b873aa09f1b8344aba",
+  "prompts": {},
+  "sessions": {
+    "s_d0d8cb2386121f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a12eaa-e4b0-7181-9f2a-e01a89b2c14f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
