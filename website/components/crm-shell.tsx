@@ -2,7 +2,6 @@
 import { useState, type CSSProperties } from "react";
 import { usePathname } from "next/navigation";
 import { PageHeaderContext } from "@/components/app/app-page-header";
-import { AppMobileFooter } from "@/components/app/app-mobile-footer";
 import { AppMobileHeader } from "@/components/app/app-mobile-header";
 import { AppSidebar } from "@/components/app/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -18,8 +17,8 @@ export function CrmShell({ children, name }: { children: React.ReactNode; name: 
     >
       <AppMobileHeader name={name} />
       <AppSidebar name={name} />
-      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-sidebar max-md:pt-14">
-        <AgentWorkspace mobileNavigation={<AppMobileFooter />}>
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-sidebar max-[799px]:pt-14">
+        <AgentWorkspace>
           <header
             key={pathname}
             ref={setHeader}
@@ -35,7 +34,7 @@ export function CrmShell({ children, name }: { children: React.ReactNode; name: 
                 if (header) header.dataset.scrolled = String(event.currentTarget.scrollTop > 0);
               }}
             >
-              <div className="mt-4 flex flex-col gap-6 px-5 pb-5 md:mt-6 md:px-8 md:pb-8">
+              <div className="mt-4 flex flex-col gap-6 px-5 pb-5 max-[799px]:pb-24 md:mt-6 md:px-8 md:pb-8">
                 {children}
               </div>
             </div>

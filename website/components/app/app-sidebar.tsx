@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import { CommandIcon, Settings2Icon } from "lucide-react";
 import {
   Sidebar,
+  useSidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
@@ -17,6 +18,8 @@ import { DemoProfile, SidebarLink } from "@/components/app/demo-profile";
 import { navigation } from "@/components/app/app-navigation";
 export function AppSidebar({ name }: { name: string }) {
   const pathname = usePathname();
+  const { isMobile } = useSidebar();
+  if (isMobile) return null;
   return (
     <Sidebar collapsible="offcanvas" variant="inset">
       <SidebarHeader className="px-4 pt-5 pb-3">

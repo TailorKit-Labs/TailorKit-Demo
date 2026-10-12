@@ -8,7 +8,17 @@ import { ChevronDownIcon, MousePointer2Icon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { useSidebar } from "@/components/ui/sidebar";
+import { AppMobileNavigation } from "@/components/app/app-mobile-navigation";
 import { Popover, PopoverPopup, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerPopup,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,16 +34,12 @@ import { cn } from "@/lib/utils";
 type SavedChat = { id: string; title: string; messages: CrmAgentMessage[] };
 const transport = new DefaultChatTransport<CrmAgentMessage>({ api: "/api/agent" });
 
-export function AgentWorkspace({
-  children,
-  mobileNavigation,
-}: {
-  children: React.ReactNode;
-  mobileNavigation: React.ReactNode;
-}) {
+export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
+  const { setOpenMobile } = useSidebar();
   const canDock = useMediaQuery("xl");
+  const useDrawer = useMediaQuery("max-md");
   const [open, setOpen] = useState(false);
   const [docked, setDocked] = useState(false);
   const [input, setInput] = useState("");
@@ -51,6 +57,7 @@ export function AgentWorkspace({
 
   function changeOpen(next: boolean) {
     setOpen(next);
+    if (next) setOpenMobile(false);
     if (!next) setHistoryOpen(false);
   }
 
@@ -185,35 +192,49 @@ export function AgentWorkspace({
           </aside>
         ) : null}
       </div>
-      <footer
-        aria-label="Mobile navigation tools"
-        className="flex shrink-0 border-t bg-background px-3 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] md:hidden"
-      >
-        {mobileNavigation}
-      </footer>
-      <Popover open={open && !showPanel} onOpenChange={changeOpen}>
-        {!showPanel ? (
-          <div className="fixed right-4 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-40 md:bottom-4">
-            <PopoverTrigger
-              render={<Button size="icon-xl" className="rounded-full shadow-lg" />}
-              aria-label="Agent"
-              title="Agent"
-            >
-              <MousePointer2Icon />
-            </PopoverTrigger>
-          </div>
-        ) : null}
-        <PopoverPopup
-          side="top"
-          align="end"
-          sideOffset={10}
-          aria-label="Agent chat"
-          initialFocus={false}
-          className="agent-popover h-[min(620px,calc(100dvh-140px))] w-[min(440px,calc(100vw-24px))] rounded-2xl shadow-xl"
+      {useDrawer ? (
+        <div
+          aria-label="Mobile tools"
+          className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-xl border bg-popover p-1 shadow-xl"
         >
-          {chat}
-        </PopoverPopup>
-      </Popover>
+          <Drawer open={open} onOpenChange={changeOpen}>
+            <DrawerTrigger render={<Button variant="ghost" size="sm" />} aria-label="Agent">
+              <MousePointer2Icon data-icon="inline-start" />
+              Agent
+            </DrawerTrigger>
+            <DrawerPopup showBar className="h-[calc(100dvh-3rem)]">
+              <DrawerTitle className="sr-only">Agent chat</DrawerTitle>
+              <DrawerContent className="min-h-0 flex-1 touch-auto">{chat}</DrawerContent>
+            </DrawerPopup>
+          </Drawer>
+          <Separator orientation="vertical" className="h-5" />
+          <AppMobileNavigation onOpen={() => changeOpen(false)} />
+        </div>
+      ) : (
+        <Popover open={open && !showPanel} onOpenChange={changeOpen}>
+          {!showPanel ? (
+            <div className="fixed right-4 bottom-4 z-40">
+              <PopoverTrigger
+                render={<Button size="icon-xl" className="rounded-full shadow-lg" />}
+                aria-label="Agent"
+                title="Agent"
+              >
+                <MousePointer2Icon />
+              </PopoverTrigger>
+            </div>
+          ) : null}
+          <PopoverPopup
+            side="top"
+            align="end"
+            sideOffset={10}
+            aria-label="Agent chat"
+            initialFocus={false}
+            className="agent-popover h-[min(620px,calc(100dvh-140px))] w-[min(440px,calc(100vw-24px))] rounded-2xl shadow-xl"
+          >
+            {chat}
+          </PopoverPopup>
+        </Popover>
+      )}
       <span className={cn("sr-only", !busy && "hidden")} role="status">
         Agent is working
       </span>
