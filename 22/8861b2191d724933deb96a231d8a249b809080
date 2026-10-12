@@ -1,0 +1,33 @@
+website/components/app/app-mobile-navigation.tsx
+  s_d0d8cb2386121f::t_2bc54d3e8f4cad 1-35,37-91
+  s_d0d8cb2386121f::t_bf0a454ed0453f 36
+website/README.md
+  s_d0d8cb2386121f::t_2bc54d3e8f4cad 36
+website/components/app/app-mobile-header.tsx
+  s_d0d8cb2386121f::t_2bc54d3e8f4cad 6
+website/components/app/app-sidebar.tsx
+  s_d0d8cb2386121f::t_2bc54d3e8f4cad 6,21-22
+website/components/agent/agent-workspace.tsx
+  s_d0d8cb2386121f::t_bf0a454ed0453f 198,201,210
+  s_d0d8cb2386121f::t_2bc54d3e8f4cad 11-13,37,40,60,196-197,200,202-203,205-209,211-212,216
+  s_d0d8cb2386121f::t_2eb063070b9646 16-21,42,195,204,213-215,217-237
+  s_d0d8cb2386121f::t_83c75691f48203 15
+website/components/crm-shell.tsx
+  s_d0d8cb2386121f::t_2bc54d3e8f4cad 20-21,37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "228861b2191d724933deb96a231d8a249b809080",
+  "prompts": {},
+  "sessions": {
+    "s_d0d8cb2386121f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a12eaa-e4b0-7181-9f2a-e01a89b2c14f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
