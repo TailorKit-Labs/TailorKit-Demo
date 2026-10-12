@@ -9,6 +9,11 @@
   --viewport-inline-padding: 0px;
 }
 
+.agent-popover [data-slot="popover-viewport"] > [data-current] {
+  width: 100%;
+  min-width: 0;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

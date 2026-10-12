@@ -213,14 +213,16 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
         </div>
       ) : (
         <Popover open={open && !showPanel} onOpenChange={changeOpen} triggerId={agentTriggerId}>
-          <div className="fixed right-4 bottom-4 z-40" hidden={showPanel}>
+          <div className="fixed right-8 bottom-8 z-40" hidden={showPanel}>
             <PopoverTrigger
               id={agentTriggerId}
-              render={<Button size="icon-xl" className="rounded-full shadow-lg" />}
+              render={
+                <Button size="icon-xl" className="size-14 rounded-full shadow-lg sm:size-14" />
+              }
               aria-label="Agent"
               title="Agent"
             >
-              <MousePointer2Icon />
+              <MousePointer2Icon className="size-6" />
             </PopoverTrigger>
           </div>
           <PopoverPopup
