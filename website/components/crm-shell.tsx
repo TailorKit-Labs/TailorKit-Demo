@@ -5,7 +5,7 @@ import { PageHeaderContext } from "@/components/app/app-page-header";
 import { AppMobileFooter } from "@/components/app/app-mobile-footer";
 import { AppMobileHeader } from "@/components/app/app-mobile-header";
 import { AppSidebar } from "@/components/app/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AgentWorkspace } from "@/components/agent/agent-workspace";
 
 export function CrmShell({ children, name }: { children: React.ReactNode; name: string }) {
@@ -18,8 +18,8 @@ export function CrmShell({ children, name }: { children: React.ReactNode; name: 
     >
       <AppMobileHeader name={name} />
       <AppSidebar name={name} />
-      <SidebarInset className="min-h-0 min-w-0 overflow-hidden bg-sidebar max-md:pt-14 max-md:pb-20 md:shadow-none">
-        <AgentWorkspace>
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-sidebar max-md:pt-14">
+        <AgentWorkspace mobileNavigation={<AppMobileFooter />}>
           <header
             key={pathname}
             ref={setHeader}
@@ -41,8 +41,7 @@ export function CrmShell({ children, name }: { children: React.ReactNode; name: 
             </div>
           </PageHeaderContext>
         </AgentWorkspace>
-      </SidebarInset>
-      <AppMobileFooter />
+      </main>
     </SidebarProvider>
   );
 }

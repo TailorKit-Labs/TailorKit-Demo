@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
@@ -10,22 +9,19 @@ import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverPopup, PopoverTitle, PopoverTrigger } from "@/components/ui/popover";
-import { Spinner } from "@/components/ui/spinner";
+import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
-
-const AgentChat = dynamic(() => import("./agent-chat").then((module) => module.AgentChat), {
-  loading: () => (
-    <div className="flex h-full items-center justify-center" role="status">
-      <Spinner />
-      <span className="sr-only">Loading agent</span>
-    </div>
-  ),
-});
 
 type SavedChat = { id: string; title: string; messages: CrmAgentMessage[] };
 const transport = new DefaultChatTransport<CrmAgentMessage>({ api: "/api/agent" });
 
-export function AgentWorkspace({ children }: { children: React.ReactNode }) {
+export function AgentWorkspace({
+  children,
+  mobileNavigation,
+}: {
+  children: React.ReactNode;
+  mobileNavigation: React.ReactNode;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const canDock = useMediaQuery("xl");
@@ -43,6 +39,11 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     });
   const busy = status === "submitted" || status === "streaming";
   const showPanel = open && docked && canDock;
+
+  function changeOpen(next: boolean) {
+    setOpen(next);
+    if (!next) setHistoryOpen(false);
+  }
 
   function archiveCurrentChat() {
     if (!messages.length) return;
@@ -93,8 +94,66 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     );
   }
 
+  const chatHistory = (
+    <Popover open={historyOpen} onOpenChange={setHistoryOpen}>
+      <PopoverTrigger
+        render={<Button variant="ghost" size="icon-sm" />}
+        aria-label="Chat history"
+        title="Chat history"
+      >
+        <HistoryIcon />
+      </PopoverTrigger>
+      <PopoverPopup side="top" align="end" sideOffset={10} className="w-72">
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-2">
+            <PopoverTitle>Recent chats</PopoverTitle>
+            <Button
+              size="icon-sm"
+              variant="ghost"
+              onClick={newChat}
+              disabled={busy}
+              aria-label="Start a new chat"
+            >
+              <PlusIcon />
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">Chats from this session.</p>
+          {messages.length ? (
+            <Button
+              variant="ghost"
+              className="justify-start"
+              onClick={() => {
+                setHistoryOpen(false);
+                setOpen(true);
+              }}
+            >
+              Current chat
+            </Button>
+          ) : null}
+          {history.map((saved) => (
+            <Button
+              key={saved.id}
+              variant="ghost"
+              className="justify-start"
+              disabled={busy}
+              onClick={() => restoreChat(saved)}
+            >
+              <span className="truncate">{saved.title}</span>
+            </Button>
+          ))}
+          {!history.length && !messages.length ? (
+            <p className="py-4 text-center text-sm text-muted-foreground">
+              Your conversations will appear here.
+            </p>
+          ) : null}
+        </div>
+      </PopoverPopup>
+    </Popover>
+  );
+
   const chat = (
     <AgentChat
+      historyControl={chatHistory}
       messages={messages}
       input={input}
       onInputChange={setInput}
@@ -106,16 +165,19 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
         router.refresh();
       }}
       onNewChat={newChat}
-      onClose={() => setOpen(false)}
+      onClose={() => changeOpen(false)}
       canDock={canDock}
       docked={showPanel}
-      onDockChange={() => setDocked((value) => !value)}
+      onDockChange={() => {
+        setHistoryOpen(false);
+        setDocked((value) => !value);
+      }}
     />
   );
 
   return (
     <>
-      <div className="flex min-h-0 min-w-0 flex-1 gap-2">
+      <div className="flex min-h-0 min-w-0 flex-1 gap-2 md:px-2 md:pt-2">
         <section
           aria-label="Workspace content"
           className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background md:rounded-2xl md:border md:shadow-xs"
@@ -133,16 +195,17 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
       </div>
       <footer
         aria-label="Workspace tools"
-        className="flex h-12 shrink-0 items-center justify-end gap-1 px-3 md:px-4"
+        className="flex shrink-0 items-center justify-end gap-1 px-3 max-md:border-t max-md:bg-background max-md:pt-2 max-md:pb-[max(0.5rem,env(safe-area-inset-bottom))] md:h-12 md:px-4"
       >
-        <Popover open={open && !showPanel} onOpenChange={setOpen}>
+        {mobileNavigation}
+        <Popover open={open && !showPanel} onOpenChange={changeOpen}>
           {showPanel ? (
             <Button
               variant="secondary"
               size="sm"
               aria-expanded
               aria-label="Agent"
-              onClick={() => setOpen(false)}
+              onClick={() => changeOpen(false)}
             >
               <MousePointer2Icon data-icon="inline-start" />
               Agent
@@ -162,69 +225,9 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
             sideOffset={10}
             aria-label="Agent chat"
             initialFocus={false}
-            className="agent-popover h-[min(620px,calc(100dvh-150px))] w-[min(440px,calc(100vw-24px))] rounded-2xl shadow-xl"
+            className="agent-popover h-[min(620px,calc(100dvh-140px))] w-[min(440px,calc(100vw-24px))] rounded-2xl shadow-xl"
           >
             {chat}
-          </PopoverPopup>
-        </Popover>
-        <Popover
-          open={historyOpen}
-          onOpenChange={(next) => {
-            setHistoryOpen(next);
-            if (next && !showPanel) setOpen(false);
-          }}
-        >
-          <PopoverTrigger
-            render={<Button variant="ghost" size="icon-sm" />}
-            aria-label="Chat history"
-            title="Chat history"
-          >
-            <HistoryIcon />
-          </PopoverTrigger>
-          <PopoverPopup side="top" align="end" sideOffset={10} className="w-72">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center justify-between gap-2">
-                <PopoverTitle>Recent chats</PopoverTitle>
-                <Button
-                  size="icon-sm"
-                  variant="ghost"
-                  onClick={newChat}
-                  disabled={busy}
-                  aria-label="Start a new chat"
-                >
-                  <PlusIcon />
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground">Chats from this session.</p>
-              {messages.length ? (
-                <Button
-                  variant="ghost"
-                  className="justify-start"
-                  onClick={() => {
-                    setHistoryOpen(false);
-                    setOpen(true);
-                  }}
-                >
-                  Current chat
-                </Button>
-              ) : null}
-              {history.map((saved) => (
-                <Button
-                  key={saved.id}
-                  variant="ghost"
-                  className="justify-start"
-                  disabled={busy}
-                  onClick={() => restoreChat(saved)}
-                >
-                  <span className="truncate">{saved.title}</span>
-                </Button>
-              ))}
-              {!history.length && !messages.length ? (
-                <p className="py-4 text-center text-sm text-muted-foreground">
-                  Your conversations will appear here.
-                </p>
-              ) : null}
-            </div>
           </PopoverPopup>
         </Popover>
         <span className={cn("sr-only", !busy && "hidden")} role="status">

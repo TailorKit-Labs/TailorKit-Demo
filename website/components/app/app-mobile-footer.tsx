@@ -6,10 +6,7 @@ import { navigation } from "@/components/app/app-navigation";
 export function AppMobileFooter() {
   const pathname = usePathname();
   return (
-    <nav
-      aria-label="Mobile navigation"
-      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t bg-background px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] md:hidden"
-    >
+    <nav aria-label="Mobile navigation" className="grid min-w-0 flex-1 grid-cols-3 gap-1 md:hidden">
       {navigation.map((item) => {
         const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
         return (

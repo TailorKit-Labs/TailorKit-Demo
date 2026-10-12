@@ -4,15 +4,16 @@ import Link from "next/link";
 import type { AnchorHTMLAttributes } from "react";
 import type { ChatStatus } from "ai";
 import {
+  ArrowRightIcon,
   BriefcaseBusinessIcon,
   CheckIcon,
   ChevronRightIcon,
   ListTodoIcon,
   Maximize2Icon,
   Minimize2Icon,
-  MinusIcon,
   MousePointer2Icon,
   PlusIcon,
+  SquareIcon,
   SquarePenIcon,
   XIcon,
 } from "lucide-react";
@@ -24,13 +25,8 @@ import {
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { Message, MessageContent, MessageResponse } from "@/components/ai-elements/message";
-import {
-  PromptInput,
-  PromptInputBody,
-  PromptInputFooter,
-  PromptInputSubmit,
-  PromptInputTextarea,
-} from "@/components/ai-elements/prompt-input";
+import { InputGroup, InputGroupAddon, InputGroupTextarea } from "@/components/ui/input-group";
+import { Tooltip, TooltipPopup, TooltipTrigger } from "@/components/ui/tooltip";
 import { Suggestion } from "@/components/ai-elements/suggestion";
 import { Tool, ToolContent, ToolHeader } from "@/components/ai-elements/tool";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -195,6 +191,7 @@ function RecordLink({ href, children }: { href: string; children: React.ReactNod
 }
 
 export function AgentChat({
+  historyControl,
   messages,
   input,
   onInputChange,
@@ -208,6 +205,7 @@ export function AgentChat({
   docked,
   onDockChange,
 }: {
+  historyControl: React.ReactNode;
   messages: CrmAgentMessage[];
   input: string;
   onInputChange: (value: string) => void;
@@ -236,6 +234,7 @@ export function AgentChat({
       <header className="flex h-14 shrink-0 items-center justify-between gap-2 px-4">
         <h2 className="text-sm font-semibold">{messages.length ? "Agent" : "New chat"}</h2>
         <div className="flex items-center gap-1">
+          {historyControl}
           {messages.length ? (
             <Button
               variant="ghost"
@@ -248,15 +247,6 @@ export function AgentChat({
               <SquarePenIcon />
             </Button>
           ) : null}
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Minimise agent"
-            title="Minimise"
-            onClick={onClose}
-          >
-            <MinusIcon />
-          </Button>
           {canDock ? (
             <Button
               variant="ghost"
@@ -365,35 +355,48 @@ export function AgentChat({
           <ConversationScrollButton />
         </Conversation>
         <div className="shrink-0 p-2">
-          <PromptInput onSubmit={({ text }) => onSubmit(text)}>
-            <PromptInputBody>
-              <PromptInputTextarea
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              if (!busy && input.trim()) void onSubmit(input);
+            }}
+          >
+            <InputGroup>
+              <InputGroupTextarea
                 aria-label="Message agent"
-                placeholder="Ask about deals, contacts, or follow-ups…"
+                placeholder="Type a message…"
                 value={input}
                 onChange={(event) => onInputChange(event.currentTarget.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" && !event.shiftKey && !event.nativeEvent.isComposing) {
+                    event.preventDefault();
+                    event.currentTarget.form?.requestSubmit();
+                  }
+                }}
                 maxLength={4000}
-                className="min-h-20 text-base sm:text-sm"
+                className="text-left"
               />
-            </PromptInputBody>
-            <PromptInputFooter>
-              <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <MousePointer2Icon className="size-3.5" />
-                Your workspace
-              </span>
-              <PromptInputSubmit
-                status={busy ? status : "ready"}
-                onStop={onStop}
-                disabled={!busy && !input.trim()}
-                size="icon"
-                aria-label={busy ? "Stop response" : "Send message"}
-                className="rounded-full"
-              />
-            </PromptInputFooter>
-          </PromptInput>
-          <p className="mt-2 text-center text-[10px] text-muted-foreground">
-            Agent can make changes. Review its work.
-          </p>
+              <InputGroupAddon align="block-end">
+                <Tooltip>
+                  <TooltipTrigger
+                    render={
+                      <Button
+                        type={busy ? "button" : "submit"}
+                        onClick={busy ? onStop : undefined}
+                        aria-label={busy ? "Stop response" : "Send message"}
+                        disabled={!busy && !input.trim()}
+                        className="ml-auto rounded-full"
+                        size="icon-sm"
+                      />
+                    }
+                  >
+                    {busy ? <SquareIcon /> : <ArrowRightIcon />}
+                  </TooltipTrigger>
+                  <TooltipPopup>{busy ? "Stop response" : "Send"}</TooltipPopup>
+                </Tooltip>
+              </InputGroupAddon>
+            </InputGroup>
+          </form>
         </div>
       </div>
     </div>
