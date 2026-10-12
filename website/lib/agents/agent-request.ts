@@ -14,7 +14,7 @@ export const agentRequest = z.object({
       }),
     )
     .min(1)
-    .max(100),
+    .max(20),
   page: z.enum(["/", "/contacts", "/pipeline", "/tasks", "/settings"]).default("/"),
   date: z.iso.date().optional(),
   timeZone: z

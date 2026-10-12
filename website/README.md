@@ -39,9 +39,21 @@ The agent uses AI SDK `ToolLoopAgent` and streams text and tool progress through
 
 On Vercel, the AI SDK automatically authenticates through the deployment's [OIDC token](https://vercel.com/docs/ai-gateway/authentication-and-byok/oidc), including tokens supplied through trusted request context. Leave `AI_GATEWAY_API_KEY` unset to use OIDC; a configured API key takes priority. Your Vercel team must have available AI Gateway credits and any required billing verification completed. No manually managed model-provider key is needed.
 
-For local use, set `AI_GATEWAY_API_KEY` in `website/.env.local`, or use local OIDC: run `vercel link` and `vercel env pull .env.vercel.local` from `website`, then copy only the `VERCEL_OIDC_TOKEN` entry into your existing `.env.local` to preserve local database/auth settings. Local tokens expire after 12 hours; pull a fresh token when needed and restart the dev server. `AI_GATEWAY_MODEL` optionally overrides the default `anthropic/claude-sonnet-5.5` with another tool-capable Gateway model. Credentials stay on the server. Without Gateway authentication the app still runs, and the chat displays a connection message when used.
+For local use, set `AI_GATEWAY_API_KEY` in `website/.env.local`, or use local OIDC: run `vercel link` and `vercel env pull .env.vercel.local` from `website`, then copy only the `VERCEL_OIDC_TOKEN` entry into your existing `.env.local` to preserve local database/auth settings. Local tokens expire after 12 hours; pull a fresh token when needed and restart the dev server. `AI_GATEWAY_MODEL` optionally overrides the default `xiaomi/mimo-v2.6-pro` with another tool-capable Gateway model. Credentials stay on the server. Without Gateway authentication the app still runs, and the chat displays a connection message when used.
 
-Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration tests and a deterministic SDK tool-loop/streaming test that needs no provider key. Live model quality and provider authentication require a configured Gateway credential.
+`POST /api/agent` uses BotID Basic verification. `instrumentation-client.ts` protects the client request and `withBotId` supplies the required rewrites. Bot checks fail closed if verification is unavailable. Local development uses BotID's documented development behavior; production detection must be checked on a Vercel deployment.
+
+Agent limits are stored atomically in Postgres, shared across serverless instances and regions:
+
+- Each IP receives a bucket of 50,000 input + output model tokens. It fully resets five hours after the bucket starts, without gradual refill.
+- Each turn reserves 10,000 tokens before inference; a completed turn refunds unused tokens or charges additional usage across all steps. Fewer than 10,000 remaining tokens prevents another turn. A final model step can cross its reservation; later requests are blocked when the bucket is depleted. This is a demo allowance, not an exact dollar cap.
+- Unknown usage, aborted requests, and failed requests retain the reservation. Only one response may run per IP; a 90-second lease recovers from terminated functions.
+- An IP may start five turns per minute. Rejections return HTTP 429 with `Retry-After`.
+- Turns stop after four steps or when measured usage reaches the turn reservation, with 1,500 output tokens per step, a 45-second generation timeout, and no automatic model retries. Requests are limited to 60 KB and 20 messages.
+
+The IP key is an HMAC using `BETTER_AUTH_SECRET`; raw IPs are not stored in the bucket table. Vercel's trusted `x-vercel-forwarded-for` supplies the IP. Cookie resets and new anonymous workspaces do not reset a network's bucket. People sharing an IP share the allowance. Other production hosts are rejected unless a trusted IP source is explicitly implemented; local development uses one loopback bucket. Expired bucket records are pruned in batches after responses.
+
+Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration tests and a deterministic SDK tool-loop/streaming test that needs no provider key. Run `pnpm --filter website test:agent-rate-limit` for database-backed bucket, concurrency, accounting, reset, and IP identity tests. Live model quality, provider authentication, and production BotID verification require a configured deployment.
 
 ## Anonymous setup
 

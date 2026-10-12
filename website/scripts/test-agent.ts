@@ -216,11 +216,18 @@ async function main() {
         },
       ],
     });
+    let reportedUsage: number | undefined;
     const response = await createAgentUIStreamResponse({
       agent: createCrmAgent(
         tenant,
         { page: "/pipeline", date: "2026-10-11", timeZone: "Australia/Melbourne" },
         model,
+        {
+          tokens: 10000,
+          onUsage: (tokens) => {
+            reportedUsage = tokens;
+          },
+        },
       ),
       uiMessages: [
         {
@@ -239,10 +246,40 @@ async function main() {
     const stream = await response.text();
     assert.ok(stream.includes('"type":"tool-output-available"'));
     assert.ok(stream.includes("Created Streamed SDK deal for $7,500."));
+    assert.equal(reportedUsage, 40, "Usage must include all model steps");
+    assert.equal(model.doStreamCalls[0].maxOutputTokens, 1500);
     assert.equal(model.doStreamCalls.length, 2, "Agent must continue after executing the tool");
     const streamed = await run(tools.listDeals.execute!({ query: "Streamed SDK deal" }, options));
     assert.equal(streamed.count, 1);
     assert.equal(streamed.deals[0].stage, "proposal");
+
+    const cappedModel = new MockLanguageModelV4({
+      doStream: {
+        stream: simulateReadableStream({
+          chunks: [
+            { type: "tool-call", toolCallId: "budget-read", toolName: "listDeals", input: "{}" },
+            { type: "finish", finishReason: { unified: "tool-calls", raw: undefined }, usage },
+          ],
+        }),
+      },
+    });
+    const cappedResponse = await createAgentUIStreamResponse({
+      agent: createCrmAgent(
+        tenant,
+        { page: "/pipeline", date: "2026-10-11", timeZone: "UTC" },
+        cappedModel,
+        { tokens: 20, onUsage: () => {} },
+      ),
+      uiMessages: [
+        { id: "budget-user", role: "user", parts: [{ type: "text", text: "Show my deals" }] },
+      ],
+    });
+    await cappedResponse.text();
+    assert.equal(
+      cappedModel.doStreamCalls.length,
+      1,
+      "The agent must stop after consuming its turn reservation",
+    );
 
     // Tool creation uses the same locked limit guard as the app's forms.
     await db.insert(deals).values(

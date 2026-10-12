@@ -11,7 +11,7 @@
     "lint": "vp lint",
     "format": "vp fmt",
     "build": "pnpm --filter website build",
-    "test": "pnpm --filter website test:db && pnpm --filter website test:agent"
+    "test": "pnpm --filter website test:db && pnpm --filter website test:agent && pnpm --filter website test:agent-rate-limit"
   },
   "devDependencies": {
     "vercel": "catalog:",

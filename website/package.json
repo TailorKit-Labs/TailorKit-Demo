@@ -16,7 +16,8 @@
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
     "test:db": "tsx scripts/test-db.ts",
-    "test:agent": "tsx scripts/test-agent.ts"
+    "test:agent": "tsx scripts/test-agent.ts",
+    "test:agent-rate-limit": "tsx scripts/test-agent-rate-limit.ts"
   },
   "dependencies": {
     "@ai-sdk/react": "catalog:",
@@ -30,6 +31,7 @@
     "@streamdown/mermaid": "catalog:",
     "ai": "catalog:",
     "better-auth": "catalog:",
+    "botid": "catalog:",
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
     "cmdk": "catalog:",

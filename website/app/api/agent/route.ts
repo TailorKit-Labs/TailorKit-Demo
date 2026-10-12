@@ -1,8 +1,16 @@
 import { createAgentUIStreamResponse } from "ai";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
+import { checkBotId } from "botid/server";
 import { requireTenant } from "@/lib/workspace";
 import { createCrmAgent } from "@/lib/agents/crm-agent";
 import { agentRequest, isSameOriginRequest } from "@/lib/agents/agent-request";
+import {
+  agentIpKey,
+  reserveAgentTokens,
+  settleAgentTokens,
+  pruneAgentBuckets,
+} from "@/lib/agents/agent-rate-limit";
 
 export const maxDuration = 60;
 const mutationTools = new Set(["createDeal", "moveDeal", "createTask", "setTaskCompleted"]);
@@ -10,6 +18,24 @@ const mutationTools = new Set(["createDeal", "moveDeal", "createTask", "setTaskC
 export async function POST(request: Request) {
   if (!isSameOriginRequest(request))
     return new Response("This request is not allowed.", { status: 403 });
+  try {
+    const verification = await checkBotId({
+      advancedOptions: { checkLevel: "basic" },
+      developmentOptions: {
+        isDevelopment: process.env.NODE_ENV !== "production" && process.env.VERCEL !== "1",
+      },
+    });
+    if (verification.isBot)
+      return new Response(
+        "This request could not be verified. Please use the app to send your message.",
+        { status: 403 },
+      );
+  } catch (error) {
+    console.error("Agent bot verification failed:", error);
+    return new Response("The agent could not verify this request. Please try again.", {
+      status: 503,
+    });
+  }
   let tenant;
   try {
     tenant = await requireTenant();
@@ -20,7 +46,7 @@ export async function POST(request: Request) {
   }
 
   const text = await request.text();
-  if (text.length > 200000)
+  if (Buffer.byteLength(text) > 60000)
     return new Response("This conversation is too long. Start a new chat.", { status: 413 });
   let input;
   try {
@@ -44,15 +70,56 @@ export async function POST(request: Request) {
       { status: 503 },
     );
   }
+  let admission;
+  try {
+    admission = await reserveAgentTokens(agentIpKey(request));
+  } catch (error) {
+    console.error("Agent rate-limit check failed:", error);
+    return new Response("The agent is temporarily unavailable. Please try again.", { status: 503 });
+  }
+  if (!admission.allowed) {
+    const message =
+      admission.reason === "busy"
+        ? "A response is already running on this network. Please wait for it to finish."
+        : admission.reason === "burst"
+          ? "Too many messages from this network. Please wait a minute and try again."
+          : "This network has used its demo allowance. Please try again after the five-hour bucket resets.";
+    return new Response(message, {
+      status: 429,
+      headers: { "Retry-After": String(admission.retryAfter) },
+    });
+  }
+  const { reservation } = admission;
+  let tokenUsage: number | undefined;
+  after(async () => {
+    try {
+      await settleAgentTokens(reservation, tokenUsage);
+      await pruneAgentBuckets();
+    } catch (error) {
+      // The reservation remains charged if accounting fails; its lease expires.
+      console.error("Agent usage settlement failed:", error);
+    }
+  });
   try {
     return await createAgentUIStreamResponse({
-      agent: createCrmAgent(tenant, {
-        page: input.page,
-        date: input.date ?? new Date().toISOString().slice(0, 10),
-        timeZone: input.timeZone,
-      }),
+      agent: createCrmAgent(
+        tenant,
+        {
+          page: input.page,
+          date: input.date ?? new Date().toISOString().slice(0, 10),
+          timeZone: input.timeZone,
+        },
+        undefined,
+        {
+          tokens: reservation.tokens,
+          onUsage: (tokens) => {
+            tokenUsage = tokens;
+          },
+        },
+      ),
       uiMessages: input.messages,
       abortSignal: request.signal,
+      timeout: 45000,
       onStepEnd: ({ toolResults }) => {
         if (toolResults.some((result) => mutationTools.has(result.toolName)))
           revalidatePath("/", "layout");

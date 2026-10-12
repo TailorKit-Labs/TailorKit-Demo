@@ -126,3 +126,17 @@ export const activities = pgTable(
   },
   (t) => [index("activities_tenant_idx").on(t.tenantId)],
 );
+
+export const agentBuckets = pgTable(
+  "agent_buckets",
+  {
+    key: text("key").primaryKey(),
+    tokens: integer("tokens").notNull(),
+    resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
+    requests: integer("requests").notNull(),
+    requestResetAt: timestamp("request_reset_at", { withTimezone: true }).notNull(),
+    leaseId: text("lease_id"),
+    leaseExpiresAt: timestamp("lease_expires_at", { withTimezone: true }).notNull(),
+  },
+  (t) => [index("agent_buckets_reset_idx").on(t.resetAt)],
+);
