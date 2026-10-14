@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { CommandIcon, Settings2Icon } from "lucide-react";
+import { ArrowUpRightFromSquareIcon, CommandIcon, Settings2Icon } from "lucide-react";
 import {
   Sidebar,
   useSidebar,
@@ -14,6 +14,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { buttonVariants } from "@/components/ui/button";
 import { DemoProfile, SidebarLink } from "@/components/app/demo-profile";
 import { navigation } from "@/components/app/app-navigation";
 export function AppSidebar({ name }: { name: string }) {
@@ -69,7 +70,16 @@ export function AppSidebar({ name }: { name: string }) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <p className="px-2 text-xs text-muted-foreground">Tailorkit Demo</p>
+        <a
+          href="https://tailorkit.dev/home"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={buttonVariants({ variant: "default", className: "w-full justify-between" })}
+        >
+          Powered by TailorKit
+          <ArrowUpRightFromSquareIcon data-icon="inline-end" aria-hidden="true" />
+          <span className="sr-only">(opens in a new tab)</span>
+        </a>
       </SidebarFooter>
     </Sidebar>
   );
