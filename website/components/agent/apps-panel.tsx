@@ -74,7 +74,7 @@ function AppTab({ app, onMove }: { app: PanelApp; onMove: (id: string, offset: n
       <TabsTab
         value={app.id}
         title={`${app.name} — drag or use Alt + arrow keys to reorder`}
-        className={cn(tabClassName, "touch-none", isDragging && "cursor-grabbing")}
+        className={cn(tabClassName, "touch-pan-x", isDragging && "cursor-grabbing")}
         onPointerDown={(event) => controls.start(event)}
         onClick={(event) => {
           if (dragging.current) event.preventDefault();
