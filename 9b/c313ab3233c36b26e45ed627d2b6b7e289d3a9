@@ -1,0 +1,29 @@
+pnpm-lock.yaml
+  s_e44b2657443bc5::t_f8c756002ad51f 245-247,382-384,5304-5309,10465-10469
+pnpm-workspace.yaml
+  s_e44b2657443bc5::t_f4ef81ffce2676 35
+website/components/agent/agent-workspace.tsx
+  s_e44b2657443bc5::t_a9a4ae06382b08 18-19,253
+website/components/agent/mobile-apps-drawer.tsx
+  s_e44b2657443bc5::t_3b5a047ffac908 1-68
+website/components/ui/resizable.tsx
+  s_e44b2657443bc5::t_01565ab91a314c 1-49
+website/package.json
+  s_e44b2657443bc5::t_1bdb1369fd442d 53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9bc313ab3233c36b26e45ed627d2b6b7e289d3a9",
+  "prompts": {},
+  "sessions": {
+    "s_e44b2657443bc5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1384c-a987-7f40-a7da-25b9dd904879",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
