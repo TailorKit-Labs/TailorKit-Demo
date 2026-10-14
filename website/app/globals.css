@@ -233,3 +233,16 @@
     @apply font-sans;
   }
 }
+
+/* Override the resizable primitive's inline display so desktop space is set before hydration. */
+.agent-workspace > [data-desktop-apps-panel],
+.agent-workspace > [data-slot="resizable-handle"] {
+  display: none !important;
+}
+
+@media (min-width: 1280px) {
+  .agent-workspace:not([data-panel-open="false"]) > [data-desktop-apps-panel],
+  .agent-workspace:not([data-panel-open="false"]) > [data-slot="resizable-handle"] {
+    display: flex !important;
+  }
+}

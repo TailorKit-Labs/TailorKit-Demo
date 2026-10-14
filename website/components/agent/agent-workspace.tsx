@@ -10,6 +10,7 @@ import type { AgentHistory, AgentChatSummary, SavedAgentChat } from "@/lib/agent
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Sheet, SheetPopup, SheetTitle } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
 import { AppMobileNavigation } from "@/components/app/app-mobile-navigation";
@@ -216,31 +217,54 @@ export function AgentWorkspace({
 
   return (
     <AppsPanelContext.Provider value={panelContext}>
-      <div className="flex min-h-0 min-w-0 flex-1 gap-2 md:p-2">
-        <section
-          aria-label="Workspace content"
-          className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background md:rounded-2xl md:border md:shadow-xs"
+      <ResizablePanelGroup
+        orientation="horizontal"
+        data-panel-open={openOverride === false ? "false" : undefined}
+        className="agent-workspace min-h-0 min-w-0 flex-1 md:p-2"
+      >
+        <ResizablePanel
+          id="workspace"
+          className="flex min-h-0 min-w-0"
+          style={{ overflow: "hidden" }}
         >
-          {children}
-        </section>
-        <aside
-          id={canDock ? panelId : undefined}
-          aria-label="Agent and apps"
-          onKeyDown={(event) => {
-            if (event.key === "Escape" && !event.defaultPrevented) {
-              event.preventDefault();
-              changeOpen(false);
-            }
-          }}
-          className={cn(
-            "hidden w-[390px] shrink-0 flex-col overflow-hidden rounded-2xl border bg-popover shadow-xs min-[1280px]:flex",
-            openOverride === false && "min-[1280px]:hidden",
-          )}
+          <section
+            aria-label="Workspace content"
+            className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background md:rounded-2xl md:border md:shadow-xs"
+          >
+            {children}
+          </section>
+        </ResizablePanel>
+        <ResizableHandle
+          withHandle
+          aria-label="Resize apps panel"
+          className="w-2 bg-transparent after:w-2 hover:bg-sidebar-accent"
+        />
+        <ResizablePanel
+          id="desktop-apps"
+          data-desktop-apps-panel=""
+          defaultSize={390}
+          minSize={canDock ? 320 : 0}
+          maxSize={640}
+          groupResizeBehavior="preserve-pixel-size"
+          className="flex min-h-0 min-w-0"
+          style={{ overflow: "hidden" }}
         >
-          {/* CSS reserves desktop space before hydration; only the active surface mounts the chat. */}
-          {canDock ? panel : null}
-        </aside>
-      </div>
+          <aside
+            id={canDock ? panelId : undefined}
+            aria-label="Agent and apps"
+            onKeyDown={(event) => {
+              if (event.key === "Escape" && !event.defaultPrevented) {
+                event.preventDefault();
+                changeOpen(false);
+              }
+            }}
+            className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-2xl border bg-popover shadow-xs"
+          >
+            {/* CSS reserves desktop space before hydration; only the active surface mounts the chat. */}
+            {canDock ? panel : null}
+          </aside>
+        </ResizablePanel>
+      </ResizablePanelGroup>
       {useDrawer ? (
         <div
           aria-label="Mobile tools"
