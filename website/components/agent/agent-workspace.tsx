@@ -62,7 +62,6 @@ export function AgentWorkspace({
       onError: () => router.refresh(),
     });
   const busy = status === "submitted" || status === "streaming";
-  const showPanel = open && canDock;
   const panelContext = useMemo(
     () => ({
       open,
@@ -224,21 +223,23 @@ export function AgentWorkspace({
         >
           {children}
         </section>
-        {showPanel ? (
-          <aside
-            id={panelId}
-            aria-label="Agent and apps"
-            onKeyDown={(event) => {
-              if (event.key === "Escape" && !event.defaultPrevented) {
-                event.preventDefault();
-                changeOpen(false);
-              }
-            }}
-            className="flex w-[390px] shrink-0 flex-col overflow-hidden rounded-2xl border bg-popover shadow-xs"
-          >
-            {panel}
-          </aside>
-        ) : null}
+        <aside
+          id={canDock ? panelId : undefined}
+          aria-label="Agent and apps"
+          onKeyDown={(event) => {
+            if (event.key === "Escape" && !event.defaultPrevented) {
+              event.preventDefault();
+              changeOpen(false);
+            }
+          }}
+          className={cn(
+            "hidden w-[390px] shrink-0 flex-col overflow-hidden rounded-2xl border bg-popover shadow-xs min-[1280px]:flex",
+            openOverride === false && "min-[1280px]:hidden",
+          )}
+        >
+          {/* CSS reserves desktop space before hydration; only the active surface mounts the chat. */}
+          {canDock ? panel : null}
+        </aside>
       </div>
       {useDrawer ? (
         <div
