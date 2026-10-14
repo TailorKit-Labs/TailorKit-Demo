@@ -124,7 +124,7 @@ export function AppsPanel({
         onValueChange={(value) => onTabChange(String(value))}
         className="h-full min-h-0 w-full min-w-0 gap-0 overflow-hidden"
       >
-        <div className="flex h-14 min-w-0 shrink-0 items-center border-b px-2">
+        <div className="flex min-w-0 shrink-0 items-center border-b px-2 py-3">
           <TabsList
             aria-label="Agent and apps"
             className="min-w-0 flex-1 justify-start bg-transparent p-0 [&>[data-slot=tab-indicator]]:hidden"
