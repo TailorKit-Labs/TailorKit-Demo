@@ -15,13 +15,8 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { AppMobileNavigation } from "@/components/app/app-mobile-navigation";
 import { AppsPanelContext } from "./apps-panel-context";
 import { AppsPanel, demoApps } from "./apps-panel";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerPopup,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+import { MobileAppsDrawer } from "./mobile-apps-drawer";
+import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -255,15 +250,7 @@ export function AgentWorkspace({
               <PanelsTopLeftIcon data-icon="inline-start" />
               Apps
             </DrawerTrigger>
-            <DrawerPopup
-              showBar
-              className="h-[calc(100dvh-3rem)] overflow-hidden has-data-[slot=drawer-bar]:pt-6"
-            >
-              <DrawerTitle className="sr-only">Agent and apps</DrawerTitle>
-              <DrawerContent id={panelId} className="min-h-0 min-w-0 flex-1 touch-auto">
-                {panel}
-              </DrawerContent>
-            </DrawerPopup>
+            <MobileAppsDrawer panelId={panelId}>{panel}</MobileAppsDrawer>
           </Drawer>
           <Separator orientation="vertical" className="h-5" />
           <AppMobileNavigation onOpen={() => changeOpen(false)} />

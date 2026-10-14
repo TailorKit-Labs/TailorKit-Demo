@@ -50,6 +50,7 @@
     "react-dnd-html5-backend": "catalog:",
     "react-dnd-touch-backend": "catalog:",
     "react-dom": "catalog:",
+    "react-resizable-panels": "catalog:",
     "recharts": "catalog:",
     "shiki": "catalog:",
     "streamdown": "catalog:",
