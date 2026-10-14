@@ -9,13 +9,10 @@ import {
   CheckIcon,
   ChevronRightIcon,
   ListTodoIcon,
-  Maximize2Icon,
-  Minimize2Icon,
   MousePointer2Icon,
   PlusIcon,
   SquareIcon,
   SquarePenIcon,
-  XIcon,
 } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
 import {
@@ -201,10 +198,7 @@ export function AgentChat({
   error,
   onStop,
   onNewChat,
-  onClose,
-  canDock,
   docked,
-  onDockChange,
 }: {
   chatTitle: React.ReactNode;
   messages: CrmAgentMessage[];
@@ -215,23 +209,11 @@ export function AgentChat({
   error?: Error;
   onStop: () => void;
   onNewChat: () => void;
-  onClose: () => void;
-  canDock: boolean;
   docked: boolean;
-  onDockChange: () => void;
 }) {
   const busy = status === "submitted" || status === "streaming";
   return (
-    <div
-      className="flex h-full min-h-0 w-full flex-col"
-      data-slot="agent-chat"
-      onKeyDown={(event) => {
-        if (docked && event.key === "Escape" && !event.defaultPrevented) {
-          event.preventDefault();
-          onClose();
-        }
-      }}
-    >
+    <div className="flex h-full min-h-0 w-full flex-col" data-slot="agent-chat">
       <header className="flex h-14 shrink-0 items-center justify-between gap-2 px-4">
         <h2 className="min-w-0">{chatTitle}</h2>
         <div className="flex items-center gap-1">
@@ -247,26 +229,6 @@ export function AgentChat({
               <SquarePenIcon />
             </Button>
           ) : null}
-          {canDock ? (
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={docked ? "Switch to popover" : "Open in side panel"}
-              title={docked ? "Switch to popover" : "Open in side panel"}
-              onClick={onDockChange}
-            >
-              {docked ? <Minimize2Icon /> : <Maximize2Icon />}
-            </Button>
-          ) : null}
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label="Close agent"
-            title="Close"
-            onClick={onClose}
-          >
-            <XIcon />
-          </Button>
         </div>
       </header>
       <div className="mx-2 mb-2 flex min-h-0 flex-1 flex-col rounded-xl bg-linear-to-b from-muted/70 to-transparent">
