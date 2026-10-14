@@ -49,7 +49,8 @@ export function AgentWorkspace({
   const panelId = useId();
   const canDock = useMediaQuery("xl");
   const useDrawer = useMediaQuery("max-md");
-  const [open, setOpen] = useState(false);
+  const [openOverride, setOpen] = useState<boolean | null>(null);
+  const open = openOverride ?? canDock;
   const [activeTab, setActiveTab] = useState("agent");
   const [apps, setApps] = useState(demoApps);
   const [input, setInput] = useState("");
@@ -72,12 +73,12 @@ export function AgentWorkspace({
       open,
       panelId,
       toggle: () => {
-        setOpen((value) => !value);
+        setOpen((value) => !(value ?? canDock));
         setOpenMobile(false);
         setHistoryOpen(false);
       },
     }),
-    [open, panelId, setOpenMobile],
+    [open, canDock, panelId, setOpenMobile],
   );
 
   function changeOpen(next: boolean) {
