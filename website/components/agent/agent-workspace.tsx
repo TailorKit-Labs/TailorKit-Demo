@@ -1,18 +1,20 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { ChevronDownIcon, MousePointer2Icon, PlusIcon } from "lucide-react";
+import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
 import type { AgentHistory, AgentChatSummary, SavedAgentChat } from "@/lib/agents/agent-chat-types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetPopup, SheetTitle } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
 import { AppMobileNavigation } from "@/components/app/app-mobile-navigation";
-import { Popover, PopoverPopup, PopoverTrigger } from "@/components/ui/popover";
+import { AppsPanelContext } from "./apps-panel-context";
+import { AppsPanel, demoApps } from "./apps-panel";
 import {
   Drawer,
   DrawerContent,
@@ -44,11 +46,13 @@ export function AgentWorkspace({
   const router = useRouter();
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
-  const agentTriggerId = useId();
+  const panelId = useId();
   const canDock = useMediaQuery("xl");
   const useDrawer = useMediaQuery("max-md");
-  const [open, setOpen] = useState(false);
-  const [docked, setDocked] = useState(false);
+  const [openOverride, setOpen] = useState<boolean | null>(null);
+  const open = openOverride ?? canDock;
+  const [activeTab, setActiveTab] = useState("agent");
+  const [apps, setApps] = useState(demoApps);
   const [input, setInput] = useState("");
   const [chatId, setChatId] = useState<string | null>(initialHistory.latest?.id ?? null);
   const [loadingChat, setLoadingChat] = useState(false);
@@ -63,7 +67,18 @@ export function AgentWorkspace({
       onError: () => router.refresh(),
     });
   const busy = status === "submitted" || status === "streaming";
-  const showPanel = open && docked && canDock;
+  const panelContext = useMemo(
+    () => ({
+      open,
+      panelId,
+      toggle: () => {
+        setOpen((value) => !(value ?? canDock));
+        setOpenMobile(false);
+        setHistoryOpen(false);
+      },
+    }),
+    [open, canDock, panelId, setOpenMobile],
+  );
 
   function changeOpen(next: boolean) {
     setOpen(next);
@@ -186,18 +201,26 @@ export function AgentWorkspace({
         router.refresh();
       }}
       onNewChat={newChat}
-      onClose={() => changeOpen(false)}
-      canDock={canDock}
-      docked={showPanel}
-      onDockChange={() => {
-        setHistoryOpen(false);
-        setDocked((value) => !value);
-      }}
+      docked={!useDrawer}
     />
   );
 
+  const panel = (
+    <AppsPanel
+      apps={apps}
+      onReorder={setApps}
+      activeTab={activeTab}
+      onTabChange={(tab) => {
+        setActiveTab(tab);
+        setHistoryOpen(false);
+      }}
+    >
+      {chat}
+    </AppsPanel>
+  );
+
   return (
-    <>
+    <AppsPanelContext.Provider value={panelContext}>
       <div className="flex min-h-0 min-w-0 flex-1 gap-2 md:p-2">
         <section
           aria-label="Workspace content"
@@ -205,14 +228,23 @@ export function AgentWorkspace({
         >
           {children}
         </section>
-        {showPanel ? (
-          <aside
-            aria-label="Agent"
-            className="flex w-[390px] shrink-0 flex-col overflow-hidden rounded-2xl border bg-popover shadow-xs"
-          >
-            {chat}
-          </aside>
-        ) : null}
+        <aside
+          id={canDock ? panelId : undefined}
+          aria-label="Agent and apps"
+          onKeyDown={(event) => {
+            if (event.key === "Escape" && !event.defaultPrevented) {
+              event.preventDefault();
+              changeOpen(false);
+            }
+          }}
+          className={cn(
+            "hidden w-[390px] shrink-0 flex-col overflow-hidden rounded-2xl border bg-popover shadow-xs min-[1280px]:flex",
+            openOverride === false && "min-[1280px]:hidden",
+          )}
+        >
+          {/* CSS reserves desktop space before hydration; only the active surface mounts the chat. */}
+          {canDock ? panel : null}
+        </aside>
       </div>
       {useDrawer ? (
         <div
@@ -220,47 +252,42 @@ export function AgentWorkspace({
           className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-xl border bg-popover p-1 shadow-xl"
         >
           <Drawer open={open} onOpenChange={changeOpen}>
-            <DrawerTrigger render={<Button variant="ghost" size="sm" />} aria-label="Agent">
-              <MousePointer2Icon data-icon="inline-start" />
-              Agent
+            <DrawerTrigger render={<Button variant="ghost" size="sm" />} aria-label="Open apps">
+              <PanelsTopLeftIcon data-icon="inline-start" />
+              Apps
             </DrawerTrigger>
-            <DrawerPopup showBar className="h-[calc(100dvh-3rem)]">
-              <DrawerTitle className="sr-only">Agent chat</DrawerTitle>
-              <DrawerContent className="min-h-0 flex-1 touch-auto">{chat}</DrawerContent>
+            <DrawerPopup
+              showBar
+              className="h-[calc(100dvh-3rem)] overflow-hidden has-data-[slot=drawer-bar]:pt-6"
+            >
+              <DrawerTitle className="sr-only">Agent and apps</DrawerTitle>
+              <DrawerContent
+                id={panelId}
+                className="min-h-0 min-w-0 flex-1 touch-auto pb-[env(safe-area-inset-bottom)]"
+              >
+                {panel}
+              </DrawerContent>
             </DrawerPopup>
           </Drawer>
           <Separator orientation="vertical" className="h-5" />
           <AppMobileNavigation onOpen={() => changeOpen(false)} />
         </div>
-      ) : (
-        <Popover open={open && !showPanel} onOpenChange={changeOpen} triggerId={agentTriggerId}>
-          <div className="fixed right-8 bottom-8 z-40" hidden={showPanel}>
-            <PopoverTrigger
-              id={agentTriggerId}
-              render={
-                <Button size="icon-xl" className="size-12 rounded-full shadow-lg sm:size-12" />
-              }
-              aria-label="Agent"
-              title="Agent"
-            >
-              <MousePointer2Icon className="size-6" />
-            </PopoverTrigger>
-          </div>
-          <PopoverPopup
-            side="top"
-            align="end"
-            sideOffset={10}
-            aria-label="Agent chat"
-            initialFocus={false}
-            className="agent-popover h-[min(620px,calc(100dvh-140px))] w-[min(440px,calc(100vw-24px))] rounded-2xl shadow-xl"
+      ) : !canDock ? (
+        <Sheet open={open} onOpenChange={changeOpen}>
+          <SheetPopup
+            id={panelId}
+            side="right"
+            showCloseButton={false}
+            className="w-[390px] max-w-[calc(100vw-3rem)]"
           >
-            {chat}
-          </PopoverPopup>
-        </Popover>
-      )}
+            <SheetTitle className="sr-only">Agent and apps</SheetTitle>
+            {panel}
+          </SheetPopup>
+        </Sheet>
+      ) : null}
       <span className={cn("sr-only", !busy && "hidden")} role="status">
         Agent is working
       </span>
-    </>
+    </AppsPanelContext.Provider>
   );
 }

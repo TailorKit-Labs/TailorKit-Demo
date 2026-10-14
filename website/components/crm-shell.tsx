@@ -37,7 +37,7 @@ export function CrmShell({
               if (header) header.dataset.scrolled = String(event.currentTarget.scrollTop > 0);
             }}
           >
-            <div className="flex flex-col gap-6 px-5 pb-5 max-[799px]:pb-24 md:px-8 md:pb-8">
+            <div className="flex flex-col gap-6 px-4 pb-5 max-[799px]:pb-24 md:px-6 md:pb-8">
               {children}
             </div>
           </div>
