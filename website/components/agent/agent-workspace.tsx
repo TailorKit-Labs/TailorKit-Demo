@@ -3,7 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
+import { agentTransport } from "@/lib/agents/agent-transport";
 import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
 import { orpc } from "@/lib/orpc";
@@ -36,8 +36,6 @@ import {
 import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
 import { useViews } from "@/lib/tailorkit-client";
-
-const transport = new DefaultChatTransport<CrmAgentMessage>({ api: "/api/agent" });
 
 export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
@@ -78,7 +76,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const [historyOpen, setHistoryOpen] = useState(false);
   const { messages, setMessages, sendMessage, status, stop, error, clearError } =
     useChat<CrmAgentMessage>({
-      transport,
+      transport: agentTransport,
       messages: history.latest?.messages ?? [],
       // Refresh even after cancellation: a tool may already have committed a change.
       onFinish: () => refresh(),

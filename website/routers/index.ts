@@ -1,3 +1,4 @@
+import { agentChat } from "./agent";
 import { addNote, listActivities } from "./activities";
 import { getChat, listChats } from "./chats";
 import { createContact, deleteContact, getContact, listContacts, updateContact } from "./contacts";
@@ -6,6 +7,7 @@ import { createTask, deleteTask, listTasks, setTaskCompleted, updateTask } from 
 import { getWorkspace, provisionWorkspace, snapshotWorkspace } from "./workspace";
 
 export const router = {
+  agent: { chat: agentChat },
   workspace: { get: getWorkspace, snapshot: snapshotWorkspace, provision: provisionWorkspace },
   contacts: {
     list: listContacts,

@@ -1,7 +1,11 @@
+import type { ToolSet } from "ai";
 import { createMCPClient } from "@ai-sdk/mcp";
 import { tailorKit } from "../tailorkit-server";
 
-export async function connectTailorKitTools(tenant: { id: string }, signal: AbortSignal) {
+export async function connectTailorKitTools(
+  tenant: { id: string },
+  signal: AbortSignal,
+): Promise<{ tools: ToolSet; close: () => Promise<void> } | undefined> {
   if (!process.env.TAILORKIT_PROJECT_KEY) return undefined;
   const transport = await tailorKit.mcp.transport({
     scopes: { workspace: { workspaceId: tenant.id } },

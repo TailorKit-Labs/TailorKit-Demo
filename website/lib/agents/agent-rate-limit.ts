@@ -1,4 +1,4 @@
-import { createHmac, randomUUID } from "node:crypto";
+import { createHmac } from "node:crypto";
 import { isIP } from "node:net";
 import { and, eq, lt, sql } from "drizzle-orm";
 import { db } from "../drizzle";
@@ -29,11 +29,11 @@ export function agentIpKey(request: Request) {
   return createHmac("sha256", secret).update(`agent-ip:${ip}`).digest("hex");
 }
 
+// Each admission owns its settlement. Repeated calls share one promise, so a
+// turn can refund at most once without a database reservation ledger.
 export type AgentReservation = {
-  key: string;
-  id: string;
   tokens: number;
-  resetAt: Date;
+  settle: (usage?: number) => Promise<void>;
 };
 
 type Admission =
@@ -51,7 +51,8 @@ export async function reserveAgentTokens(key: string): Promise<Admission> {
         resetAt: new Date(now.getTime() + AGENT_BUCKET_WINDOW_MS),
         requests: 0,
         requestResetAt: new Date(now.getTime() + 60000),
-        leaseExpiresAt: now,
+        // Compatibility with older deployments; current cleanup uses resetAt only.
+        leaseExpiresAt: new Date(now.getTime() + AGENT_BUCKET_WINDOW_MS + AGENT_LEASE_MS),
       })
       .onConflictDoNothing();
     const [bucket] = await tx
@@ -72,7 +73,11 @@ export async function reserveAgentTokens(key: string): Promise<Admission> {
     if (tokens < AGENT_TURN_RESERVATION) {
       return { allowed: false, reason: "budget", retryAfter: retry(resetAt) };
     }
-    const reservation = { key, id: randomUUID(), tokens: AGENT_TURN_RESERVATION, resetAt };
+    let settlement: Promise<void> | undefined;
+    const reservation: AgentReservation = {
+      tokens: AGENT_TURN_RESERVATION,
+      settle: (usage) => (settlement ??= settleAgentTokens(key, resetAt, usage)),
+    };
     await tx
       .update(agentBuckets)
       .set({
@@ -80,48 +85,36 @@ export async function reserveAgentTokens(key: string): Promise<Admission> {
         resetAt,
         requests: requests + 1,
         requestResetAt,
-        reservationIds: [
-          ...(bucket.resetAt <= now ? [] : (bucket.reservationIds ?? [])),
-          reservation.id,
-        ],
-        leaseExpiresAt: new Date(now.getTime() + AGENT_LEASE_MS),
       })
       .where(eq(agentBuckets.key, key));
     return { allowed: true, reservation };
   });
 }
 
-export async function settleAgentTokens(reservation: AgentReservation, usage?: number) {
+async function settleAgentTokens(key: string, resetAt: Date, usage?: number) {
   // Missing/partial usage (including cancellation) keeps the full reservation charged.
   const charged =
-    usage != null && Number.isFinite(usage) && usage >= 0 ? Math.ceil(usage) : reservation.tokens;
+    usage != null && Number.isFinite(usage) && usage >= 0
+      ? Math.ceil(usage)
+      : AGENT_TURN_RESERVATION;
   await db
     .update(agentBuckets)
     .set({
       // Keep overage as debt so later refunds from concurrent turns cannot
       // restore allowance that another turn has already spent.
-      tokens: sql`least(${AGENT_TOKEN_CAPACITY}, ${agentBuckets.tokens} + ${reservation.tokens - charged})`,
-      reservationIds: sql`${agentBuckets.reservationIds} - ${reservation.id}::text`,
+      tokens: sql`least(${AGENT_TOKEN_CAPACITY}, ${agentBuckets.tokens} + ${AGENT_TURN_RESERVATION - charged})`,
     })
-    .where(
-      and(
-        eq(agentBuckets.key, reservation.key),
-        sql`${agentBuckets.reservationIds} ? ${reservation.id}`,
-        eq(agentBuckets.resetAt, reservation.resetAt),
-      ),
-    );
+    .where(and(eq(agentBuckets.key, key), eq(agentBuckets.resetAt, resetAt)));
 }
 
 export async function pruneAgentBuckets() {
   // Bounded cleanup after requests; expired reservations have already been charged.
-  const now = new Date();
-  await db
-    .delete(agentBuckets)
-    .where(
-      and(
-        lt(agentBuckets.resetAt, now),
-        lt(agentBuckets.leaseExpiresAt, now),
-        sql`${agentBuckets.key} in (select key from agent_buckets where reset_at < ${now} and lease_expires_at < ${now} order by reset_at limit 100)`,
-      ),
-    );
+  const cutoff = new Date(Date.now() - AGENT_LEASE_MS);
+  await db.delete(agentBuckets).where(
+    and(
+      // Recheck after a row-lock wait so cleanup cannot delete a refreshed bucket.
+      lt(agentBuckets.resetAt, cutoff),
+      sql`${agentBuckets.key} in (select key from agent_buckets where reset_at < ${cutoff} order by reset_at limit 100)`,
+    ),
+  );
 }
