@@ -15,14 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Workspace, Contact, Deal, Task } from "@/lib/workspace";
-import {
-  addNote,
-  deleteContact,
-  deleteDeal,
-  deleteTask,
-  toggleTask,
-  updateDeal,
-} from "@/lib/actions";
+import { rpc } from "@/lib/orpc";
 import { SectionCards } from "@/components/section-cards";
 import { DashboardTable } from "@/components/dashboard-table";
 import { RecordDialog } from "@/components/record-dialog";
@@ -104,24 +97,22 @@ const date = (value: string) =>
   new Date(value).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" });
 const label = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 const stages = ["qualified", "proposal", "negotiation", "won", "lost"] as const;
-type Result = { success: true; id?: string } | { success: false; error: string };
 
 function useMutation() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
-  function run(action: () => Promise<Result>, after?: () => void) {
+  function run(action: () => Promise<unknown>, after?: () => void) {
     setError("");
     startTransition(async () => {
       try {
-        const result = await action();
-        if (!result.success) setError(result.error);
-        else {
-          after?.();
-          router.refresh();
-        }
-      } catch {
-        setError("Something went wrong. Please try again.");
+        await action();
+        after?.();
+        router.refresh();
+      } catch (error) {
+        setError(
+          error instanceof Error ? error.message : "Something went wrong. Please try again.",
+        );
       }
     });
   }
@@ -172,7 +163,7 @@ function DeleteButton({
   name,
   after,
 }: {
-  action: () => Promise<Result>;
+  action: () => Promise<unknown>;
   name: string;
   after?: () => void;
 }) {
@@ -238,7 +229,9 @@ export function TaskRow({ task, workspace }: { task: Task; workspace: Workspace 
           className="mt-1"
           checked={task.completed}
           disabled={mutation.pending}
-          onCheckedChange={() => mutation.run(() => toggleTask(task.id))}
+          onCheckedChange={(completed) =>
+            mutation.run(() => rpc.tasks.setCompleted({ id: task.id, completed }))
+          }
           aria-label={"Mark " + task.title + (task.completed ? " incomplete" : " complete")}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -263,7 +256,7 @@ export function TaskRow({ task, workspace }: { task: Task; workspace: Workspace 
             )}
           </div>
         </div>
-        <DeleteButton action={() => deleteTask(task.id)} name="task" />
+        <DeleteButton action={() => rpc.tasks.delete({ id: task.id })} name="task" />
       </div>
       <ErrorMessage error={mutation.error} />
     </div>
@@ -297,11 +290,12 @@ function DealCard({ deal, workspace }: { deal: Deal; workspace: Workspace }) {
           onValueChange={(value) => {
             if (value !== null)
               mutation.run(() =>
-                updateDeal(deal.id, {
+                rpc.deals.update({
+                  id: deal.id,
                   title: deal.title,
                   contactId: deal.contactId,
                   value: deal.value,
-                  closeDate: deal.closeDate,
+                  closeDate: deal.closeDate.slice(0, 10),
                   stage: value as Deal["stage"],
                 }),
               );
@@ -322,7 +316,7 @@ function DealCard({ deal, workspace }: { deal: Deal; workspace: Workspace }) {
         </Select>
         <div className="flex items-center gap-1">
           <RecordDialog kind="deal" workspace={workspace} deal={deal} />
-          <DeleteButton action={() => deleteDeal(deal.id)} name="deal" />
+          <DeleteButton action={() => rpc.deals.delete({ id: deal.id })} name="deal" />
         </div>
       </CardFooter>
     </Card>
@@ -579,7 +573,7 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
         <div className="flex items-center gap-2">
           <RecordDialog kind="contact" workspace={workspace} contact={contact} />
           <DeleteButton
-            action={() => deleteContact(contact.id)}
+            action={() => rpc.contacts.delete({ id: contact.id })}
             name="contact"
             after={() => router.push("/contacts")}
           />
@@ -675,7 +669,7 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
                 onSubmit={(event) => {
                   event.preventDefault();
                   mutation.run(
-                    () => addNote(contact.id, note),
+                    () => rpc.activities.addNote({ contactId: contact.id, body: note }),
                     () => setNote(""),
                   );
                 }}

@@ -1,3 +1,4 @@
+import { CrmError } from "./crm-error";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "./drizzle";
@@ -29,7 +30,7 @@ export async function setTaskCompletedRecord(tenantId: string, id: string, compl
     .set({ completed })
     .where(and(eq(tasks.id, id), eq(tasks.tenantId, tenantId)))
     .returning({ id: tasks.id, title: tasks.title, completed: tasks.completed });
-  if (!rows.length) throw new Error("Task not found.");
+  if (!rows.length) throw new CrmError("NOT_FOUND", "Task not found.");
   return rows[0];
 }
 
@@ -47,7 +48,7 @@ export async function updateTaskRecord(
       .set(data)
       .where(and(eq(tasks.id, id), eq(tasks.tenantId, tenantId)))
       .returning({ id: tasks.id });
-    if (!rows.length) throw new Error("Task not found.");
+    if (!rows.length) throw new CrmError("NOT_FOUND", "Task not found.");
     await logActivity(tx, tenantId, "task", "Task updated", data.title, data.contactId);
   });
 }
@@ -56,5 +57,5 @@ export async function deleteTaskRecord(tenantId: string, id: string) {
     .delete(tasks)
     .where(and(eq(tasks.id, id), eq(tasks.tenantId, tenantId)))
     .returning({ id: tasks.id });
-  if (!rows.length) throw new Error("Task not found.");
+  if (!rows.length) throw new CrmError("NOT_FOUND", "Task not found.");
 }

@@ -31,6 +31,38 @@ The env example contains a public development-only signing key: never copy that 
 
 Every query and mutation derives the workspace from the authenticated session. Record creation locks the tenant row before checking limits, so concurrent requests cannot exceed 50 contacts, deals, or tasks. User input is validated on the server. Activity history is capped at 50 entries.
 
+## API and SSR
+
+CRM reads and mutations live in the oRPC router at `lib/rpc/router.ts`, mounted at `POST /rpc`. It reuses `crm-tool-schemas.ts` and the record operations, so browser calls, the agent and TailorKit tools go through the same authenticated procedures and validation. Expected domain failures become typed oRPC errors. HTTP calls use the signed session cookie and same-origin checks, limit bodies to 60 KB, and return private/no-store responses. Successful mutations invalidate the CRM layout; UI callers refresh the current server-rendered page. Task completion sets an explicit boolean instead of toggling on retries.
+
+Use the browser client from Client Component event handlers:
+
+```ts
+import { rpc } from "@/lib/orpc";
+
+await rpc.contacts.create({
+  name: "Alex Chen",
+  email: "alex@example.com",
+  company: "Acme Studio",
+  role: "Designer",
+  status: "lead",
+});
+```
+
+Server Components use `lib/orpc.server.ts`, which calls procedures directly through `createRouterClient`: no request to the app's own `/rpc` endpoint and no serialization round trip. Its context resolves the current session for each invocation. `React.cache` deduplicates session/workspace reads within a render, including reads shared by a layout and page; it does not cache tenant data across requests.
+
+```ts
+import { rpc } from "@/lib/orpc.server";
+
+const workspace = await rpc.workspace.snapshot();
+```
+
+The entry points are explicit so `next/headers`, the router and database stay outside the client module graph. Client Components receive server-loaded data as props and call the browser client for mutations. This also avoids module-level user/session globals. Internal tools use `createWorkspaceRpcClient` with an ID already obtained from the authenticated session or a verified TailorKit scope; never pass an ID from model arguments or a public request body to that factory.
+
+Anonymous workspace provisioning retains its bootstrap Server Action because it runs before a workspace exists. Better Auth, agent streaming and chat-history routes keep their specialized handlers. oRPC client/server versions are pinned together to the v2 version already used by TailorKit.
+
+Run `pnpm --filter website test:rpc` for real PostgreSQL coverage of cookie-authenticated HTTP calls, direct server calls with fetch disabled, validation/errors, invalidation, request protections and concurrent workspace isolation. To additionally verify initial SSR HTML against a running app, use `RPC_SSR_URL=http://localhost:3010 pnpm --filter website test:rpc`. The oRPC skills installed from `middleapi/orpc` are checked in under `.agents/skills`.
+
 ## Agent
 
 Below 800px, a floating bar at the bottom center contains **Agent** and a menu icon, opening separate Coss bottom drawers for chat and navigation. The mobile header has no sidebar toggle or bottom navigation tabs. On larger screens, the **Agent** floating button lives in the bottom-right corner and hides while the side panel is open. It opens a Coss bottom drawer below 800px and a chat popover on larger screens. On screens at least 1280px wide, a toggle switches between the popover and a side panel; smaller screens hide that control. Drafts and conversations survive closing, docking, resizing, and in-app navigation. A history dropdown replaces the chat title, with up to eight archived conversations kept in memory for the current session.
@@ -84,7 +116,7 @@ Apps have the same workspace operations as the CRM UI, plus task editing:
 | `activities` | `list` (optionally by contact), `addNote`                                                                 |
 | `ui`         | `navigate`, `refresh`, `setTheme`, `notify` (client tools)                                                |
 
-The 18 server tools delegate to `lib/crm-operations.ts`, which is also the agent's operation layer. Writes use the same validated record operations as server actions, preserving tenant isolation, collection limits and activity behavior. The workspace comes from the SDK-verified signed scope, never app input. Successful writes invalidate the CRM layout; an app can call `ui.refresh` to refresh its visible host data. The four client tools use the host router, theme provider and toast manager. Navigation accepts only existing CRM routes and contact detail URLs.
+The 18 server tools call the same oRPC router as the browser and agent, through a direct server client. Procedures delegate to `lib/crm-operations.ts` and validated record operations, preserving tenant isolation, collection limits and activity behavior. The workspace comes from the SDK-verified signed scope, never app input. Successful writes invalidate the CRM layout; an app can call `ui.refresh` to refresh its visible host data. The four client tools use the host router, theme provider and toast manager. Navigation accepts only existing CRM routes and contact detail URLs.
 
 Lists return at most 50 records (the workspace collection limit); apps can sort, paginate, select and chart those results locally, just as the host does. Read results include creation timestamps and pipeline position. Calendar dates are `YYYY-MM-DD`; timestamps are ISO strings; deal values are whole USD. Contact/deal/task updates take all editable fields, so preserve fields from the latest read when making an edit. `tasks.setCompleted` sets an explicit boolean, making retries idempotent. Deleting a contact removes its notes/activity and retains related deals/tasks with `contactId: null`.
 

@@ -7,6 +7,30 @@
       "skillPath": "better-auth/best-practices/SKILL.md",
       "computedHash": "0c30be0e118c2b7a0c4c57bd9e63bf110c7e420a79ec6ce7997153f3b1e066ee"
     },
+    "orpc": {
+      "source": "middleapi/orpc",
+      "sourceType": "github",
+      "skillPath": "skills/orpc/SKILL.md",
+      "computedHash": "24aeb625eeb54572e2dc862648085a4f2270c9a0a6167162b7fc53290bb3acb2"
+    },
+    "orpc-contract": {
+      "source": "middleapi/orpc",
+      "sourceType": "github",
+      "skillPath": "skills/orpc-contract/SKILL.md",
+      "computedHash": "14a425e58cdd2857acd197620025dc5f778c158036fcbf9fef48d42191d62f94"
+    },
+    "orpc-migrate": {
+      "source": "middleapi/orpc",
+      "sourceType": "github",
+      "skillPath": "skills/orpc-migrate/SKILL.md",
+      "computedHash": "8bb9839c8b14c657d1e2b4e96bb8e1a3253c80c2de09b59a369e2c04ddb1032b"
+    },
+    "orpc-openapi": {
+      "source": "middleapi/orpc",
+      "sourceType": "github",
+      "skillPath": "skills/orpc-openapi/SKILL.md",
+      "computedHash": "3375d89d95a869df9c1bad94363bebca3539a7ae0973a20e7e0089882932ac43"
+    },
     "shadcn": {
       "source": "shadcn-ui/ui",
       "sourceType": "github",

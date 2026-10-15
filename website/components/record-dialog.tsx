@@ -5,14 +5,7 @@ import { useRouter } from "next/navigation";
 import { PlusIcon, PencilIcon } from "lucide-react";
 import { toastManager } from "@/components/ui/toast";
 import type { Contact, Deal, Workspace } from "@/lib/workspace";
-import {
-  createContact,
-  updateContact,
-  createDeal,
-  updateDeal,
-  createTask,
-  type ActionResult,
-} from "@/lib/actions";
+import { rpc } from "@/lib/orpc";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -85,7 +78,6 @@ export function RecordDialog({
     setError("");
     startTransition(async () => {
       try {
-        let result: ActionResult;
         if (kind === "contact") {
           const input = {
             name: value("name"),
@@ -94,7 +86,8 @@ export function RecordDialog({
             role: value("role"),
             status: value("status") as Contact["status"],
           };
-          result = contact ? await updateContact(contact.id, input) : await createContact(input);
+          if (contact) await rpc.contacts.update({ ...input, id: contact.id });
+          else await rpc.contacts.create(input);
         } else if (kind === "deal") {
           const input = {
             title: value("title"),
@@ -103,15 +96,15 @@ export function RecordDialog({
             stage: value("stage") as Deal["stage"],
             closeDate: value("closeDate"),
           };
-          result = deal ? await updateDeal(deal.id, input) : await createDeal(input);
+          if (deal) await rpc.deals.update({ ...input, id: deal.id });
+          else await rpc.deals.create(input);
         } else {
-          result = await createTask({
+          await rpc.tasks.create({
             title: value("title"),
             dueDate: value("dueDate"),
             contactId: value("contactId") || null,
           });
         }
-        if (!result.success) throw new Error(result.error);
         setOpen(false);
         toastManager.add({ type: "success", title: editing ? "Changes saved" : "Record created" });
         router.refresh();

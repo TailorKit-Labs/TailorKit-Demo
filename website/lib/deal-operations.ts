@@ -1,3 +1,4 @@
+import { CrmError } from "./crm-error";
 import { and, asc, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "./drizzle";
@@ -44,14 +45,17 @@ export async function moveDealRecord(tenantId: string, input: MoveDealInput) {
       .where(eq(deals.tenantId, tenantId))
       .orderBy(asc(deals.position), desc(deals.createdAt), asc(deals.id));
     const source = records.find((deal) => deal.id === move.id);
-    if (!source) throw new Error("Deal not found.");
+    if (!source) throw new CrmError("NOT_FOUND", "Deal not found.");
     if (move.targetId === source.id) return;
     const destination = records.filter((deal) => deal.stage === move.stage && deal.id !== move.id);
     const targetIndex = move.targetId
       ? destination.findIndex((deal) => deal.id === move.targetId)
       : destination.length;
     if (targetIndex < 0)
-      throw new Error("The destination deal is no longer in this stage. Please try again.");
+      throw new CrmError(
+        "CONFLICT",
+        "The destination deal is no longer in this stage. Please try again.",
+      );
     const insertIndex = targetIndex + (move.targetId && move.placement === "after" ? 1 : 0);
     destination.splice(insertIndex, 0, source);
     for (const [position, deal] of destination.entries()) {
@@ -87,7 +91,7 @@ export async function updateDealRecord(
       .set(data)
       .where(and(eq(deals.id, id), eq(deals.tenantId, tenantId)))
       .returning({ id: deals.id });
-    if (!rows.length) throw new Error("Deal not found.");
+    if (!rows.length) throw new CrmError("NOT_FOUND", "Deal not found.");
     await logActivity(
       tx,
       tenantId,
@@ -103,5 +107,5 @@ export async function deleteDealRecord(tenantId: string, id: string) {
     .delete(deals)
     .where(and(eq(deals.id, id), eq(deals.tenantId, tenantId)))
     .returning({ id: deals.id });
-  if (!rows.length) throw new Error("Deal not found.");
+  if (!rows.length) throw new CrmError("NOT_FOUND", "Deal not found.");
 }

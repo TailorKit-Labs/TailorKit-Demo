@@ -8,7 +8,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { Ellipsis, Pencil, Trash2 } from "lucide-react";
 import type { Deal, Workspace } from "@/lib/workspace";
-import { deleteDeal, movePipelineDeal } from "@/lib/actions";
+import { rpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { RecordDialog } from "@/components/record-dialog";
 import {
@@ -87,9 +87,8 @@ export function PipelineBoard({ workspace, deals }: { workspace: Workspace; deal
     startTransition(async () => {
       moveOptimistically(move);
       try {
-        const result = await movePipelineDeal(move);
-        if (!result.success) setError(result.error);
-        else router.refresh();
+        await rpc.deals.move(move);
+        router.refresh();
       } catch {
         setError("Could not move this deal. Please try again.");
       }
@@ -258,12 +257,9 @@ function PipelineCard({
     setError("");
     startDelete(async () => {
       try {
-        const result = await deleteDeal(deal.id);
-        if (!result.success) setError(result.error);
-        else {
-          setDeleting(false);
-          router.refresh();
-        }
+        await rpc.deals.delete({ id: deal.id });
+        setDeleting(false);
+        router.refresh();
       } catch {
         setError("Could not delete this deal. Please try again.");
       }

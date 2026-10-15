@@ -20,7 +20,8 @@
     "test:agent": "tsx scripts/test-agent.ts",
     "test:agent-chats": "tsx scripts/test-agent-chats.ts",
     "test:agent-rate-limit": "tsx scripts/test-agent-rate-limit.ts",
-    "test:tailorkit": "tsx scripts/test-tailorkit.tsx"
+    "test:tailorkit": "tsx scripts/test-tailorkit.tsx",
+    "test:rpc": "tsx scripts/test-rpc.ts"
   },
   "dependencies": {
     "@ai-sdk/react": "catalog:",
@@ -28,6 +29,8 @@
     "@better-auth/drizzle-adapter": "catalog:",
     "@daypicker/react": "catalog:",
     "@neondatabase/serverless": "catalog:",
+    "@orpc/client": "catalog:",
+    "@orpc/server": "catalog:",
     "@streamdown/cjk": "catalog:",
     "@streamdown/code": "catalog:",
     "@streamdown/math": "catalog:",

@@ -1,3 +1,4 @@
+import { CrmError } from "./crm-error";
 import { z } from "zod";
 import { and, asc, desc, eq, ilike, or } from "drizzle-orm";
 import { db } from "./drizzle";
@@ -29,11 +30,7 @@ function operation<I extends z.ZodType, O extends z.ZodType>(definition: {
   outputSchema: O;
   execute: (input: z.output<I>) => Promise<z.input<O>>;
 }) {
-  return {
-    ...definition,
-    execute: async (input: z.input<I>) =>
-      definition.outputSchema.parse(await definition.execute(definition.inputSchema.parse(input))),
-  };
+  return definition;
 }
 
 function substringPattern(query: string) {
@@ -54,7 +51,7 @@ export function createCrmOperations(tenantId: string) {
           .select({ name: tenants.name })
           .from(tenants)
           .where(eq(tenants.id, tenantId));
-        if (!workspace) throw new Error("Workspace not found.");
+        if (!workspace) throw new CrmError("NOT_FOUND", "Workspace not found.");
         const [contactRows, dealRows, taskRows] = await Promise.all([
           db.select({ id: contacts.id }).from(contacts).where(eq(contacts.tenantId, tenantId)),
           db.select({ value: deals.value }).from(deals).where(eq(deals.tenantId, tenantId)),
@@ -91,7 +88,7 @@ export function createCrmOperations(tenantId: string) {
           })
           .from(contacts)
           .where(and(eq(contacts.id, id), eq(contacts.tenantId, tenantId)));
-        if (!contact) throw new Error("Contact not found.");
+        if (!contact) throw new CrmError("NOT_FOUND", "Contact not found.");
         const [dealRows, taskRows, activityRows] = await Promise.all([
           db
             .select()

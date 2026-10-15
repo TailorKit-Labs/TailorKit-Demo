@@ -179,6 +179,12 @@ catalogs:
     '@neondatabase/serverless':
       specifier: ^1.2.0
       version: 1.2.0
+    '@orpc/client':
+      specifier: 2.0.0-beta.40
+      version: 2.0.0-beta.40
+    '@orpc/server':
+      specifier: 2.0.0-beta.40
+      version: 2.0.0-beta.40
     '@streamdown/cjk':
       specifier: ^1.0.4
       version: 1.0.4
@@ -307,6 +313,12 @@ importers:
       '@neondatabase/serverless':
         specifier: 'catalog:'
         version: 1.2.0
+      '@orpc/client':
+        specifier: 'catalog:'
+        version: 2.0.0-beta.40
+      '@orpc/server':
+        specifier: 'catalog:'
+        version: 2.0.0-beta.40
       '@streamdown/cjk':
         specifier: 'catalog:'
         version: 1.0.4(@types/mdast@4.0.4)(micromark-util-types@2.0.3)(micromark@4.0.3(supports-color@7.2.0))(react@19.3.0)(supports-color@7.2.0)(unified@11.0.5)

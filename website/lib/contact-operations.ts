@@ -1,3 +1,4 @@
+import { CrmError } from "./crm-error";
 import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "./drizzle";
@@ -37,12 +38,12 @@ export async function updateContactRecord(
     .set(data)
     .where(and(eq(contacts.id, id), eq(contacts.tenantId, tenantId)))
     .returning({ id: contacts.id });
-  if (!rows.length) throw new Error("Contact not found.");
+  if (!rows.length) throw new CrmError("NOT_FOUND", "Contact not found.");
 }
 export async function deleteContactRecord(tenantId: string, id: string) {
   const rows = await db
     .delete(contacts)
     .where(and(eq(contacts.id, id), eq(contacts.tenantId, tenantId)))
     .returning({ id: contacts.id });
-  if (!rows.length) throw new Error("Contact not found.");
+  if (!rows.length) throw new CrmError("NOT_FOUND", "Contact not found.");
 }

@@ -1,3 +1,4 @@
+import { CrmError } from "./crm-error";
 import { and, count, desc, eq } from "drizzle-orm";
 import { activities, contacts, deals, tasks, tenants } from "./schema";
 import type { Transaction } from "./seed";
@@ -13,7 +14,10 @@ export async function checkLimit(
 ) {
   const [row] = await tx.select({ total: count() }).from(table).where(eq(table.tenantId, tenantId));
   if (row.total >= RECORD_LIMIT)
-    throw new Error("This demo allows 50 records per collection. Delete a record to add another.");
+    throw new CrmError(
+      "CONFLICT",
+      "This demo allows 50 records per collection. Delete a record to add another.",
+    );
 }
 export async function checkContact(tx: Transaction, tenantId: string, contactId: string | null) {
   if (!contactId) return;
@@ -21,7 +25,7 @@ export async function checkContact(tx: Transaction, tenantId: string, contactId:
     .select({ id: contacts.id })
     .from(contacts)
     .where(and(eq(contacts.id, contactId), eq(contacts.tenantId, tenantId)));
-  if (!row) throw new Error("Contact not found in your workspace.");
+  if (!row) throw new CrmError("NOT_FOUND", "Contact not found in your workspace.");
 }
 export async function logActivity(
   tx: Transaction,
