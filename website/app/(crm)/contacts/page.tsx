@@ -1,7 +1,14 @@
-import { getWorkspace } from "@/lib/workspace";
+import { getTenant } from "@/lib/workspace-session";
+import { orpc } from "@/lib/orpc.server";
+import { HydrateClient, prefetch } from "@/lib/query.server";
 import { CrmPages } from "@/components/crm-pages";
 export const metadata = { title: "Contacts" };
 export default async function Page() {
-  const workspace = await getWorkspace();
-  return workspace ? <CrmPages workspace={workspace} view="contacts" /> : null;
+  if (!(await getTenant())) return null;
+  void prefetch(orpc.workspace.snapshot.queryOptions());
+  return (
+    <HydrateClient>
+      <CrmPages view="contacts" />
+    </HydrateClient>
+  );
 }

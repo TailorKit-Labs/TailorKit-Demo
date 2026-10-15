@@ -33,41 +33,40 @@ Every query and mutation derives the workspace from the authenticated session. R
 
 ## API and SSR
 
-The oRPC API lives in `routers/`, alongside `app/` and `lib/`. Domain files (`contacts.ts`, `deals.ts`, `tasks.ts`, `activities.ts`, `workspace.ts`, and `chats.ts`) define procedures and contain their database logic. `routers/index.ts` imports named procedures and assembles the router, mounted at `POST /rpc`. Browser calls, server renders, the agent and TailorKit tools all use these procedures. `routers/schemas.ts` contains browser-safe input/output schemas shared with the TailorKit contract. Shared middleware resolves workspace identity and invalidates successful mutations; expected domain failures use native oRPC errors. Workspace provisioning and chat history also use oRPC; Better Auth and the AI streaming endpoint retain their dedicated protocol handlers. HTTP calls use the signed session cookie and same-origin checks, limit bodies to 60 KB, and return private/no-store responses. Successful mutations invalidate the CRM layout; UI callers refresh the current server-rendered page. Task completion sets an explicit boolean instead of toggling on retries.
+The oRPC API lives in `routers/`, alongside `app/` and `lib/`. Domain files (`contacts.ts`, `deals.ts`, `tasks.ts`, `activities.ts`, `workspace.ts`, and `chats.ts`) define procedures and contain their database logic. `routers/index.ts` assembles named procedure imports and is mounted at `POST /rpc`. Browser calls, server renders, the agent and TailorKit tools share these procedures. `routers/schemas.ts` contains browser-safe schemas shared with the TailorKit contract. Middleware resolves workspace identity; expected domain failures use native oRPC errors. HTTP requests use signed session cookies, same-origin checks, POST-only handling, a 60 KB body limit, and private/no-store responses.
 
-Use the browser client from Client Component event handlers:
+React Query owns browser data. `lib/orpc.ts` exports both the browser transport (`rpc`) and typed TanStack Query helpers (`orpc`). Client Components use `useSuspenseQuery(orpc.workspace.snapshot.queryOptions())` and `useMutation(orpc.contacts.create.mutationOptions())`. The query client's mutation cache invalidates oRPC query keys after successful writes, awaiting active refetches before clearing pending state. Counts, linked records and activity stay in sync; rejected mutations do not refetch. The existing views share a workspace snapshot query because their tables, forms and summaries use the same small, bounded collections.
 
-```ts
-import { rpc } from "@/lib/orpc";
+Server Components use query helpers from `lib/orpc.server.ts`, backed by `createRouterClient` for direct calls without HTTP. Each page starts its queries and wraps its client content in `HydrateClient`:
 
-await rpc.contacts.create({
-  name: "Alex Chen",
-  email: "alex@example.com",
-  company: "Acme Studio",
-  role: "Designer",
-  status: "lead",
-});
+```tsx
+import { orpc } from "@/lib/orpc.server";
+import { HydrateClient, prefetch } from "@/lib/query.server";
+
+// After checking the session/workspace:
+void prefetch(orpc.workspace.snapshot.queryOptions());
+return (
+  <HydrateClient>
+    <CrmPages view="contacts" />
+  </HydrateClient>
+);
 ```
 
-Server Components use `lib/orpc.server.ts`, which calls procedures directly through `createRouterClient`: no request to the app's own `/rpc` endpoint and no serialization round trip. Its context resolves the current session for each invocation. `React.cache` deduplicates session/workspace reads within a render, including reads shared by a layout and page; it does not cache tenant data across requests.
+`getQueryClient()` in `lib/query.server.tsx` uses `React.cache` to share one query client within the current RSC request. `HydrateClient` dehydrates that cache, including pending queries, so non-awaited prefetches stream into the browser. A 30-second stale time avoids duplicate requests immediately after hydration. `prefetchInfinite(orpc.someProcedure.infiniteOptions(...))` is available separately with typed page parameters; it does not depend on tRPC's key format or `any` casts. The current collections do not use infinite pagination.
 
-```ts
-import { rpc } from "@/lib/orpc.server";
+The CRM layout prefetches chat history. It keys `QueryProvider` by workspace ID, preserving the cache across navigation and discarding it when the workspace changes. Every server request receives its own cache; authentication is resolved per invocation. Explicit browser/server entry points keep `next/headers`, the router and database out of the client bundle.
 
-const workspace = await rpc.workspace.snapshot();
-```
+There is no `revalidatePath`. Agent completion and the TailorKit `ui.refresh` action invalidate React Query keys, picking up server-side tool writes. The only route refresh follows anonymous setup, to reveal the authenticated server layout. Provisioning uses a session-only procedure before a workspace exists; workspace-scoped tools cannot invoke it. Better Auth and AI streaming retain dedicated protocol handlers.
 
-The entry points are explicit so `next/headers`, the router and database stay outside the client module graph. Client Components receive server-loaded data as props and call the browser client for mutations. This also avoids module-level user/session globals. Internal tools use oRPC `call(procedure, input, { context: verifiedWorkspaceContext(workspaceId) })` with an ID already obtained from the authenticated session or a verified TailorKit scope. Never pass an ID from model arguments or a public request body to that context helper.
+Internal tools use oRPC `call(procedure, input, { context: verifiedWorkspaceContext(workspaceId) })` with an ID obtained from the authenticated session or verified TailorKit scope. Never pass an ID from model arguments or a public request body to that context helper. oRPC packages are pinned to the v2 version used by TailorKit; installed `middleapi/orpc` skills live in `.agents/skills`.
 
-Workspace provisioning uses a session-only procedure, so it works before a workspace exists. Workspace-scoped tools cannot invoke setup. Chat history uses the same authenticated router. Better Auth and agent streaming keep dedicated handlers for their protocols. oRPC package versions are pinned together to the v2 version already used by TailorKit.
-
-Run `pnpm --filter website test:rpc` for real PostgreSQL coverage of cookie-authenticated HTTP calls, direct server calls with fetch disabled, validation/errors, invalidation, request protections and concurrent workspace isolation. To additionally verify initial SSR HTML against a running app, use `RPC_SSR_URL=http://localhost:3010 pnpm --filter website test:rpc`. The oRPC skills installed from `middleapi/orpc` are checked in under `.agents/skills`.
+Run `pnpm --filter website test:rpc` for PostgreSQL coverage of HTTP/direct calls, validation, hydrated/pending queries, mutation invalidation, request protections and concurrent workspace isolation. Add `RPC_SSR_URL=http://localhost:3010` to verify initial SSR HTML against a running production server.
 
 ## Agent
 
 Below 800px, a floating bar at the bottom center contains **Agent** and a menu icon, opening separate Coss bottom drawers for chat and navigation. The mobile header has no sidebar toggle or bottom navigation tabs. On larger screens, the **Agent** floating button lives in the bottom-right corner and hides while the side panel is open. It opens a Coss bottom drawer below 800px and a chat popover on larger screens. On screens at least 1280px wide, a toggle switches between the popover and a side panel; smaller screens hide that control. Drafts and conversations survive closing, docking, resizing, and in-app navigation. A history dropdown replaces the chat title, with up to eight archived conversations kept in memory for the current session.
 
-The agent uses AI SDK `ToolLoopAgent` and streams text and tool progress through `/api/agent`. It can read workspace usage; search, create, edit and delete contacts, deals and follow-ups; move/reorder pipeline deals; complete/reopen tasks; and read activity or add contact notes. Its tools share the app's validated database operations, workspace isolation, activity logging, and collection limits. Successful writes refresh the visible page. Missing required information is requested in the conversation; new deals default to qualified, no contact, and an expected close in 30 days.
+The agent uses AI SDK `ToolLoopAgent` and streams text and tool progress through `/api/agent`. It can read workspace usage; search, create, edit and delete contacts, deals and follow-ups; move/reorder pipeline deals; complete/reopen tasks; and read activity or add contact notes. Its tools share the app's validated database operations, workspace isolation, activity logging, and collection limits. Agent completion invalidates the browser queries to show committed changes. Missing required information is requested in the conversation; new deals default to qualified, no contact, and an expected close in 30 days.
 
 On Vercel, the AI SDK automatically authenticates through the deployment's [OIDC token](https://vercel.com/docs/ai-gateway/authentication-and-byok/oidc), including tokens supplied through trusted request context. Leave `AI_GATEWAY_API_KEY` unset to use OIDC; a configured API key takes priority. Your Vercel team must have available AI Gateway credits and any required billing verification completed. No manually managed model-provider key is needed.
 
@@ -116,7 +115,7 @@ Apps have the same workspace operations as the CRM UI, plus task editing:
 | `activities` | `list` (optionally by contact), `addNote`                                                                 |
 | `ui`         | `navigate`, `refresh`, `setTheme`, `notify` (client tools)                                                |
 
-The 18 server tools invoke domain procedures with oRPC `call`, without HTTP. The agent uses `@orpc/ai-sdk` to derive tool schemas and descriptions from those procedures, with explicit `call` execution that validates even direct tool invocations. There is no separate CRM operation/API layer. These paths share validation, tenant isolation, collection limits, activity behavior and successful-mutation invalidation. The workspace comes from the SDK-verified signed scope, never app input. Successful writes invalidate the CRM layout; an app can call `ui.refresh` to refresh its visible host data. The four client tools use the host router, theme provider and toast manager. Navigation accepts only existing CRM routes and contact detail URLs.
+The 18 server tools invoke domain procedures with oRPC `call`, without HTTP. The agent uses `@orpc/ai-sdk` to derive tool schemas and descriptions from those procedures, with explicit `call` execution that validates even direct tool invocations. There is no separate CRM operation/API layer. These paths share validation, tenant isolation, collection limits and activity behavior. The workspace comes from the SDK-verified signed scope, never app input. After successful writes, an app can call `ui.refresh` to invalidate the host queries and display the updated data. The four client tools use the host router, theme provider and toast manager. Navigation accepts only existing CRM routes and contact detail URLs.
 
 Lists return at most 50 records (the workspace collection limit); apps can sort, paginate, select and chart those results locally, just as the host does. Read results include creation timestamps and pipeline position. Calendar dates are `YYYY-MM-DD`; timestamps are ISO strings; deal values are whole USD. Contact/deal/task updates take all editable fields, so preserve fields from the latest read when making an edit. `tasks.setCompleted` sets an explicit boolean, making retries idempotent. Deleting a contact removes its notes/activity and retains related deals/tasks with `contactId: null`.
 
@@ -140,7 +139,7 @@ Run `pnpm --filter website test:tailorkit` for real PostgreSQL coverage of contr
 
 Better Auth stores the account/session in Postgres and uses its signed HttpOnly session cookie. The session lasts 30 days with refresh on active use. No signup or sign-in forms are exposed. Clearing cookies creates a fresh workspace on the next visit.
 
-Setup completion is stored in `tenants.setup_version`, rather than trusting a client flag. `lib/provision.ts` owns `CURRENT_SETUP_VERSION`; `lib/workspace.ts` uses it to decide whether setup must resume. To add a setup step, increment this constant and add the step guarded by the previous version inside the locked transaction, advancing the version only after success. Initial seed data is small and provisioning is idempotent, including concurrent tabs. The setup overlay preserves the requested URL and reveals it after completing the steps.
+Setup completion is stored in `tenants.setup_version`, rather than trusting a client flag. `lib/provision.ts` owns `CURRENT_SETUP_VERSION`; `routers/context.ts` checks it to decide whether setup must resume. To add a setup step, increment this constant and add the step guarded by the previous version inside the locked transaction, advancing the version only after success. Initial seed data is small and provisioning is idempotent, including concurrent tabs. The setup overlay preserves the requested URL and reveals it after completing the steps.
 
 ## Verification
 

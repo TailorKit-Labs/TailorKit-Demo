@@ -3,7 +3,7 @@ import { ORPCError } from "@orpc/server";
 import { and, asc, desc, eq, ilike, or } from "drizzle-orm";
 import { db } from "../lib/drizzle";
 import { contacts, deals, tasks, activities } from "../lib/schema";
-import { protectedProcedure, mutationProcedure } from "./base";
+import { protectedProcedure } from "./base";
 import { schemas } from "./schemas";
 import { checkLimit, lockTenant, logActivity, substringPattern } from "./shared";
 
@@ -127,7 +127,7 @@ export const getContact = protectedProcedure
     };
   });
 
-export const createContact = mutationProcedure
+export const createContact = protectedProcedure
   .meta(
     aiSdkTool({
       description: "Create a contact with name, email, company, role and relationship status.",
@@ -155,7 +155,7 @@ export const createContact = mutationProcedure
     return { success: true as const, contact: { ...input, id }, href: `/contacts/${id}` };
   });
 
-export const updateContact = mutationProcedure
+export const updateContact = protectedProcedure
   .meta(
     aiSdkTool({
       description:
@@ -174,7 +174,7 @@ export const updateContact = mutationProcedure
     return { success: true as const, id, href: `/contacts/${id}` };
   });
 
-export const deleteContact = mutationProcedure
+export const deleteContact = protectedProcedure
   .meta(
     aiSdkTool({
       description:

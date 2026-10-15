@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { AppPageHeading } from "@/components/app/app-page-header";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,7 +16,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Workspace, Contact, Deal, Task } from "@/lib/workspace";
-import { rpc } from "@/lib/orpc";
+import { orpc } from "@/lib/orpc";
 import { SectionCards } from "@/components/section-cards";
 import { DashboardTable } from "@/components/dashboard-table";
 import { RecordDialog } from "@/components/record-dialog";
@@ -98,26 +99,6 @@ const date = (value: string) =>
 const label = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 const stages = ["qualified", "proposal", "negotiation", "won", "lost"] as const;
 
-function useMutation() {
-  const router = useRouter();
-  const [pending, startTransition] = useTransition();
-  const [error, setError] = useState("");
-  function run(action: () => Promise<unknown>, after?: () => void) {
-    setError("");
-    startTransition(async () => {
-      try {
-        await action();
-        after?.();
-        router.refresh();
-      } catch (error) {
-        setError(
-          error instanceof Error ? error.message : "Something went wrong. Please try again.",
-        );
-      }
-    });
-  }
-  return { pending, error, run };
-}
 function ErrorMessage({ error }: { error: string }) {
   return error ? (
     <Alert variant="error">
@@ -167,7 +148,7 @@ function DeleteButton({
   name: string;
   after?: () => void;
 }) {
-  const mutation = useMutation();
+  const mutation = useMutation({ mutationFn: action });
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -186,22 +167,24 @@ function DeleteButton({
             This cannot be undone.
           </DialogDescription>
         </DialogHeader>
-        <ErrorMessage error={mutation.error} />
+        <ErrorMessage error={mutation.error?.message ?? ""} />
         <DialogFooter>
-          <Button variant="outline" disabled={mutation.pending} onClick={() => setOpen(false)}>
+          <Button variant="outline" disabled={mutation.isPending} onClick={() => setOpen(false)}>
             Cancel
           </Button>
           <Button
             variant="destructive"
-            disabled={mutation.pending}
+            disabled={mutation.isPending}
             onClick={() =>
-              mutation.run(action, () => {
-                setOpen(false);
-                after?.();
+              mutation.mutate(undefined, {
+                onSuccess: () => {
+                  setOpen(false);
+                  after?.();
+                },
               })
             }
           >
-            {mutation.pending ? "Deleting…" : "Delete " + name}
+            {mutation.isPending ? "Deleting…" : "Delete " + name}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -219,7 +202,7 @@ export function PageHeading({ title, children }: { title: string; children?: Rea
   );
 }
 export function TaskRow({ task, workspace }: { task: Task; workspace: Workspace }) {
-  const mutation = useMutation();
+  const mutation = useMutation(orpc.tasks.setCompleted.mutationOptions());
   const overdue =
     !task.completed && task.dueDate.slice(0, 10) < new Date().toISOString().slice(0, 10);
   return (
@@ -228,10 +211,8 @@ export function TaskRow({ task, workspace }: { task: Task; workspace: Workspace 
         <Checkbox
           className="mt-1"
           checked={task.completed}
-          disabled={mutation.pending}
-          onCheckedChange={(completed) =>
-            mutation.run(() => rpc.tasks.setCompleted({ id: task.id, completed }))
-          }
+          disabled={mutation.isPending}
+          onCheckedChange={(completed) => mutation.mutate({ id: task.id, completed })}
           aria-label={"Mark " + task.title + (task.completed ? " incomplete" : " complete")}
         />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
@@ -256,14 +237,14 @@ export function TaskRow({ task, workspace }: { task: Task; workspace: Workspace 
             )}
           </div>
         </div>
-        <DeleteButton action={() => rpc.tasks.delete({ id: task.id })} name="task" />
+        <DeleteButton action={() => orpc.tasks.delete.call({ id: task.id })} name="task" />
       </div>
-      <ErrorMessage error={mutation.error} />
+      <ErrorMessage error={mutation.error?.message ?? ""} />
     </div>
   );
 }
 function DealCard({ deal, workspace }: { deal: Deal; workspace: Workspace }) {
-  const mutation = useMutation();
+  const mutation = useMutation(orpc.deals.update.mutationOptions());
   return (
     <Card>
       <CardHeader>
@@ -280,25 +261,23 @@ function DealCard({ deal, workspace }: { deal: Deal; workspace: Workspace }) {
           <CalendarDays className="size-3" />
           Expected close {date(deal.closeDate)}
         </p>
-        <ErrorMessage error={mutation.error} />
+        <ErrorMessage error={mutation.error?.message ?? ""} />
       </CardContent>
       <CardFooter className="flex flex-wrap justify-between gap-2">
         <Select
           value={deal.stage}
-          disabled={mutation.pending}
+          disabled={mutation.isPending}
           items={stages.map((stage) => ({ value: stage, label: label(stage) }))}
           onValueChange={(value) => {
             if (value !== null)
-              mutation.run(() =>
-                rpc.deals.update({
-                  id: deal.id,
-                  title: deal.title,
-                  contactId: deal.contactId,
-                  value: deal.value,
-                  closeDate: deal.closeDate.slice(0, 10),
-                  stage: value as Deal["stage"],
-                }),
-              );
+              mutation.mutate({
+                id: deal.id,
+                title: deal.title,
+                contactId: deal.contactId,
+                value: deal.value,
+                closeDate: deal.closeDate.slice(0, 10),
+                stage: value as Deal["stage"],
+              });
           }}
         >
           <SelectTrigger size="sm" aria-label={"Stage for " + deal.title}>
@@ -316,7 +295,7 @@ function DealCard({ deal, workspace }: { deal: Deal; workspace: Workspace }) {
         </Select>
         <div className="flex items-center gap-1">
           <RecordDialog kind="deal" workspace={workspace} deal={deal} />
-          <DeleteButton action={() => rpc.deals.delete({ id: deal.id })} name="deal" />
+          <DeleteButton action={() => orpc.deals.delete.call({ id: deal.id })} name="deal" />
         </div>
       </CardFooter>
     </Card>
@@ -556,7 +535,7 @@ function Pipeline({ workspace }: { workspace: Workspace }) {
 }
 function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: Contact }) {
   const router = useRouter();
-  const mutation = useMutation();
+  const mutation = useMutation(orpc.activities.addNote.mutationOptions());
   const [note, setNote] = useState("");
   const deals = workspace.deals.filter((deal) => deal.contactId === contact.id);
   const tasks = workspace.tasks.filter((task) => task.contactId === contact.id);
@@ -573,7 +552,7 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
         <div className="flex items-center gap-2">
           <RecordDialog kind="contact" workspace={workspace} contact={contact} />
           <DeleteButton
-            action={() => rpc.contacts.delete({ id: contact.id })}
+            action={() => orpc.contacts.delete.call({ id: contact.id })}
             name="contact"
             after={() => router.push("/contacts")}
           />
@@ -668,9 +647,9 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
               <form
                 onSubmit={(event) => {
                   event.preventDefault();
-                  mutation.run(
-                    () => rpc.activities.addNote({ contactId: contact.id, body: note }),
-                    () => setNote(""),
+                  mutation.mutate(
+                    { contactId: contact.id, body: note },
+                    { onSuccess: () => setNote("") },
                   );
                 }}
               >
@@ -691,12 +670,12 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
                     <span className="text-xs text-muted-foreground">
                       {note.length}/1,000 characters
                     </span>
-                    <Button type="submit" disabled={mutation.pending || !note.trim()}>
+                    <Button type="submit" disabled={mutation.isPending || !note.trim()}>
                       <MessageSquare data-icon="inline-start" />
-                      {mutation.pending ? "Saving…" : "Save note"}
+                      {mutation.isPending ? "Saving…" : "Save note"}
                     </Button>
                   </div>
-                  <ErrorMessage error={mutation.error} />
+                  <ErrorMessage error={mutation.error?.message ?? ""} />
                 </div>
               </form>
               <Separator />
@@ -794,14 +773,13 @@ function Settings({ workspace }: { workspace: Workspace }) {
 }
 
 export function CrmPages({
-  workspace,
   view,
   contactId,
 }: {
-  workspace: Workspace;
   view: "overview" | "contacts" | "pipeline" | "tasks" | "settings";
   contactId?: string;
 }) {
+  const { data: workspace } = useSuspenseQuery(orpc.workspace.snapshot.queryOptions());
   if (contactId) {
     const contact = workspace.contacts.find((item) => item.id === contactId);
     return contact ? (

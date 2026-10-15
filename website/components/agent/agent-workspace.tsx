@@ -1,13 +1,14 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
-import { rpc } from "@/lib/orpc";
-import type { AgentHistory, AgentChatSummary } from "@/lib/agents/agent-chat-types";
+import { orpc } from "@/lib/orpc";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import type { AgentChatSummary } from "@/lib/agents/agent-chat-types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -38,14 +39,12 @@ import { useViews } from "@/lib/tailorkit-client";
 
 const transport = new DefaultChatTransport<CrmAgentMessage>({ api: "/api/agent" });
 
-export function AgentWorkspace({
-  children,
-  initialHistory,
-}: {
-  children: React.ReactNode;
-  initialHistory: AgentHistory;
-}) {
-  const router = useRouter();
+export function AgentWorkspace({ children }: { children: React.ReactNode }) {
+  const queryClient = useQueryClient();
+  const { data: history } = useSuspenseQuery(orpc.chats.list.queryOptions());
+  const refresh = () => {
+    void queryClient.invalidateQueries({ queryKey: orpc.key() });
+  };
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
   const panelId = useId();
@@ -67,17 +66,17 @@ export function AgentWorkspace({
     });
   const selectedTab = apps.some((app) => app.id === activeTab) ? activeTab : "agent";
   const [input, setInput] = useState("");
-  const [chatId, setChatId] = useState<string | null>(initialHistory.latest?.id ?? null);
+  const [chatId, setChatId] = useState<string | null>(history.latest?.id ?? null);
   const [loadingChat, setLoadingChat] = useState(false);
   const [historyError, setHistoryError] = useState<Error>();
   const [historyOpen, setHistoryOpen] = useState(false);
   const { messages, setMessages, sendMessage, status, stop, error, clearError } =
     useChat<CrmAgentMessage>({
       transport,
-      messages: initialHistory.latest?.messages ?? [],
+      messages: history.latest?.messages ?? [],
       // Refresh even after cancellation: a tool may already have committed a change.
-      onFinish: () => router.refresh(),
-      onError: () => router.refresh(),
+      onFinish: () => refresh(),
+      onError: () => refresh(),
     });
   const busy = status === "submitted" || status === "streaming";
   const panelContext = useMemo(
@@ -115,7 +114,9 @@ export function AgentWorkspace({
     setLoadingChat(true);
     setHistoryError(undefined);
     try {
-      const saved = await rpc.chats.get({ id: chat.id });
+      const saved = await queryClient.fetchQuery(
+        orpc.chats.get.queryOptions({ input: { id: chat.id }, staleTime: 0 }),
+      );
       setChatId(saved.id);
       setMessages(saved.messages);
       setInput("");
@@ -159,7 +160,7 @@ export function AgentWorkspace({
         .map((part) => part.text)
         .join(" ") || "Chat"
     : "New chat";
-  const recentChats = initialHistory.chats;
+  const recentChats = history.chats;
   const chatTitle = (
     <DropdownMenu open={historyOpen} onOpenChange={setHistoryOpen}>
       <DropdownMenuTrigger
@@ -209,7 +210,7 @@ export function AgentWorkspace({
       error={historyError ?? error}
       onStop={() => {
         void stop();
-        router.refresh();
+        refresh();
       }}
       onNewChat={newChat}
       docked={!useDrawer}

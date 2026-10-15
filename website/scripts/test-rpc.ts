@@ -3,6 +3,9 @@ import assert from "node:assert/strict";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { createORPCClient, ORPCError } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
+import { createTanstackQueryUtils } from "@orpc/tanstack-query";
+import { dehydrate, hydrate, QueryObserver } from "@tanstack/react-query";
+import { makeQueryClient } from "../lib/query-client";
 import { createRouterClient, type RouterClient } from "@orpc/server";
 import { eq } from "drizzle-orm";
 import { auth } from "../lib/auth";
@@ -21,7 +24,6 @@ const hasCode = (code: string) => (error: unknown) =>
 async function main() {
   const users: string[] = [];
   try {
-    let refreshes = 0;
     let requests = 0;
     function browserClient(cookie?: string): RouterClient<typeof router> {
       return createORPCClient(
@@ -31,9 +33,7 @@ async function main() {
           headers: { origin, ...(cookie ? { cookie } : {}) },
           fetch: async (url, init) => {
             requests++;
-            const response = await handleRpcRequest(new Request(url, init), () => {
-              refreshes++;
-            });
+            const response = await handleRpcRequest(new Request(url, init));
             assert.equal(response.headers.get("cache-control"), "private, no-store");
             return response;
           },
@@ -57,7 +57,6 @@ async function main() {
       workspaces.push({ tenant, cookie });
     }
     const [first, second] = workspaces;
-    refreshes = 0;
     const browser = browserClient(first.cookie);
     const otherBrowser = browserClient(second.cookie);
     await assert.rejects(() => browserClient().workspace.get({}), hasCode("UNAUTHORIZED"));
@@ -72,7 +71,6 @@ async function main() {
       role: "Builder",
       status: "lead",
     });
-    assert.equal(refreshes, 1);
     await assert.rejects(
       () => otherBrowser.contacts.get({ id: contact.contact.id }),
       hasCode("NOT_FOUND"),
@@ -89,7 +87,6 @@ async function main() {
       () => browser.tasks.create({ title: "Invalid date", dueDate: "not-a-date" }),
       hasCode("BAD_REQUEST"),
     );
-    assert.equal(refreshes, 1, "Failed calls must not invalidate the host");
 
     // The server/client share procedures and validation, but direct calls must
     // never use fetch. The same singleton context factory must isolate requests.
@@ -147,6 +144,124 @@ async function main() {
     await assert.rejects(() => otherBrowser.chats.get({ id: chatId }), hasCode("NOT_FOUND"));
     await assert.rejects(() => browser.chats.get({ id: "invalid" }), hasCode("BAD_REQUEST"));
     await assert.rejects(() => browserClient().chats.list(), hasCode("UNAUTHORIZED"));
+    // Server prefetch and browser observers share keys, but never share users'
+    // QueryClient instances. Hydration must avoid an immediate HTTP refetch.
+    const serverQueries = createTanstackQueryUtils(
+      createRouterClient(router, {
+        context: verifiedWorkspaceContext(first.tenant.id),
+      }),
+    );
+    const secondQueries = createTanstackQueryUtils(
+      createRouterClient(router, {
+        context: verifiedWorkspaceContext(second.tenant.id),
+      }),
+    );
+    const browserQueries = createTanstackQueryUtils(browser);
+    const serverCache = makeQueryClient();
+    const otherCache = makeQueryClient();
+    const browserCache = makeQueryClient();
+    const pendingCache = makeQueryClient();
+    const hydratedPendingCache = makeQueryClient();
+    let unsubscribe: (() => void) | undefined;
+    try {
+      const beforePrefetch = requests;
+      await Promise.all([
+        serverCache.prefetchQuery(serverQueries.workspace.snapshot.queryOptions()),
+        otherCache.prefetchQuery(secondQueries.workspace.snapshot.queryOptions()),
+      ]);
+      assert.equal(requests, beforePrefetch, "SSR prefetch must call procedures without HTTP");
+      assert.equal(
+        serverCache.getQueryData(serverQueries.workspace.snapshot.queryKey())?.tenant.id,
+        first.tenant.id,
+      );
+      assert.equal(
+        otherCache.getQueryData(secondQueries.workspace.snapshot.queryKey())?.tenant.id,
+        second.tenant.id,
+      );
+      hydrate(browserCache, dehydrate(serverCache));
+      const observer = new QueryObserver(
+        browserCache,
+        browserQueries.workspace.snapshot.queryOptions(),
+      );
+      unsubscribe = observer.subscribe(() => {});
+      assert.equal(requests, beforePrefetch, "Fresh hydration must not fetch again on mount");
+      assert.equal(observer.getCurrentResult().data?.tenant.id, first.tenant.id);
+
+      const created = await browserCache
+        .getMutationCache()
+        .build(browserCache, browserQueries.contacts.create.mutationOptions())
+        .execute({
+          name: "Query cache fixture",
+          email: "query@example.com",
+          company: "Query",
+          role: "Builder",
+          status: "lead",
+        });
+      assert.equal(requests, beforePrefetch + 2, "A mutation must refetch its active query");
+      assert.ok(
+        observer.getCurrentResult().data?.contacts.some((row) => row.id === created.contact.id),
+      );
+      const beforeRejectedMutation = requests;
+      await assert.rejects(
+        () =>
+          browserCache
+            .getMutationCache()
+            .build(browserCache, browserQueries.deals.create.mutationOptions())
+            .execute({ title: "Invalid query mutation", value: -1 }),
+        hasCode("BAD_REQUEST"),
+      );
+      assert.equal(
+        requests,
+        beforeRejectedMutation + 1,
+        "Rejected mutations must not refetch queries",
+      );
+
+      // Server tools bypass browser mutations. Agent completion and ui.refresh
+      // explicitly invalidate the same keys to pick up those committed writes.
+      await serverQueries.contacts.update.call({ ...created.contact, status: "customer" });
+      assert.equal(
+        observer.getCurrentResult().data?.contacts.find((row) => row.id === created.contact.id)
+          ?.status,
+        "lead",
+      );
+      await browserCache.invalidateQueries({ queryKey: browserQueries.key() });
+      assert.equal(
+        observer.getCurrentResult().data?.contacts.find((row) => row.id === created.contact.id)
+          ?.status,
+        "customer",
+      );
+      await browserCache
+        .getMutationCache()
+        .build(browserCache, browserQueries.contacts.delete.mutationOptions())
+        .execute({ id: created.contact.id });
+      assert.ok(
+        !observer.getCurrentResult().data?.contacts.some((row) => row.id === created.contact.id),
+      );
+
+      // A non-awaited prefetch can be dehydrated while pending and resolve in
+      // the hydrated cache, which is the streaming HydrateClient path.
+      const pending = pendingCache.prefetchQuery(serverQueries.workspace.snapshot.queryOptions());
+      const dehydrated = dehydrate(pendingCache);
+      assert.equal(dehydrated.queries[0].state.status, "pending");
+      assert.ok(dehydrated.queries[0].promise);
+      hydrate(hydratedPendingCache, dehydrated);
+      await pending;
+      assert.equal(
+        (await hydratedPendingCache.fetchQuery(browserQueries.workspace.snapshot.queryOptions()))
+          .tenant.id,
+        first.tenant.id,
+      );
+    } finally {
+      unsubscribe?.();
+      for (const cache of [
+        serverCache,
+        otherCache,
+        browserCache,
+        pendingCache,
+        hydratedPendingCache,
+      ])
+        cache.clear();
+    }
     const ssrOrigin = process.env.RPC_SSR_URL;
     if (ssrOrigin) {
       const live = createORPCClient<RouterClient<typeof router>>(
@@ -180,7 +295,6 @@ async function main() {
       );
     }
     await browser.contacts.delete({ id: contact.contact.id });
-    assert.equal(refreshes, 2);
     assert.equal((await browser.workspace.snapshot()).contacts.length, initial.contacts.length);
     for (const request of [
       new Request(`${origin}/rpc/contacts/create`, { method: "GET", headers: { origin } }),
@@ -202,7 +316,7 @@ async function main() {
     );
     assert.equal(oversized.status, 413);
     console.log(
-      "PASS: authenticated oRPC HTTP + direct clients, validation, cache invalidation, errors, CSRF/method/body limits, and concurrent request isolation without server HTTP.",
+      "PASS: authenticated oRPC HTTP + direct clients, validation, React Query hydration + mutation invalidation, pending query streaming, errors, CSRF/method/body limits, and concurrent request isolation without server HTTP.",
     );
   } finally {
     for (const id of users) await db.delete(user).where(eq(user.id, id));

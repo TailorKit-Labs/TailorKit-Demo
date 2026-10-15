@@ -188,6 +188,9 @@ catalogs:
     '@orpc/server':
       specifier: 2.0.0-beta.40
       version: 2.0.0-beta.40
+    '@orpc/tanstack-query':
+      specifier: 2.0.0-beta.40
+      version: 2.0.0-beta.40
     '@streamdown/cjk':
       specifier: ^1.0.4
       version: 1.0.4
@@ -200,6 +203,9 @@ catalogs:
     '@streamdown/mermaid':
       specifier: ^1.0.3
       version: 1.0.3
+    '@tanstack/react-query':
+      specifier: ^5.104.2
+      version: 5.104.2
     '@types/pg':
       specifier: ^8.23.1
       version: 8.23.1
@@ -325,6 +331,9 @@ importers:
       '@orpc/server':
         specifier: 'catalog:'
         version: 2.0.0-beta.40
+      '@orpc/tanstack-query':
+        specifier: 'catalog:'
+        version: 2.0.0-beta.40(@tanstack/query-core@5.104.2)
       '@streamdown/cjk':
         specifier: 'catalog:'
         version: 1.0.4(@types/mdast@4.0.4)(micromark-util-types@2.0.3)(micromark@4.0.3(supports-color@7.2.0))(react@19.3.0)(supports-color@7.2.0)(unified@11.0.5)
@@ -337,6 +346,9 @@ importers:
       '@streamdown/mermaid':
         specifier: 'catalog:'
         version: 1.0.3(react@19.3.0)
+      '@tanstack/react-query':
+        specifier: 'catalog:'
+        version: 5.104.2(react@19.3.0)
       ai:
         specifier: 'catalog:'
         version: 7.0.137(zod@4.6.5)
@@ -1615,6 +1627,9 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@openapi-spec/downgrader@0.1.0':
+    resolution: {integrity: sha512-za2h8wGa4BFy2+AiKJHutt8BS2ua7Fw7vgNMmAtLyFbreozWHkXRVBRVA86sczyLY1ZN9Gw4rITygs90ehztQg==}
+
   '@openapi-spec/types@0.1.0':
     resolution: {integrity: sha512-5m9GUj5ekwmJ5uXH0yctarqLGckGc8X7pX65dirukZDUAGmrUx5lKovvWA7YvEBKd480Q7R2oG3nE5C+SoVgNw==}
 
@@ -1636,6 +1651,20 @@ packages:
   '@orpc/json-schema@2.0.0-beta.40':
     resolution: {integrity: sha512-WERkGvF+IlWf1MJC3Qyt8AbiLm8TScV6WiP7D2PwO+FYqrJPiYx5AERXSE+YQhpaZgsS9i3NxNgKi4dPLhUu6A==}
 
+  '@orpc/openapi@2.0.0-beta.40':
+    resolution: {integrity: sha512-LC3HLiwgjo7O/mHy3ChGpW96tTBvZ6ZqgZaDcSSJkSSsHy52a//ohjRbWUKvqyiSkYZ9fKGwtefBk6CnkFg9dA==}
+    peerDependencies:
+      '@scalar/api-reference': '>=1.57.2'
+      '@types/swagger-ui': '>=5.32.0'
+      swagger-ui: '>=5.32.6'
+    peerDependenciesMeta:
+      '@scalar/api-reference':
+        optional: true
+      '@types/swagger-ui':
+        optional: true
+      swagger-ui:
+        optional: true
+
   '@orpc/server@2.0.0-beta.40':
     resolution: {integrity: sha512-618zcjtJ1puA7+Fmgk/kSyEnnDLzMniBPALTZjc858mPDxHEX2WqxhKkctPABX8KGLZ3fm4f6wpG/Jn4f5EhGA==}
     peerDependencies:
@@ -1649,6 +1678,11 @@ packages:
 
   '@orpc/shared@2.0.0-beta.40':
     resolution: {integrity: sha512-y98pD9x2w1BlG5hDH0cbqLKabdrM7b6Hw9yQHAF+SOFLCZ9GV3Wy/hRw6b2StVOEOl5p/BNQ74UmNOqeMtPPIw==}
+
+  '@orpc/tanstack-query@2.0.0-beta.40':
+    resolution: {integrity: sha512-qphS351VNrsRETYusd0IfxnkUUFBMNCXUyq2cZvLz2Rh5+dd0vqAhVAOJXEMGDTAOYZvbQH07D+NOiRF8fnhuA==}
+    peerDependencies:
+      '@tanstack/query-core': '>=5.80.2'
 
   '@oxc-parser/binding-android-arm-eabi@0.121.0':
     resolution: {integrity: sha512-n07FQcySwOlzap424/PLMtOkbS7xOu8nsJduKL8P3COGHKgKoDYXwoAHCbChfgFpHnviehrLWIPX0lKGtbEk/A==}
@@ -2707,6 +2741,14 @@ packages:
 
   '@tailwindcss/postcss@4.3.3':
     resolution: {integrity: sha512-JTSZZGQi1AyKirbLN3azmjVzef92tcX7h+iSqPdaeStyFpGpDlKvvpxeOE8njhbUanbRwr3z8DyzhICWnMtQeg==}
+
+  '@tanstack/query-core@5.104.2':
+    resolution: {integrity: sha512-/qbsxJK5c3Ve1aFIULWYNcT2jeRUAiD4HME6Eu2ZdpofHoVgAjpkQhLg5xHuOoBkTPQUJLfP7zOxy0qsBcqROA==}
+
+  '@tanstack/react-query@5.104.2':
+    resolution: {integrity: sha512-xKmzWGhadbE5wGS/ZmXShRITnI9oItox5GO14KvFZco3+vhTAyXS1erYzJWdiY280zapAGJXFUL9nHgwP6SV/g==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@testing-library/dom@10.4.2':
     resolution: {integrity: sha512-yzr2S9HyAIdhz2/6qHgbs665Q7PKVcDF05vsOlHPxG1mo36gKVesdYVeDLnXgfjJ03CrKRk08knc6+E/9m8v2Q==}
@@ -7330,6 +7372,10 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.3
 
+  '@openapi-spec/downgrader@0.1.0':
+    dependencies:
+      '@openapi-spec/types': 0.1.0
+
   '@openapi-spec/types@0.1.0': {}
 
   '@opentelemetry/semantic-conventions@1.43.0': {}
@@ -7371,6 +7417,22 @@ snapshots:
       - crossws
       - fastify
 
+  '@orpc/openapi@2.0.0-beta.40':
+    dependencies:
+      '@openapi-spec/downgrader': 0.1.0
+      '@openapi-spec/types': 0.1.0
+      '@orpc/client': 2.0.0-beta.40
+      '@orpc/contract': 2.0.0-beta.40
+      '@orpc/json-schema': 2.0.0-beta.40
+      '@orpc/server': 2.0.0-beta.40
+      '@orpc/shared': 2.0.0-beta.40
+      '@standard-server/core': 0.9.2
+      '@standard-server/fetch': 0.9.2
+      rou3: 0.9.2
+    transitivePeerDependencies:
+      - crossws
+      - fastify
+
   '@orpc/server@2.0.0-beta.40':
     dependencies:
       '@orpc/client': 2.0.0-beta.40
@@ -7389,6 +7451,20 @@ snapshots:
       '@standard-server/shared': 0.9.2
       radash: 12.1.1
       type-fest: 5.10.0
+
+  '@orpc/tanstack-query@2.0.0-beta.40(@tanstack/query-core@5.104.2)':
+    dependencies:
+      '@orpc/client': 2.0.0-beta.40
+      '@orpc/contract': 2.0.0-beta.40
+      '@orpc/openapi': 2.0.0-beta.40
+      '@orpc/shared': 2.0.0-beta.40
+      '@tanstack/query-core': 5.104.2
+    transitivePeerDependencies:
+      - '@scalar/api-reference'
+      - '@types/swagger-ui'
+      - crossws
+      - fastify
+      - swagger-ui
 
   '@oxc-parser/binding-android-arm-eabi@0.121.0':
     optional: true
@@ -8450,6 +8526,13 @@ snapshots:
       '@tailwindcss/oxide': 4.3.3
       postcss: 8.5.28
       tailwindcss: 4.3.3
+
+  '@tanstack/query-core@5.104.2': {}
+
+  '@tanstack/react-query@5.104.2(react@19.3.0)':
+    dependencies:
+      '@tanstack/query-core': 5.104.2
+      react: 19.3.0
 
   '@testing-library/dom@10.4.2':
     dependencies:

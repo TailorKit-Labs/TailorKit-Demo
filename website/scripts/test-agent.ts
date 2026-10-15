@@ -41,15 +41,11 @@ async function main() {
       tenants.push(await provisionForUser(payload.user.id));
     }
     const [tenant, foreignTenant] = tenants;
-    let mutations = 0;
-    const tools = createCrmTools(tenant.id, () => {
-      mutations++;
-    });
+    const tools = createCrmTools(tenant.id);
     const foreignTools = createCrmTools(foreignTenant.id);
     const ownDeals = await run(tools.listDeals.execute!({}, options));
     const foreignDeals = await run(foreignTools.listDeals.execute!({}, options));
     assert.equal(ownDeals.count, 18);
-    assert.equal(mutations, 0, "Reads must not invalidate the layout");
     assert.equal(
       ownDeals.totalValue,
       ownDeals.deals.reduce((sum, deal) => sum + deal.value, 0),
@@ -66,7 +62,6 @@ async function main() {
         options,
       ),
     );
-    assert.equal(mutations, 1, "Successful tool writes must invalidate the layout");
     assert.equal(created.deal.stage, "qualified");
     assert.equal(created.deal.value, 2500);
     assert.match(created.deal.closeDate, /^\d{4}-\d{2}-\d{2}$/);
@@ -105,7 +100,6 @@ async function main() {
     await assert.rejects(
       run(tools.createDeal.execute!({ title: "Invalid negative value", value: -1 }, options)),
     );
-    assert.equal(mutations, 2, "Rejected writes must not invalidate the layout");
     assert.equal(
       (await run(tools.listDeals.execute!({}, options))).count,
       19,

@@ -1,3 +1,4 @@
+import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import type { RouterClient } from "@orpc/server";
@@ -14,3 +15,5 @@ const link = new RPCLink({
   },
 });
 export const rpc: RouterClient<typeof router> = createORPCClient(link);
+
+export const orpc = createTanstackQueryUtils(rpc);

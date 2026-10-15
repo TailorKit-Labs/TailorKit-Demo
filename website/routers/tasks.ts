@@ -3,7 +3,7 @@ import { ORPCError } from "@orpc/server";
 import { and, asc, eq, ilike } from "drizzle-orm";
 import { db } from "../lib/drizzle";
 import { tasks } from "../lib/schema";
-import { protectedProcedure, mutationProcedure } from "./base";
+import { protectedProcedure } from "./base";
 import { schemas } from "./schemas";
 import { checkContact, checkLimit, lockTenant, logActivity, substringPattern } from "./shared";
 
@@ -51,7 +51,7 @@ export const listTasks = protectedProcedure
     };
   });
 
-export const createTask = mutationProcedure
+export const createTask = protectedProcedure
   .meta(
     aiSdkTool({
       description:
@@ -75,7 +75,7 @@ export const createTask = mutationProcedure
     return { success: true as const, task: { ...record, id, completed: false }, href: "/tasks" };
   });
 
-export const updateTask = mutationProcedure
+export const updateTask = protectedProcedure
   .meta(
     aiSdkTool({
       description:
@@ -100,7 +100,7 @@ export const updateTask = mutationProcedure
     return { success: true as const, id, href: "/tasks" };
   });
 
-export const deleteTask = mutationProcedure
+export const deleteTask = protectedProcedure
   .meta(
     aiSdkTool({
       description: "Delete a follow-up only when explicitly requested. Look up its ID first.",
@@ -117,7 +117,7 @@ export const deleteTask = mutationProcedure
     return { success: true as const, id, href: "/tasks" };
   });
 
-export const setTaskCompleted = mutationProcedure
+export const setTaskCompleted = protectedProcedure
   .meta(
     aiSdkTool({
       description:

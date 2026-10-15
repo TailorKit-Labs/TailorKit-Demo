@@ -25,9 +25,9 @@ function forAgent<T extends { outputSchema?: unknown }>(tool: T) {
   return { ...tool, outputSchema: undefined };
 }
 
-export function createCrmTools(tenantId: string, onMutation?: () => void) {
+export function createCrmTools(tenantId: string) {
   const implementTool = implementToolFactory();
-  const context = verifiedWorkspaceContext(tenantId, onMutation);
+  const context = verifiedWorkspaceContext(tenantId);
   return {
     getWorkspace: forAgent(
       implementTool(getWorkspace, {

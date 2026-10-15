@@ -3,7 +3,7 @@ import { ORPCError } from "@orpc/server";
 import { and, asc, desc, eq, ilike, or } from "drizzle-orm";
 import { db } from "../lib/drizzle";
 import { contacts, deals } from "../lib/schema";
-import { protectedProcedure, mutationProcedure } from "./base";
+import { protectedProcedure } from "./base";
 import { schemas } from "./schemas";
 import { checkContact, checkLimit, lockTenant, logActivity, substringPattern } from "./shared";
 
@@ -64,7 +64,7 @@ export const listDeals = protectedProcedure
     };
   });
 
-export const createDeal = mutationProcedure
+export const createDeal = protectedProcedure
   .meta(
     aiSdkTool({
       description:
@@ -95,7 +95,7 @@ export const createDeal = mutationProcedure
     return { success: true as const, deal: { ...record, id }, href: "/pipeline" };
   });
 
-export const updateDeal = mutationProcedure
+export const updateDeal = protectedProcedure
   .meta(
     aiSdkTool({
       description:
@@ -127,7 +127,7 @@ export const updateDeal = mutationProcedure
     return { success: true as const, id, href: "/pipeline" };
   });
 
-export const deleteDeal = mutationProcedure
+export const deleteDeal = protectedProcedure
   .meta(
     aiSdkTool({
       description: "Delete an existing deal only when explicitly requested. Look up its ID first.",
@@ -144,7 +144,7 @@ export const deleteDeal = mutationProcedure
     return { success: true as const, id, href: "/pipeline" };
   });
 
-export const moveDeal = mutationProcedure
+export const moveDeal = protectedProcedure
   .meta(
     aiSdkTool({
       description:

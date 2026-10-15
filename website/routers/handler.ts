@@ -7,7 +7,7 @@ const handler = new RPCHandler(router, {
   plugins: [new RequestLimitHandlerPlugin({ maxBodySize: 60000 })],
 });
 
-export async function handleRpcRequest(request: Request, onMutation?: () => void) {
+export async function handleRpcRequest(request: Request) {
   if (request.method !== "POST")
     return new Response("Method not allowed", { status: 405, headers: { Allow: "POST" } });
   // Cookie-authenticated mutations retain the same-origin protection previously
@@ -16,7 +16,7 @@ export async function handleRpcRequest(request: Request, onMutation?: () => void
     return new Response("This request is not allowed.", { status: 403 });
   const { response } = await handler.handle(request, {
     prefix: "/rpc",
-    context: requestContext(request.headers, onMutation),
+    context: requestContext(request.headers),
   });
   const result = response ?? new Response("Not found", { status: 404 });
   result.headers.set("Cache-Control", "private, no-store");

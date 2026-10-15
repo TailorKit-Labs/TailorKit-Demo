@@ -2,13 +2,13 @@
 
 import { useOptimistic, useRef, useState, useTransition } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import { Ellipsis, Pencil, Trash2 } from "lucide-react";
 import type { Deal, Workspace } from "@/lib/workspace";
-import { rpc } from "@/lib/orpc";
+import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { RecordDialog } from "@/components/record-dialog";
 import {
@@ -65,7 +65,7 @@ function reorderDeals(current: Deal[], move: DealMove) {
 }
 
 export function PipelineBoard({ workspace, deals }: { workspace: Workspace; deals: Deal[] }) {
-  const router = useRouter();
+  const mutation = useMutation(orpc.deals.move.mutationOptions());
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [touch] = useState(
@@ -87,8 +87,7 @@ export function PipelineBoard({ workspace, deals }: { workspace: Workspace; deal
     startTransition(async () => {
       moveOptimistically(move);
       try {
-        await rpc.deals.move(move);
-        router.refresh();
+        await mutation.mutateAsync(move);
       } catch {
         setError("Could not move this deal. Please try again.");
       }
@@ -206,11 +205,11 @@ function PipelineCard({
   pending: boolean;
   onMove: MoveHandler;
 }) {
-  const router = useRouter();
+  const removeDeal = useMutation(orpc.deals.delete.mutationOptions());
   const [editing, setEditing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [deletePending, startDelete] = useTransition();
+  const deletePending = removeDeal.isPending;
   const [error, setError] = useState("");
   const cardRef = useRef<HTMLDivElement | null>(null);
   const [placement, setPlacement] = useState<"before" | "after">("before");
@@ -253,17 +252,14 @@ function PipelineCard({
     [deal.id, deal.stage, pending, editing, deleting, menuOpen],
   );
 
-  function remove() {
+  async function remove() {
     setError("");
-    startDelete(async () => {
-      try {
-        await rpc.deals.delete({ id: deal.id });
-        setDeleting(false);
-        router.refresh();
-      } catch {
-        setError("Could not delete this deal. Please try again.");
-      }
-    });
+    try {
+      await removeDeal.mutateAsync({ id: deal.id });
+      setDeleting(false);
+    } catch {
+      setError("Could not delete this deal. Please try again.");
+    }
   }
 
   return (

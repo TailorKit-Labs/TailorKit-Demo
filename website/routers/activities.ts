@@ -3,7 +3,7 @@ import { aiSdkTool } from "@orpc/ai-sdk";
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "../lib/drizzle";
 import { activities } from "../lib/schema";
-import { protectedProcedure, mutationProcedure } from "./base";
+import { protectedProcedure } from "./base";
 import { schemas } from "./schemas";
 import { checkContact, lockTenant, logActivity } from "./shared";
 
@@ -43,7 +43,7 @@ export const listActivities = protectedProcedure
     };
   });
 
-export const addNote = mutationProcedure
+export const addNote = protectedProcedure
   .meta(
     aiSdkTool({
       description:

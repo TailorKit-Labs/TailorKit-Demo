@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { orpc } from "./orpc";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { createClient } from "tailorkit/react";
@@ -42,6 +44,7 @@ export const tailorKitClient = createClient({
 
 export function TailorKitProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { setTheme } = useTheme();
   useEffect(() => {
     function handle(event: Event) {
@@ -52,7 +55,7 @@ export function TailorKitProvider({ children }: { children: ReactNode }) {
           router.push(detail.action.href);
           break;
         case "refresh":
-          router.refresh();
+          void queryClient.invalidateQueries({ queryKey: orpc.key() });
           break;
         case "theme":
           setTheme(detail.action.theme);
@@ -61,7 +64,7 @@ export function TailorKitProvider({ children }: { children: ReactNode }) {
     }
     window.addEventListener(hostActionEvent, handle);
     return () => window.removeEventListener(hostActionEvent, handle);
-  }, [router, setTheme]);
+  }, [router, setTheme, queryClient]);
   return <tailorKitClient.Provider>{children}</tailorKitClient.Provider>;
 }
 

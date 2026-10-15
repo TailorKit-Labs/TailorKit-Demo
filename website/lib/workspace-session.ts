@@ -17,3 +17,13 @@ export const requireUserId = cache(async () => {
 });
 
 export const requireTenant = cache(async () => tenantForUser(await requireUserId()));
+
+export const getTenant = cache(async () => {
+  try {
+    return await requireTenant();
+  } catch (error) {
+    if (error instanceof ORPCError && (error.code === "UNAUTHORIZED" || error.code === "FORBIDDEN"))
+      return null;
+    throw error;
+  }
+});

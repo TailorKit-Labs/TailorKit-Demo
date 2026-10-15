@@ -36,10 +36,7 @@ async function main() {
         expiresAt: Date.now() + 60000,
       },
     };
-    let refreshes = 0;
-    const tools = createTailorKitServerTools(() => {
-      refreshes++;
-    });
+    const tools = createTailorKitServerTools();
     const initial = await tools.workspace.get({ input: {}, context });
     assert.equal(initial.usage.contacts, 30);
     assert.equal(initial.usage.limit, 50);
@@ -127,7 +124,6 @@ async function main() {
       .where(eq(contacts.tenantId, foreign.id));
     const [otherDeal] = await db.select().from(deals).where(eq(deals.tenantId, foreign.id));
     const [otherTask] = await db.select().from(tasks).where(eq(tasks.tenantId, foreign.id));
-    const beforeRejections = refreshes;
     for (const attempt of [
       () => tools.contacts.get({ input: { id: otherContact.id }, context }),
       () => tools.contacts.update({ input: { ...created.contact, id: otherContact.id }, context }),
@@ -161,11 +157,6 @@ async function main() {
       () => tools.tasks.update({ input: { ...task.task, dueDate: "invalid" }, context }),
     ])
       await assert.rejects(attempt);
-    assert.equal(
-      refreshes,
-      beforeRejections,
-      "Rejected operations must not refresh or report success",
-    );
 
     await tools.contacts.delete({ input: { id }, context });
     await assert.rejects(() => tools.contacts.get({ input: { id }, context }), /Contact not found/);
@@ -182,7 +173,6 @@ async function main() {
     await tools.tasks.delete({ input: { id: task.task.id }, context });
     const final = await tools.workspace.get({ input: {}, context });
     assert.deepEqual(final.usage, initial.usage);
-    assert.equal(refreshes, 14, "Every committed mutation refreshes the host exactly once");
 
     for (const href of [
       "https://evil.test",
@@ -227,7 +217,7 @@ async function main() {
     assert.ok(form.includes('type="submit"'));
     assert.ok(form.includes("Create"));
     console.log(
-      "PASS: TailorKit contract CRUD, filtering, notes, ordering, output validation, tenant isolation, cascade behavior, cache refresh, safe navigation and form rendering/callbacks.",
+      "PASS: TailorKit contract CRUD, filtering, notes, ordering, output validation, tenant isolation, cascade behavior, safe navigation and form rendering/callbacks.",
     );
   } finally {
     for (const id of users) await db.delete(user).where(eq(user.id, id));

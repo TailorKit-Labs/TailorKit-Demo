@@ -40,10 +40,9 @@ export type RpcContext = {
   resolveTenant: () => Promise<RpcTenant>;
   resolveUserId?: () => Promise<string>;
   tenant?: RpcTenant;
-  onMutation?: () => void;
 };
 
-export function requestContext(headers: Headers, onMutation?: () => void): RpcContext {
+export function requestContext(headers: Headers): RpcContext {
   let user: Promise<string> | undefined;
   const resolveUserId = () =>
     (user ??= auth.api.getSession({ headers }).then((session) => {
@@ -56,12 +55,11 @@ export function requestContext(headers: Headers, onMutation?: () => void): RpcCo
   return {
     resolveUserId,
     resolveTenant: async () => tenantForUser(await resolveUserId()),
-    onMutation,
   };
 }
 
 // Only use an ID resolved from a server session or a verified TailorKit scope.
 // This capability does not grant access to session-only setup procedures.
-export function verifiedWorkspaceContext(tenantId: string, onMutation?: () => void): RpcContext {
-  return { resolveTenant: () => tenantFromVerifiedId(tenantId), onMutation };
+export function verifiedWorkspaceContext(tenantId: string): RpcContext {
+  return { resolveTenant: () => tenantFromVerifiedId(tenantId) };
 }

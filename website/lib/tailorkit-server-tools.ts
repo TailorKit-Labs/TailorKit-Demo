@@ -6,11 +6,11 @@ import { verifiedWorkspaceContext } from "../routers/context";
 
 // TailorKit verifies the tool capability before invoking this implementation.
 // Workspace identity comes only from its signed scope, never from tool input.
-export function createTailorKitServerTools(onMutation: () => void) {
+export function createTailorKitServerTools() {
   function rpcContext(context: ToolContext) {
     if (context.scope.name !== "workspace") throw new Error("A workspace scope is required.");
     const { workspaceId } = contract.scopes.workspace.parse(context.scope.value);
-    return verifiedWorkspaceContext(workspaceId, onMutation);
+    return verifiedWorkspaceContext(workspaceId);
   }
   return {
     workspace: {

@@ -1,3 +1,4 @@
+import { createTanstackQueryUtils } from "@orpc/tanstack-query";
 import { createRouterClient } from "@orpc/server";
 import { router } from "../routers";
 import { requireTenant, requireUserId } from "./workspace-session";
@@ -7,3 +8,5 @@ import { requireTenant, requireUserId } from "./workspace-session";
 export const rpc = createRouterClient(router, {
   context: () => ({ resolveTenant: requireTenant, resolveUserId: requireUserId }),
 });
+
+export const orpc = createTanstackQueryUtils(rpc);

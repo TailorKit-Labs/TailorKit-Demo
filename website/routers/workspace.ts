@@ -2,18 +2,16 @@ import { aiSdkTool } from "@orpc/ai-sdk";
 import { asc, desc, eq } from "drizzle-orm";
 import { db } from "../lib/drizzle";
 import { contacts, deals, tasks, activities } from "../lib/schema";
-import { protectedProcedure, sessionProcedure, mutationMeta } from "./base";
+import { protectedProcedure, sessionProcedure } from "./base";
 import { schemas } from "./schemas";
 import { RECORD_LIMIT } from "./shared";
 import { provisionForUser } from "../lib/provision";
 import type { Workspace } from "../lib/workspace";
 
-export const provisionWorkspace = sessionProcedure
-  .meta(mutationMeta(true))
-  .handler(async ({ context }) => {
-    await provisionForUser(context.userId);
-    return { success: true as const };
-  });
+export const provisionWorkspace = sessionProcedure.handler(async ({ context }) => {
+  await provisionForUser(context.userId);
+  return { success: true as const };
+});
 
 export const snapshotWorkspace = protectedProcedure.handler(
   async ({ context }): Promise<Workspace> => {

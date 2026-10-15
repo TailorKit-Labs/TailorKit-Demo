@@ -6,17 +6,14 @@ import { AppSidebar } from "@/components/app/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AgentWorkspace } from "@/components/agent/agent-workspace";
 import { TailorKitProvider, useViewContext } from "@/lib/tailorkit-client";
-import type { AgentHistory } from "@/lib/agents/agent-chat-types";
 
 export function CrmShell({
   children,
   name,
-  agentHistory,
   workspaceId,
 }: {
   children: React.ReactNode;
   name: string;
-  agentHistory: AgentHistory;
   workspaceId: string;
 }) {
   const pathname = usePathname();
@@ -30,7 +27,7 @@ export function CrmShell({
         <AppMobileHeader name={name} />
         <AppSidebar name={name} />
         <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-sidebar max-[799px]:pt-14">
-          <AgentWorkspace initialHistory={agentHistory}>
+          <AgentWorkspace>
             <div
               key={pathname}
               data-slot="page-content"

@@ -1,5 +1,4 @@
 import { consumeStream, createAgentUIStreamResponse } from "ai";
-import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { checkBotId } from "botid/server";
 import { requireTenant } from "@/lib/workspace";
@@ -133,7 +132,6 @@ export async function POST(request: Request) {
             tokenUsage = tokens;
           },
         },
-        () => revalidatePath("/", "layout"),
       ),
       uiMessages: chatTurn.messages,
       consumeSseStream: ({ stream }) => {
