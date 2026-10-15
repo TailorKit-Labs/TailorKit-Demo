@@ -1,0 +1,103 @@
+website/lib/contact-operations.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1,41,48
+website/lib/crm-error.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1-4,6-10
+  s_c99e12388a36c5::t_aec2e3f6940bb4 5
+website/lib/orpc.server.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1-6,8-9
+  s_c99e12388a36c5::t_d1fe1fa4d50a77 7
+website/lib/rpc/auth.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1-22,24-37
+  s_c99e12388a36c5::t_ac11285891af55 23
+website/app/api/tailorkit/[...tailorkit]/route.ts
+  s_c99e12388a36c5::t_af9d587a071783 2,7-12
+website/lib/rpc/server-client.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1-10
+website/lib/agents/crm-tools.ts
+  s_c99e12388a36c5::t_af9d587a071783 2,7-8,10,12,17,19-36
+  s_c99e12388a36c5::t_1e4e8b347faf6f 9
+website/lib/crm-operations.ts
+  s_c99e12388a36c5::t_af9d587a071783 33
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1,54,91
+website/lib/deal-operations.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1,48,55-56,58,94,110
+  s_c99e12388a36c5::t_37ffcba2b54b6e 57
+website/lib/workspace.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 2,4,26-28,31-37
+  s_c99e12388a36c5::t_d38c768bc1c5b0 3,29
+website/lib/tailorkit-server-tools.ts
+  s_c99e12388a36c5::t_af9d587a071783 3,8-12
+  s_c99e12388a36c5::t_8f7af75544f3c3 15,18-22,25-29,32-36,39-40
+website/lib/rpc/router.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1-28,30-44,46-49,51-52,54-55,57-58,60-61,63-66,68-69,71-72,74-75,77-78,80-83,85-86,88-89,91-92,94-95,97-100,102-103,105-107
+  s_c99e12388a36c5::t_018e435518bc8c 29,45,50,53,56,59,62,67,70,73,76,79,84,87,90,93,96,101,104
+website/scripts/test-rpc.ts
+  s_c99e12388a36c5::t_5c2aaf0cf5f311 1-17,20-29,34-39,55-61,69,86-90,96-97,101-103,118,123-126,153-158,163-166,174,178-182
+  s_c99e12388a36c5::t_512f627740c9e1 131-133,152
+  s_c99e12388a36c5::t_7d57de53d981f6 18-19,30-33,40-54,62-68,70-85,91-95,98-100,104-117,119-122,127-130,134-146,148-151,159-162,167-173,175-177,183-186
+  s_c99e12388a36c5::t_ab41960e7e89ad 147
+website/lib/mutation-guards.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1,17-18,20,28
+  s_c99e12388a36c5::t_e181398fce6886 19
+.agents/skills/orpc-contract/SKILL.md
+  s_c99e12388a36c5::t_287e6ecb68e399 1-159
+website/lib/orpc.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1-5,8-15
+  s_c99e12388a36c5::t_b73d515491e146 6-7,16
+website/lib/rpc/handler.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1-24
+website/lib/workspace-queries.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 2-42
+  s_c99e12388a36c5::t_e5719f31b9f95a 1
+website/components/crm-pages.tsx
+  s_c99e12388a36c5::t_af9d587a071783 18,105,109-113,115,166,232-234,259,293-294,298,319,576,672
+  s_c99e12388a36c5::t_44d2d3ab8f9907 114
+website/README.md
+  s_c99e12388a36c5::t_ec34fde204b606 34-65,119
+package.json
+  s_c99e12388a36c5::t_5c2aaf0cf5f311 14
+website/lib/workspace-session.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1-7,9-13,15-17
+  s_c99e12388a36c5::t_a6b42d0006711c 8,14
+website/components/record-dialog.tsx
+  s_c99e12388a36c5::t_af9d587a071783 8,89-90,99-100,102
+.agents/skills/orpc/SKILL.md
+  s_c99e12388a36c5::t_287e6ecb68e399 1-237
+website/package.json
+  s_c99e12388a36c5::t_5c2aaf0cf5f311 23-24
+  s_c99e12388a36c5::t_04a909119744cc 32-33
+.agents/skills/orpc-openapi/SKILL.md
+  s_c99e12388a36c5::t_287e6ecb68e399 1-151
+website/app/rpc/[[...rest]]/route.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1-6
+skills-lock.json
+  s_c99e12388a36c5::t_287e6ecb68e399 10-33
+.agents/skills/orpc-migrate/SKILL.md
+  s_c99e12388a36c5::t_287e6ecb68e399 1-124
+website/lib/task-operations.ts
+  s_c99e12388a36c5::t_a5acb76f53e5bc 1,33,51,60
+website/lib/actions.ts
+  s_c99e12388a36c5::t_af9d587a071783 2,5
+website/components/pipeline-board.tsx
+  s_c99e12388a36c5::t_af9d587a071783 11,90-91,260-262
+pnpm-lock.yaml
+  s_c99e12388a36c5::t_9ff5070952d7cd 182-187,316-321
+pnpm-workspace.yaml
+  s_c99e12388a36c5::t_c5058dc7dc1122 13-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c13bb9ac78f3a1d4d34021ea1810fe0d7fb22cac",
+  "prompts": {},
+  "sessions": {
+    "s_c99e12388a36c5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13e35-7874-7a90-9c95-8d8fd269609f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
