@@ -96,6 +96,19 @@ Drizzle 1.0 RC blocks some populated-table/column drops and renames in nonintera
 
 For a change blocked by the compatibility check, inspect `pnpm --filter website db:plan` against the intended database. Use an expand/contract sequence that keeps the running app working, then explicitly run `pnpm --filter website db:push:force` with that database's credentials only after reviewing the SQL and deployment timing. Never add `--force` to the build command. Schema changes happen before the new deployment is ready; a later build failure does not roll them back.
 
-No generated migration files or custom branch-management scripts are required. Vercel's build environment receives the Neon secrets directly; local development does not need to download them.
+No generated migration files are required. Vercel's build environment receives the Neon secrets directly; local development does not need to download them.
+
+### Preview branch cleanup
+
+The [cleanup workflow](../.github/workflows/cleanup-neon-preview.yml) deletes `preview/<git-branch>` when a pull request from this repository is merged or closed without merging. This matches the branch names created by the Vercel integration and frees branch capacity immediately instead of waiting for Vercel deployment retention. Missing branches are a successful no-op; default, protected, and root branches are refused. Fork PRs are skipped because their branch names can collide with this repository's previews.
+
+Configure these under **GitHub → Settings → Secrets and variables → Actions** before relying on cleanup:
+
+- Repository variable `NEON_PROJECT_ID`: the connected project's ID from Neon **Project Settings**.
+- Repository secret `NEON_API_KEY`: an API key with access to that project, created in Neon **Account Settings → API Keys**.
+
+The workflow uses `pull_request_target` so the base repository controls cleanup, with no repository checkout and no GitHub token permissions. It becomes active after merging into `main`. Existing branches from already-closed PRs need a one-time cleanup in the Neon Console; this workflow handles future PR closes. Deleting the database branch also ends database access for its old preview URLs. If a PR is reopened, push a commit or redeploy to recreate its preview database.
+
+See [Neon's preview branch cleanup guide](https://neon.com/docs/guides/vercel-branch-cleanup) for integration behavior and setup details.
 
 This is a bounded demo workspace, not a full production account system. Per-workspace record limits do not provide a global storage budget: cookie resets can create additional anonymous accounts. Add expiry cleanup or a global account budget before exposing it to sustained public traffic.
