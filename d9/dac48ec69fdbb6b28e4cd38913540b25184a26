@@ -1,0 +1,21 @@
+website/README.md
+  s_f113f3d0af95a0::t_1a0506614aaa61 64,68-79
+website/lib/tailorkit-server.ts
+  s_f113f3d0af95a0::t_baf03d4dca2ab8 4-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d9dac48ec69fdbb6b28e4cd38913540b25184a26",
+  "prompts": {},
+  "sessions": {
+    "s_f113f3d0af95a0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13e33-1808-7451-834b-0d4ace3a1062",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
