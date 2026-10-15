@@ -27,29 +27,34 @@ async function main() {
     const bucketKey = key();
     const raced = await Promise.all(Array.from({ length: 8 }, () => reserveAgentTokens(bucketKey)));
     const admitted = raced.filter((result) => result.allowed);
-    assert.equal(admitted.length, 1, "Concurrent requests must share one IP lease");
+    assert.equal(
+      admitted.length,
+      AGENT_REQUESTS_PER_MINUTE,
+      "One IP may run multiple chats within its shared limits",
+    );
     assert.ok(
       raced
         .filter((result) => !result.allowed)
-        .every((result) => !result.allowed && result.reason === "busy"),
+        .every((result) => !result.allowed && result.reason === "burst"),
     );
     const first = admitted[0];
     assert.ok(first.allowed);
-    assert.equal((await row(bucketKey)).tokens, AGENT_TOKEN_CAPACITY - AGENT_TURN_RESERVATION);
-    await settleAgentTokens(first.reservation, 2300);
-    assert.equal((await row(bucketKey)).tokens, AGENT_TOKEN_CAPACITY - 2300);
+    assert.equal(
+      (await row(bucketKey)).tokens,
+      AGENT_TOKEN_CAPACITY - admitted.length * AGENT_TURN_RESERVATION,
+    );
+    await Promise.all([
+      ...admitted.toReversed().map((result) => settleAgentTokens(result.reservation, 2300)),
+      settleAgentTokens(first.reservation, 2300),
+    ]);
+    assert.equal((await row(bucketKey)).tokens, AGENT_TOKEN_CAPACITY - admitted.length * 2300);
     await settleAgentTokens(first.reservation, 0);
     assert.equal(
       (await row(bucketKey)).tokens,
-      AGENT_TOKEN_CAPACITY - 2300,
+      AGENT_TOKEN_CAPACITY - admitted.length * 2300,
       "Settlement must be idempotent",
     );
 
-    for (let index = 1; index < AGENT_REQUESTS_PER_MINUTE; index++) {
-      const next = await reserveAgentTokens(bucketKey);
-      assert.ok(next.allowed);
-      await settleAgentTokens(next.reservation, 100);
-    }
     const burst = await reserveAgentTokens(bucketKey);
     assert.ok(
       !burst.allowed && burst.reason === "burst" && burst.retryAfter > 0 && burst.retryAfter <= 60,
@@ -67,6 +72,12 @@ async function main() {
       beforeFailure,
       "Unknown/cancelled usage must retain the reservation",
     );
+    await settleAgentTokens(afterMinute.reservation, 0);
+    assert.equal(
+      (await row(bucketKey)).tokens,
+      beforeFailure,
+      "Unknown usage also settles at most once",
+    );
 
     const budgetKey = key();
     const allowance = await reserveAgentTokens(budgetKey);
@@ -74,8 +85,8 @@ async function main() {
     await settleAgentTokens(allowance.reservation, AGENT_TOKEN_CAPACITY + 100);
     assert.equal(
       (await row(budgetKey)).tokens,
-      0,
-      "An overshooting final step must empty the bucket",
+      -100,
+      "An overshooting final step must retain debt until the window resets",
     );
     const exhausted = await reserveAgentTokens(budgetKey);
     assert.ok(!exhausted.allowed && exhausted.reason === "budget");
@@ -92,29 +103,82 @@ async function main() {
     assert.ok(refreshed.reservation.resetAt.getTime() > Date.now() + AGENT_BUCKET_WINDOW_MS - 5000);
     await settleAgentTokens(allowance.reservation, 0);
     assert.equal(
-      (await row(budgetKey)).leaseId,
-      refreshed.reservation.leaseId,
-      "Old settlement must not touch a new window/lease",
+      (await row(budgetKey)).tokens,
+      AGENT_TOKEN_CAPACITY - AGENT_TURN_RESERVATION,
+      "Old settlement must not touch a new window",
     );
     await settleAgentTokens(refreshed.reservation, 100);
 
-    const leaseKey = key();
-    const stale = await reserveAgentTokens(leaseKey);
+    const windowKey = key();
+    const stale = await reserveAgentTokens(windowKey);
     assert.ok(stale.allowed);
     await db
       .update(agentBuckets)
-      .set({ leaseExpiresAt: new Date(0) })
-      .where(eq(agentBuckets.key, leaseKey));
-    const recovered = await reserveAgentTokens(leaseKey);
+      .set({ resetAt: new Date(0), requestResetAt: new Date(0) })
+      .where(eq(agentBuckets.key, windowKey));
+    const recovered = await reserveAgentTokens(windowKey);
     assert.ok(recovered.allowed);
     await settleAgentTokens(stale.reservation, 0);
-    assert.equal((await row(leaseKey)).leaseId, recovered.reservation.leaseId);
-    assert.equal((await row(leaseKey)).tokens, AGENT_TOKEN_CAPACITY - 2 * AGENT_TURN_RESERVATION);
+    assert.deepEqual((await row(windowKey)).reservationIds, [recovered.reservation.id]);
+    assert.equal((await row(windowKey)).tokens, AGENT_TOKEN_CAPACITY - AGENT_TURN_RESERVATION);
     await settleAgentTokens(recovered.reservation, 100);
+
+    const overageKey = key();
+    const overage = await reserveAgentTokens(overageKey);
+    const concurrent = await reserveAgentTokens(overageKey);
+    assert.ok(overage.allowed && concurrent.allowed);
+    await settleAgentTokens(overage.reservation, AGENT_TOKEN_CAPACITY + 100);
+    await settleAgentTokens(concurrent.reservation, 0);
+    assert.equal(
+      (await row(overageKey)).tokens,
+      -100,
+      "A concurrent refund must not erase another turn's overage",
+    );
+    const overdrawn = await reserveAgentTokens(overageKey);
+    assert.ok(!overdrawn.allowed && overdrawn.reason === "budget");
+
+    const heldKey = key();
+    const held = await reserveAgentTokens(heldKey);
+    assert.ok(held.allowed);
+    await db
+      .update(agentBuckets)
+      .set({ requestResetAt: new Date(0) })
+      .where(eq(agentBuckets.key, heldKey));
+    const budgetRace = await Promise.all(
+      Array.from({ length: 8 }, () => reserveAgentTokens(heldKey)),
+    );
+    assert.equal(
+      budgetRace.filter((result) => result.allowed).length,
+      4,
+      "In-flight reservations must prevent over-admission after the minute resets",
+    );
+    assert.ok(budgetRace.some((result) => !result.allowed && result.reason === "budget"));
+    assert.equal((await row(heldKey)).tokens, 0);
+
+    const legacyKey = key();
+    await db.insert(agentBuckets).values({
+      key: legacyKey,
+      tokens: AGENT_TOKEN_CAPACITY,
+      resetAt: new Date(Date.now() + AGENT_BUCKET_WINDOW_MS),
+      requests: 0,
+      requestResetAt: new Date(Date.now() + 60000),
+      leaseId: "legacy-lock",
+      leaseExpiresAt: new Date(Date.now() + 330000),
+    });
+    const legacy = await reserveAgentTokens(legacyKey);
+    assert.ok(legacy.allowed, "A legacy IP lease must no longer block a new request");
+    await settleAgentTokens(legacy.reservation, 100);
+    assert.equal((await row(legacyKey)).tokens, AGENT_TOKEN_CAPACITY - 100);
 
     const independent = await reserveAgentTokens(key());
     assert.ok(independent.allowed, "Other IPs must retain their own allowance");
     await settleAgentTokens(independent.reservation, 100);
+    await db
+      .update(agentBuckets)
+      .set({ resetAt: new Date(0) })
+      .where(eq(agentBuckets.key, heldKey));
+    await pruneAgentBuckets();
+    assert.ok(await row(heldKey), "Cleanup grace must protect requests crossing a bucket reset");
     await db
       .update(agentBuckets)
       .set({ resetAt: new Date(0), leaseExpiresAt: new Date(0) })
@@ -164,7 +228,7 @@ async function main() {
       else testEnv.NODE_ENV = originalNodeEnv;
     }
     console.log(
-      "PASS: shared IP bucket, concurrent admission, usage accounting, burst limit, five-hour reset, cancellation charge, expired leases, cleanup, and trusted/hashed IP identity.",
+      "PASS: concurrent chats per IP, atomic token reservations, out-of-order/idempotent settlement, overage debt, burst limit, five-hour reset, cancellation charge, cleanup, and trusted/hashed IP identity.",
     );
   } finally {
     if (keys.length) await db.delete(agentBuckets).where(inArray(agentBuckets.key, keys));

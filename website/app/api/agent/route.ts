@@ -80,11 +80,9 @@ export async function POST(request: Request) {
   }
   if (!admission.allowed) {
     const message =
-      admission.reason === "busy"
-        ? "A response is already running on this network. Please wait for it to finish."
-        : admission.reason === "burst"
-          ? "Too many messages from this network. Please wait a minute and try again."
-          : "This network has used its demo allowance. Please try again after the five-hour bucket resets.";
+      admission.reason === "burst"
+        ? "Too many messages from this network. Please wait a minute and try again."
+        : "This network has used its demo allowance. Please try again after the five-hour bucket resets.";
     return new Response(message, {
       status: 429,
       headers: { "Retry-After": String(admission.retryAfter) },

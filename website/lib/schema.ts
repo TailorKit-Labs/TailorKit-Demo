@@ -136,7 +136,10 @@ export const agentBuckets = pgTable(
     resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
     requests: integer("requests").notNull(),
     requestResetAt: timestamp("request_reset_at", { withTimezone: true }).notNull(),
+    reservationIds: jsonb("reservation_ids").$type<string[]>(),
+    // Retain the old IP-lock column for compatibility with existing deployments.
     leaseId: text("lease_id"),
+    // Cleanup grace period only; this no longer prevents concurrent requests.
     leaseExpiresAt: timestamp("lease_expires_at", { withTimezone: true }).notNull(),
   },
   (t) => [index("agent_buckets_reset_idx").on(t.resetAt)],

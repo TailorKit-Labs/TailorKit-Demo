@@ -31,14 +31,14 @@ export function agentIpKey(request: Request) {
 
 export type AgentReservation = {
   key: string;
-  leaseId: string;
+  id: string;
   tokens: number;
   resetAt: Date;
 };
 
 type Admission =
   | { allowed: true; reservation: AgentReservation }
-  | { allowed: false; reason: "busy" | "burst" | "budget"; retryAfter: number };
+  | { allowed: false; reason: "burst" | "budget"; retryAfter: number };
 
 export async function reserveAgentTokens(key: string): Promise<Admission> {
   return db.transaction(async (tx) => {
@@ -60,9 +60,6 @@ export async function reserveAgentTokens(key: string): Promise<Admission> {
       .where(eq(agentBuckets.key, key))
       .for("update");
     const retry = (at: Date) => Math.max(1, Math.ceil((at.getTime() - now.getTime()) / 1000));
-    if (bucket.leaseId && bucket.leaseExpiresAt > now) {
-      return { allowed: false, reason: "busy", retryAfter: retry(bucket.leaseExpiresAt) };
-    }
     const resetAt =
       bucket.resetAt <= now ? new Date(now.getTime() + AGENT_BUCKET_WINDOW_MS) : bucket.resetAt;
     const tokens = bucket.resetAt <= now ? AGENT_TOKEN_CAPACITY : bucket.tokens;
@@ -75,7 +72,7 @@ export async function reserveAgentTokens(key: string): Promise<Admission> {
     if (tokens < AGENT_TURN_RESERVATION) {
       return { allowed: false, reason: "budget", retryAfter: retry(resetAt) };
     }
-    const reservation = { key, leaseId: randomUUID(), tokens: AGENT_TURN_RESERVATION, resetAt };
+    const reservation = { key, id: randomUUID(), tokens: AGENT_TURN_RESERVATION, resetAt };
     await tx
       .update(agentBuckets)
       .set({
@@ -83,7 +80,10 @@ export async function reserveAgentTokens(key: string): Promise<Admission> {
         resetAt,
         requests: requests + 1,
         requestResetAt,
-        leaseId: reservation.leaseId,
+        reservationIds: [
+          ...(bucket.resetAt <= now ? [] : (bucket.reservationIds ?? [])),
+          reservation.id,
+        ],
         leaseExpiresAt: new Date(now.getTime() + AGENT_LEASE_MS),
       })
       .where(eq(agentBuckets.key, key));
@@ -98,14 +98,15 @@ export async function settleAgentTokens(reservation: AgentReservation, usage?: n
   await db
     .update(agentBuckets)
     .set({
-      tokens: sql`greatest(0, least(${AGENT_TOKEN_CAPACITY}, ${agentBuckets.tokens} + ${reservation.tokens - charged}))`,
-      leaseId: null,
-      leaseExpiresAt: new Date(),
+      // Keep overage as debt so later refunds from concurrent turns cannot
+      // restore allowance that another turn has already spent.
+      tokens: sql`least(${AGENT_TOKEN_CAPACITY}, ${agentBuckets.tokens} + ${reservation.tokens - charged})`,
+      reservationIds: sql`${agentBuckets.reservationIds} - ${reservation.id}::text`,
     })
     .where(
       and(
         eq(agentBuckets.key, reservation.key),
-        eq(agentBuckets.leaseId, reservation.leaseId),
+        sql`${agentBuckets.reservationIds} ? ${reservation.id}`,
         eq(agentBuckets.resetAt, reservation.resetAt),
       ),
     );
