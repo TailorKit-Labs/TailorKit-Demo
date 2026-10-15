@@ -14,7 +14,7 @@ import { Sheet, SheetPopup, SheetTitle } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
 import { AppMobileNavigation } from "@/components/app/app-mobile-navigation";
 import { AppsPanelContext } from "./apps-panel-context";
-import { AppsPanel, demoApps } from "./apps-panel";
+import { AppsPanel } from "./apps-panel";
 import {
   Drawer,
   DrawerContent,
@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
+import { useViews } from "@/lib/tailorkit-client";
 
 const transport = new DefaultChatTransport<CrmAgentMessage>({ api: "/api/agent" });
 
@@ -52,7 +53,18 @@ export function AgentWorkspace({
   const [openOverride, setOpen] = useState<boolean | null>(null);
   const open = openOverride ?? canDock;
   const [activeTab, setActiveTab] = useState("agent");
-  const [apps, setApps] = useState(demoApps);
+  const { data: views, isPending: appsPending, error: appsError } = useViews({ slot: "panel" });
+  const [appOrder, setAppOrder] = useState<string[]>([]);
+  const apps = (views ?? [])
+    .map((view) => view.app)
+    .sort((a, b) => {
+      const rank = (id: string) => {
+        const index = appOrder.indexOf(id);
+        return index < 0 ? Infinity : index;
+      };
+      return rank(a.id) - rank(b.id);
+    });
+  const selectedTab = apps.some((app) => app.id === activeTab) ? activeTab : "agent";
   const [input, setInput] = useState("");
   const [chatId, setChatId] = useState<string | null>(initialHistory.latest?.id ?? null);
   const [loadingChat, setLoadingChat] = useState(false);
@@ -208,8 +220,9 @@ export function AgentWorkspace({
   const panel = (
     <AppsPanel
       apps={apps}
-      onReorder={setApps}
-      activeTab={activeTab}
+      onReorder={(next) => setAppOrder(next.map((app) => app.id))}
+      activeTab={selectedTab}
+      appsStatus={appsError ? "error" : appsPending ? "loading" : undefined}
       onTabChange={(tab) => {
         setActiveTab(tab);
         setHistoryOpen(false);
