@@ -57,6 +57,18 @@ The IP key is an HMAC using `BETTER_AUTH_SECRET`; raw IPs are not stored in the 
 
 Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration tests and a deterministic SDK tool-loop/streaming and persistence test that needs no provider key. Run `pnpm --filter website test:agent-chats` for chat history, workspace isolation, authoritative context, concurrency, interrupted replies, and lease recovery. Run `pnpm --filter website test:agent-rate-limit` for database-backed bucket, concurrency, accounting, reset, and IP identity tests. Live model quality, provider authentication, and production BotID verification require a configured deployment.
 
+## TailorKit panel apps
+
+The side panel's app tabs come from the TailorKit `panel` slot. The built-in Agent tab stays first; installed apps keep the existing draggable tabs, horizontal scrolling, desktop dock, tablet sheet, and mobile drawer. A workspace with no installed apps shows only Agent. Discovery failures show “Apps unavailable” while chat remains usable.
+
+Set `TAILORKIT_PROJECT_KEY` in `website/.env.local` and in each Vercel environment to your TailorKit project key. It stays on the server. The client uses the current browser origin; the server uses the Vercel preview URL for previews, otherwise `BETTER_AUTH_URL` or the Vercel production domain (localhost in development).
+
+`lib/tailorkit.ts` defines the shared contract, `lib/tailorkit-server.ts` mounts it through `/api/tailorkit/[...tailorkit]`, and `lib/tailorkit-client.tsx` provides discovery and rendering. Installations use the `workspace` scope with `{ workspaceId }`, resolved from the authenticated, provisioned workspace. Requests cannot choose another workspace's scope.
+
+Apps supply a default view for `panel` at `/`. The view receives `{ workspace: { id, name }, page }`; `page` follows the current CRM pathname, including contact detail pages. Shared layout primitives use the CRM's border and text color tokens. To add richer host components or contextual views, extend this contract and its client mappings.
+
+Check `GET /api/tailorkit/schema` and `/api/tailorkit/meta` for the contract. `/api/tailorkit/apps` requires a host session. With an app installed for that workspace, its tab appears beside Agent and renders through `RenderSlot` when selected.
+
 ## Anonymous setup
 
 Better Auth stores the account/session in Postgres and uses its signed HttpOnly session cookie. The session lasts 30 days with refresh on active use. No signup or sign-in forms are exposed. Clearing cookies creates a fresh workspace on the next visit.

@@ -8,7 +8,11 @@ export default async function Layout({ children }: { children: React.ReactNode }
   if (!workspace) return <DemoSetup />;
   const agentHistory = await loadAgentHistory(workspace.tenant.id);
   return (
-    <CrmShell name={workspace.tenant.name} agentHistory={agentHistory}>
+    <CrmShell
+      name={workspace.tenant.name}
+      workspaceId={workspace.tenant.id}
+      agentHistory={agentHistory}
+    >
       {children}
     </CrmShell>
   );
