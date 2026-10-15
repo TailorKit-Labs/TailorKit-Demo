@@ -5,7 +5,7 @@ import { auth } from "../lib/auth";
 import { db, pool } from "../lib/drizzle";
 import { activities, contacts, deals, tasks, tenants, user } from "../lib/schema";
 import { provisionForUser } from "../lib/provision";
-import { createRouterClient } from "@orpc/server";
+import { createRouterClient, ORPCError } from "@orpc/server";
 import { router } from "../routers";
 import { verifiedWorkspaceContext } from "../routers/context";
 import { checkContact, RECORD_LIMIT } from "../routers/shared";
@@ -56,6 +56,37 @@ async function main() {
         .where(and(eq(deals.tenantId, tenant.id), eq(deals.stage, stage)))
         .orderBy(asc(deals.position), desc(deals.createdAt), asc(deals.id));
     const [first, middle, last] = await stageDeals("qualified");
+    const beforeSelfMove = await stageDeals("qualified");
+    const beforeSelfMoveActivity = await db
+      .select()
+      .from(activities)
+      .where(eq(activities.tenantId, tenant.id))
+      .orderBy(asc(activities.id));
+    const selfMove = await client.deals.move({
+      id: first.id,
+      stage: "qualified",
+      targetId: first.id,
+    });
+    assert.equal(
+      selfMove.stage,
+      "qualified",
+      "Same-stage self-target moves remain successful no-ops",
+    );
+    await assert.rejects(
+      client.deals.move({ id: first.id, stage: "proposal", targetId: first.id }),
+      (error: unknown) => error instanceof ORPCError && error.code === "CONFLICT",
+      "Cross-stage self-target moves must reject rather than report a stage change",
+    );
+    assert.deepEqual(await stageDeals("qualified"), beforeSelfMove);
+    assert.deepEqual(
+      await db
+        .select()
+        .from(activities)
+        .where(eq(activities.tenantId, tenant.id))
+        .orderBy(asc(activities.id)),
+      beforeSelfMoveActivity,
+      "Self-target moves must not log activity",
+    );
     await client.deals.move({
       id: first.id,
       stage: "qualified",

@@ -164,7 +164,13 @@ export const moveDeal = protectedProcedure
         .orderBy(asc(deals.position), desc(deals.createdAt), asc(deals.id));
       const source = records.find((deal) => deal.id === move.id);
       if (!source) throw new ORPCError("NOT_FOUND", { message: "Deal not found." });
-      if (move.targetId === source.id) return;
+      if (move.targetId === source.id) {
+        if (move.stage !== source.stage)
+          throw new ORPCError("CONFLICT", {
+            message: "A deal cannot target itself in a different stage.",
+          });
+        return;
+      }
       const destination = records.filter(
         (deal) => deal.stage === move.stage && deal.id !== move.id,
       );
