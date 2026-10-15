@@ -1,13 +1,11 @@
 import { createServer } from "tailorkit/server";
 import { contract } from "./tailorkit";
 
-const origin =
-  process.env.VERCEL_ENV === "preview" && process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : (process.env.BETTER_AUTH_URL ??
-      (process.env.VERCEL_PROJECT_PRODUCTION_URL
-        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-        : "http://localhost:3000"));
+const host =
+  process.env.VERCEL_ENV === "production"
+    ? (process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL)
+    : process.env.VERCEL_URL;
+const origin = host ? `https://${host}` : `http://localhost:${process.env.PORT ?? "3000"}`;
 
 export const tailorKit = createServer({
   contract,

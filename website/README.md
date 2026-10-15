@@ -61,11 +61,22 @@ Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration 
 
 The side panel's app tabs come from the TailorKit `panel` slot. The built-in Agent tab stays first; installed apps keep the existing draggable tabs, horizontal scrolling, desktop dock, tablet sheet, and mobile drawer. A workspace with no installed apps shows only Agent. Discovery failures show “Apps unavailable” while chat remains usable.
 
-Set `TAILORKIT_PROJECT_KEY` in `website/.env.local` and in each Vercel environment to your TailorKit project key. It stays on the server. The client uses the current browser origin; the server uses the Vercel preview URL for previews, otherwise `BETTER_AUTH_URL` or the Vercel production domain (localhost in development).
+Set `TAILORKIT_PROJECT_KEY` in `website/.env.local` and in each Vercel environment to your TailorKit project key. It stays on the server. The client uses the current browser origin; the server uses Vercel's production domain in production (falling back to the deployment URL), the deployment URL for previews, and `localhost` with `PORT` (default 3000) locally. No origin configuration is needed.
 
 `lib/tailorkit.ts` defines the shared contract, `lib/tailorkit-server.ts` mounts it through `/api/tailorkit/[...tailorkit]`, and `lib/tailorkit-client.tsx` provides discovery and rendering. Installations use the `workspace` scope with `{ workspaceId }`, resolved from the authenticated, provisioned workspace. Requests cannot choose another workspace's scope.
 
-Apps supply a default view for `panel` at `/`. The view receives `{ workspace: { id, name }, page }`; `page` follows the current CRM pathname, including contact detail pages. Shared layout primitives use the CRM's border and text color tokens. To add richer host components or contextual views, extend this contract and its client mappings.
+Apps can supply views for each page in `panel`. The shared `/` context supplies `{ workspace: { id, name }, page }`; `page` follows the current CRM pathname. Each page registers its own context while mounted and updates it when workspace data changes:
+
+| CRM page         | TailorKit view     | Page context                                                  |
+| ---------------- | ------------------ | ------------------------------------------------------------- |
+| `/`              | `/overview`        | Contacts, deals, tasks, and activities                        |
+| `/contacts`      | `/contacts`        | Contacts                                                      |
+| `/contacts/[id]` | `/contacts/detail` | Selected contact and its related deals, tasks, and activities |
+| `/pipeline`      | `/pipeline`        | Deals and contacts                                            |
+| `/tasks`         | `/tasks`           | Tasks and contacts                                            |
+| `/settings`      | `/settings`        | Usage counts for contacts, deals, and tasks                   |
+
+Contact detail also registers the `/contacts` ancestor. TailorKit selects the closest app view, falling back from `/contacts/detail` to `/contacts`, then `/`. Every other page falls back to `/`. Context includes the fields from the selected view and its ancestors; registrations are removed when their pages unmount. Record schemas expose display data without internal tenant IDs. Shared layout primitives use the CRM's border and text color tokens.
 
 Check `GET /api/tailorkit/schema` and `/api/tailorkit/meta` for the contract. `/api/tailorkit/apps` requires a host session. With an app installed for that workspace, its tab appears beside Agent and renders through `RenderSlot` when selected.
 
