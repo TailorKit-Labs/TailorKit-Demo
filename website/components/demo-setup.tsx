@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { CheckIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-client";
-import { provisionWorkspace } from "@/lib/actions";
+import { orpc } from "@/lib/orpc";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
@@ -27,6 +28,7 @@ export function DemoSetup() {
   const [attempt, setAttempt] = useState(0);
   const running = useRef(false);
   const router = useRouter();
+  const { mutateAsync: provision } = useMutation(orpc.workspace.provision.mutationOptions());
   useEffect(() => {
     if (running.current) return;
     running.current = true;
@@ -46,8 +48,7 @@ export function DemoSetup() {
         await finishStep(accountStartedAt);
         setStep(1);
         const workspaceStartedAt = performance.now();
-        const result = await provisionWorkspace();
-        if (!result.success) throw new Error(result.error);
+        await provision();
         await finishStep(workspaceStartedAt);
         setStep(2);
         // Keep both steps readable and show completion before the fade: at least 3 seconds total.
@@ -61,7 +62,7 @@ export function DemoSetup() {
       }
     }
     void setup();
-  }, [attempt, router]);
+  }, [attempt, router, provision]);
   return (
     <main
       className={cn(

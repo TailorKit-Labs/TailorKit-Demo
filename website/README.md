@@ -31,11 +31,42 @@ The env example contains a public development-only signing key: never copy that 
 
 Every query and mutation derives the workspace from the authenticated session. Record creation locks the tenant row before checking limits, so concurrent requests cannot exceed 50 contacts, deals, or tasks. User input is validated on the server. Activity history is capped at 50 entries.
 
+## API and SSR
+
+The oRPC API lives in `routers/`, alongside `app/` and `lib/`. Domain files (`contacts.ts`, `deals.ts`, `tasks.ts`, `activities.ts`, `workspace.ts`, and `chats.ts`) define procedures and contain their database logic. `routers/index.ts` assembles named procedure imports and is mounted at `POST /rpc`. Browser calls, server renders, the agent and TailorKit tools share these procedures. `routers/schemas.ts` contains browser-safe schemas shared with the TailorKit contract. Middleware resolves workspace identity; expected domain failures use native oRPC errors. HTTP requests use signed session cookies, same-origin checks, POST-only handling, a 60 KB body limit, and private/no-store responses.
+
+React Query owns browser data. `lib/orpc.ts` exports both the browser transport (`rpc`) and typed TanStack Query helpers (`orpc`). Client Components use `useSuspenseQuery(orpc.workspace.snapshot.queryOptions())` and `useMutation(orpc.contacts.create.mutationOptions())`. The query client's mutation cache invalidates oRPC query keys after successful writes, awaiting active refetches before clearing pending state. Counts, linked records and activity stay in sync; rejected mutations do not refetch. The existing views share a workspace snapshot query because their tables, forms and summaries use the same small, bounded collections.
+
+Server Components use query helpers from `lib/orpc.server.ts`, backed by `createRouterClient` for direct calls without HTTP. Each page starts its queries and wraps its client content in `HydrateClient`:
+
+```tsx
+import { orpc } from "@/lib/orpc.server";
+import { HydrateClient, prefetch } from "@/lib/query.server";
+
+// After checking the session/workspace:
+void prefetch(orpc.workspace.snapshot.queryOptions());
+return (
+  <HydrateClient>
+    <CrmPages view="contacts" />
+  </HydrateClient>
+);
+```
+
+`getQueryClient()` in `lib/query.server.tsx` uses `React.cache` to share one query client within the current RSC request. `HydrateClient` dehydrates that cache, including pending queries, so non-awaited prefetches stream into the browser. A 30-second stale time avoids duplicate requests immediately after hydration. `prefetchInfinite(orpc.someProcedure.infiniteOptions(...))` is available separately with typed page parameters; it does not depend on tRPC's key format or `any` casts. The current collections do not use infinite pagination.
+
+The CRM layout prefetches chat history. It keys `QueryProvider` by workspace ID, preserving the cache across navigation and discarding it when the workspace changes. Every server request receives its own cache; authentication is resolved per invocation. Explicit browser/server entry points keep `next/headers`, the router and database out of the client bundle.
+
+There is no `revalidatePath`. Agent completion and the TailorKit `ui.refresh` action invalidate React Query keys, picking up server-side tool writes. The only route refresh follows anonymous setup, to reveal the authenticated server layout. Provisioning uses a session-only procedure before a workspace exists; workspace-scoped tools cannot invoke it. Better Auth and AI streaming retain dedicated protocol handlers.
+
+Internal tools use oRPC `call(procedure, input, { context: verifiedWorkspaceContext(workspaceId) })` with an ID obtained from the authenticated session or verified TailorKit scope. Never pass an ID from model arguments or a public request body to that context helper. oRPC packages are pinned to the v2 version used by TailorKit; installed `middleapi/orpc` skills live in `.agents/skills`.
+
+Run `pnpm --filter website test:rpc` for PostgreSQL coverage of HTTP/direct calls, validation, hydrated/pending queries, mutation invalidation, request protections and concurrent workspace isolation. Add `RPC_SSR_URL=http://localhost:3010` to verify initial SSR HTML against a running production server.
+
 ## Agent
 
 Below 800px, a floating bar at the bottom center contains **Agent** and a menu icon, opening separate Coss bottom drawers for chat and navigation. The mobile header has no sidebar toggle or bottom navigation tabs. On larger screens, the **Agent** floating button lives in the bottom-right corner and hides while the side panel is open. It opens a Coss bottom drawer below 800px and a chat popover on larger screens. On screens at least 1280px wide, a toggle switches between the popover and a side panel; smaller screens hide that control. Drafts and conversations survive closing, docking, resizing, and in-app navigation. A history dropdown replaces the chat title, with up to eight archived conversations kept in memory for the current session.
 
-The agent uses AI SDK `ToolLoopAgent` and streams text and tool progress through `/api/agent`. It can search/view deals and contacts, create deals, move deals between stages, list/create follow-ups, and complete or reopen tasks. Its tools share the app's validated database operations, workspace isolation, activity logging, and collection limits. Successful writes refresh the visible page. Missing required information is requested in the conversation; new deals default to qualified, no contact, and an expected close in 30 days.
+The agent uses AI SDK `ToolLoopAgent` and streams text and tool progress through `/api/agent`. It can read workspace usage; search, create, edit and delete contacts, deals and follow-ups; move/reorder pipeline deals; complete/reopen tasks; and read activity or add contact notes. Its tools share the app's validated database operations, workspace isolation, activity logging, and collection limits. Agent completion invalidates the browser queries to show committed changes. Missing required information is requested in the conversation; new deals default to qualified, no contact, and an expected close in 30 days.
 
 On Vercel, the AI SDK automatically authenticates through the deployment's [OIDC token](https://vercel.com/docs/ai-gateway/authentication-and-byok/oidc), including tokens supplied through trusted request context. Leave `AI_GATEWAY_API_KEY` unset to use OIDC; a configured API key takes priority. Your Vercel team must have available AI Gateway credits and any required billing verification completed. No manually managed model-provider key is needed.
 
@@ -57,11 +88,58 @@ The IP key is an HMAC using `BETTER_AUTH_SECRET`; raw IPs are not stored in the 
 
 Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration tests and a deterministic SDK tool-loop/streaming and persistence test that needs no provider key. Run `pnpm --filter website test:agent-chats` for chat history, workspace isolation, authoritative context, concurrency, interrupted replies, and lease recovery. Run `pnpm --filter website test:agent-rate-limit` for database-backed bucket, concurrency, accounting, reset, and IP identity tests. Live model quality, provider authentication, and production BotID verification require a configured deployment.
 
+## TailorKit apps
+
+`lib/tailorkit.ts` is the browser-safe `defineContract` shared by the host server and client. It declares the `workspace` scope, the current workspace/page context at `/`, and the `panel` slot. Installed views render as tabs beside the agent. Set `TAILORKIT_PROJECT_KEY` in the server environment to connect your TailorKit project. Without a configured project, CRM and agent features still work and the panel reports that apps are unavailable.
+
+`lib/tailorkit-theme.ts` supplies **the same theme** to `primitives()` and `createClient()`. Apps can use background, text, border, spacing, radius, size and responsive tokens. Semantic colors reference the existing CSS variables, so they follow light/dark mode. Layout breakpoints match the host's 800px mobile and 1280px side-panel boundaries. The SDK's default tokens remain available alongside host additions such as `background="card"`, `textColor="muted"`, `radius="full"`, `width="panel"` and `height="screen"`.
+
+The client implements all 29 contracted components using the existing Coss components:
+
+- Layout: `Box`, `Flex`, `Grid`, `Inline`.
+- Content: `Text`, `Heading`, `Card`, `Badge`, `Avatar`.
+- Forms: `Form`, `Input`, `Textarea`, `Select`, `Checkbox`, `Switch`, `Button`.
+- Tables: `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell`.
+- Feedback and overlays: `Alert`, `Empty`, `Progress`, `Spinner`, `Skeleton`, `Separator`, `Dialog`.
+
+Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. `Form` handles native validation and includes a submit button, with configurable `submitLabel` and `disabled` props. Each input has a visible label and accessible name. `Dialog` always provides a title. Compose table rows inside their header/body and cells inside rows.
+
+Apps have the same workspace operations as the CRM UI, plus task editing:
+
+| Tool group   | Actions                                                                                                   |
+| ------------ | --------------------------------------------------------------------------------------------------------- |
+| `workspace`  | `get`: workspace name, collection usage/limit, total deal value                                           |
+| `contacts`   | `list` (query/status), `get` (details, related deals/tasks, notes/activity), `create`, `update`, `delete` |
+| `deals`      | `list` (query/stage/contact), `create`, `update`, `delete`, `move` (stage or before/after another deal)   |
+| `tasks`      | `list` (query/completed/contact), `create`, `update`, `delete`, `setCompleted`                            |
+| `activities` | `list` (optionally by contact), `addNote`                                                                 |
+| `ui`         | `navigate`, `refresh`, `setTheme`, `notify` (client tools)                                                |
+
+The 18 server tools invoke domain procedures with oRPC `call`, without HTTP. The agent uses `@orpc/ai-sdk` to derive tool schemas and descriptions from those procedures, with explicit `call` execution that validates even direct tool invocations. There is no separate CRM operation/API layer. These paths share validation, tenant isolation, collection limits and activity behavior. The workspace comes from the SDK-verified signed scope, never app input. After successful writes, an app can call `ui.refresh` to invalidate the host queries and display the updated data. The four client tools use the host router, theme provider and toast manager. Navigation accepts only existing CRM routes and contact detail URLs.
+
+Lists return at most 50 records (the workspace collection limit); apps can sort, paginate, select and chart those results locally, just as the host does. Read results include creation timestamps and pipeline position. Calendar dates are `YYYY-MM-DD`; timestamps are ISO strings; deal values are whole USD. Contact/deal/task updates take all editable fields, so preserve fields from the latest read when making an edit. `tasks.setCompleted` sets an explicit boolean, making retries idempotent. Deleting a contact removes its notes/activity and retains related deals/tasks with `contactId: null`.
+
+For example, `contacts.create` accepts:
+
+```json
+{
+  "name": "Alex Chen",
+  "email": "alex@example.com",
+  "company": "Acme Studio",
+  "role": "Designer",
+  "status": "lead"
+}
+```
+
+Use the returned `contact.id` in `tasks.create` with `{ "title": "Follow up", "dueDate": "2026-11-01", "contactId": "…" }`, or in `ui.navigate` as `{ "href": "/contacts/<id>" }`.
+
+Run `pnpm --filter website test:tailorkit` for real PostgreSQL coverage of contract tools, cross-workspace rejection, filtering, editing, deletion cascades, pipeline order, cache invalidation, navigation validation and host form rendering/callbacks. The test needs no TailorKit project or model credentials. Hosted app discovery, signed capability transport and sandbox rendering additionally require a configured TailorKit project.
+
 ## Anonymous setup
 
 Better Auth stores the account/session in Postgres and uses its signed HttpOnly session cookie. The session lasts 30 days with refresh on active use. No signup or sign-in forms are exposed. Clearing cookies creates a fresh workspace on the next visit.
 
-Setup completion is stored in `tenants.setup_version`, rather than trusting a client flag. `lib/provision.ts` owns `CURRENT_SETUP_VERSION`; `lib/workspace.ts` uses it to decide whether setup must resume. To add a setup step, increment this constant and add the step guarded by the previous version inside the locked transaction, advancing the version only after success. Initial seed data is small and provisioning is idempotent, including concurrent tabs. The setup overlay preserves the requested URL and reveals it after completing the steps.
+Setup completion is stored in `tenants.setup_version`, rather than trusting a client flag. `lib/provision.ts` owns `CURRENT_SETUP_VERSION`; `routers/context.ts` checks it to decide whether setup must resume. To add a setup step, increment this constant and add the step guarded by the previous version inside the locked transaction, advancing the version only after success. Initial seed data is small and provisioning is idempotent, including concurrent tabs. The setup overlay preserves the requested URL and reveals it after completing the steps.
 
 ## Verification
 

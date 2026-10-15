@@ -11,7 +11,7 @@ import { provisionForUser } from "../lib/provision";
 import { createCrmTools } from "../lib/agents/crm-tools";
 import { createCrmAgent } from "../lib/agents/crm-agent";
 import { agentRequest, isSameOriginRequest } from "../lib/agents/agent-request";
-import { beginAgentChat, loadAgentChat, saveAgentChat } from "../lib/agents/agent-chat-store";
+import { beginAgentChat, loadAgentChat, saveAgentChat } from "../routers/chats";
 
 const usage = {
   inputTokens: { total: 10, noCache: 10, cacheRead: undefined, cacheWrite: undefined },
@@ -99,6 +99,11 @@ async function main() {
     );
     await assert.rejects(
       run(tools.createDeal.execute!({ title: "Invalid negative value", value: -1 }, options)),
+    );
+    assert.equal(
+      (await run(tools.listDeals.execute!({}, options))).count,
+      19,
+      "Rejected inputs must not write records",
     );
     const task = await run(
       tools.createTask.execute!(

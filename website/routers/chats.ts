@@ -1,12 +1,14 @@
 import { randomUUID } from "node:crypto";
 import type { UIMessage } from "ai";
 import { and, desc, eq } from "drizzle-orm";
-import { db } from "../drizzle";
-import { agentChats } from "../schema";
-import type { AgentHistory, SavedAgentChat } from "./agent-chat-types";
-import type { CrmAgentMessage } from "./crm-agent";
-import type { z } from "zod";
-import type { agentRequest } from "./agent-request";
+import { db } from "../lib/drizzle";
+import { agentChats } from "../lib/schema";
+import type { AgentHistory, SavedAgentChat } from "../lib/agents/agent-chat-types";
+import type { CrmAgentMessage } from "../lib/agents/crm-agent";
+import { z } from "zod";
+import { ORPCError } from "@orpc/server";
+import { protectedProcedure } from "./base";
+import type { agentRequest } from "../lib/agents/agent-request";
 
 export class ChatConflict extends Error {
   constructor(
@@ -159,3 +161,15 @@ export function finishAgentMessages(messages: UIMessage[], interrupted: boolean)
     };
   });
 }
+
+export const getChat = protectedProcedure
+  .input(z.object({ id: z.uuid() }))
+  .handler(async ({ input, context }) => {
+    const chat = await loadAgentChat(context.tenant.id, input.id);
+    if (!chat) throw new ORPCError("NOT_FOUND", { message: "Chat not found." });
+    return chat;
+  });
+
+export const listChats = protectedProcedure.handler(({ context }) =>
+  loadAgentHistory(context.tenant.id),
+);

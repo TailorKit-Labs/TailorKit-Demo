@@ -1,18 +1,11 @@
 "use client";
 
-import { useId, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useId, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { PlusIcon, PencilIcon } from "lucide-react";
 import { toastManager } from "@/components/ui/toast";
 import type { Contact, Deal, Workspace } from "@/lib/workspace";
-import {
-  createContact,
-  updateContact,
-  createDeal,
-  updateDeal,
-  createTask,
-  type ActionResult,
-} from "@/lib/actions";
+import { orpc } from "@/lib/orpc";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -64,8 +57,14 @@ export function RecordDialog({
   const open = controlledOpen ?? internalOpen;
   const setOpen = onOpenChange ?? setInternalOpen;
   const [error, setError] = useState("");
-  const [pending, startTransition] = useTransition();
-  const router = useRouter();
+  const createContact = useMutation(orpc.contacts.create.mutationOptions());
+  const updateContact = useMutation(orpc.contacts.update.mutationOptions());
+  const createDeal = useMutation(orpc.deals.create.mutationOptions());
+  const updateDeal = useMutation(orpc.deals.update.mutationOptions());
+  const createTask = useMutation(orpc.tasks.create.mutationOptions());
+  const pending = [createContact, updateContact, createDeal, updateDeal, createTask].some(
+    (mutation) => mutation.isPending,
+  );
   const prefix = useId();
   const recordLabel = kind === "task" ? "follow-up" : kind;
   const editing = (kind === "contact" && !!contact) || !!deal;
@@ -75,7 +74,7 @@ export function RecordDialog({
       : kind === "deal"
         ? workspace.deals.length
         : workspace.tasks.length;
-  function submit(event: React.FormEvent<HTMLFormElement>) {
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const value = (name: string) => {
@@ -83,42 +82,39 @@ export function RecordDialog({
       return typeof entry === "string" ? entry.trim() : "";
     };
     setError("");
-    startTransition(async () => {
-      try {
-        let result: ActionResult;
-        if (kind === "contact") {
-          const input = {
-            name: value("name"),
-            email: value("email"),
-            company: value("company"),
-            role: value("role"),
-            status: value("status") as Contact["status"],
-          };
-          result = contact ? await updateContact(contact.id, input) : await createContact(input);
-        } else if (kind === "deal") {
-          const input = {
-            title: value("title"),
-            contactId: value("contactId") || null,
-            value: Number(value("value")),
-            stage: value("stage") as Deal["stage"],
-            closeDate: value("closeDate"),
-          };
-          result = deal ? await updateDeal(deal.id, input) : await createDeal(input);
-        } else {
-          result = await createTask({
-            title: value("title"),
-            dueDate: value("dueDate"),
-            contactId: value("contactId") || null,
-          });
-        }
-        if (!result.success) throw new Error(result.error);
-        setOpen(false);
-        toastManager.add({ type: "success", title: editing ? "Changes saved" : "Record created" });
-        router.refresh();
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unable to save. Please try again.");
+    try {
+      if (kind === "contact") {
+        const input = {
+          name: value("name"),
+          email: value("email"),
+          company: value("company"),
+          role: value("role"),
+          status: value("status") as Contact["status"],
+        };
+        if (contact) await updateContact.mutateAsync({ ...input, id: contact.id });
+        else await createContact.mutateAsync(input);
+      } else if (kind === "deal") {
+        const input = {
+          title: value("title"),
+          contactId: value("contactId") || null,
+          value: Number(value("value")),
+          stage: value("stage") as Deal["stage"],
+          closeDate: value("closeDate"),
+        };
+        if (deal) await updateDeal.mutateAsync({ ...input, id: deal.id });
+        else await createDeal.mutateAsync(input);
+      } else {
+        await createTask.mutateAsync({
+          title: value("title"),
+          dueDate: value("dueDate"),
+          contactId: value("contactId") || null,
+        });
       }
-    });
+      setOpen(false);
+      toastManager.add({ type: "success", title: editing ? "Changes saved" : "Record created" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to save. Please try again.");
+    }
   }
   const id = (name: string) => prefix + name;
   return (

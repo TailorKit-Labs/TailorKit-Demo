@@ -2,6 +2,7 @@
   "name": "website",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "pnpm run db:push && next build",
@@ -18,7 +19,9 @@
     "test:db": "tsx scripts/test-db.ts",
     "test:agent": "tsx scripts/test-agent.ts",
     "test:agent-chats": "tsx scripts/test-agent-chats.ts",
-    "test:agent-rate-limit": "tsx scripts/test-agent-rate-limit.ts"
+    "test:agent-rate-limit": "tsx scripts/test-agent-rate-limit.ts",
+    "test:tailorkit": "tsx scripts/test-tailorkit.tsx",
+    "test:rpc": "tsx scripts/test-rpc.ts"
   },
   "dependencies": {
     "@ai-sdk/react": "catalog:",
@@ -26,10 +29,15 @@
     "@better-auth/drizzle-adapter": "catalog:",
     "@daypicker/react": "catalog:",
     "@neondatabase/serverless": "catalog:",
+    "@orpc/ai-sdk": "catalog:",
+    "@orpc/client": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/tanstack-query": "catalog:",
     "@streamdown/cjk": "catalog:",
     "@streamdown/code": "catalog:",
     "@streamdown/math": "catalog:",
     "@streamdown/mermaid": "catalog:",
+    "@tanstack/react-query": "catalog:",
     "ai": "catalog:",
     "better-auth": "catalog:",
     "botid": "catalog:",
@@ -53,6 +61,7 @@
     "recharts": "catalog:",
     "shiki": "catalog:",
     "streamdown": "catalog:",
+    "tailorkit": "catalog:",
     "tailwind-merge": "catalog:",
     "tw-animate-css": "catalog:",
     "use-stick-to-bottom": "catalog:",

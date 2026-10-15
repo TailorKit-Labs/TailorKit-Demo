@@ -5,13 +5,10 @@ import { auth } from "../lib/auth";
 import { db, pool } from "../lib/drizzle";
 import { activities, contacts, deals, tasks, tenants, user } from "../lib/schema";
 import { provisionForUser } from "../lib/provision";
-import {
-  createContactRecord,
-  updateContactRecord,
-  deleteContactRecord,
-} from "../lib/contact-operations";
-import { checkContact, RECORD_LIMIT } from "../lib/mutation-guards";
-import { moveDealRecord } from "../lib/deal-operations";
+import { createRouterClient, ORPCError } from "@orpc/server";
+import { router } from "../routers";
+import { verifiedWorkspaceContext } from "../routers/context";
+import { checkContact, RECORD_LIMIT } from "../routers/shared";
 
 async function main() {
   const users: string[] = [];
@@ -34,6 +31,7 @@ async function main() {
       "Concurrent provisioning must create one tenant",
     );
     const tenant = provisioned[0];
+    const client = createRouterClient(router, { context: verifiedWorkspaceContext(tenant.id) });
     assert.equal(tenant.setupVersion, 1);
     for (const [table, expected] of [
       [contacts, 30],
@@ -58,7 +56,38 @@ async function main() {
         .where(and(eq(deals.tenantId, tenant.id), eq(deals.stage, stage)))
         .orderBy(asc(deals.position), desc(deals.createdAt), asc(deals.id));
     const [first, middle, last] = await stageDeals("qualified");
-    await moveDealRecord(tenant.id, {
+    const beforeSelfMove = await stageDeals("qualified");
+    const beforeSelfMoveActivity = await db
+      .select()
+      .from(activities)
+      .where(eq(activities.tenantId, tenant.id))
+      .orderBy(asc(activities.id));
+    const selfMove = await client.deals.move({
+      id: first.id,
+      stage: "qualified",
+      targetId: first.id,
+    });
+    assert.equal(
+      selfMove.stage,
+      "qualified",
+      "Same-stage self-target moves remain successful no-ops",
+    );
+    await assert.rejects(
+      client.deals.move({ id: first.id, stage: "proposal", targetId: first.id }),
+      (error: unknown) => error instanceof ORPCError && error.code === "CONFLICT",
+      "Cross-stage self-target moves must reject rather than report a stage change",
+    );
+    assert.deepEqual(await stageDeals("qualified"), beforeSelfMove);
+    assert.deepEqual(
+      await db
+        .select()
+        .from(activities)
+        .where(eq(activities.tenantId, tenant.id))
+        .orderBy(asc(activities.id)),
+      beforeSelfMoveActivity,
+      "Self-target moves must not log activity",
+    );
+    await client.deals.move({
       id: first.id,
       stage: "qualified",
       targetId: last.id,
@@ -69,7 +98,7 @@ async function main() {
       [middle.id, last.id, first.id],
       "Sorting downward must persist",
     );
-    await moveDealRecord(tenant.id, {
+    await client.deals.move({
       id: first.id,
       stage: "qualified",
       targetId: middle.id,
@@ -81,7 +110,7 @@ async function main() {
       "Sorting upward must persist",
     );
     const proposal = await stageDeals("proposal");
-    await moveDealRecord(tenant.id, { id: first.id, stage: "proposal", targetId: proposal[0].id });
+    await client.deals.move({ id: first.id, stage: "proposal", targetId: proposal[0].id });
     const moved = await stageDeals("proposal");
     assert.deepEqual(
       moved.map((deal) => deal.id),
@@ -90,7 +119,7 @@ async function main() {
     );
     assert.equal(moved[0].title, first.title, "Moving must preserve deal details");
     assert.equal(moved[0].value, first.value);
-    await moveDealRecord(tenant.id, { id: first.id, stage: "qualified" });
+    await client.deals.move({ id: first.id, stage: "qualified" });
     assert.deepEqual(
       (await stageDeals("qualified")).map((deal) => deal.id),
       [middle.id, last.id, first.id],
@@ -98,11 +127,11 @@ async function main() {
     );
     const [foreignDeal] = await db.select().from(deals).where(eq(deals.tenantId, secondTenant.id));
     await assert.rejects(
-      moveDealRecord(tenant.id, { id: foreignDeal.id, stage: "qualified" }),
+      client.deals.move({ id: foreignDeal.id, stage: "qualified" }),
       /Deal not found/,
     );
     await assert.rejects(
-      moveDealRecord(tenant.id, { id: first.id, stage: "proposal", targetId: foreignDeal.id }),
+      client.deals.move({ id: first.id, stage: "proposal", targetId: foreignDeal.id }),
       /destination deal/,
     );
     assert.deepEqual(
@@ -130,16 +159,18 @@ async function main() {
       role: "Founder",
       status: "lead" as const,
     };
-    const id = await createContactRecord(tenant.id, input);
-    await updateContactRecord(tenant.id, id, { ...input, status: "customer" });
+    const {
+      contact: { id },
+    } = await client.contacts.create(input);
+    await client.contacts.update({ ...input, id, status: "customer" });
     const [updated] = await db.select().from(contacts).where(eq(contacts.id, id));
     assert.equal(updated.status, "customer");
-    await deleteContactRecord(tenant.id, id);
+    await client.contacts.delete({ id });
     await assert.rejects(
-      updateContactRecord(tenant.id, foreignContact.id, input),
+      client.contacts.update({ ...input, id: foreignContact.id }),
       /Contact not found/,
     );
-    await assert.rejects(deleteContactRecord(tenant.id, foreignContact.id), /Contact not found/);
+    await assert.rejects(client.contacts.delete({ id: foreignContact.id }), /Contact not found/);
     await assert.rejects(
       db.transaction((tx) => checkContact(tx, tenant.id, foreignContact.id)),
       /Contact not found/,
@@ -150,11 +181,11 @@ async function main() {
       foreignContact.name,
       "Rejected cross-tenant writes must preserve the other workspace",
     );
-    await assert.rejects(createContactRecord(tenant.id, { ...input, name: "", email: "invalid" }));
+    await assert.rejects(client.contacts.create({ ...input, name: "", email: "invalid" }));
     for (let i = 30; i < RECORD_LIMIT - 1; i++)
-      await createContactRecord(tenant.id, { ...input, name: `Limit test ${i}` });
+      await client.contacts.create({ ...input, name: `Limit test ${i}` });
     const concurrent = await Promise.allSettled(
-      Array.from({ length: 5 }, () => createContactRecord(tenant.id, input)),
+      Array.from({ length: 5 }, () => client.contacts.create(input)),
     );
     assert.equal(
       concurrent.filter((r) => r.status === "fulfilled").length,
@@ -167,7 +198,7 @@ async function main() {
       .from(contacts)
       .where(eq(contacts.tenantId, tenant.id));
     assert.equal(total.total, RECORD_LIMIT, "Racing inserts must never exceed the 50-record limit");
-    await assert.rejects(createContactRecord(tenant.id, input), /50 records/);
+    await assert.rejects(client.contacts.create(input), /50 records/);
     console.log(
       "PASS: real PostgreSQL anonymous auth + persistent session, concurrent/idempotent provisioning, saved pipeline sorting + positional stage moves, tenant isolation + rejected cross-tenant writes, validated CRUD, and concurrent 50-record limit enforcement.",
     );

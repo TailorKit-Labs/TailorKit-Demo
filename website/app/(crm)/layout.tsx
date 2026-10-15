@@ -1,15 +1,27 @@
-import { getWorkspace } from "@/lib/workspace";
+import { getTenant } from "@/lib/workspace-session";
 import { CrmShell } from "@/components/crm-shell";
 import { DemoSetup } from "@/components/demo-setup";
-import { loadAgentHistory } from "@/lib/agents/agent-chat-store";
+import { orpc } from "@/lib/orpc.server";
+import { HydrateClient, prefetch } from "@/lib/query.server";
+import { QueryProvider } from "@/lib/query-provider";
+
 export const dynamic = "force-dynamic";
 export default async function Layout({ children }: { children: React.ReactNode }) {
-  const workspace = await getWorkspace();
-  if (!workspace) return <DemoSetup />;
-  const agentHistory = await loadAgentHistory(workspace.tenant.id);
+  const tenant = await getTenant();
+  if (!tenant)
+    return (
+      <QueryProvider key="setup">
+        <DemoSetup />
+      </QueryProvider>
+    );
+  void prefetch(orpc.chats.list.queryOptions());
   return (
-    <CrmShell name={workspace.tenant.name} agentHistory={agentHistory}>
-      {children}
-    </CrmShell>
+    <QueryProvider key={tenant.id}>
+      <HydrateClient>
+        <CrmShell name={tenant.name} workspaceId={tenant.id}>
+          {children}
+        </CrmShell>
+      </HydrateClient>
+    </QueryProvider>
   );
 }

@@ -1,12 +1,14 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
-import type { AgentHistory, AgentChatSummary, SavedAgentChat } from "@/lib/agents/agent-chat-types";
+import { orpc } from "@/lib/orpc";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import type { AgentChatSummary } from "@/lib/agents/agent-chat-types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -14,7 +16,7 @@ import { Sheet, SheetPopup, SheetTitle } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
 import { AppMobileNavigation } from "@/components/app/app-mobile-navigation";
 import { AppsPanelContext } from "./apps-panel-context";
-import { AppsPanel, demoApps } from "./apps-panel";
+import { AppsPanel } from "./apps-panel";
 import {
   Drawer,
   DrawerContent,
@@ -33,17 +35,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
+import { useViews } from "@/lib/tailorkit-client";
 
 const transport = new DefaultChatTransport<CrmAgentMessage>({ api: "/api/agent" });
 
-export function AgentWorkspace({
-  children,
-  initialHistory,
-}: {
-  children: React.ReactNode;
-  initialHistory: AgentHistory;
-}) {
-  const router = useRouter();
+export function AgentWorkspace({ children }: { children: React.ReactNode }) {
+  const queryClient = useQueryClient();
+  const { data: history } = useSuspenseQuery(orpc.chats.list.queryOptions());
+  const refresh = () => {
+    void queryClient.invalidateQueries({ queryKey: orpc.key() });
+  };
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
   const panelId = useId();
@@ -52,19 +53,30 @@ export function AgentWorkspace({
   const [openOverride, setOpen] = useState<boolean | null>(null);
   const open = openOverride ?? canDock;
   const [activeTab, setActiveTab] = useState("agent");
-  const [apps, setApps] = useState(demoApps);
+  const { data: views, isPending: appsPending, error: appsError } = useViews({ slot: "panel" });
+  const [appOrder, setAppOrder] = useState<string[]>([]);
+  const apps = (views ?? [])
+    .map((view) => view.app)
+    .sort((a, b) => {
+      const rank = (id: string) => {
+        const index = appOrder.indexOf(id);
+        return index < 0 ? Infinity : index;
+      };
+      return rank(a.id) - rank(b.id);
+    });
+  const selectedTab = apps.some((app) => app.id === activeTab) ? activeTab : "agent";
   const [input, setInput] = useState("");
-  const [chatId, setChatId] = useState<string | null>(initialHistory.latest?.id ?? null);
+  const [chatId, setChatId] = useState<string | null>(history.latest?.id ?? null);
   const [loadingChat, setLoadingChat] = useState(false);
   const [historyError, setHistoryError] = useState<Error>();
   const [historyOpen, setHistoryOpen] = useState(false);
   const { messages, setMessages, sendMessage, status, stop, error, clearError } =
     useChat<CrmAgentMessage>({
       transport,
-      messages: initialHistory.latest?.messages ?? [],
+      messages: history.latest?.messages ?? [],
       // Refresh even after cancellation: a tool may already have committed a change.
-      onFinish: () => router.refresh(),
-      onError: () => router.refresh(),
+      onFinish: () => refresh(),
+      onError: () => refresh(),
     });
   const busy = status === "submitted" || status === "streaming";
   const panelContext = useMemo(
@@ -102,9 +114,9 @@ export function AgentWorkspace({
     setLoadingChat(true);
     setHistoryError(undefined);
     try {
-      const response = await fetch(`/api/agent/chats/${chat.id}`, { cache: "no-store" });
-      if (!response.ok) throw new Error(await response.text());
-      const saved: SavedAgentChat = await response.json();
+      const saved = await queryClient.fetchQuery(
+        orpc.chats.get.queryOptions({ input: { id: chat.id }, staleTime: 0 }),
+      );
       setChatId(saved.id);
       setMessages(saved.messages);
       setInput("");
@@ -148,7 +160,7 @@ export function AgentWorkspace({
         .map((part) => part.text)
         .join(" ") || "Chat"
     : "New chat";
-  const recentChats = initialHistory.chats;
+  const recentChats = history.chats;
   const chatTitle = (
     <DropdownMenu open={historyOpen} onOpenChange={setHistoryOpen}>
       <DropdownMenuTrigger
@@ -198,7 +210,7 @@ export function AgentWorkspace({
       error={historyError ?? error}
       onStop={() => {
         void stop();
-        router.refresh();
+        refresh();
       }}
       onNewChat={newChat}
       docked={!useDrawer}
@@ -208,8 +220,9 @@ export function AgentWorkspace({
   const panel = (
     <AppsPanel
       apps={apps}
-      onReorder={setApps}
-      activeTab={activeTab}
+      onReorder={(next) => setAppOrder(next.map((app) => app.id))}
+      activeTab={selectedTab}
+      appsStatus={appsError ? "error" : appsPending ? "loading" : undefined}
       onTabChange={(tab) => {
         setActiveTab(tab);
         setHistoryOpen(false);
