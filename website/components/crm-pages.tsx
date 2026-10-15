@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Workspace, Contact, Deal, Task } from "@/lib/workspace";
+import { useViewContext } from "@/lib/tailorkit-client";
 import {
   addNote,
   deleteContact,
@@ -329,6 +330,14 @@ function DealCard({ deal, workspace }: { deal: Deal; workspace: Workspace }) {
   );
 }
 function Overview({ workspace }: { workspace: Workspace }) {
+  useViewContext("/overview", {
+    context: {
+      contacts: workspace.contacts,
+      deals: workspace.deals,
+      tasks: workspace.tasks,
+      activities: workspace.activities,
+    },
+  });
   return (
     <div className="@container/main flex flex-col gap-4 md:gap-6">
       <PageHeading title="Overview">
@@ -341,6 +350,7 @@ function Overview({ workspace }: { workspace: Workspace }) {
   );
 }
 function Contacts({ workspace }: { workspace: Workspace }) {
+  useViewContext("/contacts", { context: { contacts: workspace.contacts } });
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
@@ -527,6 +537,9 @@ function Contacts({ workspace }: { workspace: Workspace }) {
   );
 }
 function Pipeline({ workspace }: { workspace: Workspace }) {
+  useViewContext("/pipeline", {
+    context: { deals: workspace.deals, contacts: workspace.contacts },
+  });
   const [search, setSearch] = useState("");
   const filtered = workspace.deals.filter((deal) =>
     (
@@ -567,6 +580,8 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
   const deals = workspace.deals.filter((deal) => deal.contactId === contact.id);
   const tasks = workspace.tasks.filter((task) => task.contactId === contact.id);
   const activities = workspace.activities.filter((activity) => activity.contactId === contact.id);
+  useViewContext("/contacts", { context: { contacts: workspace.contacts } });
+  useViewContext("/contacts/detail", { context: { contact, deals, tasks, activities } });
   return (
     <>
       <div>
@@ -744,6 +759,7 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
   );
 }
 function Tasks({ workspace }: { workspace: Workspace }) {
+  useViewContext("/tasks", { context: { tasks: workspace.tasks, contacts: workspace.contacts } });
   return (
     <>
       <PageHeading title="Follow-ups">
@@ -769,6 +785,15 @@ function Tasks({ workspace }: { workspace: Workspace }) {
 }
 
 function Settings({ workspace }: { workspace: Workspace }) {
+  useViewContext("/settings", {
+    context: {
+      usage: {
+        contacts: workspace.contacts.length,
+        deals: workspace.deals.length,
+        tasks: workspace.tasks.length,
+      },
+    },
+  });
   const usage = [
     { name: "Contacts", count: workspace.contacts.length },
     { name: "Deals", count: workspace.deals.length },

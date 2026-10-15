@@ -2,51 +2,17 @@
 
 import { useRef, useState } from "react";
 import { Reorder, useDragControls, MotionConfig } from "motion/react";
-import { CalendarDaysIcon, CheckIcon, MousePointer2Icon } from "lucide-react";
+import { BlocksIcon, MousePointer2Icon } from "lucide-react";
+import type { TailorKitApp } from "tailorkit/react";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { RenderSlot } from "@/lib/tailorkit-client";
 
-export const demoApps = [
-  { id: "todo", name: "Todo" },
-  { id: "stripe", name: "Stripe" },
-  { id: "notion", name: "Notion" },
-  { id: "calendar", name: "Calendar" },
-];
-export type PanelApp = (typeof demoApps)[number];
+export type PanelApp = TailorKitApp;
 
 const tabClassName =
   "h-9 grow-0 gap-2 rounded-lg border-0 px-2 font-normal text-sm text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground sm:h-9";
-
-function AppLogo({ id }: { id: string }) {
-  switch (id) {
-    case "todo":
-      return (
-        <span className="flex size-4 items-center justify-center rounded-sm bg-[#e44332] text-white">
-          <CheckIcon className="size-3" />
-        </span>
-      );
-    case "stripe":
-      return (
-        <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
-          <rect width="24" height="24" rx="5" fill="#635bff" />
-          <path
-            fill="white"
-            d="M13 8.4c-1.3 0-1.9.3-1.9.9 0 1.6 6.2.7 6.2 5.2 0 2.5-2 3.8-4.8 3.8-1.4 0-2.9-.3-4-.9v-3.1c1.2.7 2.8 1.2 4.1 1.2 1.1 0 1.8-.3 1.8-.9 0-1.8-6.2-.8-6.2-5.1 0-2.4 1.9-3.8 4.6-3.8 1.4 0 2.7.3 3.8.7v3c-1.1-.6-2.4-1-3.6-1Z"
-          />
-        </svg>
-      );
-    case "notion":
-      return (
-        <svg viewBox="0 0 24 24" className="size-4" aria-hidden="true">
-          <rect x="2" y="2" width="20" height="20" rx="3" fill="white" />
-          <path d="M6 18V6h3l6 8V6h3v12h-3L9 10v8Z" fill="#191919" />
-        </svg>
-      );
-    default:
-      return <CalendarDaysIcon className="size-4 text-[#4285f4]" />;
-  }
-}
 
 function AppTab({ app, onMove }: { app: PanelApp; onMove: (id: string, offset: number) => void }) {
   const controls = useDragControls();
@@ -73,7 +39,7 @@ function AppTab({ app, onMove }: { app: PanelApp; onMove: (id: string, offset: n
     >
       <TabsTab
         value={app.id}
-        title={`${app.name} — drag or use Alt + arrow keys to reorder`}
+        title={`${app.name ?? app.id} — drag or use Alt + arrow keys to reorder`}
         className={cn(tabClassName, "touch-pan-x", isDragging && "cursor-grabbing")}
         onPointerDown={(event) => controls.start(event)}
         onClick={(event) => {
@@ -87,9 +53,9 @@ function AppTab({ app, onMove }: { app: PanelApp; onMove: (id: string, offset: n
         }}
       >
         <span aria-hidden="true">
-          <AppLogo id={app.id} />
+          <BlocksIcon className="size-4" />
         </span>
-        {app.name}
+        {app.name ?? app.id}
       </TabsTab>
     </Reorder.Item>
   );
@@ -101,12 +67,14 @@ export function AppsPanel({
   onReorder,
   activeTab,
   onTabChange,
+  appsStatus,
 }: {
   children: React.ReactNode;
   apps: PanelApp[];
   onReorder: (apps: PanelApp[]) => void;
   activeTab: string;
   onTabChange: (tab: string) => void;
+  appsStatus?: "loading" | "error";
 }) {
   function moveApp(id: string, offset: number) {
     const index = apps.findIndex((app) => app.id === id);
@@ -133,7 +101,7 @@ export function AppsPanel({
               <MousePointer2Icon className="size-4" aria-hidden="true" />
               Agent
             </TabsTab>
-            <Separator orientation="vertical" className="mx-0.5 h-5" />
+            {apps.length > 0 ? <Separator orientation="vertical" className="mx-0.5 h-5" /> : null}
             <Reorder.Group
               as="div"
               axis="x"
@@ -147,12 +115,19 @@ export function AppsPanel({
               ))}
             </Reorder.Group>
           </TabsList>
+          {appsStatus ? (
+            <span role="status" className="shrink-0 px-2 text-xs text-muted-foreground">
+              {appsStatus === "loading" ? "Loading apps…" : "Apps unavailable"}
+            </span>
+          ) : null}
         </div>
         <TabsPanel value="agent" keepMounted className="min-h-0 data-[hidden]:hidden">
           {children}
         </TabsPanel>
         {apps.map((app) => (
-          <TabsPanel key={app.id} value={app.id} className="min-h-0" />
+          <TabsPanel key={app.id} value={app.id} className="min-h-0 overflow-y-auto p-4">
+            <RenderSlot app={app} slot="panel" />
+          </TabsPanel>
         ))}
       </Tabs>
     </MotionConfig>
