@@ -29,6 +29,7 @@
     "@better-auth/drizzle-adapter": "catalog:",
     "@daypicker/react": "catalog:",
     "@neondatabase/serverless": "catalog:",
+    "@orpc/ai-sdk": "catalog:",
     "@orpc/client": "catalog:",
     "@orpc/server": "catalog:",
     "@streamdown/cjk": "catalog:",

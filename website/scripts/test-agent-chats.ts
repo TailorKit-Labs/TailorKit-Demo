@@ -15,7 +15,7 @@ import {
   loadAgentChat,
   loadAgentHistory,
   saveAgentChat,
-} from "../lib/agents/agent-chat-store";
+} from "../routers/chats";
 
 const prompt = (text: string): UIMessage => ({
   id: randomUUID(),

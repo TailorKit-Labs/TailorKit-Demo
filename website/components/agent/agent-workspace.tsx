@@ -6,7 +6,8 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
-import type { AgentHistory, AgentChatSummary, SavedAgentChat } from "@/lib/agents/agent-chat-types";
+import { rpc } from "@/lib/orpc";
+import type { AgentHistory, AgentChatSummary } from "@/lib/agents/agent-chat-types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -114,9 +115,7 @@ export function AgentWorkspace({
     setLoadingChat(true);
     setHistoryError(undefined);
     try {
-      const response = await fetch(`/api/agent/chats/${chat.id}`, { cache: "no-store" });
-      if (!response.ok) throw new Error(await response.text());
-      const saved: SavedAgentChat = await response.json();
+      const saved = await rpc.chats.get({ id: chat.id });
       setChatId(saved.id);
       setMessages(saved.messages);
       setInput("");

@@ -1,9 +1,9 @@
 import { ORPCError } from "@orpc/server";
 import { and, eq, gte } from "drizzle-orm";
-import { auth } from "../auth";
-import { db } from "../drizzle";
-import { tenants } from "../schema";
-import { CURRENT_SETUP_VERSION } from "../provision";
+import { auth } from "../lib/auth";
+import { db } from "../lib/drizzle";
+import { tenants } from "../lib/schema";
+import { CURRENT_SETUP_VERSION } from "../lib/provision";
 
 export type RpcTenant = Pick<typeof tenants.$inferSelect, "id" | "name" | "setupVersion">;
 
@@ -34,4 +34,34 @@ export async function tenantFromVerifiedId(id: string): Promise<RpcTenant> {
     .where(and(eq(tenants.id, id), gte(tenants.setupVersion, CURRENT_SETUP_VERSION)));
   if (!tenant) throw new ORPCError("NOT_FOUND", { message: "Workspace not found." });
   return tenant;
+}
+
+export type RpcContext = {
+  resolveTenant: () => Promise<RpcTenant>;
+  resolveUserId?: () => Promise<string>;
+  tenant?: RpcTenant;
+  onMutation?: () => void;
+};
+
+export function requestContext(headers: Headers, onMutation?: () => void): RpcContext {
+  let user: Promise<string> | undefined;
+  const resolveUserId = () =>
+    (user ??= auth.api.getSession({ headers }).then((session) => {
+      if (!session)
+        throw new ORPCError("UNAUTHORIZED", {
+          message: "Your session expired. Refresh to create a demo workspace.",
+        });
+      return session.user.id;
+    }));
+  return {
+    resolveUserId,
+    resolveTenant: async () => tenantForUser(await resolveUserId()),
+    onMutation,
+  };
+}
+
+// Only use an ID resolved from a server session or a verified TailorKit scope.
+// This capability does not grant access to session-only setup procedures.
+export function verifiedWorkspaceContext(tenantId: string, onMutation?: () => void): RpcContext {
+  return { resolveTenant: () => tenantFromVerifiedId(tenantId), onMutation };
 }

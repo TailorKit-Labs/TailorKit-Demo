@@ -1,7 +1,7 @@
 import { createORPCClient } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
 import type { RouterClient } from "@orpc/server";
-import type { router } from "./rpc/router";
+import type { router } from "../routers";
 
 // Browser transport only. Server-rendered data uses ./orpc.server directly,
 // keeping request APIs and database code out of the client SSR/module graph.

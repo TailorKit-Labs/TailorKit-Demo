@@ -1,7 +1,7 @@
 import { defineContract, tool } from "tailorkit";
 import { primitives } from "tailorkit/zod";
 import { z } from "zod";
-import { crmToolSchemas } from "./crm-tool-schemas";
+import { schemas } from "../routers/schemas";
 import { tailorKitTheme } from "./tailorkit-theme";
 
 export const siteHref = z
@@ -133,31 +133,31 @@ export const contract = defineContract({
     },
   },
   tools: {
-    workspace: { get: serverTool(crmToolSchemas.getWorkspace) },
+    workspace: { get: serverTool(schemas.workspace.get) },
     contacts: {
-      list: serverTool(crmToolSchemas.listContacts),
-      get: serverTool(crmToolSchemas.getContact),
-      create: serverTool(crmToolSchemas.createContact),
-      update: serverTool(crmToolSchemas.updateContact),
-      delete: serverTool(crmToolSchemas.deleteContact),
+      list: serverTool(schemas.contacts.list),
+      get: serverTool(schemas.contacts.get),
+      create: serverTool(schemas.contacts.create),
+      update: serverTool(schemas.contacts.update),
+      delete: serverTool(schemas.contacts.delete),
     },
     deals: {
-      list: serverTool(crmToolSchemas.listDeals),
-      create: serverTool(crmToolSchemas.createDeal),
-      update: serverTool(crmToolSchemas.updateDeal),
-      delete: serverTool(crmToolSchemas.deleteDeal),
-      move: serverTool(crmToolSchemas.moveDeal),
+      list: serverTool(schemas.deals.list),
+      create: serverTool(schemas.deals.create),
+      update: serverTool(schemas.deals.update),
+      delete: serverTool(schemas.deals.delete),
+      move: serverTool(schemas.deals.move),
     },
     tasks: {
-      list: serverTool(crmToolSchemas.listTasks),
-      create: serverTool(crmToolSchemas.createTask),
-      update: serverTool(crmToolSchemas.updateTask),
-      delete: serverTool(crmToolSchemas.deleteTask),
-      setCompleted: serverTool(crmToolSchemas.setTaskCompleted),
+      list: serverTool(schemas.tasks.list),
+      create: serverTool(schemas.tasks.create),
+      update: serverTool(schemas.tasks.update),
+      delete: serverTool(schemas.tasks.delete),
+      setCompleted: serverTool(schemas.tasks.setCompleted),
     },
     activities: {
-      list: serverTool(crmToolSchemas.listActivities),
-      addNote: serverTool(crmToolSchemas.addNote),
+      list: serverTool(schemas.activities.list),
+      addNote: serverTool(schemas.activities.addNote),
     },
     ui: {
       navigate: tool.client().input(z.object({ href: siteHref })),

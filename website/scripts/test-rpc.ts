@@ -8,11 +8,11 @@ import { eq } from "drizzle-orm";
 import { auth } from "../lib/auth";
 import { db, pool } from "../lib/drizzle";
 import { user } from "../lib/schema";
-import { provisionForUser } from "../lib/provision";
-import { router } from "../lib/rpc/router";
-import { handleRpcRequest } from "../lib/rpc/handler";
-import { tenantFromHeaders } from "../lib/rpc/auth";
-import { createWorkspaceRpcClient } from "../lib/rpc/server-client";
+import { randomUUID } from "node:crypto";
+import { beginAgentChat } from "../routers/chats";
+import { router } from "../routers";
+import { handleRpcRequest } from "../routers/handler";
+import { tenantFromHeaders, verifiedWorkspaceContext } from "../routers/context";
 
 const origin = "http://localhost:3000";
 const hasCode = (code: string) => (error: unknown) =>
@@ -21,19 +21,6 @@ const hasCode = (code: string) => (error: unknown) =>
 async function main() {
   const users: string[] = [];
   try {
-    const workspaces = [];
-    for (let index = 0; index < 2; index++) {
-      const response = await auth.api.signInAnonymous({ asResponse: true });
-      const payload = await response.json();
-      users.push(payload.user.id);
-      const tenant = await provisionForUser(payload.user.id);
-      const cookie = response.headers
-        .getSetCookie()
-        .map((value) => value.split(";")[0])
-        .join("; ");
-      workspaces.push({ tenant, cookie });
-    }
-    const [first, second] = workspaces;
     let refreshes = 0;
     let requests = 0;
     function browserClient(cookie?: string): RouterClient<typeof router> {
@@ -53,9 +40,28 @@ async function main() {
         }),
       );
     }
+    const workspaces = [];
+    for (let index = 0; index < 2; index++) {
+      const response = await auth.api.signInAnonymous({ asResponse: true });
+      const payload = await response.json();
+      users.push(payload.user.id);
+      const cookie = response.headers
+        .getSetCookie()
+        .map((value) => value.split(";")[0])
+        .join("; ");
+      const client = browserClient(cookie);
+      await assert.rejects(() => client.workspace.snapshot(), hasCode("FORBIDDEN"));
+      await client.workspace.provision();
+      await client.workspace.provision();
+      const tenant = await tenantFromHeaders(new Headers({ cookie }));
+      workspaces.push({ tenant, cookie });
+    }
+    const [first, second] = workspaces;
+    refreshes = 0;
     const browser = browserClient(first.cookie);
     const otherBrowser = browserClient(second.cookie);
     await assert.rejects(() => browserClient().workspace.get({}), hasCode("UNAUTHORIZED"));
+    await assert.rejects(() => browserClient().workspace.provision(), hasCode("UNAUTHORIZED"));
     const initial = await browser.workspace.snapshot();
     assert.equal(initial.tenant.id, first.tenant.id);
     assert.equal(initial.contacts.length, 30);
@@ -99,7 +105,10 @@ async function main() {
       throw new Error("SSR/server tools must not make HTTP requests");
     };
     try {
-      const direct = createWorkspaceRpcClient(first.tenant.id);
+      const direct = createRouterClient(router, {
+        context: verifiedWorkspaceContext(first.tenant.id),
+      });
+      await assert.rejects(() => direct.workspace.provision(), hasCode("UNAUTHORIZED"));
       await direct.contacts.update({ ...contact.contact, status: "customer" });
       const batches = await Promise.all(
         Array.from({ length: 8 }, async (_, index) => {
@@ -128,8 +137,28 @@ async function main() {
       (await browser.contacts.get({ id: contact.contact.id })).contact.status,
       "customer",
     );
+    const chatId = randomUUID();
+    await beginAgentChat(first.tenant.id, chatId, [
+      { id: "user-message", role: "user", parts: [{ type: "text", text: "Only my workspace" }] },
+    ]);
+    assert.equal((await browser.chats.get({ id: chatId })).messages[0].id, "user-message");
+    assert.equal((await browser.chats.list()).latest?.id, chatId);
+    assert.equal((await otherBrowser.chats.list()).chats.length, 0);
+    await assert.rejects(() => otherBrowser.chats.get({ id: chatId }), hasCode("NOT_FOUND"));
+    await assert.rejects(() => browser.chats.get({ id: "invalid" }), hasCode("BAD_REQUEST"));
+    await assert.rejects(() => browserClient().chats.list(), hasCode("UNAUTHORIZED"));
     const ssrOrigin = process.env.RPC_SSR_URL;
     if (ssrOrigin) {
+      const live = createORPCClient<RouterClient<typeof router>>(
+        new RPCLink({
+          origin: ssrOrigin,
+          url: "/rpc",
+          headers: { origin: ssrOrigin, cookie: first.cookie },
+        }),
+      );
+      await live.workspace.provision();
+      assert.equal((await live.chats.get({ id: chatId })).id, chatId);
+      assert.equal((await live.chats.list()).latest?.id, chatId);
       // Exercise the actual production App Router with two independent sessions.
       const [ownHtml, otherHtml] = await Promise.all(
         [first, second].map(async (workspace) => {

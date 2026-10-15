@@ -179,6 +179,9 @@ catalogs:
     '@neondatabase/serverless':
       specifier: ^1.2.0
       version: 1.2.0
+    '@orpc/ai-sdk':
+      specifier: 2.0.0-beta.40
+      version: 2.0.0-beta.40
     '@orpc/client':
       specifier: 2.0.0-beta.40
       version: 2.0.0-beta.40
@@ -313,6 +316,9 @@ importers:
       '@neondatabase/serverless':
         specifier: 'catalog:'
         version: 1.2.0
+      '@orpc/ai-sdk':
+        specifier: 'catalog:'
+        version: 2.0.0-beta.40(ai@7.0.137(zod@4.6.5))
       '@orpc/client':
         specifier: 'catalog:'
         version: 2.0.0-beta.40
@@ -1609,15 +1615,26 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
+  '@openapi-spec/types@0.1.0':
+    resolution: {integrity: sha512-5m9GUj5ekwmJ5uXH0yctarqLGckGc8X7pX65dirukZDUAGmrUx5lKovvWA7YvEBKd480Q7R2oG3nE5C+SoVgNw==}
+
   '@opentelemetry/semantic-conventions@1.43.0':
     resolution: {integrity: sha512-eSYWTm620tTk45EKSedaUL8MFYI8hW164hIXsgIHyxu3VobUB3fFCu5t0hQby6OoWRPsG1KkKUG2M5UadiLiVg==}
     engines: {node: '>=14'}
+
+  '@orpc/ai-sdk@2.0.0-beta.40':
+    resolution: {integrity: sha512-I8LByI9zvYPMh+1G6ASChu8/PofQe9C098VH4W6h/lO1d77xAg6fwAUCiyjeZ/7BPieEbomWfLYqioPq+vKRYQ==}
+    peerDependencies:
+      ai: '>=7.0.31'
 
   '@orpc/client@2.0.0-beta.40':
     resolution: {integrity: sha512-KF2WcrYC+Nr9BJ/FAuENbPJlFvHHYKSdGMOO/FDoEUCSVBE+Fi7LKazQ4QfEsGD6mI+M7iX8uNJywQWtUVsMEQ==}
 
   '@orpc/contract@2.0.0-beta.40':
     resolution: {integrity: sha512-tWgEGYax81O7pFcgVPLtZu6K0F5JcQi4KIF3d647jW2xPQznJkP4zhksWqVTQX8XOh86zD0ztKIVOYp88ghrww==}
+
+  '@orpc/json-schema@2.0.0-beta.40':
+    resolution: {integrity: sha512-WERkGvF+IlWf1MJC3Qyt8AbiLm8TScV6WiP7D2PwO+FYqrJPiYx5AERXSE+YQhpaZgsS9i3NxNgKi4dPLhUu6A==}
 
   '@orpc/server@2.0.0-beta.40':
     resolution: {integrity: sha512-618zcjtJ1puA7+Fmgk/kSyEnnDLzMniBPALTZjc858mPDxHEX2WqxhKkctPABX8KGLZ3fm4f6wpG/Jn4f5EhGA==}
@@ -7313,7 +7330,21 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.3
 
+  '@openapi-spec/types@0.1.0': {}
+
   '@opentelemetry/semantic-conventions@1.43.0': {}
+
+  '@orpc/ai-sdk@2.0.0-beta.40(ai@7.0.137(zod@4.6.5))':
+    dependencies:
+      '@orpc/client': 2.0.0-beta.40
+      '@orpc/contract': 2.0.0-beta.40
+      '@orpc/json-schema': 2.0.0-beta.40
+      '@orpc/server': 2.0.0-beta.40
+      '@orpc/shared': 2.0.0-beta.40
+      ai: 7.0.137(zod@4.6.5)
+    transitivePeerDependencies:
+      - crossws
+      - fastify
 
   '@orpc/client@2.0.0-beta.40':
     dependencies:
@@ -7327,6 +7358,18 @@ snapshots:
       '@orpc/client': 2.0.0-beta.40
       '@orpc/shared': 2.0.0-beta.40
       '@standard-schema/spec': 1.1.0
+
+  '@orpc/json-schema@2.0.0-beta.40':
+    dependencies:
+      '@openapi-spec/types': 0.1.0
+      '@orpc/client': 2.0.0-beta.40
+      '@orpc/contract': 2.0.0-beta.40
+      '@orpc/server': 2.0.0-beta.40
+      '@orpc/shared': 2.0.0-beta.40
+      '@standard-schema/spec': 1.1.0
+    transitivePeerDependencies:
+      - crossws
+      - fastify
 
   '@orpc/server@2.0.0-beta.40':
     dependencies:

@@ -1,7 +1,7 @@
 import { RPCHandler } from "@orpc/server/fetch";
 import { RequestLimitHandlerPlugin } from "@orpc/server/plugins";
-import { router } from "./router";
-import { tenantFromHeaders } from "./auth";
+import { router } from "./index";
+import { requestContext } from "./context";
 
 const handler = new RPCHandler(router, {
   plugins: [new RequestLimitHandlerPlugin({ maxBodySize: 60000 })],
@@ -16,7 +16,7 @@ export async function handleRpcRequest(request: Request, onMutation?: () => void
     return new Response("This request is not allowed.", { status: 403 });
   const { response } = await handler.handle(request, {
     prefix: "/rpc",
-    context: { resolveTenant: () => tenantFromHeaders(request.headers), onMutation },
+    context: requestContext(request.headers, onMutation),
   });
   const result = response ?? new Response("Not found", { status: 404 });
   result.headers.set("Cache-Control", "private, no-store");

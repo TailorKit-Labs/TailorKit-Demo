@@ -2,16 +2,10 @@ import { consumeStream, createAgentUIStreamResponse } from "ai";
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { checkBotId } from "botid/server";
-import { mutationToolNames } from "@/lib/crm-tool-schemas";
 import { requireTenant } from "@/lib/workspace";
 import { createCrmAgent } from "@/lib/agents/crm-agent";
 import { agentRequest, isSameOriginRequest } from "@/lib/agents/agent-request";
-import {
-  beginAgentChat,
-  ChatConflict,
-  finishAgentMessages,
-  saveAgentChat,
-} from "@/lib/agents/agent-chat-store";
+import { beginAgentChat, ChatConflict, finishAgentMessages, saveAgentChat } from "@/routers/chats";
 import {
   agentIpKey,
   reserveAgentTokens,
@@ -20,7 +14,6 @@ import {
 } from "@/lib/agents/agent-rate-limit";
 
 export const maxDuration = 60;
-const mutationTools = new Set<string>(mutationToolNames);
 
 export async function POST(request: Request) {
   if (!isSameOriginRequest(request))
@@ -140,6 +133,7 @@ export async function POST(request: Request) {
             tokenUsage = tokens;
           },
         },
+        () => revalidatePath("/", "layout"),
       ),
       uiMessages: chatTurn.messages,
       consumeSseStream: ({ stream }) => {
@@ -157,10 +151,6 @@ export async function POST(request: Request) {
         ),
       abortSignal: request.signal,
       timeout: 45000,
-      onStepEnd: ({ toolResults }) => {
-        if (toolResults.some((result) => mutationTools.has(result.toolName)))
-          revalidatePath("/", "layout");
-      },
       onError: () =>
         "The agent could not finish this request. Please try again. Check the page before repeating a creation.",
     });

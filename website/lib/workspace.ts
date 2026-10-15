@@ -5,7 +5,7 @@ import { activities, contacts, deals, tasks } from "./schema";
 
 import { CURRENT_SETUP_VERSION } from "./provision";
 export const SETUP_VERSION = CURRENT_SETUP_VERSION;
-export { RECORD_LIMIT } from "./mutation-guards";
+export { RECORD_LIMIT } from "../routers/shared";
 export type Contact = Omit<typeof contacts.$inferSelect, "createdAt"> & { createdAt: string };
 export type Deal = Omit<typeof deals.$inferSelect, "createdAt" | "closeDate"> & {
   createdAt: string;

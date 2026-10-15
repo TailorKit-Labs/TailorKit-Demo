@@ -2,7 +2,8 @@ import {
   gateway,
   isStepCount,
   ToolLoopAgent,
-  type InferAgentUIMessage,
+  type UIMessage,
+  type InferUITools,
   type LanguageModel,
 } from "ai";
 import { createCrmTools } from "./crm-tools";
@@ -12,6 +13,7 @@ export function createCrmAgent(
   context: { page: string; date: string; timeZone: string },
   model: LanguageModel = gateway(process.env.AI_GATEWAY_MODEL || "openai/gpt-6-luna"),
   budget?: { tokens: number; onUsage: (tokens: number | undefined) => void },
+  onMutation?: () => void,
 ) {
   return new ToolLoopAgent({
     model,
@@ -26,7 +28,7 @@ export function createCrmAgent(
     reasoning: "medium",
     maxRetries: 0,
     onEnd: budget ? ({ usage }) => budget.onUsage(usage.totalTokens) : undefined,
-    tools: createCrmTools(tenant.id),
+    tools: createCrmTools(tenant.id, onMutation),
     instructions: `You are the helpful Agent inside Forma CRM for workspace ${JSON.stringify(tenant.name)}.
 The user is on ${context.page}. Their local date is ${context.date}, in ${context.timeZone}.
 Help them view workspace usage; search, create, edit and delete contacts, deals and follow-up tasks; move and reorder pipeline deals; complete or reopen tasks; and read activity or add contact notes.
@@ -40,4 +42,8 @@ You cannot access other workspaces, browse the web, send messages, or change acc
   });
 }
 
-export type CrmAgentMessage = InferAgentUIMessage<ReturnType<typeof createCrmAgent>>;
+export type CrmAgentMessage = UIMessage<
+  unknown,
+  never,
+  InferUITools<ReturnType<typeof createCrmTools>>
+>;
