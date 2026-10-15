@@ -18,12 +18,14 @@
     "db:down": "docker compose down",
     "test:db": "tsx scripts/test-db.ts",
     "test:agent": "tsx scripts/test-agent.ts",
+    "test:agent-mcp": "tsx scripts/test-agent-mcp.ts",
     "test:agent-chats": "tsx scripts/test-agent-chats.ts",
     "test:agent-rate-limit": "tsx scripts/test-agent-rate-limit.ts",
     "test:tailorkit": "tsx scripts/test-tailorkit.tsx",
     "test:rpc": "tsx scripts/test-rpc.ts"
   },
   "dependencies": {
+    "@ai-sdk/mcp": "catalog:",
     "@ai-sdk/react": "catalog:",
     "@base-ui/react": "catalog:",
     "@better-auth/drizzle-adapter": "catalog:",

@@ -3,6 +3,8 @@ import { after } from "next/server";
 import { checkBotId } from "botid/server";
 import { requireTenant } from "@/lib/workspace";
 import { createCrmAgent } from "@/lib/agents/crm-agent";
+import { connectTailorKitTools } from "@/lib/agents/tailorkit-tools";
+import { AGENT_TIMEOUT_MS } from "@/lib/agents/agent-limits";
 import { agentRequest, isSameOriginRequest } from "@/lib/agents/agent-request";
 import { beginAgentChat, ChatConflict, finishAgentMessages, saveAgentChat } from "@/routers/chats";
 import {
@@ -12,7 +14,7 @@ import {
   pruneAgentBuckets,
 } from "@/lib/agents/agent-rate-limit";
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 export async function POST(request: Request) {
   if (!isSameOriginRequest(request))
@@ -91,6 +93,7 @@ export async function POST(request: Request) {
   const { reservation } = admission;
   let tokenUsage: number | undefined;
   let streamConsumption: Promise<void> | undefined;
+  let tailorkit: Awaited<ReturnType<typeof connectTailorKitTools>>;
   after(async () => {
     // Drain on the server so disconnects still run persistence callbacks, while
     // request.signal continues to cancel model generation and tool execution.
@@ -98,6 +101,11 @@ export async function POST(request: Request) {
       await streamConsumption;
     } catch (error) {
       console.error("Agent stream consumption failed:", error);
+    }
+    try {
+      await tailorkit?.close();
+    } catch {
+      console.error("TailorKit MCP connection could not be closed.");
     }
     try {
       await settleAgentTokens(reservation, tokenUsage);
@@ -117,6 +125,7 @@ export async function POST(request: Request) {
     return new Response("This chat could not be saved. Please try again.", { status: 503 });
   }
   try {
+    tailorkit = await connectTailorKitTools(tenant, request.signal);
     return await createAgentUIStreamResponse({
       agent: createCrmAgent(
         tenant,
@@ -132,6 +141,7 @@ export async function POST(request: Request) {
             tokenUsage = tokens;
           },
         },
+        tailorkit?.tools,
       ),
       uiMessages: chatTurn.messages,
       consumeSseStream: ({ stream }) => {
@@ -148,7 +158,7 @@ export async function POST(request: Request) {
           true,
         ),
       abortSignal: request.signal,
-      timeout: 45000,
+      timeout: AGENT_TIMEOUT_MS,
       onError: () =>
         "The agent could not finish this request. Please try again. Check the page before repeating a creation.",
     });

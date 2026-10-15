@@ -42,9 +42,6 @@ const transport = new DefaultChatTransport<CrmAgentMessage>({ api: "/api/agent" 
 export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   const { data: history } = useSuspenseQuery(orpc.chats.list.queryOptions());
-  const refresh = () => {
-    void queryClient.invalidateQueries({ queryKey: orpc.key() });
-  };
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
   const panelId = useId();
@@ -53,7 +50,16 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const [openOverride, setOpen] = useState<boolean | null>(null);
   const open = openOverride ?? canDock;
   const [activeTab, setActiveTab] = useState("agent");
-  const { data: views, isPending: appsPending, error: appsError } = useViews({ slot: "panel" });
+  const {
+    data: views,
+    isPending: appsPending,
+    error: appsError,
+    fetch: refreshApps,
+  } = useViews({ slot: "panel" });
+  const refresh = () => {
+    void queryClient.invalidateQueries({ queryKey: orpc.key() });
+    void refreshApps();
+  };
   const [appOrder, setAppOrder] = useState<string[]>([]);
   const apps = (views ?? [])
     .map((view) => view.app)

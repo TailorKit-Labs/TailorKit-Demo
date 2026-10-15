@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import type { AnchorHTMLAttributes } from "react";
-import type { ChatStatus } from "ai";
+import { useEffect, useState, type AnchorHTMLAttributes } from "react";
+import type { ChatStatus, DynamicToolUIPart } from "ai";
 import {
   ArrowRightIcon,
   BriefcaseBusinessIcon,
@@ -72,6 +72,45 @@ function AgentLink({ href, children, ...props }: AnchorHTMLAttributes<HTMLAnchor
   );
 }
 const markdownComponents = { a: AgentLink };
+
+const tailorKitToolTitles: Record<string, string> = {
+  tailorkit_list_apps: "View apps",
+  tailorkit_create_app: "Build an app",
+  tailorkit_edit_app: "Edit an app",
+};
+
+function DynamicToolResult({ part }: { part: DynamicToolUIPart }) {
+  const failed =
+    part.state === "output-available" &&
+    typeof part.output === "object" &&
+    part.output !== null &&
+    "isError" in part.output &&
+    part.output.isError === true;
+  const hasError = part.state === "output-error" || failed;
+  const [open, setOpen] = useState(hasError);
+  useEffect(() => {
+    if (part.state === "output-error" || failed) setOpen(true);
+  }, [part.state, failed]);
+  return (
+    <Tool className="mb-0" open={open} onOpenChange={setOpen}>
+      <ToolHeader
+        type="dynamic-tool"
+        toolName={part.toolName}
+        state={failed ? "output-error" : part.state}
+        title={tailorKitToolTitles[part.toolName] ?? part.title ?? part.toolName}
+      />
+      <ToolContent>
+        <p className="text-sm text-muted-foreground">
+          {part.state === "output-error" || failed
+            ? "The app request could not finish. Check your apps before repeating a change."
+            : part.state === "output-available"
+              ? "Finished. See the agent's response for details."
+              : "Working on your apps. Building or editing can take a few minutes…"}
+        </p>
+      </ToolContent>
+    </Tool>
+  );
+}
 
 function ToolResult({ part }: { part: ToolPart }) {
   return (
@@ -359,6 +398,8 @@ export function AgentChat({
                             {part.text}
                           </MessageResponse>
                         );
+                      if (part.type === "dynamic-tool")
+                        return <DynamicToolResult key={index} part={part} />;
                       if (part.type.startsWith("tool-"))
                         return <ToolResult key={index} part={part as ToolPart} />;
                       return null;

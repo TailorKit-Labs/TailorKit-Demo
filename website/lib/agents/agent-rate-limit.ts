@@ -3,12 +3,12 @@ import { isIP } from "node:net";
 import { and, eq, lt, sql } from "drizzle-orm";
 import { db } from "../drizzle";
 import { agentBuckets } from "../schema";
+import { AGENT_LEASE_MS } from "./agent-limits";
 
 export const AGENT_TOKEN_CAPACITY = 50000;
 export const AGENT_BUCKET_WINDOW_MS = 5 * 60 * 60 * 1000;
 export const AGENT_TURN_RESERVATION = 10000;
 export const AGENT_REQUESTS_PER_MINUTE = 5;
-const LEASE_MS = 90000;
 
 export function agentIpKey(request: Request) {
   // Vercel overwrites this header. Do not trust forwarded headers on other hosts.
@@ -84,7 +84,7 @@ export async function reserveAgentTokens(key: string): Promise<Admission> {
         requests: requests + 1,
         requestResetAt,
         leaseId: reservation.leaseId,
-        leaseExpiresAt: new Date(now.getTime() + LEASE_MS),
+        leaseExpiresAt: new Date(now.getTime() + AGENT_LEASE_MS),
       })
       .where(eq(agentBuckets.key, key));
     return { allowed: true, reservation };
