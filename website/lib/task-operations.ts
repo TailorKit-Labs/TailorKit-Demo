@@ -32,3 +32,29 @@ export async function setTaskCompletedRecord(tenantId: string, id: string, compl
   if (!rows.length) throw new Error("Task not found.");
   return rows[0];
 }
+
+export async function updateTaskRecord(
+  tenantId: string,
+  id: string,
+  input: z.input<typeof taskInput>,
+) {
+  const data = taskInput.parse(input);
+  await db.transaction(async (tx) => {
+    await lockTenant(tx, tenantId);
+    await checkContact(tx, tenantId, data.contactId);
+    const rows = await tx
+      .update(tasks)
+      .set(data)
+      .where(and(eq(tasks.id, id), eq(tasks.tenantId, tenantId)))
+      .returning({ id: tasks.id });
+    if (!rows.length) throw new Error("Task not found.");
+    await logActivity(tx, tenantId, "task", "Task updated", data.title, data.contactId);
+  });
+}
+export async function deleteTaskRecord(tenantId: string, id: string) {
+  const rows = await db
+    .delete(tasks)
+    .where(and(eq(tasks.id, id), eq(tasks.tenantId, tenantId)))
+    .returning({ id: tasks.id });
+  if (!rows.length) throw new Error("Task not found.");
+}

@@ -3,12 +3,19 @@ import { and, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "./drizzle";
-import { deals, tasks } from "./schema";
+import { tasks } from "./schema";
 import { getCurrentSession, requireTenant } from "./workspace";
 import { provisionForUser } from "./provision";
-import { lockTenant, checkContact, logActivity } from "./mutation-guards";
-import { createDealRecord, dealInput, moveDealRecord, type MoveDealInput } from "./deal-operations";
-import { createTaskRecord, taskInput } from "./task-operations";
+import { addNoteRecord } from "./activity-operations";
+import {
+  createDealRecord,
+  updateDealRecord,
+  deleteDealRecord,
+  dealInput,
+  moveDealRecord,
+  type MoveDealInput,
+} from "./deal-operations";
+import { createTaskRecord, updateTaskRecord, deleteTaskRecord, taskInput } from "./task-operations";
 import {
   createContactRecord,
   updateContactRecord,
@@ -73,36 +80,14 @@ export async function createDeal(input: z.input<typeof dealInput>) {
 }
 export async function updateDeal(id: string, input: z.input<typeof dealInput>) {
   return action(async () => {
-    const data = dealInput.parse(input),
-      tenant = await requireTenant();
-    await db.transaction(async (tx) => {
-      await lockTenant(tx, tenant.id);
-      await checkContact(tx, tenant.id, data.contactId);
-      const rows = await tx
-        .update(deals)
-        .set(data)
-        .where(and(eq(deals.id, id), eq(deals.tenantId, tenant.id)))
-        .returning({ id: deals.id });
-      if (!rows.length) throw new Error("Deal not found.");
-      await logActivity(
-        tx,
-        tenant.id,
-        "deal",
-        "Deal updated",
-        `${data.title} moved to ${data.stage}.`,
-        data.contactId,
-      );
-    });
+    const tenant = await requireTenant();
+    await updateDealRecord(tenant.id, id, input);
   });
 }
 export async function deleteDeal(id: string) {
   return action(async () => {
     const tenant = await requireTenant();
-    const rows = await db
-      .delete(deals)
-      .where(and(eq(deals.id, id), eq(deals.tenantId, tenant.id)))
-      .returning({ id: deals.id });
-    if (!rows.length) throw new Error("Deal not found.");
+    await deleteDealRecord(tenant.id, id);
   });
 }
 export async function movePipelineDeal(input: MoveDealInput) {
@@ -131,21 +116,19 @@ export async function toggleTask(id: string) {
 export async function deleteTask(id: string) {
   return action(async () => {
     const tenant = await requireTenant();
-    const rows = await db
-      .delete(tasks)
-      .where(and(eq(tasks.id, id), eq(tasks.tenantId, tenant.id)))
-      .returning({ id: tasks.id });
-    if (!rows.length) throw new Error("Task not found.");
+    await deleteTaskRecord(tenant.id, id);
   });
 }
 export async function addNote(contactId: string, body: string) {
   return action(async () => {
-    const description = z.string().trim().min(1).max(1000).parse(body),
-      tenant = await requireTenant();
-    await db.transaction(async (tx) => {
-      await lockTenant(tx, tenant.id);
-      await checkContact(tx, tenant.id, contactId);
-      await logActivity(tx, tenant.id, "note", "Note added", description, contactId);
-    });
+    const tenant = await requireTenant();
+    await addNoteRecord(tenant.id, contactId, body);
+  });
+}
+
+export async function updateTask(id: string, input: z.input<typeof taskInput>) {
+  return action(async () => {
+    const tenant = await requireTenant();
+    await updateTaskRecord(tenant.id, id, input);
   });
 }

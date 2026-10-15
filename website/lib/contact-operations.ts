@@ -2,15 +2,10 @@ import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "./drizzle";
 import { contacts } from "./schema";
+import { contactFields } from "./crm-tool-schemas";
 import { lockTenant, checkLimit, logActivity } from "./mutation-guards";
 
-export const contactInput = z.object({
-  name: z.string().trim().min(2).max(80),
-  email: z.email().max(120),
-  company: z.string().trim().min(1).max(80),
-  role: z.string().trim().min(1).max(80),
-  status: z.enum(["lead", "active", "customer"]),
-});
+export const contactInput = contactFields;
 
 // These internal operations accept the tenant resolved from the authenticated session by actions.ts.
 export async function createContactRecord(tenantId: string, input: z.input<typeof contactInput>) {

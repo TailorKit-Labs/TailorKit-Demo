@@ -2,6 +2,7 @@ import { consumeStream, createAgentUIStreamResponse } from "ai";
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
 import { checkBotId } from "botid/server";
+import { mutationToolNames } from "@/lib/crm-tool-schemas";
 import { requireTenant } from "@/lib/workspace";
 import { createCrmAgent } from "@/lib/agents/crm-agent";
 import { agentRequest, isSameOriginRequest } from "@/lib/agents/agent-request";
@@ -19,7 +20,7 @@ import {
 } from "@/lib/agents/agent-rate-limit";
 
 export const maxDuration = 60;
-const mutationTools = new Set(["createDeal", "moveDeal", "createTask", "setTaskCompleted"]);
+const mutationTools = new Set<string>(mutationToolNames);
 
 export async function POST(request: Request) {
   if (!isSameOriginRequest(request))

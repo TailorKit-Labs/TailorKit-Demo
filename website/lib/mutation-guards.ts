@@ -31,9 +31,8 @@ export async function logActivity(
   description: string,
   contactId: string | null = null,
 ) {
-  await tx
-    .insert(activities)
-    .values({ id: crypto.randomUUID(), tenantId, type, title, description, contactId });
+  const id = crypto.randomUUID();
+  await tx.insert(activities).values({ id, tenantId, type, title, description, contactId });
   const old = await tx
     .select({ id: activities.id })
     .from(activities)
@@ -41,4 +40,5 @@ export async function logActivity(
     .orderBy(desc(activities.createdAt), desc(activities.id))
     .offset(50);
   for (const row of old) await tx.delete(activities).where(eq(activities.id, row.id));
+  return id;
 }

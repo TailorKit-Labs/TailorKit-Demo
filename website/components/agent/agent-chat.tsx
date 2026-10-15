@@ -33,7 +33,18 @@ import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
 type ToolPart = Extract<CrmAgentMessage["parts"][number], { type: `tool-${string}` }>;
-const toolTitles = {
+const toolTitles: Record<ToolPart["type"], string> = {
+  "tool-getWorkspace": "View workspace",
+  "tool-getContact": "View contact",
+  "tool-createContact": "Add a contact",
+  "tool-updateContact": "Edit a contact",
+  "tool-deleteContact": "Delete a contact",
+  "tool-updateDeal": "Edit a deal",
+  "tool-deleteDeal": "Delete a deal",
+  "tool-updateTask": "Edit a follow-up",
+  "tool-deleteTask": "Delete a follow-up",
+  "tool-listActivities": "View activity",
+  "tool-addNote": "Add a note",
   "tool-listDeals": "View deals",
   "tool-listContacts": "Find contacts",
   "tool-createDeal": "Add a deal",
@@ -82,6 +93,57 @@ function ToolResult({ part }: { part: ToolPart }) {
 function CompletedTool({ part }: { part: ToolPart }) {
   if (part.state !== "output-available") return null;
   switch (part.type) {
+    case "tool-getWorkspace":
+      return (
+        <p className="text-sm">
+          {part.output.workspace.name} · {part.output.usage.contacts} contacts ·{" "}
+          {part.output.usage.deals} deals · {part.output.usage.tasks} follow-ups
+        </p>
+      );
+    case "tool-getContact":
+      return (
+        <div className="flex flex-col gap-3">
+          <p className="text-sm">
+            {part.output.contact.name} · {part.output.contact.company}
+          </p>
+          <RecordLink href={part.output.href}>View contact</RecordLink>
+        </div>
+      );
+    case "tool-createContact":
+      return (
+        <div className="flex flex-col gap-3">
+          <p className="text-sm">Added {part.output.contact.name}.</p>
+          <RecordLink href={part.output.href}>View contact</RecordLink>
+        </div>
+      );
+    case "tool-updateContact":
+    case "tool-deleteContact":
+    case "tool-updateDeal":
+    case "tool-deleteDeal":
+    case "tool-updateTask":
+    case "tool-deleteTask":
+    case "tool-addNote":
+      return (
+        <div className="flex flex-col gap-3">
+          <p className="text-sm">{toolTitles[part.type]} completed.</p>
+          <RecordLink href={part.output.href}>View workspace</RecordLink>
+        </div>
+      );
+    case "tool-listActivities":
+      return (
+        <div className="flex flex-col gap-3">
+          {part.output.activities.length ? (
+            part.output.activities.map((activity) => (
+              <div key={activity.id} className="text-sm">
+                <p className="font-medium">{activity.title}</p>
+                <p className="text-muted-foreground">{activity.description}</p>
+              </div>
+            ))
+          ) : (
+            <p className="text-sm text-muted-foreground">No activity yet.</p>
+          )}
+        </div>
+      );
     case "tool-listDeals":
       return (
         <div className="flex flex-col gap-3">

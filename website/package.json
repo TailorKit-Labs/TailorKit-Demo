@@ -2,6 +2,7 @@
   "name": "website",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "pnpm run db:push && next build",
@@ -18,7 +19,8 @@
     "test:db": "tsx scripts/test-db.ts",
     "test:agent": "tsx scripts/test-agent.ts",
     "test:agent-chats": "tsx scripts/test-agent-chats.ts",
-    "test:agent-rate-limit": "tsx scripts/test-agent-rate-limit.ts"
+    "test:agent-rate-limit": "tsx scripts/test-agent-rate-limit.ts",
+    "test:tailorkit": "tsx scripts/test-tailorkit.tsx"
   },
   "dependencies": {
     "@ai-sdk/react": "catalog:",

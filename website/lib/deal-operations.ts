@@ -72,3 +72,36 @@ export async function moveDealRecord(tenantId: string, input: MoveDealInput) {
     }
   });
 }
+
+export async function updateDealRecord(
+  tenantId: string,
+  id: string,
+  input: z.input<typeof dealInput>,
+) {
+  const data = dealInput.parse(input);
+  await db.transaction(async (tx) => {
+    await lockTenant(tx, tenantId);
+    await checkContact(tx, tenantId, data.contactId);
+    const rows = await tx
+      .update(deals)
+      .set(data)
+      .where(and(eq(deals.id, id), eq(deals.tenantId, tenantId)))
+      .returning({ id: deals.id });
+    if (!rows.length) throw new Error("Deal not found.");
+    await logActivity(
+      tx,
+      tenantId,
+      "deal",
+      "Deal updated",
+      `${data.title} moved to ${data.stage}.`,
+      data.contactId,
+    );
+  });
+}
+export async function deleteDealRecord(tenantId: string, id: string) {
+  const rows = await db
+    .delete(deals)
+    .where(and(eq(deals.id, id), eq(deals.tenantId, tenantId)))
+    .returning({ id: deals.id });
+  if (!rows.length) throw new Error("Deal not found.");
+}

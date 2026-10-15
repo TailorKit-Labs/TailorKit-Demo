@@ -1,4 +1,6 @@
 import { createServer } from "tailorkit/server";
+import { revalidatePath } from "next/cache";
+import { createTailorKitServerTools } from "./tailorkit-server-tools";
 import { contract } from "./tailorkit";
 
 const origin =
@@ -11,6 +13,7 @@ const origin =
 
 export const tailorKit = createServer({
   contract,
+  tools: createTailorKitServerTools(() => revalidatePath("/", "layout")),
   projectKey: process.env.TAILORKIT_PROJECT_KEY,
   baseUrl: new URL("/api/tailorkit", origin),
 });

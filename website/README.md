@@ -35,7 +35,7 @@ Every query and mutation derives the workspace from the authenticated session. R
 
 Below 800px, a floating bar at the bottom center contains **Agent** and a menu icon, opening separate Coss bottom drawers for chat and navigation. The mobile header has no sidebar toggle or bottom navigation tabs. On larger screens, the **Agent** floating button lives in the bottom-right corner and hides while the side panel is open. It opens a Coss bottom drawer below 800px and a chat popover on larger screens. On screens at least 1280px wide, a toggle switches between the popover and a side panel; smaller screens hide that control. Drafts and conversations survive closing, docking, resizing, and in-app navigation. A history dropdown replaces the chat title, with up to eight archived conversations kept in memory for the current session.
 
-The agent uses AI SDK `ToolLoopAgent` and streams text and tool progress through `/api/agent`. It can search/view deals and contacts, create deals, move deals between stages, list/create follow-ups, and complete or reopen tasks. Its tools share the app's validated database operations, workspace isolation, activity logging, and collection limits. Successful writes refresh the visible page. Missing required information is requested in the conversation; new deals default to qualified, no contact, and an expected close in 30 days.
+The agent uses AI SDK `ToolLoopAgent` and streams text and tool progress through `/api/agent`. It can read workspace usage; search, create, edit and delete contacts, deals and follow-ups; move/reorder pipeline deals; complete/reopen tasks; and read activity or add contact notes. Its tools share the app's validated database operations, workspace isolation, activity logging, and collection limits. Successful writes refresh the visible page. Missing required information is requested in the conversation; new deals default to qualified, no contact, and an expected close in 30 days.
 
 On Vercel, the AI SDK automatically authenticates through the deployment's [OIDC token](https://vercel.com/docs/ai-gateway/authentication-and-byok/oidc), including tokens supplied through trusted request context. Leave `AI_GATEWAY_API_KEY` unset to use OIDC; a configured API key takes priority. Your Vercel team must have available AI Gateway credits and any required billing verification completed. No manually managed model-provider key is needed.
 
@@ -56,6 +56,53 @@ Agent limits are stored atomically in Postgres, shared across serverless instanc
 The IP key is an HMAC using `BETTER_AUTH_SECRET`; raw IPs are not stored in the bucket table. Vercel's trusted `x-vercel-forwarded-for` supplies the IP. Cookie resets and new anonymous workspaces do not reset a network's bucket. People sharing an IP share the allowance. Other production hosts are rejected unless a trusted IP source is explicitly implemented; local development uses one loopback bucket. Expired bucket records are pruned in batches after responses.
 
 Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration tests and a deterministic SDK tool-loop/streaming and persistence test that needs no provider key. Run `pnpm --filter website test:agent-chats` for chat history, workspace isolation, authoritative context, concurrency, interrupted replies, and lease recovery. Run `pnpm --filter website test:agent-rate-limit` for database-backed bucket, concurrency, accounting, reset, and IP identity tests. Live model quality, provider authentication, and production BotID verification require a configured deployment.
+
+## TailorKit apps
+
+`lib/tailorkit.ts` is the browser-safe `defineContract` shared by the host server and client. It declares the `workspace` scope, the current workspace/page context at `/`, and the `panel` slot. Installed views render as tabs beside the agent. Set `TAILORKIT_PROJECT_KEY` in the server environment to connect your TailorKit project. Without a configured project, CRM and agent features still work and the panel reports that apps are unavailable.
+
+`lib/tailorkit-theme.ts` supplies **the same theme** to `primitives()` and `createClient()`. Apps can use background, text, border, spacing, radius, size and responsive tokens. Semantic colors reference the existing CSS variables, so they follow light/dark mode. Layout breakpoints match the host's 800px mobile and 1280px side-panel boundaries. The SDK's default tokens remain available alongside host additions such as `background="card"`, `textColor="muted"`, `radius="full"`, `width="panel"` and `height="screen"`.
+
+The client implements all 29 contracted components using the existing Coss components:
+
+- Layout: `Box`, `Flex`, `Grid`, `Inline`.
+- Content: `Text`, `Heading`, `Card`, `Badge`, `Avatar`.
+- Forms: `Form`, `Input`, `Textarea`, `Select`, `Checkbox`, `Switch`, `Button`.
+- Tables: `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell`.
+- Feedback and overlays: `Alert`, `Empty`, `Progress`, `Spinner`, `Skeleton`, `Separator`, `Dialog`.
+
+Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. `Form` handles native validation and includes a submit button, with configurable `submitLabel` and `disabled` props. Each input has a visible label and accessible name. `Dialog` always provides a title. Compose table rows inside their header/body and cells inside rows.
+
+Apps have the same workspace operations as the CRM UI, plus task editing:
+
+| Tool group   | Actions                                                                                                   |
+| ------------ | --------------------------------------------------------------------------------------------------------- |
+| `workspace`  | `get`: workspace name, collection usage/limit, total deal value                                           |
+| `contacts`   | `list` (query/status), `get` (details, related deals/tasks, notes/activity), `create`, `update`, `delete` |
+| `deals`      | `list` (query/stage/contact), `create`, `update`, `delete`, `move` (stage or before/after another deal)   |
+| `tasks`      | `list` (query/completed/contact), `create`, `update`, `delete`, `setCompleted`                            |
+| `activities` | `list` (optionally by contact), `addNote`                                                                 |
+| `ui`         | `navigate`, `refresh`, `setTheme`, `notify` (client tools)                                                |
+
+The 18 server tools delegate to `lib/crm-operations.ts`, which is also the agent's operation layer. Writes use the same validated record operations as server actions, preserving tenant isolation, collection limits and activity behavior. The workspace comes from the SDK-verified signed scope, never app input. Successful writes invalidate the CRM layout; an app can call `ui.refresh` to refresh its visible host data. The four client tools use the host router, theme provider and toast manager. Navigation accepts only existing CRM routes and contact detail URLs.
+
+Lists return at most 50 records (the workspace collection limit); apps can sort, paginate, select and chart those results locally, just as the host does. Read results include creation timestamps and pipeline position. Calendar dates are `YYYY-MM-DD`; timestamps are ISO strings; deal values are whole USD. Contact/deal/task updates take all editable fields, so preserve fields from the latest read when making an edit. `tasks.setCompleted` sets an explicit boolean, making retries idempotent. Deleting a contact removes its notes/activity and retains related deals/tasks with `contactId: null`.
+
+For example, `contacts.create` accepts:
+
+```json
+{
+  "name": "Alex Chen",
+  "email": "alex@example.com",
+  "company": "Acme Studio",
+  "role": "Designer",
+  "status": "lead"
+}
+```
+
+Use the returned `contact.id` in `tasks.create` with `{ "title": "Follow up", "dueDate": "2026-11-01", "contactId": "…" }`, or in `ui.navigate` as `{ "href": "/contacts/<id>" }`.
+
+Run `pnpm --filter website test:tailorkit` for real PostgreSQL coverage of contract tools, cross-workspace rejection, filtering, editing, deletion cascades, pipeline order, cache invalidation, navigation validation and host form rendering/callbacks. The test needs no TailorKit project or model credentials. Hosted app discovery, signed capability transport and sandbox rendering additionally require a configured TailorKit project.
 
 ## Anonymous setup
 
