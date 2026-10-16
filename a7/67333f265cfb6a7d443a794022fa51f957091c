@@ -1,0 +1,19 @@
+apps/messages/src/slots/panel/index.view.tsx
+  s_127f075da43fff::t_9444185d6a7a46 11,181-191,209-215,217-223,231-253,255-257
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a767333f265cfb6a7d443a794022fa51f957091c",
+  "prompts": {},
+  "sessions": {
+    "s_127f075da43fff": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a14371-72eb-70b0-9bba-982c5e94ac4f",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
