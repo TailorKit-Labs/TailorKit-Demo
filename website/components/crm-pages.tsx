@@ -60,6 +60,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Select,
   SelectTrigger,
@@ -558,86 +559,64 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
           />
         </div>
       </PageHeading>
-      <div className="grid items-start gap-5 xl:grid-cols-[320px_1fr]">
-        <div className="flex flex-col gap-5">
-          <Card>
-            <CardHeader>
-              <ContactAvatar contact={contact} className="size-10" />
+      <Card>
+        <CardHeader className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex min-w-0 items-center gap-4">
+            <ContactAvatar contact={contact} className="size-12 shrink-0" />
+            <div className="flex min-w-0 flex-col gap-2">
               <CardTitle>{contact.name}</CardTitle>
-              <CardDescription>{contact.company}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-4">
-              <Badge variant="outline">{label(contact.status)}</Badge>
-              <a
-                href={"mailto:" + contact.email}
-                className="flex items-center gap-2 text-sm break-all hover:underline"
-              >
-                <Mail className="size-4 shrink-0 text-muted-foreground" />
-                {contact.email}
-              </a>
-              <Separator />
-              <dl className="flex flex-col gap-3 text-sm">
-                <div className="flex justify-between gap-3">
-                  <dt className="text-muted-foreground">Role</dt>
-                  <dd>{contact.role}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Added</dt>
-                  <dd>{date(contact.createdAt)}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-muted-foreground">Total deal value</dt>
-                  <dd className="font-medium">
-                    {money(deals.reduce((sum, deal) => sum + deal.value, 0))}
-                  </dd>
-                </div>
-              </dl>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Follow-ups</CardTitle>
-              <CardDescription>Keep the conversation moving.</CardDescription>
-              <CardAction>
-                <RecordDialog kind="task" workspace={workspace} defaultContactId={contact.id} />
-              </CardAction>
-            </CardHeader>
-            <CardContent>
-              {tasks.length ? (
-                tasks.map((task) => <TaskRow key={task.id} task={task} workspace={workspace} />)
-              ) : (
-                <NoResults
-                  title="No follow-ups"
-                  description="Add a follow-up to plan your next step."
-                />
-              )}
-            </CardContent>
-          </Card>
+              <CardDescription>
+                {[contact.role, contact.company].filter(Boolean).join(" at ")}
+              </CardDescription>
+            </div>
+          </div>
+          <Badge variant="outline">{label(contact.status)}</Badge>
+        </CardHeader>
+        <CardContent>
+          <dl className="flex flex-col gap-5 text-sm sm:flex-row sm:flex-wrap sm:gap-x-12">
+            <div className="flex min-w-0 flex-col gap-1.5">
+              <dt className="text-muted-foreground">Email</dt>
+              <dd>
+                <a
+                  href={"mailto:" + contact.email}
+                  className="inline-flex items-center gap-2 break-all hover:underline"
+                >
+                  <Mail className="size-4 shrink-0 text-muted-foreground" />
+                  {contact.email}
+                </a>
+              </dd>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <dt className="text-muted-foreground">Added</dt>
+              <dd>{date(contact.createdAt)}</dd>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <dt className="text-muted-foreground">Total deal value</dt>
+              <dd className="font-medium tabular-nums">
+                {money(deals.reduce((sum, deal) => sum + deal.value, 0))}
+              </dd>
+            </div>
+          </dl>
+        </CardContent>
+      </Card>
+      <Tabs defaultValue="activity" className="min-w-0 gap-5">
+        <div className="min-w-0 overflow-x-auto pb-px">
+          <TabsList variant="underline" aria-label="Contact sections">
+            <TabsTrigger value="activity">
+              Activity & notes
+              <Badge variant="secondary">{activities.length}</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="follow-ups">
+              Follow-ups
+              <Badge variant="secondary">{tasks.length}</Badge>
+            </TabsTrigger>
+            <TabsTrigger value="opportunities">
+              Opportunities
+              <Badge variant="secondary">{deals.length}</Badge>
+            </TabsTrigger>
+          </TabsList>
         </div>
-        <div className="flex flex-col gap-5">
-          <Card>
-            <CardHeader>
-              <CardTitle>Opportunities</CardTitle>
-              <CardDescription>Every deal connected to this relationship.</CardDescription>
-              <CardAction>
-                <RecordDialog kind="deal" workspace={workspace} defaultContactId={contact.id} />
-              </CardAction>
-            </CardHeader>
-            <CardContent>
-              {deals.length ? (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {deals.map((deal) => (
-                    <DealCard key={deal.id} deal={deal} workspace={workspace} />
-                  ))}
-                </div>
-              ) : (
-                <NoResults
-                  title="A fresh opportunity"
-                  description="Create a deal and choose this contact to link it here."
-                />
-              )}
-            </CardContent>
-          </Card>
+        <TabsContent value="activity">
           <Card>
             <CardHeader>
               <CardTitle>Activity & notes</CardTitle>
@@ -711,11 +690,62 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
               )}
             </CardContent>
           </Card>
-        </div>
-      </div>
+        </TabsContent>
+        <TabsContent value="follow-ups">
+          <Card>
+            <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-1.5">
+                <CardTitle>Follow-ups</CardTitle>
+                <CardDescription>Keep the conversation moving.</CardDescription>
+              </div>
+              <CardAction>
+                <RecordDialog kind="task" workspace={workspace} defaultContactId={contact.id} />
+              </CardAction>
+            </CardHeader>
+            <CardContent>
+              {tasks.length ? (
+                tasks.map((task) => <TaskRow key={task.id} task={task} workspace={workspace} />)
+              ) : (
+                <NoResults
+                  title="No follow-ups"
+                  description="Add a follow-up to plan your next step."
+                />
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="opportunities">
+          <Card>
+            <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-1.5">
+                <CardTitle>Opportunities</CardTitle>
+                <CardDescription>Every deal connected to this relationship.</CardDescription>
+              </div>
+              <CardAction>
+                <RecordDialog kind="deal" workspace={workspace} defaultContactId={contact.id} />
+              </CardAction>
+            </CardHeader>
+            <CardContent>
+              {deals.length ? (
+                <div className="flex flex-col gap-3">
+                  {deals.map((deal) => (
+                    <DealCard key={deal.id} deal={deal} workspace={workspace} />
+                  ))}
+                </div>
+              ) : (
+                <NoResults
+                  title="A fresh opportunity"
+                  description="Create a deal and choose this contact to link it here."
+                />
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </>
   );
 }
+
 function Tasks({ workspace }: { workspace: Workspace }) {
   return (
     <>
