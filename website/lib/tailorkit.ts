@@ -10,8 +10,12 @@ export const siteHref = z
     /^\/(?:contacts(?:\/[A-Za-z0-9-]+)?|pipeline|tasks|settings)?$/,
     "Choose a CRM page or contact detail URL.",
   );
-const text = z.string().max(4000);
-const label = z.string().min(1).max(120);
+// Component metadata uses TailorKit's restricted JSON Schema dialect. Refinements
+// preserve runtime limits without emitting unsupported string-length keywords.
+const text = z.string().refine((value) => value.length <= 4000, "Maximum 4000 characters.");
+const label = z
+  .string()
+  .refine((value) => value.length >= 1 && value.length <= 120, "Use 1–120 characters.");
 const disabled = z.boolean().optional();
 const onChange = { input: z.object({ value: z.string() }) };
 const onCheckedChange = { input: z.object({ checked: z.boolean() }) };
@@ -102,7 +106,11 @@ export const contract = defineContract({
       fields: z.object({
         label,
         value: z.string().nullable(),
-        options: z.array(z.object({ label, value: z.string().min(1).max(200) })).max(100),
+        options: z
+          .array(
+            z.object({ label, value: z.string().refine((v) => v.length >= 1 && v.length <= 200) }),
+          )
+          .max(100),
         disabled,
       }),
       callbacks: { onChange },

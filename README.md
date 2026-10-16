@@ -1,6 +1,6 @@
 # Forma CRM demo
 
-A pnpm workspace. The Next.js application and all its code live in `website/`; `apps/*` is reserved for future packages.
+A pnpm workspace. The Next.js CRM lives in `website/`; the TailorKit Messages app lives in `apps/messages/`.
 
 ## Run locally
 
@@ -12,7 +12,9 @@ pnpm --filter website db:push
 pnpm dev
 ```
 
-Open http://localhost:3000. First visit creates an anonymous Better Auth account and provisions a private workspace with 30 contacts, 18 deals, and 12 tasks. Returning visitors resume their existing workspace. Each collection permits at most 50 records; activity history keeps the latest 50 entries.
+Set `TAILORKIT_PROJECT_KEY` in `website/.env.local`; workspace setup installs the shared app ID in `apps/messages/tailorkit.config.ts`. Then open http://localhost:3000. First visit creates an anonymous Better Auth account, provisions a private workspace with 30 contacts, 18 deals, and 12 tasks, and installs Messages into the apps panel. Returning visitors resume their workspace; older workspaces install Messages on their next visit. Each collection permits at most 50 records; activity history keeps the latest 50 entries.
+
+Publish Messages with `pnpm --filter @demo/messages deploy`; see [Messages](apps/messages/README.md) for the initial publish and version updates. New workspaces install the shared published app without uploading files.
 
 ## Checks
 

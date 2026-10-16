@@ -17,6 +17,7 @@ import { tenantFromHeaders, verifiedWorkspaceContext } from "../routers/context"
 import type { router } from "../routers";
 import { router as serverRouter } from "../routers";
 import type { CrmAgentMessage } from "../lib/agents/crm-agent";
+import { provisionForUser } from "./test-provision";
 
 const origin = "http://localhost:3000";
 const hasCode = (code: string) => (error: unknown) =>
@@ -67,6 +68,7 @@ async function main() {
       }),
     );
     await client.workspace.provision();
+    await provisionForUser(payload.user.id);
     const tenant = await tenantFromHeaders(new Headers({ cookie }));
     env.VERCEL = "1";
     env.AI_GATEWAY_API_KEY = "test-key-no-provider-spend";

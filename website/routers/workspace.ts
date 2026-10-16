@@ -9,6 +9,11 @@ import { provisionForUser } from "../lib/provision";
 import type { Workspace } from "../lib/workspace";
 
 export const provisionWorkspace = sessionProcedure.handler(async ({ context }) => {
+  await provisionForUser(context.userId, { complete: false });
+  return { success: true as const };
+});
+
+export const installWorkspaceApps = sessionProcedure.handler(async ({ context }) => {
   await provisionForUser(context.userId);
   return { success: true as const };
 });

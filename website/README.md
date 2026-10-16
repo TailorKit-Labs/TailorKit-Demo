@@ -22,6 +22,10 @@ The env example contains a public development-only signing key: never copy that 
 
 ## Routes and behavior
 
+Setup creates the account, seeds CRM data, then installs the Messages app in the workspace's TailorKit `panel` slot. `TAILORKIT_PROJECT_KEY` is required. The shared app ID comes directly from `apps/messages/tailorkit.config.ts`, which is also used by `pnpm --filter @demo/messages deploy`. Setup uses `tailorKit.experimental.installApp` to install that published app in the authenticated workspace scope; it never builds or uploads assets. Website dev/build commands are independent of Messages publishing. Setup version 2 adds the app to returning version-1 workspaces without reseeding data; a failed install leaves setup incomplete and retryable. Per-user database locks prevent duplicate installations from concurrent tabs.
+
+Messages offers simulated Email, Slack, and SMS conversations with CRM contacts. Sent messages are readable contact activity notes and share the existing rolling 50-entry history. See [Messages](../apps/messages/README.md) for app development and binding generation.
+
 - `/`: dashboard-01 KPI cards, interactive area chart, and a full-width opportunities table.
 - `/contacts`: search, relationship filters, create and drill into contacts.
 - `/contacts/[id]`: contact editing, related deals/tasks, notes and activity.

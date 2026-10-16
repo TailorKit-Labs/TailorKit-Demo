@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import { auth } from "../lib/auth";
 import { db, pool } from "../lib/drizzle";
 import { contacts, deals, tasks, user } from "../lib/schema";
-import { provisionForUser } from "../lib/provision";
+import { provisionForUser } from "./test-provision";
 import { contract, siteHref } from "../lib/tailorkit";
 import { createTailorKitServerTools } from "../lib/tailorkit-server-tools";
 import { tailorKitComponents } from "../components/tailorkit-components";

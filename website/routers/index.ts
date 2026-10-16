@@ -4,11 +4,21 @@ import { getChat, listChats } from "./chats";
 import { createContact, deleteContact, getContact, listContacts, updateContact } from "./contacts";
 import { createDeal, deleteDeal, listDeals, moveDeal, updateDeal } from "./deals";
 import { createTask, deleteTask, listTasks, setTaskCompleted, updateTask } from "./tasks";
-import { getWorkspace, provisionWorkspace, snapshotWorkspace } from "./workspace";
+import {
+  getWorkspace,
+  installWorkspaceApps,
+  provisionWorkspace,
+  snapshotWorkspace,
+} from "./workspace";
 
 export const router = {
   agent: { chat: agentChat },
-  workspace: { get: getWorkspace, snapshot: snapshotWorkspace, provision: provisionWorkspace },
+  workspace: {
+    get: getWorkspace,
+    snapshot: snapshotWorkspace,
+    provision: provisionWorkspace,
+    installApps: installWorkspaceApps,
+  },
   contacts: {
     list: listContacts,
     get: getContact,

@@ -16,3 +16,4 @@ async function handleRequest(request: Request) {
 
 export const GET = handleRequest;
 export const POST = handleRequest;
+export const OPTIONS = handleRequest;

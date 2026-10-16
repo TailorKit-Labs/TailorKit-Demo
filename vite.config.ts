@@ -6,6 +6,8 @@ export default defineConfig({
   },
   fmt: {
     ignorePatterns: [
+      "apps/messages/src/tailorkit.gen.ts",
+      "apps/messages/.tailorkit/**",
       ".agents/**",
       "website/.agents/**",
       ".vite-hooks/**",
@@ -19,7 +21,12 @@ export default defineConfig({
     ],
   },
   lint: {
-    ignorePatterns: [".agents/**", "website/.next/**"],
+    ignorePatterns: [
+      ".agents/**",
+      "website/.next/**",
+      "apps/messages/src/tailorkit.gen.ts",
+      "apps/messages/.tailorkit/**",
+    ],
     jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
     rules: { "vite-plus/prefer-vite-plus-imports": "error" },
     options: { typeAware: true, typeCheck: true },
