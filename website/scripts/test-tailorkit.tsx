@@ -1,6 +1,7 @@
 import "./test-env";
 import assert from "node:assert/strict";
 import type { ToolContext } from "tailorkit";
+import type { SlotItem } from "tailorkit/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { eq } from "drizzle-orm";
 import { auth } from "../lib/auth";
@@ -10,8 +11,44 @@ import { provisionForUser } from "../lib/provision";
 import { contract, siteHref } from "../lib/tailorkit";
 import { createTailorKitServerTools } from "../lib/tailorkit-server-tools";
 import { tailorKitComponents } from "../components/tailorkit-components";
+import { appPageHref, appPageLabel } from "../lib/app-pages";
+import { agentRequest } from "../lib/agents/agent-request";
 
 async function main() {
+  assert.equal(contract.slots.page.multiple, true);
+  const reports: SlotItem<true> = {
+    app: { id: "test-app", name: "Workspace tools" },
+    key: "reports",
+    metadata: { label: " Reports " },
+    data: {},
+  };
+  const activity = { ...reports, key: "activity", metadata: { label: "Activity" } };
+  assert.equal(appPageLabel(reports), "Reports");
+  assert.equal(appPageLabel(activity), "Activity");
+  assert.notEqual(appPageHref(reports), appPageHref(activity));
+  for (const label of [undefined, "", "   ", 42, {}]) {
+    assert.equal(appPageLabel({ ...reports, metadata: { label } }), "Workspace tools · reports");
+  }
+  assert.equal(
+    appPageLabel({ ...reports, app: { id: "unnamed" }, metadata: {} }),
+    "unnamed · reports",
+  );
+  for (const key of [
+    "reports",
+    "activity",
+    "report/2026",
+    "Sales & growth?",
+    "..",
+    "日本語",
+    "%2F",
+  ]) {
+    const href = appPageHref({ ...reports, key });
+    const url = new URL(href, "http://localhost:3000");
+    assert.equal(url.pathname, "/app-pages/test-app");
+    assert.equal(url.searchParams.get("instance"), key);
+    assert.equal(siteHref.safeParse(href).success, true);
+  }
+  assert.equal(agentRequest.shape.page.safeParse("/app-pages").success, true);
   const users: string[] = [];
   try {
     const tenants = [];
@@ -181,6 +218,11 @@ async function main() {
       "javascript:alert(1)",
       "/api/auth/sign-out",
       "/contacts/../settings",
+      "/app-pages/test-app",
+      "/app-pages/test-app?instance=",
+      "/app-pages/test-app?instance=reports&redirect=https://evil.test",
+      "/app-pages/../settings?instance=reports",
+      "/app-pages/test-app?instance=%ZZ",
     ])
       assert.equal(siteHref.safeParse(href).success, false);
     for (const href of ["/", "/contacts", `/contacts/${id}`, "/pipeline", "/tasks", "/settings"])
@@ -217,7 +259,7 @@ async function main() {
     assert.ok(form.includes('type="submit"'));
     assert.ok(form.includes("Create"));
     console.log(
-      "PASS: TailorKit contract CRUD, filtering, notes, ordering, output validation, tenant isolation, cascade behavior, safe navigation and form rendering/callbacks.",
+      "PASS: TailorKit contract CRUD, filtering, notes, ordering, output validation, tenant isolation, cascade behavior, safe navigation, multiple app page identities/labels/URLs and form rendering/callbacks.",
     );
   } finally {
     for (const id of users) await db.delete(user).where(eq(user.id, id));
