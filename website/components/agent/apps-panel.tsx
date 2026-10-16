@@ -124,7 +124,11 @@ export function AppsPanel({
           {children}
         </TabsPanel>
         {apps.map((app) => (
-          <TabsPanel key={app.id} value={app.id} className="min-h-0 overflow-y-auto p-4">
+          <TabsPanel
+            key={app.id}
+            value={app.id}
+            className="min-h-0 overflow-y-auto p-4 [&>[data-tailorkit-view]]:h-full"
+          >
             <RenderSlot app={app} slot="panel" />
           </TabsPanel>
         ))}

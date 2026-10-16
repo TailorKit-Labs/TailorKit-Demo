@@ -178,8 +178,8 @@ function Messages() {
   }
 
   return (
-    <Flex direction="column" gap="md">
-      <Flex justify="between" align="center" gap="sm">
+    <Flex direction="column" gap="md" height="100%" overflow="auto">
+      <Flex justify="between" align="center" gap="sm" shrink="0">
         <Heading text="Messages" level="h2" />
         {!loading && !composing ? (
           <Button
@@ -260,72 +260,75 @@ function Messages() {
         </>
       ) : null}
       {!loading && composing ? (
-        <>
-          <Flex justify="between" gap="sm">
-            <Button
-              label="Back to inbox"
-              variant="ghost"
-              size="sm"
-              disabled={sending}
-              onClick={() => {
-                setComposing(false);
-                setError("");
-              }}
-            />
-            {recipient ? (
+        <Flex direction="column" gap="md" grow="1" minHeight="0" overflow="auto">
+          <Flex direction="column" gap="md" shrink="0">
+            <Flex justify="between" gap="sm">
               <Button
-                label="View contact"
-                variant="link"
+                label="Back to inbox"
+                variant="ghost"
                 size="sm"
                 disabled={sending}
                 onClick={() => {
-                  void tools.ui
-                    .navigate({ href: `/contacts/${recipient.id}` })
-                    .catch(() => setError("Couldn't open the contact. Please try again."));
+                  setComposing(false);
+                  setError("");
                 }}
               />
-            ) : null}
-          </Flex>
-          <Combobox
-            label="To"
-            placeholder="Search contacts…"
-            emptyMessage="No contacts found."
-            value={recipientId}
-            options={contacts.map((contact) => ({
-              label: `${contact.name} · ${contact.company}`,
-              value: contact.id,
-              description: contact.email,
-            }))}
-            disabled={sending}
-            onChange={({ value }) => openThread(value, channel)}
-          />
-          <Select
-            label="Send via"
-            value={channel}
-            options={channels.map((value) => ({ label: value, value }))}
-            disabled={sending}
-            onChange={({ value }) => {
-              if (channels.some((item) => item === value)) {
-                setChannel(value as Channel);
-              }
-            }}
-          />
-          {recipient ? (
-            <Flex align="center" gap="sm">
-              <Avatar name={recipient.name} />
-              <Flex direction="column" gap="2xs">
-                <Text text={recipient.name} size="sm" />
-                <Text
-                  text={channel === "Email" ? recipient.email : channel}
-                  size="xs"
-                  tone="muted"
+              {recipient ? (
+                <Button
+                  label="View contact"
+                  variant="link"
+                  size="sm"
+                  disabled={sending}
+                  onClick={() => {
+                    void tools.ui
+                      .navigate({ href: `/contacts/${recipient.id}` })
+                      .catch(() => setError("Couldn't open the contact. Please try again."));
+                  }}
                 />
-              </Flex>
+              ) : null}
             </Flex>
-          ) : (
-            <Empty title="Choose a contact" />
-          )}
-          <Flex direction="column" gap="md">
+            <Combobox
+              label="To"
+              placeholder="Search contacts…"
+              emptyMessage="No contacts found."
+              value={recipientId}
+              options={contacts.map((contact) => ({
+                label: `${contact.name} · ${contact.company}`,
+                value: contact.id,
+                description: contact.email,
+              }))}
+              disabled={sending}
+              onChange={({ value }) => openThread(value, channel)}
+            />
+            <Select
+              label="Send via"
+              value={channel}
+              options={channels.map((value) => ({ label: value, value }))}
+              disabled={sending}
+              onChange={({ value }) => {
+                if (channels.some((item) => item === value)) {
+                  setChannel(value as Channel);
+                }
+              }}
+            />
+            {recipient ? (
+              <Flex align="center" gap="sm">
+                <Avatar name={recipient.name} />
+                <Flex direction="column" gap="2xs">
+                  <Text text={recipient.name} size="sm" />
+                  <Text
+                    text={channel === "Email" ? recipient.email : channel}
+                    size="xs"
+                    tone="muted"
+                  />
+                </Flex>
+              </Flex>
+            ) : (
+              <Empty title="Choose a contact" />
+            )}
+          </Flex>
+          <Separator />
+          <Flex direction="column" gap="md" grow="1" basis="0" minHeight="0" overflow="auto">
             {seeded
               .filter((item) => item.contact.id === recipientId && item.channel === channel)
               .map((item) => (
@@ -345,45 +348,37 @@ function Messages() {
                 />
               ))}
           </Flex>
-          <Form
-            submitLabel={sending ? "Sending…" : "Send"}
-            disabled={
-              sending || !recipient || !draft.trim() || draft.trim().length > MAX_MESSAGE_LENGTH
-            }
-            onSubmit={() => {
-              void send();
-            }}
-          >
-            <Textarea
-              label="Message"
-              value={draft}
-              placeholder="Write a message…"
-              disabled={sending}
-              required
-              onChange={({ value }) => {
-                setDraft(value);
+          <Separator />
+          <Box shrink="0">
+            <Form
+              submitLabel={sending ? "Sending…" : "Send"}
+              disabled={
+                sending || !recipient || !draft.trim() || draft.trim().length > MAX_MESSAGE_LENGTH
+              }
+              onSubmit={() => {
+                void send();
               }}
-            />
-            <Flex justify="between" gap="sm" align="center">
-              <Button
-                label="Quick reply"
-                variant="ghost"
-                size="sm"
-                disabled={sending || !recipient}
-                onClick={() =>
-                  setDraft(
-                    `Hi ${recipient?.name.split(" ")[0] ?? "there"}, thanks for reaching out! I'll send over the next steps shortly.`,
-                  )
-                }
+            >
+              <Textarea
+                label="Message"
+                value={draft}
+                placeholder="Write a message…"
+                disabled={sending}
+                required
+                onChange={({ value }) => {
+                  setDraft(value);
+                }}
               />
-              <Text
-                text={`${draft.trim().length}/${MAX_MESSAGE_LENGTH}`}
-                size="xs"
-                tone={draft.trim().length > MAX_MESSAGE_LENGTH ? "destructive" : "muted"}
-              />
-            </Flex>
-          </Form>
-        </>
+              <Flex justify="end">
+                <Text
+                  text={`${draft.trim().length}/${MAX_MESSAGE_LENGTH}`}
+                  size="xs"
+                  tone={draft.trim().length > MAX_MESSAGE_LENGTH ? "destructive" : "muted"}
+                />
+              </Flex>
+            </Form>
+          </Box>
+        </Flex>
       ) : null}
     </Flex>
   );

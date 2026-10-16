@@ -67,6 +67,14 @@ export const tailorKitTheme = {
       "2xl": "3rem",
       "3xl": "4rem",
     },
-    size: { control: "2rem", avatar: "2.5rem", panel: "390px", content: "72rem", screen: "100dvh" },
+    size: {
+      control: "2rem",
+      avatar: "2.5rem",
+      panel: "390px",
+      content: "72rem",
+      screen: "100dvh",
+      "100%": "100%",
+      "0": "0",
+    },
   },
 } satisfies TailorKitTheme;
