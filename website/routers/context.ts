@@ -38,7 +38,6 @@ export async function tenantFromVerifiedId(id: string): Promise<RpcTenant> {
 
 export type RpcContext = {
   request?: Request;
-  responseHeaders?: Headers;
   afterResponse?: (work: () => Promise<void>) => void;
   resolveTenant: () => Promise<RpcTenant>;
   resolveUserId?: () => Promise<string>;

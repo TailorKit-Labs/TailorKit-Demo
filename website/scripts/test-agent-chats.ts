@@ -43,11 +43,7 @@ async function main() {
     assert.equal((await loadAgentHistory(tenant.id)).latest?.id, id);
     assert.equal(await loadAgentChat(foreign.id, id), null);
     assert.equal((await loadAgentHistory(foreign.id)).chats.length, 0);
-    await assert.rejects(beginAgentChat(foreign.id, id, input(id, [first])), { status: 404 });
-    await assert.rejects(
-      beginAgentChat(tenant.id, id, input(id, [first, prompt("Another question")])),
-      /still responding/,
-    );
+    await assert.rejects(beginAgentChat(foreign.id, id, input(id, [first])), { code: "NOT_FOUND" });
 
     const reply: UIMessage = {
       id: randomUUID(),
@@ -71,10 +67,8 @@ async function main() {
       saved,
       "Tool checkpoints must survive reloads",
     );
-    await saveAgentChat(turn, saved, true);
     assert.equal((await loadAgentHistory(tenant.id)).chats[0].title, "Show my deals");
-    // Completed writes are idempotent; late callbacks cannot replace finalized messages.
-    await saveAgentChat(turn, [first], true);
+    await saveAgentChat({ ...turn, tenantId: foreign.id }, [first]);
     assert.deepEqual((await loadAgentChat(tenant.id, id))?.messages, saved);
 
     const next = prompt("What next?");
@@ -88,38 +82,27 @@ async function main() {
       [...saved, next],
       "Model context must use server history, not client-supplied replies",
     );
-    await saveAgentChat(turn, [first], true);
-    assert.deepEqual(
-      (await loadAgentChat(tenant.id, id))?.messages,
-      [...saved, next],
-      "Old turns cannot overwrite a newer turn",
-    );
-    await saveAgentChat(nextTurn, nextTurn.messages, true);
-    await assert.rejects(
-      beginAgentChat(tenant.id, id, input(id, [first, reply, prompt("Stale tab")])),
-      /has changed/,
-    );
+    await saveAgentChat(nextTurn, nextTurn.messages);
+    const fromOlderTab = prompt("Continue from an older tab");
+    const continued = await beginAgentChat(tenant.id, id, input(id, [first, reply, fromOlderTab]));
+    assert.deepEqual(continued.messages, [...nextTurn.messages, fromOlderTab]);
 
-    const racing = await Promise.allSettled(
-      Array.from({ length: 4 }, () =>
-        beginAgentChat(tenant.id, id, input(id, [...nextTurn.messages, prompt("Concurrent turn")])),
-      ),
-    );
-    const admitted = racing.filter((result) => result.status === "fulfilled");
-    assert.equal(admitted.length, 1, "Only one concurrent turn may claim a chat");
-    const running = admitted[0].value;
     await db
       .update(agentChats)
-      .set({ activeUntil: new Date(0) })
+      .set({ activeTurnId: randomUUID(), activeUntil: new Date(Date.now() + 60000) })
       .where(eq(agentChats.id, id));
-    const recovered = await beginAgentChat(
-      tenant.id,
-      id,
-      input(id, [...running.messages, prompt("After expired lease")]),
+    const overlapping = await Promise.all(
+      Array.from({ length: 4 }, (_, index) =>
+        beginAgentChat(tenant.id, id, input(id, [prompt(`Concurrent message ${index}`)])),
+      ),
     );
-    await saveAgentChat(running, [first], true);
-    assert.deepEqual((await loadAgentChat(tenant.id, id))?.messages, recovered.messages);
-    await saveAgentChat(recovered, recovered.messages, true);
+    assert.equal(overlapping.length, 4, "Overlapping turns must not be gated by legacy leases");
+    for (const current of overlapping) await saveAgentChat(current, current.messages);
+    assert.deepEqual(
+      (await loadAgentChat(tenant.id, id))?.messages,
+      overlapping[3].messages,
+      "Chat history uses the latest save",
+    );
 
     const interruptedReply: UIMessage = {
       ...reply,
@@ -150,14 +133,14 @@ async function main() {
     const longFirst = prompt("Start long chat");
     const longTurn = await beginAgentChat(tenant.id, longId, input(longId, [longFirst]));
     const longHistory = Array.from({ length: 20 }, (_, i) => prompt(`Message ${i}`));
-    await saveAgentChat(longTurn, longHistory, true);
+    await saveAgentChat(longTurn, longHistory);
     // The API schema limits requests too; exercise the store's independent cap.
     await assert.rejects(
       beginAgentChat(tenant.id, longId, [
         ...input(longId, longHistory),
         ...input(longId, [prompt("Too long")]),
       ]),
-      { status: 413 },
+      { code: "PAYLOAD_TOO_LARGE" },
     );
 
     const legacyId = randomUUID();
@@ -169,7 +152,7 @@ async function main() {
       prompt("Earlier follow-up"),
       { ...reply, id: "" },
     ];
-    await saveAgentChat(legacyTurn, legacyMessages, true);
+    await saveAgentChat(legacyTurn, legacyMessages);
     const [reopened, reopenedAgain] = await Promise.all([
       loadAgentChat(tenant.id, legacyId),
       loadAgentChat(tenant.id, legacyId),
@@ -197,7 +180,7 @@ async function main() {
       resumed.messages,
       "The admitted turn persists repaired IDs",
     );
-    await saveAgentChat(resumed, resumed.messages, true);
+    await saveAgentChat(resumed, resumed.messages);
 
     await db.delete(user).where(eq(user.id, users[0]));
     assert.equal(
@@ -206,7 +189,7 @@ async function main() {
       "Workspace deletion must cascade to chats",
     );
     console.log(
-      "PASS: chat persistence, legacy ID recovery, tool results, history, tenant isolation, authoritative context, stale/racing turns, lease recovery, interrupted messages, size limits, and cascading deletion.",
+      "PASS: chat persistence, legacy ID recovery, tool results, history, tenant isolation, authoritative context, overlapping turns without leases or stale-tab rejection, interrupted messages, size limits, and cascading deletion.",
     );
   } finally {
     for (const id of users) await db.delete(user).where(eq(user.id, id));

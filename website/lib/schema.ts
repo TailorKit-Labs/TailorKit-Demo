@@ -152,6 +152,7 @@ export const agentChats = pgTable(
     tenantId: tenantId(),
     title: text("title").notNull(),
     messages: jsonb("messages").$type<UIMessage[]>().notNull(),
+    // Unused legacy concurrency columns, retained for compatible deployments.
     activeTurnId: text("active_turn_id"),
     activeUntil: timestamp("active_until", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

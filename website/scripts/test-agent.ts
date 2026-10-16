@@ -255,7 +255,7 @@ async function main() {
         await saveAgentChat(turn, messages);
         checkpoints++;
       },
-      onEnd: ({ messages }) => saveAgentChat(turn, messages, true),
+      onEnd: ({ messages }) => saveAgentChat(turn, messages),
     });
     assert.equal(response.headers.get("x-vercel-ai-ui-message-stream"), "v1");
     const stream = await response.text();
@@ -317,7 +317,7 @@ async function main() {
       consumeSseStream: ({ stream }) => {
         consumption = consumeStream({ stream });
       },
-      onEnd: ({ messages }) => saveAgentChat(disconnectedTurn, messages, true),
+      onEnd: ({ messages }) => saveAgentChat(disconnectedTurn, messages),
     });
     await boundedResponse.body!.cancel();
     await consumption;

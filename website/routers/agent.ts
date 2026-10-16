@@ -8,7 +8,7 @@ import type { connectTailorKitTools as connectTools } from "../lib/agents/tailor
 import { AGENT_TIMEOUT_MS } from "../lib/agents/agent-limits";
 import { agentRequest } from "../lib/agents/agent-request";
 import { AGENT_BOT_CHECK_LEVEL } from "../lib/agents/agent-protection";
-import { beginAgentChat, ChatConflict, finishAgentMessages, saveAgentChat } from "./chats";
+import { beginAgentChat, finishAgentMessages, saveAgentChat } from "./chats";
 
 export const agentChat = protectedProcedure
   .input(agentRequest)
@@ -67,19 +67,7 @@ export const agentChat = protectedProcedure
     try {
       chatTurn = await beginAgentChat(tenant.id, input.chatId, input.messages);
     } catch (error) {
-      if (error instanceof ChatConflict)
-        throw new ORPCError(
-          error.status === 404
-            ? "NOT_FOUND"
-            : error.status === 413
-              ? "PAYLOAD_TOO_LARGE"
-              : error.status === 409
-                ? "CONFLICT"
-                : "BAD_REQUEST",
-          {
-            message: error.message,
-          },
-        );
+      if (error instanceof ORPCError) throw error;
       console.error("Agent chat could not be saved:", error);
       throw new ORPCError("SERVICE_UNAVAILABLE", {
         message: "This chat could not be saved. Please try again.",
@@ -109,7 +97,6 @@ export const agentChat = protectedProcedure
               messages,
               isAborted || !!isCancelled || outcome.status !== "completed",
             ),
-            true,
           ),
         abortSignal: signal ?? request.signal,
         timeout: AGENT_TIMEOUT_MS,
@@ -121,7 +108,7 @@ export const agentChat = protectedProcedure
       return streamToAsyncIteratorObject(clientStream);
     } catch (error) {
       console.error("Agent request failed:", error);
-      await saveAgentChat(chatTurn, chatTurn.messages, true);
+      await saveAgentChat(chatTurn, chatTurn.messages);
       throw new ORPCError("INTERNAL_SERVER_ERROR", {
         message: "The agent could not start this request. Please try again.",
       });
