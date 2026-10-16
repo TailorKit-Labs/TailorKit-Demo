@@ -1,0 +1,33 @@
+package.json
+  s_fd309c4093dffa::t_d37cab3702686c 14
+website/README.md
+  s_fd309c4093dffa::t_31421825e3e4f2 75,81,83,85,87,89
+website/lib/agents/agent-limits.ts
+  s_fd309c4093dffa::t_2f4b35bbbe8b25 1-2
+website/lib/agents/crm-agent.ts
+  s_fd309c4093dffa::t_c46565b9e9f580 20
+website/lib/schema.ts
+  s_fd309c4093dffa::t_543a3ae3c9f62b 131
+website/routers/agent.ts
+  s_fd309c4093dffa::t_9a908bf732b2f3 15-29,31-36,38,40,43-45,47-57,59-129
+website/scripts/test-agent-rpc.ts
+  s_fd309c4093dffa::t_569303ff80d687 11-12,59,85,125-126,172-173,175,210-217,219-221,232,274
+website/scripts/test-agent.ts
+  s_fd309c4093dffa::t_d087af58e877d6 284-285,288,292,301-305,310,314,322,330-332
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "979a0316fefc1804a0527235e6a7c2bcedbd9be2",
+  "prompts": {},
+  "sessions": {
+    "s_fd309c4093dffa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1421e-b33d-7482-97a8-def77fa7a544",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
