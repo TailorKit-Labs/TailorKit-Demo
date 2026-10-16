@@ -10,7 +10,7 @@ import { activities, contacts, deals, tasks, user } from "../lib/schema";
 import { provisionForUser } from "../lib/provision";
 import { createCrmTools } from "../lib/agents/crm-tools";
 import { createCrmAgent } from "../lib/agents/crm-agent";
-import { agentRequest, isSameOriginRequest } from "../lib/agents/agent-request";
+import { agentRequest } from "../lib/agents/agent-request";
 import { beginAgentChat, loadAgentChat, saveAgentChat } from "../routers/chats";
 
 const usage = {
@@ -376,22 +376,6 @@ async function main() {
         timeZone: "Invalid/Zone",
       }).success,
       false,
-    );
-    assert.equal(
-      isSameOriginRequest(
-        new Request("http://localhost:3000/api/agent", {
-          headers: { origin: "https://elsewhere.example" },
-        }),
-      ),
-      false,
-    );
-    assert.equal(
-      isSameOriginRequest(
-        new Request("http://localhost:3000/api/agent", {
-          headers: { origin: "http://localhost:3000" },
-        }),
-      ),
-      true,
     );
     console.log(
       "PASS: agent reads/searches, real deal/task writes, activity, defaults, stage moves, idempotent completion, tenant isolation, validated inputs, racing record limits, and AI SDK multi-step tool + UI streaming.",

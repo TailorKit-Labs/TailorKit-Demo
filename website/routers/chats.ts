@@ -9,6 +9,7 @@ import { z } from "zod";
 import { ORPCError } from "@orpc/server";
 import { protectedProcedure } from "./base";
 import type { agentRequest } from "../lib/agents/agent-request";
+import { AGENT_LEASE_MS } from "../lib/agents/agent-limits";
 
 export class ChatConflict extends Error {
   constructor(
@@ -103,7 +104,7 @@ export async function beginAgentChat(
       .set({
         messages,
         activeTurnId: turnId,
-        activeUntil: new Date(now.getTime() + 90000),
+        activeUntil: new Date(now.getTime() + AGENT_LEASE_MS),
         updatedAt: now,
       })
       .where(eq(agentChats.id, id));
@@ -143,7 +144,7 @@ export function finishAgentMessages(messages: UIMessage[], interrupted: boolean)
           .filter(
             (part) =>
               !(
-                part.type.startsWith("tool-") &&
+                (part.type.startsWith("tool-") || part.type === "dynamic-tool") &&
                 "state" in part &&
                 (part.state === "input-streaming" || part.state === "input-available")
               ),

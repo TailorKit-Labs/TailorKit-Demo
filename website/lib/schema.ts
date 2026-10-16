@@ -136,6 +136,8 @@ export const agentBuckets = pgTable(
     resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
     requests: integer("requests").notNull(),
     requestResetAt: timestamp("request_reset_at", { withTimezone: true }).notNull(),
+    // Unused legacy accounting columns, retained for compatible deployments.
+    reservationIds: jsonb("reservation_ids").$type<string[]>(),
     leaseId: text("lease_id"),
     leaseExpiresAt: timestamp("lease_expires_at", { withTimezone: true }).notNull(),
   },

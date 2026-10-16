@@ -5,6 +5,7 @@ packages:
 catalogMode: prefer
 
 catalog:
+  "@ai-sdk/mcp": 2.0.73
   "@ai-sdk/react": ^4.0.140
   "@base-ui/react": ^1.8.0
   "@better-auth/drizzle-adapter": ^1.7.7

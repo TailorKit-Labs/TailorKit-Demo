@@ -3,7 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
+import { agentTransport } from "@/lib/agents/agent-transport";
 import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
 import { orpc } from "@/lib/orpc";
@@ -37,14 +37,9 @@ import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
 import { useViews } from "@/lib/tailorkit-client";
 
-const transport = new DefaultChatTransport<CrmAgentMessage>({ api: "/api/agent" });
-
 export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   const { data: history } = useSuspenseQuery(orpc.chats.list.queryOptions());
-  const refresh = () => {
-    void queryClient.invalidateQueries({ queryKey: orpc.key() });
-  };
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
   const panelId = useId();
@@ -53,7 +48,16 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const [openOverride, setOpen] = useState<boolean | null>(null);
   const open = openOverride ?? canDock;
   const [activeTab, setActiveTab] = useState("agent");
-  const { data: views, isPending: appsPending, error: appsError } = useViews({ slot: "panel" });
+  const {
+    data: views,
+    isPending: appsPending,
+    error: appsError,
+    fetch: refreshApps,
+  } = useViews({ slot: "panel" });
+  const refresh = () => {
+    void queryClient.invalidateQueries({ queryKey: orpc.key() });
+    void refreshApps();
+  };
   const [appOrder, setAppOrder] = useState<string[]>([]);
   const apps = (views ?? [])
     .map((view) => view.app)
@@ -72,7 +76,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const [historyOpen, setHistoryOpen] = useState(false);
   const { messages, setMessages, sendMessage, status, stop, error, clearError } =
     useChat<CrmAgentMessage>({
-      transport,
+      transport: agentTransport,
       messages: history.latest?.messages ?? [],
       // Refresh even after cancellation: a tool may already have committed a change.
       onFinish: () => refresh(),
