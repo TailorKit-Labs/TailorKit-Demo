@@ -17,13 +17,11 @@ export async function handleRpcRequest(
   // supplied by Next server actions. Server callers use the direct client.
   if (request.headers.get("origin") !== new URL(request.url).origin)
     return new Response("This request is not allowed.", { status: 403 });
-  const responseHeaders = new Headers();
   const { response } = await handler.handle(request, {
     prefix: "/rpc",
-    context: { ...requestContext(request.headers), request, responseHeaders, afterResponse },
+    context: { ...requestContext(request.headers), request, afterResponse },
   });
   const result = response ?? new Response("Not found", { status: 404 });
-  responseHeaders.forEach((value, key) => result.headers.set(key, value));
   result.headers.set("Cache-Control", "private, no-store");
   return result;
 }

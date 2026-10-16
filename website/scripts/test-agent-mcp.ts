@@ -5,7 +5,7 @@ import { createAgentUIStreamResponse, simulateReadableStream, type UIMessage } f
 import { MockLanguageModelV4 } from "ai/test";
 import { createCrmAgent } from "../lib/agents/crm-agent";
 import { finishAgentMessages } from "../routers/chats";
-import { AGENT_LEASE_MS, AGENT_TIMEOUT_MS } from "../lib/agents/agent-limits";
+import { AGENT_TIMEOUT_MS } from "../lib/agents/agent-limits";
 import { contract } from "../lib/tailorkit";
 
 const originalFetch = globalThis.fetch;
@@ -200,7 +200,6 @@ async function main() {
           tenant,
           { page: "/", date: "2026-10-15", timeZone: "UTC" },
           model,
-          undefined,
           connection.tools,
         ),
         uiMessages: [{ id: "user", role: "user", parts: [{ type: "text", text: "List my apps" }] }],
@@ -313,7 +312,7 @@ async function main() {
     assert.ok(
       interrupted[0].parts.some((part) => "toolCallId" in part && part.toolCallId === "done"),
     );
-    assert.ok(AGENT_LEASE_MS > 300000 && AGENT_TIMEOUT_MS < 300000);
+    assert.ok(AGENT_TIMEOUT_MS < 300000);
     console.log(
       "PASS: scoped TailorKit helper auth, host metadata, paginated HTTP MCP discovery, agent streaming, dynamic history, cancellation, failure handling, and client cleanup.",
     );
