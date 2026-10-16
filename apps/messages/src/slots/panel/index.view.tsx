@@ -3,13 +3,12 @@ import { defineView } from "tailorkit/client";
 import {
   Alert,
   Avatar,
-  Badge,
   Box,
   Button,
-  Card,
   Empty,
   Flex,
   Form,
+  Grid,
   Heading,
   Input,
   Select,
@@ -179,7 +178,17 @@ function Messages() {
 
   return (
     <Flex direction="column" gap="md">
-      <Heading text="Messages" level="h2" />
+      <Flex justify="between" align="center" gap="sm">
+        <Heading text="Messages" level="h2" />
+        {!loading && !composing ? (
+          <Button
+            label="New message"
+            size="sm"
+            disabled={contacts.length === 0}
+            onClick={() => openThread(contacts[0].id, "Email")}
+          />
+        ) : null}
+      </Flex>
       {loading ? <Spinner label="Loading your inbox" /> : null}
       {error ? (
         <Flex direction="column" gap="sm">
@@ -197,27 +206,21 @@ function Messages() {
       ) : null}
       {!loading && !composing ? (
         <>
-          <Flex gap="sm" wrap="wrap">
-            <Button
-              label="New message"
-              disabled={contacts.length === 0}
-              onClick={() => openThread(contacts[0].id, "Email")}
+          <Grid columns={2} gap="sm">
+            <Input
+              label="Search"
+              type="search"
+              value={query}
+              placeholder="Search inbox…"
+              onChange={({ value }) => setQuery(value)}
             />
-          </Flex>
-          <Input
-            label="Search conversations"
-            type="search"
-            value={query}
-            placeholder="Name, company, or message…"
-            onChange={({ value }) => setQuery(value)}
-          />
-          <Select
-            label="Channel"
-            value={filter}
-            options={["All channels", ...channels].map((value) => ({ label: value, value }))}
-            onChange={({ value }) => setFilter(value)}
-          />
-          <Separator />
+            <Select
+              label="Channel"
+              value={filter}
+              options={["All channels", ...channels].map((value) => ({ label: value, value }))}
+              onChange={({ value }) => setFilter(value)}
+            />
+          </Grid>
           {threads.length === 0 ? (
             <Empty
               title={
@@ -225,22 +228,33 @@ function Messages() {
               }
             />
           ) : (
-            threads.map(({ contact, latest }) => (
-              <Card key={contact.id} title={contact.name} description={contact.company}>
-                <Flex direction="column" gap="sm">
-                  <Flex justify="between" align="center" gap="sm">
-                    <Badge text={latest.channel} variant="outline" />
+            <Flex direction="column" gap="none">
+              <Separator />
+              {threads.map(({ contact, latest, hasSent }) => {
+                const preview = `${hasSent ? "You: " : ""}${latest.body}`.replace(/\s+/g, " ");
+                return (
+                  <Flex key={contact.id} direction="column" gap="none">
+                    <Flex justify="between" align="center" gap="sm">
+                      <Button
+                        label={contact.name}
+                        variant="link"
+                        size="sm"
+                        onClick={() => openThread(contact.id, latest.channel)}
+                      />
+                      <Text text={latest.channel} size="xs" tone="muted" />
+                    </Flex>
+                    <Box padding="sm">
+                      <Text
+                        text={preview.length > 48 ? `${preview.slice(0, 48)}…` : preview}
+                        size="sm"
+                        tone="muted"
+                      />
+                    </Box>
+                    <Separator />
                   </Flex>
-                  <Text text={latest.body.slice(0, 140)} size="sm" />
-                  <Button
-                    label={`Message ${contact.name.split(" ")[0]}`}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => openThread(contact.id, latest.channel)}
-                  />
-                </Flex>
-              </Card>
-            ))
+                );
+              })}
+            </Flex>
           )}
         </>
       ) : null}
