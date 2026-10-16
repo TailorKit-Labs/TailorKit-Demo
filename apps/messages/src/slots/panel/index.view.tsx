@@ -4,6 +4,7 @@ import {
   Alert,
   Avatar,
   Badge,
+  Box,
   Button,
   Card,
   Empty,
@@ -30,6 +31,36 @@ import {
 } from "../../messages";
 
 const view = defineView({ view: "/", component: Messages });
+
+function MessageBubble({
+  body,
+  outgoing = false,
+  time,
+}: {
+  body: string;
+  outgoing?: boolean;
+  time?: string;
+}) {
+  const space = <Box width="avatar" shrink="0" />;
+  return (
+    <Flex justify={outgoing ? "end" : "start"} align="start" gap="sm">
+      {outgoing ? space : null}
+      <Flex direction="column" align={outgoing ? "end" : "start"} gap="xs" shrink="1">
+        <Box
+          background={outgoing ? "primary" : "muted"}
+          textColor={outgoing ? "onPrimary" : "default"}
+          padding="md"
+          radius="2xl"
+          overflowWrap="anywhere"
+        >
+          {body}
+        </Box>
+        {time ? <Text text={time} size="xs" tone="muted" /> : null}
+      </Flex>
+      {!outgoing ? space : null}
+    </Flex>
+  );
+}
 
 function Messages() {
   const context = view.useContext();
@@ -172,11 +203,6 @@ function Messages() {
               disabled={contacts.length === 0}
               onClick={() => openThread(contacts[0].id, "Email")}
             />
-            <Button
-              label="Refresh"
-              variant="ghost"
-              onClick={() => setAttempt((value) => value + 1)}
-            />
           </Flex>
           <Input
             label="Search conversations"
@@ -281,24 +307,26 @@ function Messages() {
           ) : (
             <Empty title="Choose a contact" />
           )}
-          {seeded
-            .filter((item) => item.contact.id === recipientId && item.channel === channel)
-            .map((item) => (
-              <Card key={item.contact.id} title={item.contact.name} description={item.channel}>
-                <Text text={item.body} size="sm" />
-              </Card>
-            ))}
-          {messages
-            .filter((message) => message.contactId === recipientId && message.channel === channel)
-            .map((message) => (
-              <Card
-                key={message.id}
-                title="You"
-                description={`${message.channel} · ${new Date(message.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`}
-              >
-                <Text text={message.body} size="sm" />
-              </Card>
-            ))}
+          <Flex direction="column" gap="md">
+            {seeded
+              .filter((item) => item.contact.id === recipientId && item.channel === channel)
+              .map((item) => (
+                <MessageBubble key={item.contact.id} body={item.body} />
+              ))}
+            {messages
+              .filter((message) => message.contactId === recipientId && message.channel === channel)
+              .map((message) => (
+                <MessageBubble
+                  key={message.id}
+                  body={message.body}
+                  outgoing
+                  time={new Date(message.createdAt).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                />
+              ))}
+          </Flex>
           <Form
             submitLabel={sending ? "Sending…" : "Send"}
             disabled={

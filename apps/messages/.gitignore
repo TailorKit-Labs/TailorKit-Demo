@@ -2,6 +2,7 @@
 
 # TailorKit
 .tailorkit
+tailorkit.preview.config.ts
 
 # debug
 npm-debug.log*
