@@ -1,0 +1,21 @@
+website/scripts/test-tailorkit.tsx
+  s_bae7b0c003faf1::t_54c6f07a06a471 52-57,232-239
+website/lib/tailorkit.ts
+  s_bae7b0c003faf1::t_54c6f07a06a471 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5b5d169370b1db66c531d41efd4e90536ebcfed6",
+  "prompts": {},
+  "sessions": {
+    "s_bae7b0c003faf1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a14693-1208-73f3-9dfc-4565c95074a4",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
