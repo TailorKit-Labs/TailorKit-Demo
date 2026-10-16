@@ -49,6 +49,12 @@ async function main() {
     assert.equal(siteHref.safeParse(href).success, true);
   }
   assert.equal(agentRequest.shape.page.safeParse("/app-pages").success, true);
+  for (const appId of ["reports.v2", "Sales tools", "日本語", "app/child", "app%id", "app!~*'()"])
+    assert.equal(
+      siteHref.safeParse(appPageHref({ ...reports, app: { id: appId } })).success,
+      true,
+      `Generated app-page URL should accept app ID ${appId}`,
+    );
   const users: string[] = [];
   try {
     const tenants = [];
@@ -223,6 +229,14 @@ async function main() {
       "/app-pages/test-app?instance=reports&redirect=https://evil.test",
       "/app-pages/../settings?instance=reports",
       "/app-pages/test-app?instance=%ZZ",
+      "/app-pages/bad%ZZ?instance=reports",
+      "/app-pages/app.v2?instance=reports&extra=value",
+      "/app-pages/.?instance=reports",
+      "/app-pages/..?instance=reports",
+      "/app-pages/%2e?instance=reports",
+      "/app-pages/%2E%2e?instance=reports",
+      "/app-pages/.%2e?instance=reports",
+      "/app-pages/?instance=reports",
     ])
       assert.equal(siteHref.safeParse(href).success, false);
     for (const href of ["/", "/contacts", `/contacts/${id}`, "/pipeline", "/tasks", "/settings"])
