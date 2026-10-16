@@ -1,0 +1,51 @@
+website/routers/handler.ts
+  s_66ae12f42a2ba1::t_bc9470e25cc4ef 22
+website/scripts/test-agent-chats.ts
+  s_66ae12f42a2ba1::t_e88004d17d4635 46,71,85-88,92,94-104,136,143,155,183,192
+website/README.md
+  s_78ca5b8938add2::t_a43e376e22c5fc 75,85,87,89
+website/lib/agents/agent-limits.ts
+  s_fd309c4093dffa::t_f3d0af9da791a5 1
+website/lib/schema.ts
+  s_fd309c4093dffa::t_62b7b62a2f6ae8 155
+website/routers/agent.ts
+  s_fd309c4093dffa::t_cfcf912f1bff40 11,70,111
+website/routers/chats.ts
+  s_78ca5b8938add2::t_ec1927b4134701 56-58,63,74,81-97,100,107
+website/scripts/test-agent-mcp.ts
+  s_fd309c4093dffa::t_d05772547b55e9 8,315
+website/scripts/test-agent.ts
+  s_fd309c4093dffa::t_77586b34620c46 258,320
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "69d8df791519c6f2d52e5bd881d0763373874cce",
+  "prompts": {},
+  "sessions": {
+    "s_66ae12f42a2ba1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1429c-0e2a-7f73-acc6-8ddc82195c17",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_78ca5b8938add2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1429b-dec7-7700-8299-783287da6111",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_fd309c4093dffa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1421e-b33d-7482-97a8-def77fa7a544",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
