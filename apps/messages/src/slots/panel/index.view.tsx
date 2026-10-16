@@ -53,7 +53,7 @@ function MessageBubble({
           radius="2xl"
           overflowWrap="anywhere"
         >
-          {body}
+          <Text text={body} size="sm" />
         </Box>
         {time ? <Text text={time} size="xs" tone="muted" /> : null}
       </Flex>

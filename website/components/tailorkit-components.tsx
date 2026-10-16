@@ -53,7 +53,7 @@ import {
 // The createClient parameter enforces a renderer for every contracted component.
 type Renderers = NonNullable<Parameters<typeof createClient<typeof contract>>[0]["components"]>;
 const textTones = {
-  default: "text-foreground",
+  default: "text-inherit",
   muted: "text-muted-foreground",
   success: "text-success-foreground",
   warning: "text-warning-foreground",
