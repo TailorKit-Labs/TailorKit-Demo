@@ -1,0 +1,57 @@
+name: Clean up Neon preview branch
+
+on:
+  pull_request_target:
+    types: [closed]
+
+permissions: {}
+
+concurrency:
+  group: neon-cleanup-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  delete-preview-branch:
+    # Fork branch names can collide with branches in this repository.
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Use the base repository's workflow and never check out PR code.
+      - name: Delete the matching Neon preview branch
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          NEON_PROJECT_ID: ${{ vars.NEON_PROJECT_ID }}
+          NEON_BRANCH: preview/${{ github.event.pull_request.head.ref }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${NEON_API_KEY:?Set the NEON_API_KEY repository secret}"
+          : "${NEON_PROJECT_ID:?Set the NEON_PROJECT_ID repository variable}"
+
+          api="https://console.neon.tech/api/v2/projects/${NEON_PROJECT_ID}/branches"
+          branches=$(curl --fail --silent --show-error --max-time 60 \
+            --header "Authorization: Bearer ${NEON_API_KEY}" \
+            --get --data-urlencode "search=${NEON_BRANCH}" --data-urlencode 'limit=10000' \
+            "$api")
+
+          # Search is a partial match; delete only the exact integration branch name.
+          # Refuse incomplete results rather than silently missing a branch.
+          jq -e '.branches | type == "array"' <<< "$branches" > /dev/null
+          jq -e '(.pagination.next // "") == ""' <<< "$branches" > /dev/null
+          branch=$(jq -c --arg name "$NEON_BRANCH" \
+            '[.branches[] | select(.name == $name)] | if length > 1 then error("Ambiguous branch name") else .[0] end' \
+            <<< "$branches")
+
+          if [[ "$branch" == null ]]; then
+            echo "No matching Neon preview branch; nothing to delete."
+            exit 0
+          fi
+
+          jq -e '.default != true and .protected != true and .parent_id != null' \
+            <<< "$branch" > /dev/null
+          branch_id=$(jq -er '.id | select(test("^br-[a-z0-9-]+$"))' <<< "$branch")
+          curl --fail --silent --show-error --max-time 60 \
+            --request DELETE --header "Authorization: Bearer ${NEON_API_KEY}" \
+            --output /dev/null "$api/$branch_id"
+          echo "Deleted the Neon preview branch."
