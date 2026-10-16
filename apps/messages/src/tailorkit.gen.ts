@@ -883,6 +883,27 @@ export const Select = /* @__PURE__ */ createRemoteComponent<SelectProps, false>(
   callbacks: { "onChange": 1 },
 });
 
+export interface ComboboxProps {
+  label?: string;
+  value?: string | null;
+  options?: {
+    label: string;
+    value: string;
+    description?: string;
+  }[];
+  placeholder?: string;
+  emptyMessage?: string;
+  disabled?: boolean;
+  onChange?: (input: {
+    value: string;
+  }) => void;
+}
+
+export const Combobox = /* @__PURE__ */ createRemoteComponent<ComboboxProps, false>("Combobox", {
+  children: false,
+  callbacks: { "onChange": 1 },
+});
+
 export interface CheckboxProps {
   label?: string;
   checked?: boolean;

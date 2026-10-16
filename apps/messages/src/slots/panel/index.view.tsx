@@ -5,6 +5,7 @@ import {
   Avatar,
   Box,
   Button,
+  Combobox,
   Empty,
   Flex,
   Form,
@@ -285,12 +286,15 @@ function Messages() {
               />
             ) : null}
           </Flex>
-          <Select
+          <Combobox
             label="To"
+            placeholder="Search contacts…"
+            emptyMessage="No contacts found."
             value={recipientId}
             options={contacts.map((contact) => ({
               label: `${contact.name} · ${contact.company}`,
               value: contact.id,
+              description: contact.email,
             }))}
             disabled={sending}
             onChange={({ value }) => openThread(value, channel)}

@@ -115,6 +115,25 @@ export const contract = defineContract({
       }),
       callbacks: { onChange },
     },
+    Combobox: {
+      fields: z.object({
+        label,
+        value: z.string().nullable(),
+        options: z
+          .array(
+            z.object({
+              label,
+              value: z.string().refine((v) => v.length >= 1 && v.length <= 200),
+              description: text.optional(),
+            }),
+          )
+          .max(100),
+        placeholder: label.optional(),
+        emptyMessage: label.optional(),
+        disabled,
+      }),
+      callbacks: { onChange },
+    },
     Checkbox: {
       fields: z.object({ label, checked: z.boolean(), disabled }),
       callbacks: { onCheckedChange },

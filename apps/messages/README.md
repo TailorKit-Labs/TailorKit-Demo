@@ -2,7 +2,7 @@
 
 Scaffolded with `tailorkit init`. This Preact app renders in the CRM's `panel` slot using generated host components and tools. It has no standalone web page or external messaging provider.
 
-The inbox includes three sample conversations using existing CRM contacts. Compose or reply via Email, Slack, or SMS. Sends are simulated: the app saves a readable note through `activities.addNote`, reloads sent messages through `activities.list`, and refreshes the CRM. `View contact` uses the host navigation tool. Opening a CRM contact selects that person's conversation.
+The inbox includes three sample conversations using existing CRM contacts. Compose or reply via Email, Slack, or SMS. The To field uses the contracted Coss Combobox to search contacts by name, company, or email. Sends are simulated: the app saves a readable note through `activities.addNote`, reloads sent messages through `activities.list`, and refreshes the CRM. `View contact` uses the host navigation tool. Opening a CRM contact selects that person's conversation.
 
 Messages share the CRM's rolling 50-entry activity history. They disappear when those entries age out or the contact is deleted. No messages leave the demo.
 

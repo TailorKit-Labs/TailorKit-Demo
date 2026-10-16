@@ -98,15 +98,15 @@ Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration 
 
 `lib/tailorkit-theme.ts` supplies **the same theme** to `primitives()` and `createClient()`. Apps can use background, text, border, spacing, radius, size and responsive tokens. Semantic colors reference the existing CSS variables, so they follow light/dark mode. Layout breakpoints match the host's 800px mobile and 1280px side-panel boundaries. The SDK's default tokens remain available alongside host additions such as `background="card"`, `textColor="muted"`, `radius="full"`, `width="panel"` and `height="screen"`.
 
-The client implements all 29 contracted components using the existing Coss components:
+The client implements all 30 contracted components using the existing Coss components:
 
 - Layout: `Box`, `Flex`, `Grid`, `Inline`.
 - Content: `Text`, `Heading`, `Card`, `Badge`, `Avatar`.
-- Forms: `Form`, `Input`, `Textarea`, `Select`, `Checkbox`, `Switch`, `Button`.
+- Forms: `Form`, `Input`, `Textarea`, `Select`, `Combobox`, `Checkbox`, `Switch`, `Button`.
 - Tables: `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell`.
 - Feedback and overlays: `Alert`, `Empty`, `Progress`, `Spinner`, `Skeleton`, `Separator`, `Dialog`.
 
-Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. `Form` handles native validation and includes a submit button, with configurable `submitLabel` and `disabled` props. Each input has a visible label and accessible name. `Dialog` always provides a title. Compose table rows inside their header/body and cells inside rows.
+Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. `Form` handles native validation and includes a submit button, with configurable `submitLabel` and `disabled` props. Each input has a visible label and accessible name. `Combobox` searches option labels and optional descriptions, displays a configurable empty state, and emits the selected string ID through `onChange({ value })`. `Dialog` always provides a title. Compose table rows inside their header/body and cells inside rows.
 
 Apps have the same workspace operations as the CRM UI, plus task editing:
 
