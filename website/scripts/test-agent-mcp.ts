@@ -200,7 +200,6 @@ async function main() {
           tenant,
           { page: "/", date: "2026-10-15", timeZone: "UTC" },
           model,
-          undefined,
           connection.tools,
         ),
         uiMessages: [{ id: "user", role: "user", parts: [{ type: "text", text: "List my apps" }] }],

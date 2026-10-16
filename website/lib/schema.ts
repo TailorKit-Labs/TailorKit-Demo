@@ -128,6 +128,7 @@ export const activities = pgTable(
   (t) => [index("activities_tenant_idx").on(t.tenantId)],
 );
 
+// Unused by the agent; retained so schema pushes remain compatible with older deployments.
 export const agentBuckets = pgTable(
   "agent_buckets",
   {

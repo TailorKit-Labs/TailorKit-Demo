@@ -223,7 +223,6 @@ async function main() {
         },
       ],
     });
-    let reportedUsage: number | undefined;
     const chatId = randomUUID();
     const turn = await beginAgentChat(
       tenant.id,
@@ -250,12 +249,6 @@ async function main() {
         tenant,
         { page: "/pipeline", date: "2026-10-11", timeZone: "Australia/Melbourne" },
         model,
-        {
-          tokens: 10000,
-          onUsage: (tokens) => {
-            reportedUsage = tokens;
-          },
-        },
       ),
       uiMessages: turn.messages,
       onUIMessageStepEnd: async ({ messages }) => {
@@ -268,7 +261,6 @@ async function main() {
     const stream = await response.text();
     assert.ok(stream.includes('"type":"tool-output-available"'));
     assert.ok(stream.includes("Created Streamed SDK deal for $7,500."));
-    assert.equal(reportedUsage, 40, "Usage must include all model steps");
     assert.equal(model.doStreamCalls[0].maxOutputTokens, 1500);
     assert.equal(model.doStreamCalls[0].reasoning, "medium");
     assert.equal(model.doStreamCalls.length, 2, "Agent must continue after executing the tool");
@@ -289,15 +281,15 @@ async function main() {
     assert.equal(streamed.count, 1);
     assert.equal(streamed.deals[0].stage, "proposal");
 
-    const cappedModel = new MockLanguageModelV4({
-      doStream: {
+    const boundedModel = new MockLanguageModelV4({
+      doStream: async () => ({
         stream: simulateReadableStream({
           chunks: [
-            { type: "tool-call", toolCallId: "budget-read", toolName: "listDeals", input: "{}" },
+            { type: "tool-call", toolCallId: randomUUID(), toolName: "listDeals", input: "{}" },
             { type: "finish", finishReason: { unified: "tool-calls", raw: undefined }, usage },
           ],
         }),
-      },
+      }),
     });
     const disconnectedChatId = randomUUID();
     const disconnectedTurn = await beginAgentChat(
@@ -306,17 +298,20 @@ async function main() {
       agentRequest.parse({
         chatId: disconnectedChatId,
         messages: [
-          { id: "budget-user", role: "user", parts: [{ type: "text", text: "Show my deals" }] },
+          {
+            id: "disconnected-user",
+            role: "user",
+            parts: [{ type: "text", text: "Show my deals" }],
+          },
         ],
       }).messages,
     );
     let consumption: Promise<void> | undefined;
-    const cappedResponse = await createAgentUIStreamResponse({
+    const boundedResponse = await createAgentUIStreamResponse({
       agent: createCrmAgent(
         tenant,
         { page: "/pipeline", date: "2026-10-11", timeZone: "UTC" },
-        cappedModel,
-        { tokens: 20, onUsage: () => {} },
+        boundedModel,
       ),
       uiMessages: disconnectedTurn.messages,
       consumeSseStream: ({ stream }) => {
@@ -324,7 +319,7 @@ async function main() {
       },
       onEnd: ({ messages }) => saveAgentChat(disconnectedTurn, messages, true),
     });
-    await cappedResponse.body!.cancel();
+    await boundedResponse.body!.cancel();
     await consumption;
     assert.equal(
       (await loadAgentChat(tenant.id, disconnectedChatId))?.messages.length,
@@ -332,9 +327,9 @@ async function main() {
       "Server consumption must persist the response after the client disconnects",
     );
     assert.equal(
-      cappedModel.doStreamCalls.length,
-      1,
-      "The agent must stop after consuming its turn reservation",
+      boundedModel.doStreamCalls.length,
+      4,
+      "Agent tool loops must remain bounded to four steps",
     );
 
     // Tool creation uses the same locked limit guard as the app's forms.

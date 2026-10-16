@@ -13,22 +13,14 @@ export function createCrmAgent(
   tenant: { id: string; name: string },
   context: { page: string; date: string; timeZone: string },
   model: LanguageModel = gateway(process.env.AI_GATEWAY_MODEL || "openai/gpt-6-luna"),
-  budget?: { tokens: number; onUsage: (tokens: number | undefined) => void },
   additionalTools: ToolSet = {},
 ) {
   return new ToolLoopAgent({
     model,
-    stopWhen: [
-      isStepCount(4),
-      ({ steps }) =>
-        budget != null &&
-        steps.reduce((total, step) => total + (step.usage.totalTokens ?? budget.tokens), 0) >=
-          budget.tokens,
-    ],
+    stopWhen: isStepCount(4),
     maxOutputTokens: 1500,
     reasoning: "medium",
     maxRetries: 0,
-    onEnd: budget ? ({ usage }) => budget.onUsage(usage.totalTokens) : undefined,
     tools: { ...additionalTools, ...createCrmTools(tenant.id) },
     instructions: `You are the helpful Agent inside Forma CRM for workspace ${JSON.stringify(tenant.name)}.
 The user is on ${context.page}. Their local date is ${context.date}, in ${context.timeZone}.
