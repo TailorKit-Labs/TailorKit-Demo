@@ -1,0 +1,19 @@
+website/components/crm-pages.tsx
+  s_e3c2d729fa9be6::t_36308ef0df67de 63,562-566,568-617,619,693-744,748
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f9fd4be62bdd45aa9726aa232c4510bd8d9bfcac",
+  "prompts": {},
+  "sessions": {
+    "s_e3c2d729fa9be6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a14220-45ec-7b13-949c-2533e42fca0d",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
