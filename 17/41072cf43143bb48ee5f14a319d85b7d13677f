@@ -1,0 +1,39 @@
+apps/messages/README.md
+  s_127f075da43fff::t_840413b59920ed 5
+apps/messages/src/slots/panel/index.view.tsx
+  s_127f075da43fff::t_871ae08607f71c 8,289,291-292,297
+apps/messages/src/tailorkit.gen.ts
+  s_abcc65cafd41f9::t_c63f37ac6516d6 886-906
+website/README.md
+  s_127f075da43fff::t_e0a88f96acaf33 101,105,109
+website/components/tailorkit-components.tsx
+  s_127f075da43fff::t_75e51c393eedda 30-37,191-230
+website/lib/tailorkit.ts
+  s_127f075da43fff::t_12d44de9edbba6 118-136
+website/scripts/test-tailorkit.tsx
+  s_abcc65cafd41f9::t_8b62b109735e65 207-247
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1741072cf43143bb48ee5f14a319d85b7d13677f",
+  "prompts": {},
+  "sessions": {
+    "s_127f075da43fff": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a14371-72eb-70b0-9bba-982c5e94ac4f",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_abcc65cafd41f9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1436d-c10d-7190-9b00-ded55f821b76",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
