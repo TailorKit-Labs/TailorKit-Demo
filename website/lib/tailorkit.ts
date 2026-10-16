@@ -7,8 +7,8 @@ import { tailorKitTheme } from "./tailorkit-theme";
 export const siteHref = z
   .string()
   .regex(
-    /^\/(?:contacts(?:\/[A-Za-z0-9-]+)?|pipeline|tasks|settings)?$/,
-    "Choose a CRM page or contact detail URL.",
+    /^\/(?:contacts(?:\/[A-Za-z0-9-]+)?|pipeline|tasks|settings|app-pages\/(?!(?:\.|%2[eE]){1,2}\?)(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+\?instance=(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+)?$/,
+    "Choose a CRM page, contact detail URL, or app page URL.",
   );
 const text = z.string().max(4000);
 const label = z.string().min(1).max(120);
@@ -175,5 +175,8 @@ export const contract = defineContract({
   views: {
     "/": z.object({ workspace: z.object({ id: z.string(), name: z.string() }), page: z.string() }),
   },
-  slots: { panel: { views: ["/"] } },
+  slots: {
+    panel: { views: ["/"] },
+    page: { views: ["/"], multiple: true },
+  },
 });

@@ -1,7 +1,9 @@
 "use client";
 
-import { MenuIcon, Settings2Icon, XIcon } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { FileTextIcon, MenuIcon, Settings2Icon, XIcon } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useViews } from "@/lib/tailorkit-client";
+import { appPageHref, appPageLabel } from "@/lib/app-pages";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -9,6 +11,7 @@ import {
   DrawerHeader,
   DrawerMenu,
   DrawerMenuGroup,
+  DrawerMenuGroupLabel,
   DrawerMenuItem,
   DrawerMenuSeparator,
   DrawerPanel,
@@ -23,6 +26,8 @@ import { cn } from "@/lib/utils";
 
 export function AppMobileNavigation({ onOpen }: { onOpen: () => void }) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { data: pages } = useViews({ slot: "page" });
   const { openMobile, setOpenMobile } = useSidebar();
   return (
     <Drawer
@@ -69,6 +74,31 @@ export function AppMobileNavigation({ onOpen }: { onOpen: () => void }) {
                 );
               })}
             </DrawerMenuGroup>
+            {pages?.length ? (
+              <>
+                <DrawerMenuSeparator />
+                <DrawerMenuGroup>
+                  <DrawerMenuGroupLabel>App pages</DrawerMenuGroupLabel>
+                  {pages.map((page) => {
+                    const href = appPageHref(page);
+                    const active =
+                      pathname === `/app-pages/${page.app.id}` &&
+                      searchParams.get("instance") === page.key;
+                    return (
+                      <DrawerMenuItem
+                        key={href}
+                        render={<SidebarLink href={href} />}
+                        aria-current={active ? "page" : undefined}
+                        className={cn("min-h-12", active && "bg-accent text-accent-foreground")}
+                      >
+                        <FileTextIcon />
+                        <span className="truncate">{appPageLabel(page)}</span>
+                      </DrawerMenuItem>
+                    );
+                  })}
+                </DrawerMenuGroup>
+              </>
+            ) : null}
             <DrawerMenuSeparator />
             <DrawerMenuGroup>
               <DrawerMenuItem

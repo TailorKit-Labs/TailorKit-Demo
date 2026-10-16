@@ -54,9 +54,11 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     error: appsError,
     fetch: refreshApps,
   } = useViews({ slot: "panel" });
+  const { fetch: refreshPages } = useViews({ slot: "page" });
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: orpc.key() });
     void refreshApps();
+    void refreshPages();
   };
   const [appOrder, setAppOrder] = useState<string[]>([]);
   const apps = (views ?? [])
@@ -143,7 +145,11 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     setInput("");
     const now = new Date();
     const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-    const page = pathname.startsWith("/contacts/") ? "/contacts" : pathname;
+    const page = pathname.startsWith("/contacts/")
+      ? "/contacts"
+      : pathname.startsWith("/app-pages/")
+        ? "/app-pages"
+        : pathname;
     await sendMessage(
       { text: text.trim() },
       {
