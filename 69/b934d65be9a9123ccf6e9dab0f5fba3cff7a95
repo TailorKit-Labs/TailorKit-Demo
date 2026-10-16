@@ -1,0 +1,16 @@
+apps/messages/.gitignore
+  h_18044dd1b61a81 5
+apps/messages/src/slots/panel/index.view.tsx
+  h_18044dd1b61a81 7,35-64,310-329
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "69b934d65be9a9123ccf6e9dab0f5fba3cff7a95",
+  "prompts": {},
+  "humans": {
+    "h_18044dd1b61a81": {
+      "author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
