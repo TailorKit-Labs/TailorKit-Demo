@@ -160,6 +160,45 @@ async function main() {
       { status: 413 },
     );
 
+    const legacyId = randomUUID();
+    const legacyFirst = { ...prompt("Old chat"), id: `recovered-${legacyId}-1` };
+    const legacyTurn = await beginAgentChat(tenant.id, legacyId, input(legacyId, [legacyFirst]));
+    const legacyMessages: UIMessage[] = [
+      legacyFirst,
+      { ...reply, id: "" },
+      prompt("Earlier follow-up"),
+      { ...reply, id: "" },
+    ];
+    await saveAgentChat(legacyTurn, legacyMessages, true);
+    const [reopened, reopenedAgain] = await Promise.all([
+      loadAgentChat(tenant.id, legacyId),
+      loadAgentChat(tenant.id, legacyId),
+    ]);
+    assert.ok(reopened && reopenedAgain);
+    assert.ok(reopened.messages.every((message) => message.id.length > 0));
+    assert.equal(new Set(reopened.messages.map((message) => message.id)).size, 4);
+    assert.equal(reopened.messages[0].id, legacyFirst.id, "Valid IDs must not change");
+    assert.deepEqual(reopened.messages, reopenedAgain.messages, "Concurrent reads need stable IDs");
+    assert.deepEqual(
+      reopened.messages.map(({ id: _id, ...message }) => message),
+      legacyMessages.map(({ id: _id, ...message }) => message),
+      "Repairs must retain all text and completed tool results",
+    );
+    assert.deepEqual((await loadAgentHistory(tenant.id)).latest?.messages, reopened.messages);
+    assert.equal(await loadAgentChat(foreign.id, legacyId), null);
+    const resumed = await beginAgentChat(
+      tenant.id,
+      legacyId,
+      input(legacyId, [...reopened.messages, prompt("Continue old chat")]),
+    );
+    const [persisted] = await db.select().from(agentChats).where(eq(agentChats.id, legacyId));
+    assert.deepEqual(
+      persisted.messages,
+      resumed.messages,
+      "The admitted turn persists repaired IDs",
+    );
+    await saveAgentChat(resumed, resumed.messages, true);
+
     await db.delete(user).where(eq(user.id, users[0]));
     assert.equal(
       (await db.select().from(agentChats).where(eq(agentChats.tenantId, tenant.id))).length,
@@ -167,7 +206,7 @@ async function main() {
       "Workspace deletion must cascade to chats",
     );
     console.log(
-      "PASS: chat persistence, tool results, history, tenant isolation, authoritative context, stale/racing turns, lease recovery, interrupted messages, size limits, and cascading deletion.",
+      "PASS: chat persistence, legacy ID recovery, tool results, history, tenant isolation, authoritative context, stale/racing turns, lease recovery, interrupted messages, size limits, and cascading deletion.",
     );
   } finally {
     for (const id of users) await db.delete(user).where(eq(user.id, id));

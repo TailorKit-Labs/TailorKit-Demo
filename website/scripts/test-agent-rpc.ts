@@ -3,11 +3,12 @@ import assert from "node:assert/strict";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { createORPCClient, ORPCError } from "@orpc/client";
 import { RPCLink } from "@orpc/client/fetch";
+import { Chat } from "@ai-sdk/react";
 import { createRouterClient, type RouterClient } from "@orpc/server";
 import { eq } from "drizzle-orm";
 import { auth } from "../lib/auth";
 import { db, pool } from "../lib/drizzle";
-import { agentBuckets, user } from "../lib/schema";
+import { agentBuckets, agentChats, user } from "../lib/schema";
 import {
   agentIpKey,
   AGENT_TOKEN_CAPACITY,
@@ -20,6 +21,7 @@ import { handleRpcRequest } from "../routers/handler";
 import { tenantFromHeaders, verifiedWorkspaceContext } from "../routers/context";
 import type { router } from "../routers";
 import { router as serverRouter } from "../routers";
+import type { CrmAgentMessage } from "../lib/agents/crm-agent";
 
 const origin = "http://localhost:3000";
 const hasCode = (code: string) => (error: unknown) =>
@@ -248,8 +250,49 @@ async function main() {
     );
     await assert.rejects(() => unauthenticated.agent.chat(input()), hasCode("UNAUTHORIZED"));
     assert.equal(botChecks, checksBeforeLimit);
+
+    // Exercise the same SDK state as useChat, including client-side fallback IDs.
+    await db.delete(agentBuckets).where(eq(agentBuckets.key, bucketKey));
+    const chatId = crypto.randomUUID();
+    const chat = new Chat<CrmAgentMessage>({ transport });
+    const send = async (current: Chat<CrmAgentMessage>, text: string) => {
+      await current.sendMessage({ text }, { body: { chatId } });
+      await runCleanup();
+      assert.equal(current.error, undefined);
+      assert.equal(current.status, "ready");
+      const saved = await loadAgentChat(tenant.id, chatId);
+      assert.ok(saved);
+      assert.ok(saved.messages.every((message) => message.id.length > 0));
+      assert.deepEqual(
+        saved.messages.map((message) => message.id),
+        current.messages.map((message) => message.id),
+        "Streamed and persisted message IDs must match before a follow-up",
+      );
+    };
+    await send(chat, "Show my deals");
+    await send(chat, "Create a new contract for Alfie Jones");
+    const reopened = new Chat<CrmAgentMessage>({
+      transport,
+      messages: (await client.chats.get({ id: chatId })).messages,
+    });
+    await send(reopened, "Continue after reopening");
+    assert.equal(reopened.messages.length, 6);
+    await db
+      .update(agentChats)
+      .set({
+        messages: reopened.messages.map((message) =>
+          message.role === "assistant" ? { ...message, id: "" } : message,
+        ),
+      })
+      .where(eq(agentChats.id, chatId));
+    const recovered = new Chat<CrmAgentMessage>({
+      transport,
+      messages: (await client.chats.get({ id: chatId })).messages,
+    });
+    await send(recovered, "Continue a chat saved with missing reply IDs");
+    assert.equal(recovered.messages.length, 8);
     console.log(
-      "PASS: actual agent oRPC HTTP + AI SDK transport, Deep Analysis scoping, persistence, usage refunds, bot rejection/outage, direct-client guard, cancellation, and rate limits before paid checks.",
+      "PASS: actual agent oRPC HTTP + AI SDK transport, stable streamed/persisted IDs, follow-ups, reopening, Deep Analysis scoping, persistence, usage refunds, bot rejection/outage, direct-client guard, cancellation, and rate limits before paid checks.",
     );
   } finally {
     await runCleanup();

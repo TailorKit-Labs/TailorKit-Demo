@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { consumeStream, createAgentUIStream, type UIMessageChunk } from "ai";
 import { ORPCError, streamToAsyncIteratorObject } from "@orpc/server";
 import { checkBotId } from "botid/server";
@@ -140,6 +141,7 @@ export const agentChat = protectedProcedure
             tailorkit?.tools,
           ),
           uiMessages: chatTurn.messages,
+          generateMessageId: randomUUID,
           onUIMessageStepEnd: ({ messages }) => saveAgentChat(chatTurn, messages),
           onEnd: ({ messages, outcome, isAborted, isCancelled }) =>
             saveAgentChat(

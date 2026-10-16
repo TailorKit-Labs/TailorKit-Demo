@@ -20,12 +20,26 @@ export class ChatConflict extends Error {
   }
 }
 
+// Old streams saved empty assistant IDs. Keep repairs stable across history reads
+// and persist them with the next admitted turn, without changing valid IDs.
+function withMessageIds(chatId: string, messages: UIMessage[]): UIMessage[] {
+  const usedIds = new Set(messages.map((message) => message.id).filter(Boolean));
+  return messages.map((message, index) => {
+    if (message.id) return message;
+    const base = `recovered-${chatId}-${index}`;
+    let id = base;
+    for (let suffix = 1; usedIds.has(id); suffix++) id = `${base}-${suffix}`;
+    usedIds.add(id);
+    return { ...message, id };
+  });
+}
+
 function serializeChat(chat: typeof agentChats.$inferSelect): SavedAgentChat {
   return {
     id: chat.id,
     title: chat.title,
     updatedAt: chat.updatedAt.toISOString(),
-    messages: chat.messages as CrmAgentMessage[],
+    messages: withMessageIds(chat.id, chat.messages) as CrmAgentMessage[],
   };
 }
 
@@ -88,15 +102,16 @@ export async function beginAgentChat(
         "This chat is still responding. Please wait, then reopen it from history.",
       );
     const previousIds = clientMessages.slice(0, -1).map((previous) => previous.id);
+    const previousMessages = withMessageIds(chat.id, chat.messages);
     if (
       JSON.stringify(previousIds) !==
-        JSON.stringify(chat.messages.map((previous) => previous.id)) ||
-      chat.messages.some((previous) => previous.id === message.id)
+        JSON.stringify(previousMessages.map((previous) => previous.id)) ||
+      previousMessages.some((previous) => previous.id === message.id)
     )
       throw new ChatConflict(
         "This chat has changed. Reopen it from history before sending another message.",
       );
-    const messages = [...chat.messages, message];
+    const messages = [...previousMessages, message];
     if (messages.length > 20 || Buffer.byteLength(JSON.stringify(messages)) > 60000)
       throw new ChatConflict("This conversation is too long. Start a new chat.", 413);
     await tx
