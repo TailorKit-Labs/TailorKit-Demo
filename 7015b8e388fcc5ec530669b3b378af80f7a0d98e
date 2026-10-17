@@ -1,0 +1,43 @@
+website/app/(crm)/app-pages/[appId]/page.tsx
+  s_bae7b0c003faf1::t_8820197bcac81f 1-16
+website/lib/tailorkit.ts
+  s_bae7b0c003faf1::t_b818a494672f78 10
+  s_bae7b0c003faf1::t_8820197bcac81f 11,178-181
+website/components/app/app-page.tsx
+  s_bae7b0c003faf1::t_8820197bcac81f 1-26,30-37,41-46
+  s_bae7b0c003faf1::t_4a270911895e7d 27-29,38-40
+website/components/agent/agent-workspace.tsx
+  s_bae7b0c003faf1::t_ae295d6e0748cd 57,61
+  s_bae7b0c003faf1::t_8820197bcac81f 148-152
+website/README.md
+  s_bae7b0c003faf1::t_b818a494672f78 122
+  s_bae7b0c003faf1::t_ae295d6e0748cd 93-97
+website/lib/app-pages.ts
+  s_bae7b0c003faf1::t_8820197bcac81f 1-12
+website/components/app/app-sidebar.tsx
+  s_bae7b0c003faf1::t_8820197bcac81f 2-5,13,25-26,64-78,82-92
+  s_bae7b0c003faf1::t_4a270911895e7d 79-81
+website/scripts/test-tailorkit.tsx
+  s_bae7b0c003faf1::t_b818a494672f78 30,32-44
+  s_bae7b0c003faf1::t_0632ef3cf39baa 4,14-15,18-29,31,45-51,221-225,262
+website/lib/agents/agent-request.ts
+  s_bae7b0c003faf1::t_8820197bcac81f 19
+website/components/app/app-mobile-navigation.tsx
+  s_bae7b0c003faf1::t_8820197bcac81f 3-6,14,29-30,77-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7015b8e388fcc5ec530669b3b378af80f7a0d98e",
+  "prompts": {},
+  "sessions": {
+    "s_bae7b0c003faf1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a14693-1208-73f3-9dfc-4565c95074a4",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

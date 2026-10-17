@@ -1,0 +1,14 @@
+apps/messages/tailorkit.config.ts
+  h_18044dd1b61a81 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "14caceb280f6f82b21766f88b9148070ea3b1364",
+  "prompts": {},
+  "humans": {
+    "h_18044dd1b61a81": {
+      "author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

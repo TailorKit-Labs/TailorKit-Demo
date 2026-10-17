@@ -1,0 +1,22 @@
+website/app/globals.css
+  s_d0d8cb2386121f::t_f3a845403d95ff 12-16
+website/components/agent/agent-workspace.tsx
+  s_d0d8cb2386121f::t_f3a845403d95ff 216,225
+  s_d0d8cb2386121f::t_1c277dbf540cc2 219-221
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fed354dd6195378a9e8747f55ddf259e0bc09d44",
+  "prompts": {},
+  "sessions": {
+    "s_d0d8cb2386121f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a12eaa-e4b0-7181-9f2a-e01a89b2c14f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

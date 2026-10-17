@@ -1,0 +1,19 @@
+website/components/app/app-sidebar.tsx
+  s_e44b2657443bc5::t_9d6b9ce4ab08a2 3,17,73-82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1d9080098e8c0038417acaf37a9212a3a2e8640a",
+  "prompts": {},
+  "sessions": {
+    "s_e44b2657443bc5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1384c-a987-7f40-a7da-25b9dd904879",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

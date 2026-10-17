@@ -1,0 +1,25 @@
+website/README.md
+  s_8d89d9f1707ff9::t_095ab15e972471 58
+website/scripts/schema-plan.test.mjs
+  s_8d89d9f1707ff9::t_f01b59d3c2e0f5 18-25
+  s_8d89d9f1707ff9::t_095ab15e972471 3,8-17,26-30
+  s_8d89d9f1707ff9::t_e803e9cb11d86d 31
+website/scripts/push-db.mjs
+  s_8d89d9f1707ff9::t_095ab15e972471 17-21,23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f7b91943c000bf99ae1badc33863b791b37b3508",
+  "prompts": {},
+  "sessions": {
+    "s_8d89d9f1707ff9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ff48-852e-7490-b261-f7a89bab33a0",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

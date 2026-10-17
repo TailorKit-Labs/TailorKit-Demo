@@ -1,0 +1,25 @@
+website/routers/agent.ts
+  s_fd309c4093dffa::t_5ecadd92826c7f 1,144
+website/routers/chats.ts
+  s_fd309c4093dffa::t_8690fdcb5273bc 23-36,42,105,108-109,114
+website/scripts/test-agent-chats.ts
+  s_fd309c4093dffa::t_bccc89f52bdc74 163-201,209
+website/scripts/test-agent-rpc.ts
+  s_fd309c4093dffa::t_1c31f63dd3ad53 6,11,24,253-293,295
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "62030ae50051a044e8ecf31dbf411942434158f0",
+  "prompts": {},
+  "sessions": {
+    "s_fd309c4093dffa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1421e-b33d-7482-97a8-def77fa7a544",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

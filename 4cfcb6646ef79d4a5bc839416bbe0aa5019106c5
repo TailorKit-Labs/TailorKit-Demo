@@ -1,0 +1,22 @@
+website/README.md
+  s_8d89d9f1707ff9::t_523ddadab8bc2d 58-59
+website/lib/auth.ts
+  s_8d89d9f1707ff9::t_0a2fcc45d5081f 17,20
+  s_8d89d9f1707ff9::t_523ddadab8bc2d 7-10,14-16,18-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4cfcb6646ef79d4a5bc839416bbe0aa5019106c5",
+  "prompts": {},
+  "sessions": {
+    "s_8d89d9f1707ff9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ff48-852e-7490-b261-f7a89bab33a0",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

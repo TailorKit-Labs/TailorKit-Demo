@@ -1,0 +1,28 @@
+website/components/dashboard-table.tsx
+  s_b809203553230f::t_99ed8ed6c5725f 198
+  s_96b33066483cc7::t_43b937e282219a 199-203
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2e37fb961b853d281699de3fe829da0470843bdb",
+  "prompts": {},
+  "sessions": {
+    "s_96b33066483cc7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ffa0-22fe-7fe2-95df-c19167888d37",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_b809203553230f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ff40-3ea9-73a3-ab7b-870c67b394c5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

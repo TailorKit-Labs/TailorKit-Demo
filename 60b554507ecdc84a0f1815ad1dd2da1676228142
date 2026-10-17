@@ -1,0 +1,21 @@
+.github/workflows/cleanup-neon-preview.yml
+  s_b8722947f73b9a::t_56e53a7689797b 1-57
+website/README.md
+  s_b8722947f73b9a::t_56e53a7689797b 99-112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "60b554507ecdc84a0f1815ad1dd2da1676228142",
+  "prompts": {},
+  "sessions": {
+    "s_b8722947f73b9a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13e78-4019-7073-85a6-c8b89c478abc",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

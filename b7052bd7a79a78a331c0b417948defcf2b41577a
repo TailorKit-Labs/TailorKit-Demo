@@ -1,0 +1,27 @@
+website/README.md
+  s_8d89d9f1707ff9::t_b42749aa6d9107 47,60-68
+website/package.json
+  s_8d89d9f1707ff9::t_87f9fa6df69d0b 7,13
+website/.gitignore
+  s_8d89d9f1707ff9::t_90c8e292fca1a8 35
+website/drizzle.config.ts
+  s_8d89d9f1707ff9::t_87f9fa6df69d0b 3-11,15
+website/.env.example
+  s_8d89d9f1707ff9::t_90c8e292fca1a8 1-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b7052bd7a79a78a331c0b417948defcf2b41577a",
+  "prompts": {},
+  "sessions": {
+    "s_8d89d9f1707ff9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ff48-852e-7490-b261-f7a89bab33a0",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

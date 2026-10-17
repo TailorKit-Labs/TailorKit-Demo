@@ -1,0 +1,19 @@
+website/scripts/schema-plan.test.mjs
+  s_8d89d9f1707ff9::t_8d909780e52f15 7,20,33,49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "42c3f15e167f3223c509afbb61d8d952ef719f3b",
+  "prompts": {},
+  "sessions": {
+    "s_8d89d9f1707ff9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ff48-852e-7490-b261-f7a89bab33a0",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

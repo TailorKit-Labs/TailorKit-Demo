@@ -1,0 +1,119 @@
+website/app/(crm)/pipeline/page.tsx
+  s_c99e12388a36c5::t_44a7755b7e453d 1-3,7-8
+  s_c99e12388a36c5::t_1ae34298ca914e 9-13
+website/components/pipeline-board.tsx
+  s_c99e12388a36c5::t_f08f43c7820071 5,11,68,90,208,212,255
+  s_c99e12388a36c5::t_1ae34298ca914e 257-262
+website/routers/activities.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 6,46
+website/routers/base.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 1,4
+website/lib/query-provider.tsx
+  s_c99e12388a36c5::t_1ae34298ca914e 13-19
+  s_c99e12388a36c5::t_44a7755b7e453d 1-12,20-24
+website/components/agent/agent-workspace.tsx
+  s_c99e12388a36c5::t_f08f43c7820071 4,9-11,42-44,69,76,78-79,163,213
+  s_c99e12388a36c5::t_1ae34298ca914e 45-47,117-119
+website/README.md
+  s_c99e12388a36c5::t_f43f7cfeab859e 36,38,40,42-44,46-47,55,57,59,61,63,69,142
+  s_c99e12388a36c5::t_46e4df99121429 48-52
+  s_c99e12388a36c5::t_261bb88dc55a1c 118
+  s_c99e12388a36c5::t_baf4f4ad99ae0b 53
+website/app/(crm)/page.tsx
+  s_c99e12388a36c5::t_1ae34298ca914e 8-12
+  s_c99e12388a36c5::t_44a7755b7e453d 1-3,6-7
+website/routers/tasks.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 6,54,78,103,120
+website/lib/orpc.ts
+  s_c99e12388a36c5::t_44a7755b7e453d 1,18-19
+website/components/crm-pages.tsx
+  s_c99e12388a36c5::t_1ae34298ca914e 179-183,215,274-280,650-652
+  s_c99e12388a36c5::t_f08f43c7820071 3-4,19,151,170,172,177,187,205,214,240,242,247,264,269,273,298,538,555,673,675,678,782
+website/routers/contacts.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 6,130,158,177
+website/scripts/test-agent.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 44
+website/lib/tailorkit-client.tsx
+  s_c99e12388a36c5::t_f08f43c7820071 4-5,47,58,67
+website/scripts/test-rpc.ts
+  s_c99e12388a36c5::t_63da53f6c6e2d9 6-8,147-148,159-172,181,186-189,200,204,218-221,227,240-248,254-255,264,319
+  s_c99e12388a36c5::t_46e4df99121429 149-158,173-180,182-185,190-199,201-203,205-217,222-226,228-239,249-253,256-263
+  s_c99e12388a36c5::t_1ae34298ca914e 36
+pnpm-workspace.yaml
+  s_c99e12388a36c5::t_1ae34298ca914e 16,21
+website/components/demo-setup.tsx
+  s_c99e12388a36c5::t_f08f43c7820071 8-9,31,51,65
+website/app/(crm)/tasks/page.tsx
+  s_c99e12388a36c5::t_44a7755b7e453d 1-3,7-8
+  s_c99e12388a36c5::t_1ae34298ca914e 9-13
+website/scripts/test-tailorkit.tsx
+  s_c99e12388a36c5::t_63da53f6c6e2d9 220
+  s_c99e12388a36c5::t_1ae34298ca914e 39
+website/lib/agents/crm-tools.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 28,30
+website/app/rpc/[[...rest]]/route.ts
+  s_c99e12388a36c5::t_f08f43c7820071 4
+website/app/(crm)/contacts/page.tsx
+  s_c99e12388a36c5::t_44a7755b7e453d 1-3,7-8
+  s_c99e12388a36c5::t_1ae34298ca914e 9-13
+website/lib/workspace-session.ts
+  s_c99e12388a36c5::t_44a7755b7e453d 20-24,27-29
+  s_c99e12388a36c5::t_1ae34298ca914e 25-26
+website/lib/agents/crm-agent.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 30
+website/components/crm-shell.tsx
+  s_c99e12388a36c5::t_44a7755b7e453d 30
+website/lib/orpc.server.ts
+  s_c99e12388a36c5::t_44a7755b7e453d 1,11-12
+website/routers/handler.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 10,19
+website/app/(crm)/layout.tsx
+  s_c99e12388a36c5::t_44a7755b7e453d 1,4-7,10,17,19-25
+  s_c99e12388a36c5::t_1ae34298ca914e 11-16
+website/app/(crm)/settings/page.tsx
+  s_c99e12388a36c5::t_44a7755b7e453d 1-3,7-8
+  s_c99e12388a36c5::t_1ae34298ca914e 9-13
+website/app/(crm)/contacts/[id]/page.tsx
+  s_c99e12388a36c5::t_1ae34298ca914e 18-22
+  s_c99e12388a36c5::t_44a7755b7e453d 2-5,7,9-17
+website/lib/workspace.ts
+  s_c99e12388a36c5::t_44a7755b7e453d 1
+website/lib/tailorkit-server-tools.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 9,13
+website/lib/tailorkit-server.ts
+  s_c99e12388a36c5::t_f08f43c7820071 15
+website/components/record-dialog.tsx
+  s_c99e12388a36c5::t_1ae34298ca914e 65-67,86-111,113-117
+  s_c99e12388a36c5::t_f08f43c7820071 3-4,8,60-64,77,85
+website/routers/context.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 45,63-64
+website/routers/deals.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 6,67,98,130,147
+website/routers/workspace.ts
+  s_c99e12388a36c5::t_1ae34298ca914e 5,11-14
+website/lib/query-client.ts
+  s_c99e12388a36c5::t_44a7755b7e453d 1-15,17-21
+  s_c99e12388a36c5::t_1ae34298ca914e 16
+website/lib/query.server.tsx
+  s_c99e12388a36c5::t_44a7755b7e453d 1-29
+pnpm-lock.yaml
+  s_c99e12388a36c5::t_151b82104da974 191-193,206-208,334-336,349-351,1630-1632,1654-1667,1682-1686,2745-2752,7375-7378,7420-7435,7455-7468,8530-8536
+website/package.json
+  s_c99e12388a36c5::t_b6fb9b2b63886d 35,40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6f11fd363ef1a9bcfac5f1c7b45a54acb5d7f703",
+  "prompts": {},
+  "sessions": {
+    "s_c99e12388a36c5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13e35-7874-7a90-9c95-8d8fd269609f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

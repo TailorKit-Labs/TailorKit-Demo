@@ -1,0 +1,22 @@
+website/scripts/test-db.ts
+  s_c99e12388a36c5::t_ce4e38a5c256be 70-74,82-86
+  s_c99e12388a36c5::t_0e0d1c514e5d4c 8,59-69,75-81,87-89
+website/routers/deals.ts
+  s_c99e12388a36c5::t_2292c9e68ec5a2 167-173
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "90a9563ea1019514e658eb8f30ca0c1c28bda590",
+  "prompts": {},
+  "sessions": {
+    "s_c99e12388a36c5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13e35-7874-7a90-9c95-8d8fd269609f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

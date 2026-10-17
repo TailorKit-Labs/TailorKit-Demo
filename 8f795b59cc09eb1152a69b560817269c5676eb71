@@ -1,0 +1,21 @@
+apps/messages/src/slots/panel/index.view.tsx
+  s_127f075da43fff::t_e50939183154b4 56
+website/components/tailorkit-components.tsx
+  s_127f075da43fff::t_732830722353ab 56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8f795b59cc09eb1152a69b560817269c5676eb71",
+  "prompts": {},
+  "sessions": {
+    "s_127f075da43fff": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a14371-72eb-70b0-9bba-982c5e94ac4f",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

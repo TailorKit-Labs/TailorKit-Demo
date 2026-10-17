@@ -1,0 +1,108 @@
+website/scripts/test-rpc.ts
+  s_9338a22d1a5fad::t_c8ac033ff752f6 19,57-58,67
+  s_9338a22d1a5fad::t_9a6ca54800e584 113
+website/lib/install-messages.ts
+  s_9338a22d1a5fad::t_f739b87b73dc5f 5-11
+  s_9338a22d1a5fad::t_b7551919cf02c2 1-4,13-23
+  s_9338a22d1a5fad::t_e47c45d974291b 12
+apps/messages/tailorkit.config.ts
+  s_9338a22d1a5fad::t_1a0f0f07052891 1-11
+  s_9338a22d1a5fad::t_20e65e0905a169 12
+website/scripts/test-agent.ts
+  s_9338a22d1a5fad::t_9192802b7bef05 10
+website/README.md
+  s_9338a22d1a5fad::t_10665c776335c8 25-28
+apps/messages/src/messages.ts
+  s_9338a22d1a5fad::t_0a510d0b6692f3 1-5,17-21,23-25,50-56
+  s_9338a22d1a5fad::t_f739b87b73dc5f 6-15,26-49
+  s_9338a22d1a5fad::t_e47c45d974291b 16,22
+website/scripts/test-provision.ts
+  s_9338a22d1a5fad::t_c28b1bfb675546 1-5
+website/scripts/install-messages.test.ts
+  s_9338a22d1a5fad::t_f739b87b73dc5f 18-20,27,32-44,51-54,56-57,66-75
+  s_9338a22d1a5fad::t_0c3666477e4d71 64
+  s_9338a22d1a5fad::t_a923ba4a64623c 1-17,21-26,28-31,45-50,55,58-63,65,76-78
+apps/messages/src/root.tsx
+  s_9338a22d1a5fad::t_f739b87b73dc5f 1-11
+website/routers/workspace.ts
+  s_9338a22d1a5fad::t_b7551919cf02c2 12-16
+website/lib/provision.ts
+  s_9338a22d1a5fad::t_2176f70a52d090 18,35-44
+  s_9338a22d1a5fad::t_b7551919cf02c2 5,7-9,14-17,27-28,34,46
+  s_9338a22d1a5fad::t_f739b87b73dc5f 10-13,29-33
+apps/messages/src/tailorkit.gen.ts
+  s_9338a22d1a5fad::t_da7020cd231dd4 1-1010
+website/scripts/test-tailorkit.tsx
+  s_9338a22d1a5fad::t_9192802b7bef05 9
+website/scripts/messages.test.ts
+  s_9338a22d1a5fad::t_0c3666477e4d71 20,37,59
+  s_9338a22d1a5fad::t_a923ba4a64623c 1-2,9-10,18-19,21,23-24,34-36,38,57-58,60-64
+  s_9338a22d1a5fad::t_f739b87b73dc5f 3-8,11-17,22,25-33,39-56
+website/components/demo-setup.tsx
+  s_9338a22d1a5fad::t_f739b87b73dc5f 105-126
+  s_9338a22d1a5fad::t_c28b1bfb675546 32,55-57,59-60,69,74,101
+apps/messages/src/slots/panel/index.view.tsx
+  s_9338a22d1a5fad::t_0c3666477e4d71 287
+  s_9338a22d1a5fad::t_c8ac033ff752f6 323
+  s_9338a22d1a5fad::t_6cfeb46669a7ff 1,31,36-66,70-82,98-113,128-130,137,143-150,152,165,180,247,342-345
+  s_9338a22d1a5fad::t_7c8029ad499952 2
+  s_9338a22d1a5fad::t_f739b87b73dc5f 3-30,67-69,83-97,114-127,131-132,134-136,138-142,153-164,166-175,177-179,181-201,203-246,248-274,276-281,283-286,288-296,298-302,304-322,324-341
+  s_9338a22d1a5fad::t_a7daf1e099e997 32-35,346
+  s_9338a22d1a5fad::t_f8d576fb918096 133,151,176,202,275,282,297,303
+vite.config.ts
+  s_9338a22d1a5fad::t_b7551919cf02c2 9-10
+  s_9338a22d1a5fad::t_f739b87b73dc5f 24-29
+website/scripts/test-agent-chats.ts
+  s_9338a22d1a5fad::t_9192802b7bef05 9
+website/routers/index.ts
+  s_9338a22d1a5fad::t_f739b87b73dc5f 7-12,16-21
+apps/messages/package.json
+  s_9338a22d1a5fad::t_7c8029ad499952 26
+  s_9338a22d1a5fad::t_1a0f0f07052891 1-3,6-21,23-25,27-29,31
+  s_9338a22d1a5fad::t_f739b87b73dc5f 4-5,22,30
+website/app/api/tailorkit/[...tailorkit]/route.ts
+  s_9338a22d1a5fad::t_2176f70a52d090 19
+website/scripts/test-db.ts
+  s_9338a22d1a5fad::t_9192802b7bef05 7,54
+  s_9338a22d1a5fad::t_a923ba4a64623c 8,26-27,36-38,43,45-46
+  s_9338a22d1a5fad::t_f739b87b73dc5f 28-35,39-41
+website/.env.example
+  s_9338a22d1a5fad::t_10665c776335c8 13
+apps/messages/README.md
+  s_9338a22d1a5fad::t_10665c776335c8 1-25
+  s_9338a22d1a5fad::t_7198f9785fe5cc 26-28
+apps/messages/tsconfig.json
+  s_9338a22d1a5fad::t_b7551919cf02c2 1-19
+package.json
+  s_9338a22d1a5fad::t_a923ba4a64623c 14
+website/scripts/test-agent-rpc.ts
+  s_9338a22d1a5fad::t_10665c776335c8 20,71
+website/lib/tailorkit.ts
+  s_9338a22d1a5fad::t_02534e6128112c 13-18,109,113
+  s_9338a22d1a5fad::t_f739b87b73dc5f 110-112
+README.md
+  s_9338a22d1a5fad::t_10665c776335c8 3,15
+  s_9338a22d1a5fad::t_3a2bff5ea6d464 16-17
+apps/messages/logo-dark.svg
+  s_9338a22d1a5fad::t_32e6b4cac243d9 1-4
+apps/messages/logo-light.svg
+  s_9338a22d1a5fad::t_72e4383b57b274 1-4
+apps/messages/vite.config.ts
+  s_9338a22d1a5fad::t_e9e6794ba6c40f 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "06a8152f0fed5a3500bcef67c12831748adb4719",
+  "prompts": {},
+  "sessions": {
+    "s_9338a22d1a5fad": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a142b7-6aa6-7f03-9cf4-6670994c9c00",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

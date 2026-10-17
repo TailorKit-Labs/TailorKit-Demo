@@ -1,0 +1,19 @@
+website/components/crm-chart.tsx
+  s_224a2c25c92b5d::t_83b65acb3a7542 111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c0cf12dff58cbfd16afb2e7aa0df001d791f6d96",
+  "prompts": {},
+  "sessions": {
+    "s_224a2c25c92b5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ffa5-5930-7d01-bbbd-106a1c09faed",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

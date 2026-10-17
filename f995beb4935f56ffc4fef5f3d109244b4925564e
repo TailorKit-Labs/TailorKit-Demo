@@ -1,0 +1,25 @@
+website/lib/agents/crm-agent.ts
+  s_d0d8cb2386121f::t_8c02b7e0e68dac 13,26
+website/.env.example
+  s_d0d8cb2386121f::t_8c02b7e0e68dac 11
+website/README.md
+  s_d0d8cb2386121f::t_8c02b7e0e68dac 42
+website/scripts/test-agent.ts
+  s_d0d8cb2386121f::t_d86b831e5a63fe 251
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f995beb4935f56ffc4fef5f3d109244b4925564e",
+  "prompts": {},
+  "sessions": {
+    "s_d0d8cb2386121f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a12eaa-e4b0-7181-9f2a-e01a89b2c14f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

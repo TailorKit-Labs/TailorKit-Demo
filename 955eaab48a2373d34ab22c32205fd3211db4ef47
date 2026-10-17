@@ -1,0 +1,25 @@
+website/lib/agents/tailorkit-tools.ts
+  s_f113f3d0af95a0::t_f86eea5da3f728 26-41
+website/components/agent/agent-chat.tsx
+  s_f113f3d0af95a0::t_f86eea5da3f728 4,78-80,84
+  s_f113f3d0af95a0::t_0a53ba466be391 81-82
+website/scripts/test-agent-mcp.ts
+  s_f113f3d0af95a0::t_8908756351bbc0 18,77,160,232
+  s_f113f3d0af95a0::t_32cdfb5e47282e 78-83,161-201,203-231
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "955eaab48a2373d34ab22c32205fd3211db4ef47",
+  "prompts": {},
+  "sessions": {
+    "s_f113f3d0af95a0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13e33-1808-7451-834b-0d4ace3a1062",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

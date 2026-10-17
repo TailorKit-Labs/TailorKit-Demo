@@ -1,0 +1,23 @@
+website/public/brand/tailorkit-mark-light.svg
+  s_224a2c25c92b5d::t_5821c61f719d94 1-4
+website/public/brand/tailorkit-mark-dark.svg
+  s_224a2c25c92b5d::t_5821c61f719d94 1-4
+website/components/demo-setup.tsx
+  s_224a2c25c92b5d::t_99de046400ac98 3,5,74-88
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ff807b99ee69917e5061fc8133fa155181f48a07",
+  "prompts": {},
+  "sessions": {
+    "s_224a2c25c92b5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ffa5-5930-7d01-bbbd-106a1c09faed",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

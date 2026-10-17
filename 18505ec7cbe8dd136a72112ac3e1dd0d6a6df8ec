@@ -1,0 +1,19 @@
+website/components/demo-setup.tsx
+  s_224a2c25c92b5d::t_f978e34ebe7e27 91,93,95
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "18505ec7cbe8dd136a72112ac3e1dd0d6a6df8ec",
+  "prompts": {},
+  "sessions": {
+    "s_224a2c25c92b5d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ffa5-5930-7d01-bbbd-106a1c09faed",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

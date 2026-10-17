@@ -1,0 +1,21 @@
+website/components/app/app-mobile-header.tsx
+  s_f1d5513f4afb10::t_1aa29a49814e44 7
+website/components/app/app-sidebar.tsx
+  s_f1d5513f4afb10::t_1aa29a49814e44 14,21-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1a9e3060709b0a5472e1064539d1cd2eefb88626",
+  "prompts": {},
+  "sessions": {
+    "s_f1d5513f4afb10": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a10429-cad6-7440-923e-69143702c2ac",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

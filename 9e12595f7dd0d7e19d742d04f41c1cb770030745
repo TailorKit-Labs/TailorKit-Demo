@@ -1,0 +1,33 @@
+apps/messages/src/slots/panel/index.view.tsx
+  s_127f075da43fff::t_178a3f30619147 181-182,263-265,267-268,272-273,276-286,288,290-331,351-359,361-370,372-381
+apps/messages/src/tailorkit.gen.ts
+  s_abcc65cafd41f9::t_c1173b0ac468ec 628,632,634-635,645
+website/components/agent/apps-panel.tsx
+  s_127f075da43fff::t_5e3cc56df82d11 127-131
+website/lib/tailorkit-theme.ts
+  s_127f075da43fff::t_800179b5cee85c 70-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9e12595f7dd0d7e19d742d04f41c1cb770030745",
+  "prompts": {},
+  "sessions": {
+    "s_127f075da43fff": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a14371-72eb-70b0-9bba-982c5e94ac4f",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_abcc65cafd41f9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1436d-c10d-7190-9b00-ded55f821b76",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

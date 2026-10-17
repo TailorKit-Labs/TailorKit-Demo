@@ -1,0 +1,49 @@
+website/lib/tailorkit-client.tsx
+  s_f113f3d0af95a0::t_fb86cc9a1d0d95 1-20
+pnpm-lock.yaml
+  s_8b6ac290adc560::t_138ca831a39b75 254-256,303,327,348,391-393,465-468,665-672,1413-1432,1604-1623,1755-1758,1768-1770,2498-2523,2548-2589,3272-3340,3347-3352,3359-3364,3372-3378,3386-3392,3400-3406,3414-3420,3427-3432,3439-3444,3790-3793,3854-3857,3884-3887,3894-3897,4137-4252,4421-4424,4511-4519,4789-4792,4989-4993,5338-5341,5611-5618,5640-5643,5932-5934,6018-6036,6150-6153,6267-6274,6488-6493,6654,6656-6668,6671,6673,6675,6680,6682,6685,6687,6690,6692,6695,6697,6719-6730,7188-7201,7306-7337,7405-7406,7413-7414,7871-7904,7942-8329,9204-9228,9254-9278,9282-9284,9288-9290,9294-9296,9300-9302,9306-9308,9312-9314,9318-9320,9324-9326,9471,9474-9479,9492,9545-9546,9595-9596,9611-9612,9621-9625,9882-9890,9895,9924-9925,10089-10098,10409-10412,10550-10553,11121-11122,11435-11436,11458-11459,11826-11827,11914-11988,12093-12096,12226-12229
+pnpm-workspace.yaml
+  s_8b6ac290adc560::t_eedab844ae0167 40
+website/.env.example
+  s_8b6ac290adc560::t_43c18f649ab8ec 12-14
+website/README.md
+  s_8b6ac290adc560::t_e4f5eaf8b31cf9 60-71
+website/app/(crm)/layout.tsx
+  s_8b6ac290adc560::t_31ad25fd730af2 11-15
+website/app/api/tailorkit/[...tailorkit]/route.ts
+  s_8b6ac290adc560::t_251a5ee64b50db 1-15
+website/components/agent/agent-workspace.tsx
+  s_8b6ac290adc560::t_28a09014aa5940 17,36,56-67,223-225
+website/components/crm-shell.tsx
+  s_8b6ac290adc560::t_7c13c0e7229271 8,15,20,24-47,49-52,55-60
+website/lib/tailorkit-server.ts
+  s_8b6ac290adc560::t_93dc0a9a7ec84a 1-16
+website/lib/tailorkit.ts
+  s_8b6ac290adc560::t_2697b6e6f4b56c 1-22
+website/package.json
+  s_8b6ac290adc560::t_6c906835a399e0 56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "219f739edeea7557a27c3c14d19962512dd0959b",
+  "prompts": {},
+  "sessions": {
+    "s_8b6ac290adc560": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13e32-3cc0-7062-9183-0586a4f8ccda",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_f113f3d0af95a0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13e33-1808-7451-834b-0d4ace3a1062",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

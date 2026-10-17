@@ -1,0 +1,23 @@
+website/components/inbox-page.tsx
+  s_0f863903204e8f::t_9a893bcbba264c 368-373,498,510-513
+  s_0f863903204e8f::t_62b8f78b7106ca 296,304-309,317,324,334,361,374-376,387,417,467,489,491-492,530-535,542,556-559
+website/components/crm-shell.tsx
+  s_0f863903204e8f::t_9a893bcbba264c 44-45,47-49
+  s_0f863903204e8f::t_62b8f78b7106ca 4,13,27-30,36-39,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "433e7011797796c5502d0532b312e4a48ca6391b",
+  "prompts": {},
+  "sessions": {
+    "s_0f863903204e8f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ff6d-f292-7e93-878a-787f7fb8d848",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}

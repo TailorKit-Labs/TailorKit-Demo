@@ -1,0 +1,30 @@
+website/app/api/agent/route.ts
+  s_f113f3d0af95a0::t_438a5c0fcec5fc 83-85
+website/README.md
+  s_f113f3d0af95a0::t_3e46cecb40cc72 75,89
+website/lib/agents/agent-rate-limit.ts
+  s_f113f3d0af95a0::t_438a5c0fcec5fc 34,41,75,83-86,101-104,109
+website/lib/agents/agent-limits.ts
+  s_f113f3d0af95a0::t_438a5c0fcec5fc 2-3
+website/lib/schema.ts
+  s_f113f3d0af95a0::t_438a5c0fcec5fc 139-140,142
+website/scripts/test-agent-rate-limit.ts
+  s_f113f3d0af95a0::t_cc83e765c73d69 30-34,42-45,76-80,132-136,143-154,160-166,176-179
+  s_f113f3d0af95a0::t_972d0c3521d3a4 38,46-50,54,75,88-89,106-108,112-113,117-119,122-123,126-131,137-142,155-159,167-172,180-181,231
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8c78376ad1f9cbf431191671b640bec4a5c63a38",
+  "prompts": {},
+  "sessions": {
+    "s_f113f3d0af95a0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13e33-1808-7451-834b-0d4ace3a1062",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
