@@ -18,6 +18,14 @@ import { cn } from "@/lib/utils";
 import type { Workspace, Contact, Deal, Task } from "@/lib/workspace";
 import { orpc } from "@/lib/orpc";
 import { useViewContext } from "@/lib/tailorkit-client";
+import {
+  overviewViewContext,
+  contactsViewContext,
+  contactViewContext,
+  pipelineViewContext,
+  tasksViewContext,
+  settingsViewContext,
+} from "@/lib/tailorkit-views";
 import { SectionCards } from "@/components/section-cards";
 import { DashboardTable } from "@/components/dashboard-table";
 import { RecordDialog } from "@/components/record-dialog";
@@ -304,6 +312,7 @@ function DealCard({ deal, workspace }: { deal: Deal; workspace: Workspace }) {
   );
 }
 function Overview({ workspace }: { workspace: Workspace }) {
+  useViewContext("/overview", { context: overviewViewContext(workspace) });
   return (
     <div className="@container/main flex flex-col gap-4 md:gap-6">
       <PageHeading title="Overview">
@@ -345,6 +354,21 @@ function Contacts({ workspace }: { workspace: Workspace }) {
   const offset = (currentPage - 1) * 10;
   const visibleContacts = sorted.slice(offset, offset + 10);
   const pageIds = visibleContacts.map((contact) => contact.id);
+  useViewContext("/contacts", {
+    context: {
+      ...contactsViewContext(workspace),
+      filters: { query: search, status: status as "all" | Contact["status"] },
+      sort: { field: sort, direction },
+      pagination: {
+        page: currentPage,
+        pageSize: 10,
+        totalPages: pageCount,
+        total: filtered.length,
+      },
+      visibleContactIds: pageIds,
+      selectedContactIds: [...selection.selected],
+    },
+  });
   return (
     <>
       <PageHeading title="Contacts">
@@ -512,6 +536,7 @@ function Pipeline({ workspace }: { workspace: Workspace }) {
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
+  useViewContext("/pipeline", { context: pipelineViewContext(workspace, filtered, search) });
   return (
     <>
       <PageHeading title="Pipeline">
@@ -536,15 +561,12 @@ function Pipeline({ workspace }: { workspace: Workspace }) {
   );
 }
 function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: Contact }) {
+  const [activeTab, setActiveTab] = useState<"activity" | "follow-ups" | "opportunities">(
+    "activity",
+  );
+  useViewContext("/contacts", { context: contactsViewContext(workspace) });
   useViewContext("/contacts/detail", {
-    context: {
-      contact: {
-        id: contact.id,
-        name: contact.name,
-        email: contact.email,
-        company: contact.company,
-      },
-    },
+    context: contactViewContext(workspace, contact, activeTab),
   });
   const router = useRouter();
   const mutation = useMutation(orpc.activities.addNote.mutationOptions());
@@ -610,7 +632,14 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
           </dl>
         </CardContent>
       </Card>
-      <Tabs defaultValue="activity" className="min-w-0 gap-5">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => {
+          if (value === "activity" || value === "follow-ups" || value === "opportunities")
+            setActiveTab(value);
+        }}
+        className="min-w-0 gap-5"
+      >
         <div className="min-w-0 overflow-x-auto pb-px">
           <TabsList variant="underline" aria-label="Contact sections">
             <TabsTrigger value="activity">
@@ -758,6 +787,7 @@ function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: 
 }
 
 function Tasks({ workspace }: { workspace: Workspace }) {
+  useViewContext("/tasks", { context: tasksViewContext(workspace) });
   return (
     <>
       <PageHeading title="Follow-ups">
@@ -783,6 +813,7 @@ function Tasks({ workspace }: { workspace: Workspace }) {
 }
 
 function Settings({ workspace }: { workspace: Workspace }) {
+  useViewContext("/settings", { context: settingsViewContext(workspace) });
   const usage = [
     { name: "Contacts", count: workspace.contacts.length },
     { name: "Deals", count: workspace.deals.length },

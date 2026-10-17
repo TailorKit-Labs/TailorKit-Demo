@@ -14,12 +14,27 @@ import { tailorKitComponents } from "../components/tailorkit-components";
 import { appPageHref, appPageLabel } from "../lib/app-pages";
 import { agentRequest } from "../lib/agents/agent-request";
 import { encodeMessage, readMessages } from "../../apps/messages/src/messages";
+import { pageViewPaths } from "../lib/tailorkit-views";
 
 async function main() {
-  assert.deepEqual(contract.slots.navbar.views, ["/"]);
-  assert.deepEqual(contract.slots.panel.views, ["/", "/contacts/detail"]);
+  assert.deepEqual(contract.slots.navbar.views, pageViewPaths);
+  assert.deepEqual(contract.slots.panel.views, pageViewPaths);
+  assert.deepEqual(contract.slots.page.views, pageViewPaths);
   const contactContext = {
-    contact: { id: "contact-alex", name: "Alex Chen", email: "alex@example.com", company: "Acme" },
+    contact: {
+      id: "contact-alex",
+      name: "Alex Chen",
+      email: "alex@example.com",
+      company: "Acme",
+      role: "Designer",
+      status: "active",
+      createdAt: "2026-10-17T00:00:00.000Z",
+    },
+    deals: [],
+    tasks: [],
+    activities: [],
+    activeTab: "activity",
+    currency: "USD",
   };
   assert.deepEqual(contract.views["/contacts/detail"].parse(contactContext), contactContext);
   assert.equal(contract.views["/contacts/detail"].safeParse({}).success, false);

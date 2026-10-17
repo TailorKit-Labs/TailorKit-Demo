@@ -3,6 +3,7 @@ import { primitives } from "tailorkit/zod";
 import { z } from "zod";
 import { schemas } from "../routers/schemas";
 import { tailorKitTheme } from "./tailorkit-theme";
+import { pageViews, pageViewPaths } from "./tailorkit-views";
 
 export const siteHref = z
   .string()
@@ -202,18 +203,11 @@ export const contract = defineContract({
   },
   views: {
     "/": z.object({ workspace: z.object({ id: z.string(), name: z.string() }), page: z.string() }),
-    "/contacts/detail": z.object({
-      contact: z.object({
-        id: z.string(),
-        name: z.string(),
-        email: z.string(),
-        company: z.string(),
-      }),
-    }),
+    ...pageViews,
   },
   slots: {
-    navbar: { views: ["/"] },
-    panel: { views: ["/", "/contacts/detail"] },
-    page: { views: ["/"], multiple: true },
+    navbar: { views: pageViewPaths },
+    panel: { views: pageViewPaths },
+    page: { views: pageViewPaths, multiple: true },
   },
 });

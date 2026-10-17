@@ -20,6 +20,97 @@ export interface ViewPropsByPath {
       page: string;
     };
   };
+  "/overview": {
+    context: ({
+      workspace: {
+        id: string;
+        name: string;
+      };
+      page: string;
+    }) & ({
+      contacts: ({
+        id: string;
+        name: string;
+        email: string;
+        company: string;
+        role: string;
+        status: "lead" | "active" | "customer";
+        createdAt: string;
+      })[];
+      deals: ({
+        id: string;
+        title: string;
+        value: number;
+        stage: "qualified" | "proposal" | "negotiation" | "won" | "lost";
+        closeDate: string;
+        contactId: string | null;
+        createdAt: string;
+        position: number;
+      })[];
+      tasks: ({
+        id: string;
+        title: string;
+        dueDate: string;
+        contactId: string | null;
+        completed: boolean;
+        createdAt: string;
+      })[];
+      recentActivities: ({
+        id: string;
+        contactId: string | null;
+        type: "note" | "contact" | "deal" | "task";
+        title: string;
+        description: string;
+        createdAt: string;
+      })[];
+      summary: {
+        contacts: number;
+        customers: number;
+        activeAccounts: number;
+        openDeals: number;
+        pipelineValue: number;
+        revenue: number;
+        pendingTasks: number;
+      };
+      currency: "USD";
+    });
+  };
+  "/contacts": {
+    context: ({
+      workspace: {
+        id: string;
+        name: string;
+      };
+      page: string;
+    }) & ({
+      contacts: ({
+        id: string;
+        name: string;
+        email: string;
+        company: string;
+        role: string;
+        status: "lead" | "active" | "customer";
+        createdAt: string;
+      })[];
+      count: number;
+      filters?: {
+        query: string;
+        status: "all" | "lead" | "active" | "customer";
+      };
+      sort?: {
+        field: "name" | "company" | "email";
+        direction: "asc" | "desc";
+      };
+      pagination?: {
+        page: number;
+        pageSize: number;
+        totalPages: number;
+        total: number;
+      };
+      visibleContactIds?: string[];
+      selectedContactIds?: string[];
+    });
+  };
   "/contacts/detail": {
     context: ({
       workspace: {
@@ -28,11 +119,171 @@ export interface ViewPropsByPath {
       };
       page: string;
     }) & ({
+      contacts: ({
+        id: string;
+        name: string;
+        email: string;
+        company: string;
+        role: string;
+        status: "lead" | "active" | "customer";
+        createdAt: string;
+      })[];
+      count: number;
+      filters?: {
+        query: string;
+        status: "all" | "lead" | "active" | "customer";
+      };
+      sort?: {
+        field: "name" | "company" | "email";
+        direction: "asc" | "desc";
+      };
+      pagination?: {
+        page: number;
+        pageSize: number;
+        totalPages: number;
+        total: number;
+      };
+      visibleContactIds?: string[];
+      selectedContactIds?: string[];
+    }) & ({
       contact: {
         id: string;
         name: string;
         email: string;
         company: string;
+        role: string;
+        status: "lead" | "active" | "customer";
+        createdAt: string;
+      };
+      deals: ({
+        id: string;
+        title: string;
+        value: number;
+        stage: "qualified" | "proposal" | "negotiation" | "won" | "lost";
+        closeDate: string;
+        contactId: string | null;
+        createdAt: string;
+        position: number;
+      })[];
+      tasks: ({
+        id: string;
+        title: string;
+        dueDate: string;
+        contactId: string | null;
+        completed: boolean;
+        createdAt: string;
+      })[];
+      activities: ({
+        id: string;
+        contactId: string | null;
+        type: "note" | "contact" | "deal" | "task";
+        title: string;
+        description: string;
+        createdAt: string;
+      })[];
+      activeTab: "activity" | "follow-ups" | "opportunities";
+      currency: "USD";
+    });
+  };
+  "/pipeline": {
+    context: ({
+      workspace: {
+        id: string;
+        name: string;
+      };
+      page: string;
+    }) & ({
+      deals: ({
+        id: string;
+        title: string;
+        value: number;
+        stage: "qualified" | "proposal" | "negotiation" | "won" | "lost";
+        closeDate: string;
+        contactId: string | null;
+        createdAt: string;
+        position: number;
+      })[];
+      contacts: ({
+        id: string;
+        name: string;
+        email: string;
+        company: string;
+        role: string;
+        status: "lead" | "active" | "customer";
+        createdAt: string;
+      })[];
+      filters: {
+        query: string;
+      };
+      stages: ({
+        stage: "qualified" | "proposal" | "negotiation" | "won" | "lost";
+        count: number;
+        totalValue: number;
+      })[];
+      totalValue: number;
+      currency: "USD";
+    });
+  };
+  "/tasks": {
+    context: ({
+      workspace: {
+        id: string;
+        name: string;
+      };
+      page: string;
+    }) & ({
+      tasks: ({
+        id: string;
+        title: string;
+        dueDate: string;
+        contactId: string | null;
+        completed: boolean;
+        createdAt: string;
+      })[];
+      contacts: ({
+        id: string;
+        name: string;
+        email: string;
+        company: string;
+        role: string;
+        status: "lead" | "active" | "customer";
+        createdAt: string;
+      })[];
+      summary: {
+        total: number;
+        pending: number;
+        completed: number;
+      };
+    });
+  };
+  "/settings": {
+    context: ({
+      workspace: {
+        id: string;
+        name: string;
+      };
+      page: string;
+    }) & ({
+      usage: {
+        contacts: number;
+        deals: number;
+        tasks: number;
+        limit: number;
+      };
+      currency: "USD";
+    });
+  };
+  "/app-pages": {
+    context: ({
+      workspace: {
+        id: string;
+        name: string;
+      };
+      page: string;
+    }) & ({
+      appPage: {
+        appId: string;
+        instanceKey: string;
       };
     });
   };
@@ -41,9 +292,9 @@ export interface ViewPropsByPath {
 declare module "tailorkit/client" {
   interface TailorKitViews extends ViewPropsByPath {}
   interface TailorKitSlots {
-    "navbar": { views: "/"; multiple: false };
-    "panel": { views: "/" | "/contacts/detail"; multiple: false };
-    "page": { views: "/"; multiple: true };
+    "navbar": { views: "/" | "/overview" | "/contacts" | "/contacts/detail" | "/pipeline" | "/tasks" | "/settings" | "/app-pages"; multiple: false };
+    "panel": { views: "/" | "/overview" | "/contacts" | "/contacts/detail" | "/pipeline" | "/tasks" | "/settings" | "/app-pages"; multiple: false };
+    "page": { views: "/" | "/overview" | "/contacts" | "/contacts/detail" | "/pipeline" | "/tasks" | "/settings" | "/app-pages"; multiple: true };
   }
 }
 

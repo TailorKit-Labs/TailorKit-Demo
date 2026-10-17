@@ -94,7 +94,19 @@ Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration 
 
 ## TailorKit apps
 
-`lib/tailorkit.ts` is the browser-safe `defineContract` shared by the host server and client. It declares the `workspace` scope, workspace/page context at `/`, and contact context at `/contacts/detail`. The `navbar` slot renders app actions in each page header. Apps call `ui.openPanel` to open their own installation's panel tab. Panel views render as tabs beside the agent, selecting the contact view while a CRM contact is open and falling back to `/` elsewhere. The `page` slot allows multiple instances per app: each instance appears under **App pages** in the sidebar and mobile navigation. The entire group is hidden when no page instances are available.
+`lib/tailorkit.ts` is the browser-safe `defineContract` shared by the host server and client. It declares the `workspace` scope, workspace/page context at `/`, plus a dedicated view for every CRM page. The `navbar` slot renders app actions in each page header. Apps call `ui.openPanel` to open their own installation's panel tab. Panel views render as tabs beside the agent. All three slots support the page views below; apps can implement a specific view or fall back to `/`. The `page` slot allows multiple instances per app: each instance appears under **App pages** in the sidebar and mobile navigation. The entire group is hidden when no page instances are available.
+
+Page contexts are registered by the page displaying the data and update as its query data or local controls change:
+
+- `/overview` (the home route `/`): contacts, deals, follow-ups, recent activity, revenue, open pipeline value, and relationship/task totals.
+- `/contacts`: public contact records and total count. The list also supplies search/status filters, sort order, pagination, visible contact IDs, and selected contact IDs.
+- `/contacts/detail`: the full current contact, its deals, follow-ups and activity, the selected contact tab, and currency. It inherits `/contacts` collection context and the root workspace context. List-only controls are omitted on detail pages.
+- `/pipeline`: the displayed deals, related contact records, search query, stage counts/values, total value, and currency.
+- `/tasks`: follow-ups, contact records, and pending/completed totals.
+- `/settings`: workspace collection usage, record limit, and currency.
+- `/app-pages`: the requested app ID and instance key, including keys containing spaces or slashes. Identity is available even while discovery is loading or the requested instance is unavailable.
+
+`lib/tailorkit-views.ts` owns the schemas and context builders. Record contexts omit internal tenant IDs, retain message whitespace, and use the same `YYYY-MM-DD` calendar dates as the app tools. Timestamps remain ISO strings. The root workspace context stays mounted across navigation; page contexts unregister when their page unmounts. Apps implementing only `/` continue to receive that fallback on every page.
 
 Supply page instances with stable keys and `metadata: { label: "Reports" }` to name their links. Missing or blank labels fall back to the app name and instance key. Each link opens `/app-pages/<appId>?instance=<encoded-key>` and renders that exact instance with `RenderSlot`. Keeping the key in the query supports keys containing spaces, slashes, or other URL characters, and links survive reloads. Removed instances show a page-unavailable state. App discovery is refreshed after agent turns so newly created pages appear in navigation.
 
