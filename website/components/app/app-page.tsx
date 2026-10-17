@@ -1,6 +1,6 @@
 "use client";
 
-import { RenderSlot, useViews } from "@/lib/tailorkit-client";
+import { RenderSlot, useViews, useViewContext } from "@/lib/tailorkit-client";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
 import { AppPageHeading } from "./app-page-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -9,6 +9,7 @@ import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/u
 import { Skeleton } from "@/components/ui/skeleton";
 
 export function AppPage({ appId, instanceKey }: { appId: string; instanceKey: string }) {
+  useViewContext("/app-pages", { context: { appPage: { appId, instanceKey } } });
   const { data: pages, isPending, error, fetch } = useViews({ slot: "page" });
   const page = pages?.find((page) => page.app.id === appId && page.key === instanceKey);
 

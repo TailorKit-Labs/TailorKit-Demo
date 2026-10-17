@@ -155,7 +155,10 @@ export const schemas = {
       output: z.object({ activities: z.array(activity), count: z.number() }),
     },
     addNote: {
-      input: z.object({ contactId: recordId, body: z.string().trim().min(1).max(1000) }),
+      input: z.object({
+        contactId: recordId,
+        body: z.string().min(1).max(1000).regex(/\S/, "Enter a note."),
+      }),
       output: saved,
     },
   },

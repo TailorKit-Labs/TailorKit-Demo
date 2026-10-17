@@ -19,8 +19,8 @@ const activity = (description: string, overrides: Partial<Activity> = {}): Activ
 
 void test("all channels round trip through readable CRM notes, including multiline text", () => {
   for (const channel of channels) {
-    const body = 'Hello!\nNext steps: <script> & "quotes" 😀';
-    const note = encodeMessage(channel, `  ${body}  `);
+    const body = '  Hello!\nNext steps: <script> & "quotes" 😀  \n ';
+    const note = encodeMessage(channel, body);
     assert.ok(note.startsWith(`Demo message · ${channel}\n`));
     assert.deepEqual(readMessages([activity(note)]), [
       {
@@ -41,7 +41,7 @@ void test("history ignores unrelated and malformed notes, preserves chronologica
       activity("An ordinary CRM note"),
       activity("Demo message · Telegram\nHi"),
       activity("Demo message · Email"),
-      activity("Demo message · Email\n  "),
+      activity("Demo message · Email\n"),
       activity(valid, { contactId: null }),
       activity(valid, { type: "task" }),
     ]),
@@ -57,8 +57,17 @@ void test("history ignores unrelated and malformed notes, preserves chronologica
 });
 
 void test("message limits fit the host's 1000-character note limit", () => {
-  assert.throws(() => encodeMessage("Email", " \n "));
+  assert.throws(() => encodeMessage("Email", ""));
   assert.throws(() => encodeMessage("Email", "x".repeat(801)));
+  assert.throws(() => encodeMessage("Email", " ".repeat(800) + "x"));
+  assert.throws(() => encodeMessage("Email", "x".repeat(800) + " "));
   assert.ok(encodeMessage("Email", "\n".repeat(400) + "x".repeat(400)).length <= 1000);
   assert.ok(encodeMessage("Slack", "x".repeat(800)).length <= 1000);
+});
+
+void test("spaces count toward the limit and survive encoding and history", () => {
+  for (const body of [" ", " \n ", " ".repeat(800), " " + "x".repeat(798) + " "]) {
+    const note = encodeMessage("Email", body);
+    assert.equal(readMessages([activity(note)])[0].body, body);
+  }
 });

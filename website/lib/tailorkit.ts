@@ -3,6 +3,7 @@ import { primitives } from "tailorkit/zod";
 import { z } from "zod";
 import { schemas } from "../routers/schemas";
 import { tailorKitTheme } from "./tailorkit-theme";
+import { pageViews, pageViewPaths } from "./tailorkit-views";
 
 export const siteHref = z
   .string()
@@ -188,6 +189,7 @@ export const contract = defineContract({
     },
     ui: {
       navigate: tool.client().input(z.object({ href: siteHref })),
+      openPanel: tool.client(),
       refresh: tool.client(),
       setTheme: tool.client().input(z.object({ theme: z.enum(["light", "dark", "system"]) })),
       notify: tool.client().input(
@@ -201,9 +203,11 @@ export const contract = defineContract({
   },
   views: {
     "/": z.object({ workspace: z.object({ id: z.string(), name: z.string() }), page: z.string() }),
+    ...pageViews,
   },
   slots: {
-    panel: { views: ["/"] },
-    page: { views: ["/"], multiple: true },
+    navbar: { views: pageViewPaths },
+    panel: { views: pageViewPaths },
+    page: { views: pageViewPaths, multiple: true },
   },
 });

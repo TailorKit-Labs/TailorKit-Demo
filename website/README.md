@@ -94,7 +94,19 @@ Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration 
 
 ## TailorKit apps
 
-`lib/tailorkit.ts` is the browser-safe `defineContract` shared by the host server and client. It declares the `workspace` scope, the current workspace/page context at `/`, and the `panel` and `page` slots. Panel views render as tabs beside the agent. The `page` slot allows multiple instances per app: each instance appears under **App pages** in the sidebar and mobile navigation. The entire group is hidden when no page instances are available.
+`lib/tailorkit.ts` is the browser-safe `defineContract` shared by the host server and client. It declares the `workspace` scope, workspace/page context at `/`, plus a dedicated view for every CRM page. The `navbar` slot renders app actions in each page header. Apps call `ui.openPanel` to open their own installation's panel tab. Panel views render as tabs beside the agent. All three slots support the page views below; apps can implement a specific view or fall back to `/`. The `page` slot allows multiple instances per app: each instance appears under **App pages** in the sidebar and mobile navigation. The entire group is hidden when no page instances are available.
+
+Page contexts are registered by the page displaying the data and update as its query data or local controls change:
+
+- `/overview` (the home route `/`): contacts, deals, follow-ups, recent activity, revenue, open pipeline value, and relationship/task totals.
+- `/contacts`: public contact records and total count. The list also supplies search/status filters, sort order, pagination, visible contact IDs, and selected contact IDs.
+- `/contacts/detail`: the full current contact, its deals, follow-ups and activity, the selected contact tab, and currency. It inherits `/contacts` collection context and the root workspace context. List-only controls are omitted on detail pages.
+- `/pipeline`: the displayed deals, related contact records, search query, stage counts/values, total value, and currency.
+- `/tasks`: follow-ups, contact records, and pending/completed totals.
+- `/settings`: workspace collection usage, record limit, and currency.
+- `/app-pages`: the requested app ID and instance key, including keys containing spaces or slashes. Identity is available even while discovery is loading or the requested instance is unavailable.
+
+`lib/tailorkit-views.ts` owns the schemas and context builders. Record contexts omit internal tenant IDs, retain message whitespace, and use the same `YYYY-MM-DD` calendar dates as the app tools. Timestamps remain ISO strings. The root workspace context stays mounted across navigation; page contexts unregister when their page unmounts. Apps implementing only `/` continue to receive that fallback on every page.
 
 Supply page instances with stable keys and `metadata: { label: "Reports" }` to name their links. Missing or blank labels fall back to the app name and instance key. Each link opens `/app-pages/<appId>?instance=<encoded-key>` and renders that exact instance with `RenderSlot`. Keeping the key in the query supports keys containing spaces, slashes, or other URL characters, and links survive reloads. Removed instances show a page-unavailable state. App discovery is refreshed after agent turns so newly created pages appear in navigation.
 
@@ -102,9 +114,9 @@ Set `TAILORKIT_PROJECT_KEY` in the server environment to connect your TailorKit 
 
 `lib/tailorkit-theme.ts` supplies **the same theme** to `primitives()` and `createClient()`. Apps can use background, text, border, spacing, radius, size and responsive tokens. Semantic colors reference the existing CSS variables, so they follow light/dark mode. Layout breakpoints match the host's 800px mobile and 1280px side-panel boundaries. The SDK's default tokens remain available alongside host additions such as `background="card"`, `textColor="muted"`, `radius="full"`, `width="panel"` and `height="screen"`.
 
-The client implements all 30 contracted components using the existing Coss components:
+The client implements contracted components using TailorKit primitives and the existing Coss components:
 
-- Layout: `Box`, `Flex`, `Grid`, `Inline`.
+- Layout and interaction: `Box`, `Flex`, `Grid`, `Inline`, `Pressable` (with `onPress()` and an accessible `ariaLabel`).
 - Content: `Text`, `Heading`, `Card`, `Badge`, `Avatar`.
 - Forms: `Form`, `Input`, `Textarea`, `Select`, `Combobox`, `Checkbox`, `Switch`, `Button`.
 - Tables: `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell`.
@@ -121,9 +133,9 @@ Apps have the same workspace operations as the CRM UI, plus task editing:
 | `deals`      | `list` (query/stage/contact), `create`, `update`, `delete`, `move` (stage or before/after another deal)   |
 | `tasks`      | `list` (query/completed/contact), `create`, `update`, `delete`, `setCompleted`                            |
 | `activities` | `list` (optionally by contact), `addNote`                                                                 |
-| `ui`         | `navigate`, `refresh`, `setTheme`, `notify` (client tools)                                                |
+| `ui`         | `navigate`, `openPanel`, `refresh`, `setTheme`, `notify` (client tools)                                   |
 
-The 18 server tools invoke domain procedures with oRPC `call`, without HTTP. The agent uses `@orpc/ai-sdk` to derive tool schemas and descriptions from those procedures, with explicit `call` execution that validates even direct tool invocations. There is no separate CRM operation/API layer. These paths share validation, tenant isolation, collection limits and activity behavior. The workspace comes from the SDK-verified signed scope, never app input. After successful writes, an app can call `ui.refresh` to invalidate the host queries and display the updated data. The four client tools use the host router, theme provider and toast manager. Navigation accepts only existing CRM routes, contact detail URLs, and app page URLs.
+The 18 server tools invoke domain procedures with oRPC `call`, without HTTP. The agent uses `@orpc/ai-sdk` to derive tool schemas and descriptions from those procedures, with explicit `call` execution that validates even direct tool invocations. There is no separate CRM operation/API layer. These paths share validation, tenant isolation, collection limits and activity behavior. The workspace comes from the SDK-verified signed scope, never app input. After successful writes, an app can call `ui.refresh` to invalidate the host queries and display the updated data. The client tools use the host router, apps panel, theme provider and toast manager. Navigation accepts only existing CRM routes, contact detail URLs, and app page URLs.
 
 Lists return at most 50 records (the workspace collection limit); apps can sort, paginate, select and chart those results locally, just as the host does. Read results include creation timestamps and pipeline position. Calendar dates are `YYYY-MM-DD`; timestamps are ISO strings; deal values are whole USD. Contact/deal/task updates take all editable fields, so preserve fields from the latest read when making an edit. `tasks.setCompleted` sets an explicit boolean, making retries idempotent. Deleting a contact removes its notes/activity and retains related deals/tasks with `contactId: null`.
 

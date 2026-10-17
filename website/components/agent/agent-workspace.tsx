@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useCallback, useId, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { agentTransport } from "@/lib/agents/agent-transport";
@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
-import { useViews } from "@/lib/tailorkit-client";
+import { usePanelAction, useViews } from "@/lib/tailorkit-client";
 
 export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
@@ -55,10 +55,12 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     fetch: refreshApps,
   } = useViews({ slot: "panel" });
   const { fetch: refreshPages } = useViews({ slot: "page" });
+  const { fetch: refreshNavbar } = useViews({ slot: "navbar" });
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: orpc.key() });
     void refreshApps();
     void refreshPages();
+    void refreshNavbar();
   };
   const [appOrder, setAppOrder] = useState<string[]>([]);
   const apps = (views ?? [])
@@ -71,6 +73,17 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
       return rank(a.id) - rank(b.id);
     });
   const selectedTab = apps.some((app) => app.id === activeTab) ? activeTab : "agent";
+  usePanelAction(
+    useCallback(
+      (appId: string) => {
+        setActiveTab(appId);
+        setOpen(true);
+        setOpenMobile(false);
+        setHistoryOpen(false);
+      },
+      [setOpenMobile],
+    ),
+  );
   const [input, setInput] = useState("");
   const [chatId, setChatId] = useState<string | null>(history.latest?.id ?? null);
   const [loadingChat, setLoadingChat] = useState(false);
