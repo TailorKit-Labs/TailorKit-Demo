@@ -16,6 +16,7 @@ import { beginAgentChat } from "../routers/chats";
 import { router } from "../routers";
 import { handleRpcRequest } from "../routers/handler";
 import { tenantFromHeaders, verifiedWorkspaceContext } from "../routers/context";
+import { provisionForUser } from "./test-provision";
 
 const origin = "http://localhost:3000";
 const hasCode = (code: string) => (error: unknown) =>
@@ -53,6 +54,8 @@ async function main() {
       await assert.rejects(() => client.workspace.snapshot(), hasCode("FORBIDDEN"));
       await client.workspace.provision();
       await client.workspace.provision();
+      await assert.rejects(() => client.workspace.snapshot(), hasCode("FORBIDDEN"));
+      await provisionForUser(payload.user.id);
       const tenant = await tenantFromHeaders(new Headers({ cookie }));
       workspaces.push({ tenant, cookie });
     }
@@ -61,6 +64,7 @@ async function main() {
     const otherBrowser = browserClient(second.cookie);
     await assert.rejects(() => browserClient().workspace.get({}), hasCode("UNAUTHORIZED"));
     await assert.rejects(() => browserClient().workspace.provision(), hasCode("UNAUTHORIZED"));
+    await assert.rejects(() => browserClient().workspace.installApps(), hasCode("UNAUTHORIZED"));
     const initial = await browser.workspace.snapshot();
     assert.equal(initial.tenant.id, first.tenant.id);
     assert.equal(initial.contacts.length, 30);
@@ -106,6 +110,7 @@ async function main() {
         context: verifiedWorkspaceContext(first.tenant.id),
       });
       await assert.rejects(() => direct.workspace.provision(), hasCode("UNAUTHORIZED"));
+      await assert.rejects(() => direct.workspace.installApps(), hasCode("UNAUTHORIZED"));
       await direct.contacts.update({ ...contact.contact, status: "customer" });
       const batches = await Promise.all(
         Array.from({ length: 8 }, async (_, index) => {

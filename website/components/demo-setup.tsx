@@ -29,6 +29,7 @@ export function DemoSetup() {
   const running = useRef(false);
   const router = useRouter();
   const { mutateAsync: provision } = useMutation(orpc.workspace.provision.mutationOptions());
+  const { mutateAsync: installApps } = useMutation(orpc.workspace.installApps.mutationOptions());
   useEffect(() => {
     if (running.current) return;
     running.current = true;
@@ -51,9 +52,12 @@ export function DemoSetup() {
         await provision();
         await finishStep(workspaceStartedAt);
         setStep(2);
-        // Keep both steps readable and show completion before the fade: at least 3 seconds total.
-        await delay(COMPLETION_DISPLAY_MS);
+        const appsStartedAt = performance.now();
+        await installApps();
+        await finishStep(appsStartedAt);
         setStep(3);
+        await delay(COMPLETION_DISPLAY_MS);
+        setStep(4);
         await delay(FADE_DURATION_MS);
         router.refresh();
       } catch (err) {
@@ -62,12 +66,12 @@ export function DemoSetup() {
       }
     }
     void setup();
-  }, [attempt, router, provision]);
+  }, [attempt, router, provision, installApps]);
   return (
     <main
       className={cn(
         "flex min-h-svh items-center justify-center p-6 transition-all duration-700 motion-reduce:transition-none",
-        step === 3 && "opacity-0 scale-95",
+        step === 4 && "opacity-0 scale-95",
       )}
     >
       <div className="flex w-full max-w-md flex-col gap-8">
@@ -94,30 +98,32 @@ export function DemoSetup() {
           </CardHeader>
           <CardContent className="flex flex-col gap-5">
             <Progress
-              value={step >= 2 ? 100 : step === 1 ? 55 : 15}
+              value={step >= 3 ? 100 : step === 2 ? 75 : step === 1 ? 40 : 10}
               aria-label="Workspace setup progress"
             />
             <div role="status" aria-live="polite" className="flex flex-col gap-4">
-              {["Create your anonymous account", "Prepare your contacts, deals, and tasks"].map(
-                (label, i) => (
-                  <div
-                    key={label}
-                    className={cn(
-                      "flex items-center gap-3 text-sm",
-                      step < i && "text-muted-foreground",
-                    )}
-                  >
-                    {step > i ? (
-                      <CheckIcon className="size-4 shrink-0" />
-                    ) : step === i && !error ? (
-                      <Spinner className="size-4 shrink-0" />
-                    ) : (
-                      <span className="size-4 shrink-0 rounded-full border" />
-                    )}
-                    {label}
-                  </div>
-                ),
-              )}
+              {[
+                "Create your anonymous account",
+                "Prepare your contacts, deals, and tasks",
+                "Install your Messages demo app",
+              ].map((label, i) => (
+                <div
+                  key={label}
+                  className={cn(
+                    "flex items-center gap-3 text-sm",
+                    step < i && "text-muted-foreground",
+                  )}
+                >
+                  {step > i ? (
+                    <CheckIcon className="size-4 shrink-0" />
+                  ) : step === i && !error ? (
+                    <Spinner className="size-4 shrink-0" />
+                  ) : (
+                    <span className="size-4 shrink-0 rounded-full border" />
+                  )}
+                  {label}
+                </div>
+              ))}
             </div>
             {error ? (
               <>

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "pnpm run db:push && next build",
+    "test:messages": "tsx --test scripts/messages.test.ts scripts/install-messages.test.ts",
     "start": "next start",
     "lint": "vp lint .",
     "format": "vp fmt .",

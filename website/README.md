@@ -22,6 +22,10 @@ The env example contains a public development-only signing key: never copy that 
 
 ## Routes and behavior
 
+Setup creates the account, seeds CRM data, then installs the Messages app in the workspace's TailorKit `panel` slot. `TAILORKIT_PROJECT_KEY` is required. The shared app ID comes directly from `apps/messages/tailorkit.config.ts`, which is also used by `pnpm --filter @demo/messages deploy`. Setup uses `tailorKit.experimental.installApp` to install that published app in the authenticated workspace scope; it never builds or uploads assets. Website dev/build commands are independent of Messages publishing. Setup version 2 adds the app to returning version-1 workspaces without reseeding data; a failed install leaves setup incomplete and retryable. Per-user database locks prevent duplicate installations from concurrent tabs.
+
+Messages offers simulated Email, Slack, and SMS conversations with CRM contacts. Sent messages are readable contact activity notes and share the existing rolling 50-entry history. See [Messages](../apps/messages/README.md) for app development and binding generation.
+
 - `/`: dashboard-01 KPI cards, interactive area chart, and a full-width opportunities table.
 - `/contacts`: search, relationship filters, create and drill into contacts.
 - `/contacts/[id]`: contact editing, related deals/tasks, notes and activity.
@@ -98,15 +102,15 @@ Set `TAILORKIT_PROJECT_KEY` in the server environment to connect your TailorKit 
 
 `lib/tailorkit-theme.ts` supplies **the same theme** to `primitives()` and `createClient()`. Apps can use background, text, border, spacing, radius, size and responsive tokens. Semantic colors reference the existing CSS variables, so they follow light/dark mode. Layout breakpoints match the host's 800px mobile and 1280px side-panel boundaries. The SDK's default tokens remain available alongside host additions such as `background="card"`, `textColor="muted"`, `radius="full"`, `width="panel"` and `height="screen"`.
 
-The client implements all 29 contracted components using the existing Coss components:
+The client implements all 30 contracted components using the existing Coss components:
 
 - Layout: `Box`, `Flex`, `Grid`, `Inline`.
 - Content: `Text`, `Heading`, `Card`, `Badge`, `Avatar`.
-- Forms: `Form`, `Input`, `Textarea`, `Select`, `Checkbox`, `Switch`, `Button`.
+- Forms: `Form`, `Input`, `Textarea`, `Select`, `Combobox`, `Checkbox`, `Switch`, `Button`.
 - Tables: `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell`.
 - Feedback and overlays: `Alert`, `Empty`, `Progress`, `Spinner`, `Skeleton`, `Separator`, `Dialog`.
 
-Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. `Form` handles native validation and includes a submit button, with configurable `submitLabel` and `disabled` props. Each input has a visible label and accessible name. `Dialog` always provides a title. Compose table rows inside their header/body and cells inside rows.
+Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. `Form` handles native validation and includes a submit button, with configurable `submitLabel` and `disabled` props. Each input has a visible label and accessible name. `Combobox` searches option labels and optional descriptions, displays a configurable empty state, and emits the selected string ID through `onChange({ value })`. `Dialog` always provides a title. Compose table rows inside their header/body and cells inside rows.
 
 Apps have the same workspace operations as the CRM UI, plus task editing:
 

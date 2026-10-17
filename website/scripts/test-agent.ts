@@ -7,7 +7,7 @@ import { and, count, eq } from "drizzle-orm";
 import { auth } from "../lib/auth";
 import { db, pool } from "../lib/drizzle";
 import { activities, contacts, deals, tasks, user } from "../lib/schema";
-import { provisionForUser } from "../lib/provision";
+import { provisionForUser } from "./test-provision";
 import { createCrmTools } from "../lib/agents/crm-tools";
 import { createCrmAgent } from "../lib/agents/crm-agent";
 import { agentRequest } from "../lib/agents/agent-request";

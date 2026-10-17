@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 import { auth } from "../lib/auth";
 import { db, pool } from "../lib/drizzle";
 import { contacts, deals, tasks, user } from "../lib/schema";
-import { provisionForUser } from "../lib/provision";
+import { provisionForUser } from "./test-provision";
 import { contract, siteHref } from "../lib/tailorkit";
 import { createTailorKitServerTools } from "../lib/tailorkit-server-tools";
 import { tailorKitComponents } from "../components/tailorkit-components";
@@ -260,6 +260,47 @@ async function main() {
     });
     input.props.children.props.onChange({ currentTarget: { value: "Typed value" } });
     assert.equal(changed, "Typed value", "DOM events cross the contract as serializable values");
+    const recipientOption = {
+      label: "Alex Chen · Acme Studio",
+      value: "contact-alex",
+      description: "alex@example.com",
+    };
+    const pickerProps = contract.components.Combobox.fields.parse({
+      label: "To",
+      value: recipientOption.value,
+      options: [recipientOption],
+      placeholder: "Search contacts…",
+      disabled: true,
+    });
+    const pickerMarkup = renderToStaticMarkup(
+      tailorKitComponents.Combobox({ props: { ...pickerProps, onChange: () => {} } }),
+    );
+    assert.ok(pickerMarkup.includes('role="combobox"'));
+    assert.ok(pickerMarkup.includes('aria-label="To"'));
+    assert.ok(pickerMarkup.includes(recipientOption.label));
+    assert.ok(pickerMarkup.includes("disabled"));
+    const picker = tailorKitComponents.Combobox({
+      props: {
+        ...pickerProps,
+        onChange: ({ value }) => {
+          changed = value;
+        },
+      },
+    });
+    assert.equal(picker.props.children.props.filter(recipientOption, "EXAMPLE.COM"), true);
+    assert.equal(picker.props.children.props.filter(recipientOption, "Acme"), true);
+    assert.equal(picker.props.children.props.filter(recipientOption, "nobody"), false);
+    picker.props.children.props.onValueChange(recipientOption);
+    assert.equal(changed, recipientOption.value, "Combobox selection emits only the contact ID");
+    picker.props.children.props.onValueChange(null);
+    assert.equal(changed, recipientOption.value, "Typing cannot clear the selected recipient");
+    assert.equal(
+      contract.components.Combobox.fields.safeParse({
+        ...pickerProps,
+        options: [{ label: "Invalid", value: "" }],
+      }).success,
+      false,
+    );
     assert.equal(
       contract.components.Button.fields.safeParse({ label: "Save", variant: "unknown" }).success,
       false,

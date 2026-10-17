@@ -4,7 +4,8 @@ import { and, asc, count, desc, eq } from "drizzle-orm";
 import { auth } from "../lib/auth";
 import { db, pool } from "../lib/drizzle";
 import { activities, contacts, deals, tasks, tenants, user } from "../lib/schema";
-import { provisionForUser } from "../lib/provision";
+import { provisionForUser } from "./test-provision";
+import { CURRENT_SETUP_VERSION, provisionForUser as provisionDemo } from "../lib/provision";
 import { createRouterClient, ORPCError } from "@orpc/server";
 import { router } from "../routers";
 import { verifiedWorkspaceContext } from "../routers/context";
@@ -22,9 +23,27 @@ async function main() {
     assert.ok(cookies?.includes("better-auth.session_token"));
     const session = await auth.api.getSession({ headers: new Headers({ cookie: cookies! }) });
     assert.equal(session?.user.id, payload.user.id);
-    const provisioned = await Promise.all(
-      Array.from({ length: 4 }, () => provisionForUser(payload.user.id)),
+    const baseTenant = await provisionDemo(payload.user.id, { complete: false });
+    assert.equal(baseTenant.setupVersion, 1);
+    await assert.rejects(
+      provisionDemo(payload.user.id, {
+        install: async () => {
+          throw new Error("Install unavailable");
+        },
+      }),
+      /Install unavailable/,
     );
+    const [incomplete] = await db.select().from(tenants).where(eq(tenants.id, baseTenant.id));
+    assert.equal(incomplete.setupVersion, 1, "A failed install must remain retryable");
+    let installs = 0;
+    const install = async () => {
+      installs++;
+    };
+    const provisioned = await Promise.all(
+      Array.from({ length: 4 }, () => provisionDemo(payload.user.id, { install })),
+    );
+    await provisionDemo(payload.user.id, { install });
+    assert.equal(installs, 1, "Concurrent setup and retries must install only once");
     assert.equal(
       new Set(provisioned.map((t) => t.id)).size,
       1,
@@ -32,7 +51,7 @@ async function main() {
     );
     const tenant = provisioned[0];
     const client = createRouterClient(router, { context: verifiedWorkspaceContext(tenant.id) });
-    assert.equal(tenant.setupVersion, 1);
+    assert.equal(tenant.setupVersion, CURRENT_SETUP_VERSION);
     for (const [table, expected] of [
       [contacts, 30],
       [deals, 18],
