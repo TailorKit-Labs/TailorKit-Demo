@@ -1,0 +1,20 @@
+pnpm-workspace.yaml
+  s_07bf73102e21f5::t_a5304ed9539801 53
+  s_07bf73102e21f5::t_ff55cdd174d944 54-56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4895902857a49199353e9d3c70eb243189b3cc69",
+  "prompts": {},
+  "sessions": {
+    "s_07bf73102e21f5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a13d23-413d-7580-afb0-9287a5007e23",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
