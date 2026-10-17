@@ -4,7 +4,6 @@ import type { TailorKitTheme } from "tailorkit/zod";
 // their runtime CSS values cannot drift. Semantic variables follow light/dark mode.
 export const tailorKitTheme = {
   breakpoints: {
-    base: null,
     sm: "640px",
     md: "800px",
     lg: "1024px",
