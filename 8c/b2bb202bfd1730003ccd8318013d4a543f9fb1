@@ -1,0 +1,45 @@
+website/components/crm-pages.tsx
+  s_5848fd2bef3f4f::t_4fa4161f605cce 21-28,362-367,564-566,635-642
+  s_5848fd2bef3f4f::t_33d3f8c70a5dc0 315,357-361,368-371,567,569,790,816
+  s_5848fd2bef3f4f::t_9a3fa4747649c8 539
+website/scripts/test-tailorkit.tsx
+  s_5848fd2bef3f4f::t_b9fe1f4233aa80 17,20-22,24,32
+  s_5848fd2bef3f4f::t_7142b4fd0d15a8 25-31,33-37
+apps/messages/src/tailorkit.gen.ts
+  s_5848fd2bef3f4f::t_8941628f4d4788 23-113,121-147,154-286,295-297
+website/scripts/tailorkit-views.test.ts
+  s_5848fd2bef3f4f::t_b9fe1f4233aa80 1-4,13-19,40-41,75-76,95-96,115-124,134-147,150-157,161-163,176-177,182-184,188,193,199-200,205-211,216-218,220-221
+  s_5848fd2bef3f4f::t_7142b4fd0d15a8 5-12,20-39,42-74,77-94,97-114,125-133,148-149,158-160,164-175,178-181,185-187,189-192,194-198,201-204,212-215,219
+website/lib/tailorkit-views.ts
+  s_5848fd2bef3f4f::t_5ab1bd5496bf50 5-7,15-16,25-26,33-34,41
+  s_5848fd2bef3f4f::t_33d3f8c70a5dc0 1-2,4,42-51,59-64,74-102,111-114,123-125,131-140,144-150,152-153,159-160,166-170,173-174,176-178,184-190,193,197-201,208-210
+  s_5848fd2bef3f4f::t_4f5efb15e41ed0 8-14,17-24,27-32,35-40
+  s_5848fd2bef3f4f::t_4fa4161f605cce 52-58,65-73,103-110,126-130,141-143,154-158,163-165,179-183,202-207
+  s_5848fd2bef3f4f::t_9a3fa4747649c8 3,115-122,151,161-162,171-172,175,191-192,194-196
+website/components/app/app-page.tsx
+  s_5848fd2bef3f4f::t_33d3f8c70a5dc0 3,12
+website/lib/tailorkit.ts
+  s_5848fd2bef3f4f::t_33d3f8c70a5dc0 6,206,209-211
+website/package.json
+  s_5848fd2bef3f4f::t_b9fe1f4233aa80 25
+apps/messages/README.md
+  s_5848fd2bef3f4f::t_2627003d804fd1 5
+website/README.md
+  s_5848fd2bef3f4f::t_7f37090cd13caa 97-109
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8cb2bb202bfd1730003ccd8318013d4a543f9fb1",
+  "prompts": {},
+  "sessions": {
+    "s_5848fd2bef3f4f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a14840-7f6b-7e52-8409-24152bb8bfda",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
