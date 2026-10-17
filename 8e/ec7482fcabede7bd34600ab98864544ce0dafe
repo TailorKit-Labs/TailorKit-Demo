@@ -1,0 +1,34 @@
+pnpm-lock.yaml
+  h_18044dd1b61a81 179-181,362-364,1499-1506,4707-4710,7423-7436,10571-10574
+pnpm-workspace.yaml
+  h_18044dd1b61a81 12
+website/README.md
+  h_18044dd1b61a81 75,77,79
+website/components/agent/agent-chat.tsx
+  h_18044dd1b61a81 18-19,84,91-110,112-113,119,123-124,128,331-340,427,436
+website/components/agent/tailorkit-build-progress.tsx
+  h_18044dd1b61a81 1-53
+website/lib/agents/tailorkit-agent-stream.ts
+  h_18044dd1b61a81 1-109
+website/lib/agents/tailorkit-progress.ts
+  h_18044dd1b61a81 1-51
+website/lib/agents/tailorkit-tools.ts
+  h_18044dd1b61a81 1-3,5-6,16-19,21-27,30-33,36-60,62
+website/package.json
+  h_18044dd1b61a81 33
+website/routers/chats.ts
+  h_18044dd1b61a81 125-127
+website/scripts/test-agent-mcp.ts
+  h_18044dd1b61a81 4-10,15,30-32,38-42,77-82,89-95,103-166,196-200,312-315,317,332-471,484,529-537,554-556,565,567
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8eec7482fcabede7bd34600ab98864544ce0dafe",
+  "prompts": {},
+  "humans": {
+    "h_18044dd1b61a81": {
+      "author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
