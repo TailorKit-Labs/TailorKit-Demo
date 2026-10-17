@@ -29,6 +29,7 @@ let holdCall = false;
 let toolError = false;
 let streamBuilds = false;
 let malformedChunk = false;
+let legacyProgress = false;
 const releases = new Map<string, () => void>();
 let callStarted: (() => void) | undefined;
 let callCancelled: (() => void) | undefined;
@@ -70,6 +71,15 @@ const server = createServer(async (request, response) => {
     for await (const chunk of request) body += chunk;
     const message = JSON.parse(body);
     assert.equal(request.headers["mcp-protocol-version"], "2026-07-28", message.method);
+    assert.equal(request.headers["mcp-method"], message.method);
+    assert.equal(message.params._meta["io.modelcontextprotocol/protocolVersion"], "2026-07-28");
+    assert.deepEqual(message.params._meta["io.modelcontextprotocol/clientCapabilities"], {});
+    assert.equal(request.headers["mcp-session-id"], undefined);
+    assert.equal(request.headers["last-event-id"], undefined);
+    assert.ok(request.headers.accept?.includes("application/json"));
+    assert.ok(request.headers.accept?.includes("text/event-stream"));
+    if (message.method === "tools/call")
+      assert.equal(request.headers["mcp-name"], message.params.name);
     requests.push({ method: message.method, context });
     let result: Record<string, unknown>;
     switch (message.method) {
@@ -116,8 +126,35 @@ const server = createServer(async (request, response) => {
             send({
               jsonrpc: "2.0",
               method: "notifications/progress",
-              params: { progressToken, progress: ++progress, message: JSON.stringify(event) },
+              params: {
+                progressToken,
+                progress: ++progress,
+                ...(legacyProgress
+                  ? { message: JSON.stringify(event) }
+                  : {
+                      message: "Building your app…",
+                      _meta: { "dev.tailorkit/agent-stream": event },
+                    }),
+              },
             });
+          send({
+            jsonrpc: "2.0",
+            method: "notifications/progress",
+            params: {
+              progressToken,
+              progress: ++progress,
+              message: "Preparing your workspace…",
+            },
+          });
+          send({
+            jsonrpc: "2.0",
+            method: "notifications/progress",
+            params: {
+              progressToken,
+              progress: ++progress,
+              message: "{Preparing workspace}…",
+            },
+          });
           notify({ ...identity, status: "started" });
           const chunks = [
             { type: "start", messageId: identity.runId },
@@ -339,6 +376,7 @@ async function main() {
       ["edit_app", true],
     ] as const) {
       toolError = isError;
+      legacyProgress = name === "edit_app" && !isError;
       const appId = `live-${name}-${isError}`;
       const model = new MockLanguageModelV4({
         doStream: [
@@ -416,6 +454,7 @@ async function main() {
       assert.equal(finalOutput.isError, isError);
     }
     toolError = false;
+    legacyProgress = false;
     // Parallel calls must keep their nested messages and request lifetimes separate.
     await Promise.all(
       ["parallel-one", "parallel-two"].map(async (appId) => {

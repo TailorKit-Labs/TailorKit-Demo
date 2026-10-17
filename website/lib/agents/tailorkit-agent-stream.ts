@@ -11,8 +11,23 @@ const eventSchema = z.object({
   status: z.enum(["started", "streaming"]).optional(),
   chunk: z.unknown().optional(),
 });
+const notificationSchema = z.object({
+  _meta: z.object({ "dev.tailorkit/agent-stream": eventSchema.optional() }).optional(),
+  message: z.string().optional(),
+});
 type ProgressEvent = z.infer<typeof eventSchema>;
 const chunkSchema = asSchema(uiMessageChunkSchema);
+
+const readLegacyEvent = (message: string | undefined): ProgressEvent | undefined => {
+  if (!message?.trimStart().startsWith("{")) return;
+  try {
+    const parsed = eventSchema.safeParse(JSON.parse(message));
+    return parsed.success ? parsed.data : undefined;
+  } catch {
+    // A progress message is human-readable text, even when it starts with a brace.
+    return;
+  }
+};
 
 /** Each invocation owns its progress stream, cancellation, and final result. */
 export async function* streamTailorKitAgent(
@@ -35,10 +50,19 @@ export async function* streamTailorKitAgent(
           signal: callSignal,
           timeout: AGENT_TIMEOUT_MS,
           maxTotalTimeout: AGENT_TIMEOUT_MS,
-          onprogress: ({ message }) => {
-            if (!open || callSignal.aborted || message === undefined) return;
+          onprogress: (notification) => {
+            if (!open || callSignal.aborted) return;
             try {
-              writer.enqueue(eventSchema.parse(JSON.parse(message)));
+              const { _meta, message } = notificationSchema.parse(notification);
+              const event = _meta?.["dev.tailorkit/agent-stream"];
+              if (event) {
+                writer.enqueue(event);
+                return;
+              }
+              // Older platform deployments put JSON in message. Ordinary MCP
+              // progress text remains display-only and must not fail the call.
+              const legacyEvent = readLegacyEvent(message);
+              if (legacyEvent) writer.enqueue(legacyEvent);
             } catch (error) {
               controller.abort(error);
             }
