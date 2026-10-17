@@ -188,6 +188,7 @@ export const contract = defineContract({
     },
     ui: {
       navigate: tool.client().input(z.object({ href: siteHref })),
+      openPanel: tool.client(),
       refresh: tool.client(),
       setTheme: tool.client().input(z.object({ theme: z.enum(["light", "dark", "system"]) })),
       notify: tool.client().input(
@@ -201,9 +202,18 @@ export const contract = defineContract({
   },
   views: {
     "/": z.object({ workspace: z.object({ id: z.string(), name: z.string() }), page: z.string() }),
+    "/contacts/detail": z.object({
+      contact: z.object({
+        id: z.string(),
+        name: z.string(),
+        email: z.string(),
+        company: z.string(),
+      }),
+    }),
   },
   slots: {
-    panel: { views: ["/"] },
+    navbar: { views: ["/"] },
+    panel: { views: ["/", "/contacts/detail"] },
     page: { views: ["/"], multiple: true },
   },
 });

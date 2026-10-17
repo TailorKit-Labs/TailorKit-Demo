@@ -32,14 +32,16 @@ function platform({ projectKey = "test-key", fail = false } = {}) {
 void test("installs the published app with one request and no asset uploads", async () => {
   const { installApp, calls } = platform();
   assert.equal(await installMessages("test-workspace", { appId, installApp }), "installation-1");
-  assert.deepEqual(calls, [{ path: `/api/platform/apps/${appId}/install`, body: { scope } }]);
+  assert.deepEqual(calls, [
+    { path: "/api/platform/apps/install", body: { app: { shortId: appId }, scope } },
+  ]);
 });
 
 void test("uses the published app ID from the Messages CLI config by default", async () => {
   const { installApp, calls } = platform();
   await installMessages("test-workspace", { installApp });
   assert.deepEqual(calls, [
-    { path: `/api/platform/apps/${messagesConfig.appId}/install`, body: { scope } },
+    { path: "/api/platform/apps/install", body: { app: { id: messagesConfig.appId }, scope } },
   ]);
 });
 
@@ -49,12 +51,18 @@ void test("uses the same source app for separate workspace installations", async
   await installMessages("workspace-b", { appId, installApp });
   assert.deepEqual(calls, [
     {
-      path: `/api/platform/apps/${appId}/install`,
-      body: { scope: { name: "workspace", value: { workspaceId: "workspace-a" } } },
+      path: "/api/platform/apps/install",
+      body: {
+        app: { shortId: appId },
+        scope: { name: "workspace", value: { workspaceId: "workspace-a" } },
+      },
     },
     {
-      path: `/api/platform/apps/${appId}/install`,
-      body: { scope: { name: "workspace", value: { workspaceId: "workspace-b" } } },
+      path: "/api/platform/apps/install",
+      body: {
+        app: { shortId: appId },
+        scope: { name: "workspace", value: { workspaceId: "workspace-b" } },
+      },
     },
   ]);
 });

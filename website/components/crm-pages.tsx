@@ -17,6 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { Workspace, Contact, Deal, Task } from "@/lib/workspace";
 import { orpc } from "@/lib/orpc";
+import { useViewContext } from "@/lib/tailorkit-client";
 import { SectionCards } from "@/components/section-cards";
 import { DashboardTable } from "@/components/dashboard-table";
 import { RecordDialog } from "@/components/record-dialog";
@@ -535,6 +536,16 @@ function Pipeline({ workspace }: { workspace: Workspace }) {
   );
 }
 function ContactDetail({ workspace, contact }: { workspace: Workspace; contact: Contact }) {
+  useViewContext("/contacts/detail", {
+    context: {
+      contact: {
+        id: contact.id,
+        name: contact.name,
+        email: contact.email,
+        company: contact.company,
+      },
+    },
+  });
   const router = useRouter();
   const mutation = useMutation(orpc.activities.addNote.mutationOptions());
   const [note, setNote] = useState("");

@@ -17,9 +17,8 @@ const prefix = "Demo message · ";
 export const MAX_MESSAGE_LENGTH = 800;
 
 export function encodeMessage(channel: Channel, body: string) {
-  const trimmed = body.trim();
-  if (!trimmed || trimmed.length > MAX_MESSAGE_LENGTH) throw new Error("Use 1–800 characters.");
-  return `${prefix}${channel}\n${trimmed}`;
+  if (!body.length || body.length > MAX_MESSAGE_LENGTH) throw new Error("Use 1–800 characters.");
+  return `${prefix}${channel}\n${body}`;
 }
 
 export function readMessages(activities: Activity[]): Message[] {
@@ -35,7 +34,7 @@ export function readMessages(activities: Activity[]): Message[] {
       const newline = content.indexOf("\n");
       const channel = channels.find((item) => item === content.slice(0, newline));
       const body = content.slice(newline + 1);
-      if (!channel || !body.trim()) return [];
+      if (!channel || !body.length || newline < 0) return [];
       return [
         {
           id: activity.id,

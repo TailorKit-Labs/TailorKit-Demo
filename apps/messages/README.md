@@ -1,8 +1,10 @@
 # Messages
 
-Scaffolded with `tailorkit init`. This Preact app renders in the CRM's `panel` slot using generated host components and tools. It has no standalone web page or external messaging provider.
+Scaffolded with `tailorkit init`. This Preact app renders in the CRM's `navbar` and `panel` slots using generated host components and tools. It has no standalone web page or external messaging provider.
 
-The inbox includes three sample conversations using existing CRM contacts. Compose or reply via Email, Slack, or SMS. The To field uses the contracted Coss Combobox to search contacts by name, company, or email. Sends are simulated: the app saves a readable note through `activities.addNote`, reloads sent messages through `activities.list`, and refreshes the CRM. `View contact` uses the host navigation tool. Opening a CRM contact selects that person's conversation.
+The navbar's Messages button calls `ui.openPanel` to open this installation's panel tab. The `/` panel view shows an inbox with three sample conversations using existing CRM contacts. Each Pressable row navigates to the contact's CRM page. The host registers `/contacts/detail` with that contact's context, so TailorKit loads the conversation view automatically. Returning to another CRM page restores the inbox. New message opens the CRM contacts list so you can choose a contact there.
+
+Compose or reply via Email, Slack, or SMS. The recipient comes from the host view context. Sends are simulated: the app saves a readable note through `activities.addNote`, reloads sent messages through `activities.list`, and refreshes the CRM. Changing contacts resets the draft and channel selection.
 
 Messages share the CRM's rolling 50-entry activity history. They disappear when those entries age out or the contact is deleted. No messages leave the demo.
 

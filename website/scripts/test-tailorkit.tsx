@@ -13,8 +13,25 @@ import { createTailorKitServerTools } from "../lib/tailorkit-server-tools";
 import { tailorKitComponents } from "../components/tailorkit-components";
 import { appPageHref, appPageLabel } from "../lib/app-pages";
 import { agentRequest } from "../lib/agents/agent-request";
+import { encodeMessage, readMessages } from "../../apps/messages/src/messages";
 
 async function main() {
+  assert.deepEqual(contract.slots.navbar.views, ["/"]);
+  assert.deepEqual(contract.slots.panel.views, ["/", "/contacts/detail"]);
+  const contactContext = {
+    contact: { id: "contact-alex", name: "Alex Chen", email: "alex@example.com", company: "Acme" },
+  };
+  assert.deepEqual(contract.views["/contacts/detail"].parse(contactContext), contactContext);
+  assert.equal(contract.views["/contacts/detail"].safeParse({}).success, false);
+  const inboxRow = renderToStaticMarkup(
+    tailorKitComponents.Pressable({
+      props: { ariaLabel: "Message Alex Chen", layout: "flex", onPress: () => {} },
+      children: <span>Alex Chen</span>,
+    }),
+  );
+  assert.ok(inboxRow.includes('role="button"'));
+  assert.ok(inboxRow.includes('tabindex="0"'));
+  assert.ok(inboxRow.includes('aria-label="Message Alex Chen"'));
   assert.equal(contract.slots.page.multiple, true);
   const reports: SlotItem<true> = {
     app: { id: "test-app", name: "Workspace tools" },
@@ -112,8 +129,10 @@ async function main() {
       input: { title: "Contract Task", dueDate: "2026-10-20", contactId: id },
       context,
     });
+    const messageBody = "  Extension note \n ";
+    const noteBody = encodeMessage("Email", messageBody);
     const note = await tools.activities.addNote({
-      input: { contactId: id, body: "Extension note" },
+      input: { contactId: id, body: noteBody },
       context,
     });
     const detail = await tools.contacts.get({ input: { id }, context });
@@ -126,8 +145,10 @@ async function main() {
       detail.tasks.map((row) => row.id),
       [task.task.id],
     );
-    assert.ok(
-      detail.activities.some((row) => row.id === note.id && row.description === "Extension note"),
+    assert.ok(detail.activities.some((row) => row.id === note.id && row.description === noteBody));
+    assert.equal(
+      readMessages(detail.activities).find((message) => message.id === note.id)?.body,
+      messageBody,
     );
     const activity = await tools.activities.list({ input: { contactId: id }, context });
     assert.equal(activity.count, detail.activities.length);

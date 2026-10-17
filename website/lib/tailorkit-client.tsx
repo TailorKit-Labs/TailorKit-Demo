@@ -13,6 +13,7 @@ import { toastManager } from "@/components/ui/toast";
 
 type HostAction =
   | { type: "navigate"; href: string }
+  | { type: "open-panel"; appId: string }
   | { type: "refresh" }
   | { type: "theme"; theme: "light" | "dark" | "system" };
 const hostActionEvent = "tailorkit:host-action";
@@ -33,6 +34,8 @@ export const tailorKitClient = createClient({
   tools: {
     ui: {
       navigate: ({ input }) => dispatch({ type: "navigate", href: input.href }),
+      openPanel: ({ context }) =>
+        dispatch({ type: "open-panel", appId: context.identity.installationId }),
       refresh: () => dispatch({ type: "refresh" }),
       setTheme: ({ input }) => dispatch({ type: "theme", theme: input.theme }),
       notify: ({ input }) => {
@@ -49,6 +52,7 @@ export function TailorKitProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     function handle(event: Event) {
       const { detail } = event as CustomEvent<{ action: HostAction; handled: boolean }>;
+      if (detail.action.type === "open-panel") return;
       detail.handled = true;
       switch (detail.action.type) {
         case "navigate":
@@ -66,6 +70,19 @@ export function TailorKitProvider({ children }: { children: ReactNode }) {
     return () => window.removeEventListener(hostActionEvent, handle);
   }, [router, setTheme, queryClient]);
   return <tailorKitClient.Provider>{children}</tailorKitClient.Provider>;
+}
+
+export function usePanelAction(openApp: (appId: string) => void) {
+  useEffect(() => {
+    function handle(event: Event) {
+      const { detail } = event as CustomEvent<{ action: HostAction; handled: boolean }>;
+      if (detail.action.type !== "open-panel") return;
+      openApp(detail.action.appId);
+      detail.handled = true;
+    }
+    window.addEventListener(hostActionEvent, handle);
+    return () => window.removeEventListener(hostActionEvent, handle);
+  }, [openApp]);
 }
 
 export const { RenderSlot, useViews, useViewContext } = tailorKitClient;
