@@ -98,6 +98,7 @@ export const contract = defineContract({
         label,
         value: text,
         placeholder: label.optional(),
+        submitOnEnter: z.boolean().optional(),
         disabled,
         required: z.boolean().optional(),
       }),

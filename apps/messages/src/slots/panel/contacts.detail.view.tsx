@@ -2,7 +2,6 @@ import { useRef, useState } from "preact/hooks";
 import { defineView } from "tailorkit/client";
 import {
   Alert,
-  Avatar,
   Box,
   Button,
   Flex,
@@ -121,13 +120,6 @@ function Conversation({ workspaceId, contact }: { workspaceId: string; contact: 
   return (
     <Flex direction="column" gap="md" height="100%" minHeight="0" overflow="auto">
       <Heading text="Messages" level="h2" />
-      <Flex align="center" gap="sm" shrink="0">
-        <Avatar name={contact.name} />
-        <Flex direction="column" gap="2xs">
-          <Text text={contact.name} size="sm" />
-          <Text text={channel === "Email" ? contact.email : channel} size="xs" tone="muted" />
-        </Flex>
-      </Flex>
       {loading ? <Spinner label="Loading conversation" /> : null}
       {error ? (
         <Flex direction="column" gap="sm" shrink="0">
@@ -179,6 +171,7 @@ function Conversation({ workspaceId, contact }: { workspaceId: string; contact: 
             >
               <Textarea
                 label="Message"
+                submitOnEnter
                 value={draft}
                 placeholder="Write a message…"
                 disabled={sending}
