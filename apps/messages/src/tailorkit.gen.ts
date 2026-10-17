@@ -1165,6 +1165,7 @@ export interface TextareaProps {
   label?: string;
   value?: string;
   placeholder?: string;
+  submitOnEnter?: boolean;
   disabled?: boolean;
   required?: boolean;
   onChange?: (input: {

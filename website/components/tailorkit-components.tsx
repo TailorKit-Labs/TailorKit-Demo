@@ -127,7 +127,7 @@ export const tailorKitComponents = {
     <form
       onSubmit={(event) => {
         event.preventDefault();
-        props.onSubmit?.();
+        if (!props.disabled) props.onSubmit?.();
       }}
     >
       <div className="flex flex-col gap-4">
@@ -160,6 +160,21 @@ export const tailorKitComponents = {
         disabled={props.disabled}
         required={props.required}
         onChange={(event) => props.onChange?.({ value: event.currentTarget.value })}
+        onKeyDown={(event) => {
+          if (
+            !props.submitOnEnter ||
+            event.key !== "Enter" ||
+            event.shiftKey ||
+            event.ctrlKey ||
+            event.altKey ||
+            event.metaKey ||
+            event.nativeEvent.isComposing ||
+            event.nativeEvent.keyCode === 229
+          )
+            return;
+          event.preventDefault();
+          if (!event.repeat) event.currentTarget.form?.requestSubmit();
+        }}
       />
     </LabeledControl>
   ),

@@ -6,6 +6,8 @@ The navbar's Messages button calls `ui.openPanel` to open this installation's pa
 
 Compose or reply via Email, Slack, or SMS. The recipient comes from the host view context. Sends are simulated: the app saves a readable note through `activities.addNote`, reloads sent messages through `activities.list`, and refreshes the CRM. Changing contacts resets the draft and channel selection.
 
+Press Enter to send a message, or Shift+Enter to insert a newline.
+
 Messages share the CRM's rolling 50-entry activity history. They disappear when those entries age out or the contact is deleted. No messages leave the demo.
 
 From the repository root:
