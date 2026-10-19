@@ -1,0 +1,33 @@
+website/lib/tailorkit-client.tsx
+  s_4f7de782b9c54a::t_b040dd8f044bfc 104-117,119,121-153,156-166,168-173,175-329
+  s_4f7de782b9c54a::t_95aa3e6ef3e4c0 8-9,12-83,103,118,120,154-155,167,174
+website/components/crm-pages.tsx
+  s_4f7de782b9c54a::t_95aa3e6ef3e4c0 28
+package.json
+  s_4f7de782b9c54a::t_95aa3e6ef3e4c0 14
+website/lib/tailorkit-server.ts
+  s_4f7de782b9c54a::t_9af1731085b7dd 13-14,26
+  s_4f7de782b9c54a::t_95aa3e6ef3e4c0 2-5,8-12,15,27-73
+website/lib/tailorkit.ts
+  s_4f7de782b9c54a::t_95aa3e6ef3e4c0 2,4-5,7,26-203,382,384-385,389-487
+  s_4f7de782b9c54a::t_264bf5c5e9a6ca 386
+website/README.md
+  s_4f7de782b9c54a::t_024eaa75f79c63 97-102,115,121,162
+  s_4f7de782b9c54a::t_264bf5c5e9a6ca 103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8a1f9a194a15e4e0efd210a257191c4d96c034d8",
+  "prompts": {},
+  "sessions": {
+    "s_4f7de782b9c54a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1526c-005e-7213-9310-f56de7535d5a",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
