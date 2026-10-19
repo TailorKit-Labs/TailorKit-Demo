@@ -274,7 +274,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
             }
           }}
           className={cn(
-            "hidden w-[390px] shrink-0 flex-col overflow-hidden rounded-2xl border bg-popover shadow-xs min-[1280px]:flex",
+            "hidden w-[390px] shrink-0 flex-col overflow-hidden rounded-2xl border bg-background shadow-xs min-[1280px]:flex",
             openOverride === false && "min-[1280px]:hidden",
           )}
         >
