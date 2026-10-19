@@ -164,9 +164,6 @@ settings:
 
 catalogs:
   default:
-    '@ai-sdk/mcp':
-      specifier: 2.0.77
-      version: 2.0.77
     '@ai-sdk/react':
       specifier: ^4.0.146
       version: 4.0.146
@@ -179,6 +176,9 @@ catalogs:
     '@daypicker/react':
       specifier: ^10.0.2
       version: 10.0.2
+    '@modelcontextprotocol/client':
+      specifier: 2.3.1
+      version: 2.3.1
     '@neondatabase/serverless':
       specifier: ^1.2.0
       version: 1.2.0
@@ -347,9 +347,6 @@ importers:
 
   website:
     dependencies:
-      '@ai-sdk/mcp':
-        specifier: 'catalog:'
-        version: 2.0.77(zod@4.6.7)
       '@ai-sdk/react':
         specifier: 'catalog:'
         version: 4.0.146(react@19.3.1)(zod@4.6.7)
@@ -362,6 +359,9 @@ importers:
       '@daypicker/react':
         specifier: 'catalog:'
         version: 10.0.2(@types/react@19.3.0)(react@19.3.1)
+      '@modelcontextprotocol/client':
+        specifier: 'catalog:'
+        version: 2.3.1
       '@neondatabase/serverless':
         specifier: 'catalog:'
         version: 1.2.0
@@ -1495,6 +1495,14 @@ packages:
 
   '@mermaid-js/parser@1.2.1':
     resolution: {integrity: sha512-n12NohV3mrUyUL2o93IgG/ifeW9FTyeJn3zDxkhwa8MJ9Fxg3HQMlA3RiGmD/3UnJvheztkjjQAjA2T4LmUcpw==}
+
+  '@modelcontextprotocol/client@2.3.1':
+    resolution: {integrity: sha512-mIGZXpHsjnZ6lD+gD/WCMpR5k8yVQQ8nNFH1N0Srf7AvnwTUMYD6pvTY8ng2+He5FfV7YMZLmrjL7cLa/cc3dQ==}
+    engines: {node: '>=20'}
+
+  '@modelcontextprotocol/core@2.3.1':
+    resolution: {integrity: sha512-laVmIhPGpWi7rG9q+0UigblRN0Hws/Yjlb6qLFtVqryXVLkc4h+yN8z731POD2LnAGQlFe7/tXhUm7Bi0YB91g==}
+    engines: {node: '>=20'}
 
   '@nanostores/async@0.1.0':
     resolution: {integrity: sha512-sFz5p7L+O7EXkAah65wAIxFs8UW/fHCnqmA5IMXW+ocGqiBY+GvTXyUvGu48qjEaqI886sQSImctmu9L2m5jzw==}
@@ -4696,6 +4704,10 @@ packages:
     resolution: {integrity: sha512-EKN1vKAMcZ8MlYMpaNuxN6R9yakzH6uajHcHVTqWJzvu5pWw9DyhbP35HH8MVBQ+dZjAfDxk+A8NiR9KWaXiyQ==}
     engines: {node: '>=18.0.0'}
 
+  eventsource@3.0.7:
+    resolution: {integrity: sha512-CRT1WTyuQoD771GW56XEZFQ/ZoSfWid1alKGDYMmkt2yl8UXrVR4pspqWNEcqKvVIzg6PAltWjxcSSPrboA4iA==}
+    engines: {node: '>=18.0.0'}
+
   execa@3.2.0:
     resolution: {integrity: sha512-kJJfVbI/lZE1PZYDI5VPxp8zXPO9rtxOkhpZ0jMKha56AI9y2gGVC6bkukStQf0ka5Rh15BA5m7cCCH4jmHqkw==}
     engines: {node: ^8.12.0 || >=9.7.0}
@@ -7407,6 +7419,20 @@ snapshots:
   '@mermaid-js/parser@1.2.1':
     dependencies:
       '@chevrotain/types': 11.1.2
+
+  '@modelcontextprotocol/client@2.3.1':
+    dependencies:
+      '@modelcontextprotocol/core': 2.3.1
+      cross-spawn: 7.0.6
+      eventsource: 3.0.7
+      eventsource-parser: 3.1.1
+      jose: 6.2.12
+      pkce-challenge: 5.0.1
+      zod: 4.6.7
+
+  '@modelcontextprotocol/core@2.3.1':
+    dependencies:
+      zod: 4.6.7
 
   '@nanostores/async@0.1.0(nanostores@1.5.5)':
     dependencies:
@@ -10541,6 +10567,10 @@ snapshots:
       - bare-abort-controller
 
   eventsource-parser@3.1.1: {}
+
+  eventsource@3.0.7:
+    dependencies:
+      eventsource-parser: 3.1.1
 
   execa@3.2.0:
     dependencies:

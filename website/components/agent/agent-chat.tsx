@@ -15,6 +15,8 @@ import {
   SquarePenIcon,
 } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
+import { readTailorKitProgress } from "@/lib/agents/tailorkit-progress";
+import { TailorKitBuildProgress } from "./tailorkit-build-progress";
 import {
   Conversation,
   ConversationContent,
@@ -79,38 +81,51 @@ const tailorKitToolTitles: Record<string, string> = {
   tailorkit_edit_app: "Edit an app",
 };
 
-function DynamicToolResult({ part }: { part: DynamicToolUIPart }) {
+const DynamicToolResult = ({ part, busy }: { part: DynamicToolUIPart; busy: boolean }) => {
   const failed =
     part.state === "output-available" &&
     typeof part.output === "object" &&
     part.output !== null &&
     "isError" in part.output &&
     part.output.isError === true;
-  const hasError = part.state === "output-error" || failed;
-  const [open, setOpen] = useState(hasError);
+  const building =
+    part.toolName === "tailorkit_create_app" || part.toolName === "tailorkit_edit_app";
+  const pending =
+    part.state === "input-streaming" ||
+    part.state === "input-available" ||
+    (part.state === "output-available" && part.preliminary === true);
+  const interrupted = !busy && pending;
+  const hasError = part.state === "output-error" || failed || interrupted;
+  const streaming = busy && pending;
+  const progress = readTailorKitProgress(part.output);
+  let toolState = part.state;
+  if (hasError) toolState = "output-error";
+  else if (streaming && part.state === "output-available") toolState = "input-available";
+  let summary: string | undefined;
+  if (hasError)
+    summary = "The app request could not finish. Check your apps before repeating a change.";
+  else if (!streaming && part.state === "output-available")
+    summary = "Finished. See the agent's response for details.";
+  else if (!progress) summary = "Working on your apps. Building or editing can take a few minutes…";
+  const [open, setOpen] = useState(hasError || (building && streaming));
   useEffect(() => {
-    if (part.state === "output-error" || failed) setOpen(true);
-  }, [part.state, failed]);
+    if (hasError) setOpen(true);
+  }, [hasError]);
   return (
     <Tool className="mb-0" open={open} onOpenChange={setOpen}>
       <ToolHeader
         type="dynamic-tool"
         toolName={part.toolName}
-        state={failed ? "output-error" : part.state}
+        state={toolState}
         title={tailorKitToolTitles[part.toolName] ?? part.title ?? part.toolName}
       />
       <ToolContent>
-        <p className="text-sm text-muted-foreground">
-          {part.state === "output-error" || failed
-            ? "The app request could not finish. Check your apps before repeating a change."
-            : part.state === "output-available"
-              ? "Finished. See the agent's response for details."
-              : "Working on your apps. Building or editing can take a few minutes…"}
-        </p>
+        {progress ? <TailorKitBuildProgress progress={progress} streaming={streaming} /> : null}
+        {summary ? <p className="text-sm text-muted-foreground">{summary}</p> : null}
       </ToolContent>
     </Tool>
   );
-}
+};
 
 function ToolResult({ part }: { part: ToolPart }) {
   return (
@@ -315,6 +330,16 @@ export function AgentChat({
   docked: boolean;
 }) {
   const busy = status === "submitted" || status === "streaming";
+  const appBuildPending = messages
+    .at(-1)
+    ?.parts.some(
+      (part) =>
+        part.type === "dynamic-tool" &&
+        (part.toolName === "tailorkit_create_app" || part.toolName === "tailorkit_edit_app") &&
+        (part.state === "input-streaming" ||
+          part.state === "input-available" ||
+          (part.state === "output-available" && part.preliminary === true)),
+    );
   return (
     <div className="flex h-full min-h-0 w-full flex-col" data-slot="agent-chat">
       <header className="flex h-14 shrink-0 items-center justify-between gap-2 px-4">
@@ -401,7 +426,7 @@ export function AgentChat({
                           </MessageResponse>
                         );
                       if (part.type === "dynamic-tool")
-                        return <DynamicToolResult key={index} part={part} />;
+                        return <DynamicToolResult key={index} part={part} busy={busy} />;
                       if (part.type.startsWith("tool-"))
                         return <ToolResult key={index} part={part as ToolPart} />;
                       return null;
@@ -410,7 +435,7 @@ export function AgentChat({
                 </Message>
               ))
             )}
-            {busy ? (
+            {busy && !appBuildPending ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground" role="status">
                 <Spinner />
                 Thinking…
