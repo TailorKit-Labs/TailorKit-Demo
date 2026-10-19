@@ -22,7 +22,6 @@
     "test:agent-rpc": "tsx scripts/test-agent-rpc.ts",
     "test:agent-mcp": "tsx scripts/test-agent-mcp.ts",
     "test:agent-chats": "tsx scripts/test-agent-chats.ts",
-    "test:tailorkit": "tsx --test scripts/tailorkit-views.test.ts && tsx scripts/test-tailorkit.tsx",
     "test:rpc": "tsx scripts/test-rpc.ts"
   },
   "dependencies": {

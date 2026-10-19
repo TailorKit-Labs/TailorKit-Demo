@@ -94,7 +94,13 @@ Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration 
 
 ## TailorKit apps
 
-`lib/tailorkit.ts` is the browser-safe `defineContract` shared by the host server and client. It declares the `workspace` scope, workspace/page context at `/`, plus a dedicated view for every CRM page. The `navbar` slot renders app actions in each page header. Apps call `ui.openPanel` to open their own installation's panel tab. Panel views render as tabs beside the agent. All three slots support the page views below; apps can implement a specific view or fall back to `/`. The `page` slot allows multiple instances per app: each instance appears under **App pages** in the sidebar and mobile navigation. The entire group is hidden when no page instances are available.
+The host setup lives in three files:
+
+- `lib/tailorkit.ts`: the shared contract, theme, view schemas, and page context builders.
+- `lib/tailorkit-client.tsx`: component renderers, browser tools, provider, and hooks.
+- `lib/tailorkit-server.ts`: server tools and the TailorKit server instance.
+
+`lib/tailorkit.ts` is the browser-safe `defineContract` shared by the host server and client. It declares the `workspace` scope, workspace/page context at `/`, plus a dedicated view for every CRM page. The `navbar` slot renders app actions in each page header. Apps call `ui.openPanel` to open their own installation's panel tab. Panel views render as tabs beside the agent. The `navbar` and `panel` slots support the page views below; apps can implement a specific view or fall back to `/`. The `page` slot uses only the root view `/` and allows multiple instances per app: each instance appears under **App pages** in the sidebar and mobile navigation. The entire group is hidden when no page instances are available.
 
 Page contexts are registered by the page displaying the data and update as its query data or local controls change:
 
@@ -106,13 +112,13 @@ Page contexts are registered by the page displaying the data and update as its q
 - `/settings`: workspace collection usage, record limit, and currency.
 - `/app-pages`: the requested app ID and instance key, including keys containing spaces or slashes. Identity is available even while discovery is loading or the requested instance is unavailable.
 
-`lib/tailorkit-views.ts` owns the schemas and context builders. Record contexts omit internal tenant IDs, retain message whitespace, and use the same `YYYY-MM-DD` calendar dates as the app tools. Timestamps remain ISO strings. The root workspace context stays mounted across navigation; page contexts unregister when their page unmounts. Apps implementing only `/` continue to receive that fallback on every page.
+View schemas and context builders live alongside the contract in `lib/tailorkit.ts`. Record contexts omit internal tenant IDs, retain message whitespace, and use the same `YYYY-MM-DD` calendar dates as the app tools. Timestamps remain ISO strings. The root workspace context stays mounted across navigation; page contexts unregister when their page unmounts. Apps implementing only `/` continue to receive that fallback on every page.
 
 Supply page instances with stable keys and `metadata: { label: "Reports" }` to name their links. Missing or blank labels fall back to the app name and instance key. Each link opens `/app-pages/<appId>?instance=<encoded-key>` and renders that exact instance with `RenderSlot`. Keeping the key in the query supports keys containing spaces, slashes, or other URL characters, and links survive reloads. Removed instances show a page-unavailable state. App discovery is refreshed after agent turns so newly created pages appear in navigation.
 
 Set `TAILORKIT_PROJECT_KEY` in the server environment to connect your TailorKit project. Without a configured project, CRM and agent features still work and the panel reports that apps are unavailable.
 
-`lib/tailorkit-theme.ts` supplies **the same theme** to `primitives()` and `createClient()`. Apps can use background, text, border, spacing, radius, size and responsive tokens. Semantic colors reference the existing CSS variables, so they follow light/dark mode. Layout breakpoints match the host's 800px mobile and 1280px side-panel boundaries. The SDK's default tokens remain available alongside host additions such as `background="card"`, `textColor="muted"`, `radius="full"`, `width="panel"` and `height="screen"`.
+`tailorKitTheme` in `lib/tailorkit.ts` supplies **the same theme** to `primitives()` and `createClient()`. Apps can use background, text, border, spacing, radius, size and responsive tokens. Semantic colors reference the existing CSS variables, so they follow light/dark mode. Layout breakpoints match the host's 800px mobile and 1280px side-panel boundaries. The SDK's default tokens remain available alongside host additions such as `background="card"`, `textColor="muted"`, `radius="full"`, `width="panel"` and `height="screen"`.
 
 The client implements contracted components using TailorKit primitives and the existing Coss components:
 
@@ -153,7 +159,7 @@ For example, `contacts.create` accepts:
 
 Use the returned `contact.id` in `tasks.create` with `{ "title": "Follow up", "dueDate": "2026-11-01", "contactId": "…" }`, or in `ui.navigate` as `{ "href": "/contacts/<id>" }`.
 
-Run `pnpm --filter website test:tailorkit` for real PostgreSQL coverage of contract tools, cross-workspace rejection, filtering, editing, deletion cascades, pipeline order, cache invalidation, navigation validation and host form rendering/callbacks. The test needs no TailorKit project or model credentials. Hosted app discovery, signed capability transport and sandbox rendering additionally require a configured TailorKit project.
+Verify the setup with `pnpm check`, `pnpm --filter website typecheck`, and `pnpm build`. Hosted app discovery, signed capability transport and sandbox rendering require a configured TailorKit project.
 
 ## Anonymous setup
 

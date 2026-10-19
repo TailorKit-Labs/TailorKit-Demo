@@ -1,11 +1,10 @@
 import { defineContract, tool } from "tailorkit";
-import { primitives } from "tailorkit/zod";
+import { primitives, type TailorKitTheme } from "tailorkit/zod";
 import { z } from "zod";
-import { schemas } from "../routers/schemas";
-import { tailorKitTheme } from "./tailorkit-theme";
-import { pageViews, pageViewPaths } from "./tailorkit-views";
+import { schemas, stage, status } from "../routers/schemas";
+import type { Contact, Deal, Workspace } from "./workspace";
 
-export const siteHref = z
+const siteHref = z
   .string()
   .regex(
     /^\/(?:contacts(?:\/[A-Za-z0-9-]+)?|pipeline|tasks|settings|app-pages\/(?!(?:\.|%2[eE]){1,2}\?)(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+\?instance=(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+)?$/,
@@ -23,6 +22,184 @@ const onCheckedChange = { input: z.object({ checked: z.boolean() }) };
 const tone = z.enum(["default", "info", "success", "warning", "error"]);
 const serverTool = <I extends z.ZodType, O extends z.ZodType>(schema: { input: I; output: O }) =>
   tool.server().input(schema.input).output(schema.output);
+
+// Pass the same theme to schema generation and the renderer so token names and
+// their runtime CSS values cannot drift. Semantic variables follow light/dark mode.
+export const tailorKitTheme = {
+  breakpoints: {
+    sm: "640px",
+    md: "800px",
+    lg: "1024px",
+    xl: "1280px",
+    "2xl": "1536px",
+  },
+  tokens: {
+    background: {
+      default: "var(--background)",
+      card: "var(--card)",
+      popover: "var(--popover)",
+      primary: "var(--primary)",
+      secondary: "var(--secondary)",
+      muted: "var(--muted)",
+      accent: "var(--accent)",
+      sidebar: "var(--sidebar)",
+      transparent: "transparent",
+      success: "color-mix(in srgb, var(--success) 8%, var(--background))",
+      warning: "color-mix(in srgb, var(--warning) 8%, var(--background))",
+      info: "color-mix(in srgb, var(--info) 8%, var(--background))",
+      destructive: "color-mix(in srgb, var(--destructive) 8%, var(--background))",
+    },
+    borderColor: {
+      default: "var(--border)",
+      input: "var(--input)",
+      ring: "var(--ring)",
+      destructive: "var(--destructive)",
+      transparent: "transparent",
+    },
+    textColor: {
+      default: "var(--foreground)",
+      muted: "var(--muted-foreground)",
+      primary: "var(--primary)",
+      onPrimary: "var(--primary-foreground)",
+      onSecondary: "var(--secondary-foreground)",
+      card: "var(--card-foreground)",
+      popover: "var(--popover-foreground)",
+      success: "var(--success-foreground)",
+      warning: "var(--warning-foreground)",
+      info: "var(--info-foreground)",
+      destructive: "var(--destructive-foreground)",
+    },
+    radius: {
+      none: "0",
+      sm: "var(--radius-sm)",
+      md: "var(--radius-md)",
+      lg: "var(--radius-lg)",
+      xl: "var(--radius-xl)",
+      "2xl": "var(--radius-2xl)",
+      full: "9999px",
+    },
+    space: {
+      none: "0",
+      "2xs": "0.125rem",
+      xs: "0.25rem",
+      sm: "0.5rem",
+      md: "1rem",
+      lg: "1.5rem",
+      xl: "2rem",
+      "2xl": "3rem",
+      "3xl": "4rem",
+    },
+    size: {
+      control: "2rem",
+      avatar: "2.5rem",
+      panel: "390px",
+      content: "72rem",
+      screen: "100dvh",
+      "100%": "100%",
+      "0": "0",
+    },
+  },
+} satisfies TailorKitTheme;
+
+// View metadata uses TailorKit's restricted schema dialect. Keep fields and
+// enums aligned with tool records, without unsupported formats or size limits.
+const contact = z.object({
+  id: z.string(),
+  name: z.string(),
+  email: z.string(),
+  company: z.string(),
+  role: z.string(),
+  status,
+  createdAt: z.string(),
+});
+const deal = z.object({
+  id: z.string(),
+  title: z.string(),
+  value: z.number(),
+  stage,
+  closeDate: z.string(),
+  contactId: z.string().nullable(),
+  createdAt: z.string(),
+  position: z.number(),
+});
+const task = z.object({
+  id: z.string(),
+  title: z.string(),
+  dueDate: z.string(),
+  contactId: z.string().nullable(),
+  completed: z.boolean(),
+  createdAt: z.string(),
+});
+const activity = z.object({
+  id: z.string(),
+  contactId: z.string().nullable(),
+  type: z.enum(["note", "contact", "deal", "task"]),
+  title: z.string(),
+  description: z.string(),
+  createdAt: z.string(),
+});
+const currency = z.literal("USD");
+const usage = schemas.workspace.get.output.shape.usage;
+
+const views = {
+  "/": z.object({ workspace: z.object({ id: z.string(), name: z.string() }), page: z.string() }),
+  "/overview": z.object({
+    contacts: z.array(contact),
+    deals: z.array(deal),
+    tasks: z.array(task),
+    recentActivities: z.array(activity),
+    summary: z.object({
+      contacts: z.number(),
+      customers: z.number(),
+      activeAccounts: z.number(),
+      openDeals: z.number(),
+      pipelineValue: z.number(),
+      revenue: z.number(),
+      pendingTasks: z.number(),
+    }),
+    currency,
+  }),
+  "/contacts": z.object({
+    contacts: z.array(contact),
+    count: z.number(),
+    filters: z
+      .object({ query: z.string(), status: z.union([z.literal("all"), status]) })
+      .optional(),
+    sort: z
+      .object({ field: z.enum(["name", "company", "email"]), direction: z.enum(["asc", "desc"]) })
+      .optional(),
+    pagination: z
+      .object({ page: z.number(), pageSize: z.number(), totalPages: z.number(), total: z.number() })
+      .optional(),
+    visibleContactIds: z.array(z.string()).optional(),
+    selectedContactIds: z.array(z.string()).optional(),
+  }),
+  "/contacts/detail": z.object({
+    contact,
+    deals: z.array(deal),
+    tasks: z.array(task),
+    activities: z.array(activity),
+    activeTab: z.enum(["activity", "follow-ups", "opportunities"]),
+    currency,
+  }),
+  "/pipeline": z.object({
+    deals: z.array(deal),
+    contacts: z.array(contact),
+    filters: z.object({ query: z.string() }),
+    stages: z.array(z.object({ stage, count: z.number(), totalValue: z.number() })),
+    totalValue: z.number(),
+    currency,
+  }),
+  "/tasks": z.object({
+    tasks: z.array(task),
+    contacts: z.array(contact),
+    summary: z.object({ total: z.number(), pending: z.number(), completed: z.number() }),
+  }),
+  "/settings": z.object({ usage, currency }),
+  "/app-pages": z.object({ appPage: z.object({ appId: z.string(), instanceKey: z.string() }) }),
+};
+
+const viewPaths = Object.keys(views) as (keyof typeof views)[];
 
 export const contract = defineContract({
   scopes: { workspace: z.object({ workspaceId: z.string().min(1) }) },
@@ -202,13 +379,109 @@ export const contract = defineContract({
       ),
     },
   },
-  views: {
-    "/": z.object({ workspace: z.object({ id: z.string(), name: z.string() }), page: z.string() }),
-    ...pageViews,
-  },
+  views,
   slots: {
-    navbar: { views: pageViewPaths },
-    panel: { views: pageViewPaths },
-    page: { views: pageViewPaths, multiple: true },
+    navbar: { views: viewPaths },
+    panel: { views: viewPaths },
+    page: { views: ["/"], multiple: true },
   },
 });
+
+// Parse through the public record schemas to omit tenant IDs and normalize the
+// snapshot's ISO timestamps into the calendar dates used by app tools.
+function contactRecords(workspace: Workspace) {
+  return workspace.contacts.map((row) => contact.parse(row));
+}
+function dealRecords(rows: Deal[]) {
+  return rows.map((row) => deal.parse({ ...row, closeDate: row.closeDate.slice(0, 10) }));
+}
+function taskRecords(workspace: Workspace) {
+  return workspace.tasks.map((row) => task.parse({ ...row, dueDate: row.dueDate.slice(0, 10) }));
+}
+
+export function overviewViewContext(workspace: Workspace) {
+  const data = {
+    contacts: contactRecords(workspace),
+    deals: dealRecords(workspace.deals),
+    tasks: taskRecords(workspace),
+  };
+  const openDeals = data.deals.filter((row) => row.stage !== "won" && row.stage !== "lost");
+  return {
+    ...data,
+    recentActivities: workspace.activities.map((row) => activity.parse(row)),
+    summary: {
+      contacts: data.contacts.length,
+      customers: data.contacts.filter((row) => row.status === "customer").length,
+      activeAccounts: data.contacts.filter((row) => row.status !== "lead").length,
+      openDeals: openDeals.length,
+      pipelineValue: openDeals.reduce((sum, row) => sum + row.value, 0),
+      revenue: data.deals
+        .filter((row) => row.stage === "won")
+        .reduce((sum, row) => sum + row.value, 0),
+      pendingTasks: data.tasks.filter((row) => !row.completed).length,
+    },
+    currency: "USD" as const,
+  };
+}
+
+export function contactsViewContext(workspace: Workspace) {
+  return { contacts: contactRecords(workspace), count: workspace.contacts.length };
+}
+
+export function contactViewContext(
+  workspace: Workspace,
+  selected: Contact,
+  activeTab: "activity" | "follow-ups" | "opportunities",
+) {
+  return {
+    contact: contact.parse(selected),
+    deals: dealRecords(workspace.deals.filter((row) => row.contactId === selected.id)),
+    tasks: taskRecords(workspace).filter((row) => row.contactId === selected.id),
+    activities: workspace.activities
+      .filter((row) => row.contactId === selected.id)
+      .map((row) => activity.parse(row)),
+    activeTab,
+    currency: "USD" as const,
+  };
+}
+
+export function pipelineViewContext(workspace: Workspace, visibleDeals: Deal[], query: string) {
+  const deals = dealRecords(visibleDeals);
+  return {
+    deals,
+    contacts: contactRecords(workspace),
+    filters: { query },
+    stages: stage.options.map((value) => {
+      const rows = deals.filter((row) => row.stage === value);
+      return {
+        stage: value,
+        count: rows.length,
+        totalValue: rows.reduce((sum, row) => sum + row.value, 0),
+      };
+    }),
+    totalValue: deals.reduce((sum, row) => sum + row.value, 0),
+    currency: "USD" as const,
+  };
+}
+
+export function tasksViewContext(workspace: Workspace) {
+  const tasks = taskRecords(workspace);
+  const completed = tasks.filter((row) => row.completed).length;
+  return {
+    tasks,
+    contacts: contactRecords(workspace),
+    summary: { total: tasks.length, pending: tasks.length - completed, completed },
+  };
+}
+
+export function settingsViewContext(workspace: Workspace) {
+  return {
+    usage: {
+      contacts: workspace.contacts.length,
+      deals: workspace.deals.length,
+      tasks: workspace.tasks.length,
+      limit: 50,
+    },
+    currency: "USD" as const,
+  };
+}

@@ -25,7 +25,7 @@ import {
   pipelineViewContext,
   tasksViewContext,
   settingsViewContext,
-} from "@/lib/tailorkit-views";
+} from "@/lib/tailorkit";
 import { SectionCards } from "@/components/section-cards";
 import { DashboardTable } from "@/components/dashboard-table";
 import { RecordDialog } from "@/components/record-dialog";
