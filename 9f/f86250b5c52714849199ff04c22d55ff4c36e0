@@ -1,0 +1,35 @@
+website/lib/agents/tailorkit-tools.ts
+  s_fde64c975e50aa::t_fa2d85d486009e 7,12
+website/scripts/test-agent-mcp.ts
+  s_fde64c975e50aa::t_fa2d85d486009e 15,17-18,124,149-153,291,293
+  s_fde64c975e50aa::t_8e15794186c1f1 129-132,155-159
+website/README.md
+  s_fde64c975e50aa::t_98495522a2b286 75
+pnpm-workspace.yaml
+  s_fde64c975e50aa::t_503252f47ed7c0 48
+  s_fde64c975e50aa::t_dae3cacd005743 71-80
+website/app/api/tailorkit/[...tailorkit]/route.ts
+  s_fde64c975e50aa::t_fa2d85d486009e 2,9-12
+apps/messages/tailorkit.config.ts
+  s_fde64c975e50aa::t_fa2d85d486009e 6
+website/routers/agent.ts
+  s_fde64c975e50aa::t_fa2d85d486009e 18-19,78-82
+pnpm-lock.yaml
+  s_fde64c975e50aa::t_e81d71791c73d4 282-283,330,466,2667-2671,2675-2676,2679-2680,2682-2683,2685-2686,2696-2697,2701-2702,2704-2705,6240-6241,8228-8270,8276,8319,8324-8326,8396,8399-8401,8446,8455,8461,8470,8475-8479,8525,8527-8528,8572,8574,8618,8620,8664,8666,12509,12511-12516,12583,12585-12590
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9ff86250b5c52714849199ff04c22d55ff4c36e0",
+  "prompts": {},
+  "sessions": {
+    "s_fde64c975e50aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a153f6-1e08-70e2-ba89-dd697e187fdc",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
