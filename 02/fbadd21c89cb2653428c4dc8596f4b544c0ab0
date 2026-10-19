@@ -1,0 +1,18 @@
+website/README.md
+  h_18044dd1b61a81 77,79
+website/lib/agents/tailorkit-agent-stream.ts
+  h_18044dd1b61a81 14-17,21-31,53-54,56-65
+website/scripts/test-agent-mcp.ts
+  h_18044dd1b61a81 32,74-82,129-138,140-157,379,457
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "02fbadd21c89cb2653428c4dc8596f4b544c0ab0",
+  "prompts": {},
+  "humans": {
+    "h_18044dd1b61a81": {
+      "author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
