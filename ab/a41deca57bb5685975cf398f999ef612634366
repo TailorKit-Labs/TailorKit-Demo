@@ -1,0 +1,23 @@
+website/README.md
+  s_5623d682bb99ea::t_279e4b0e5ba990 89
+website/components/agent/agent-chat.tsx
+  s_5623d682bb99ea::t_292327eb9351ba 296,308,436
+website/components/agent/agent-workspace.tsx
+  s_5623d682bb99ea::t_7fbc642714affa 3,88-90,123,131,191-197,205-209,243
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aba41deca57bb5685975cf398f999ef612634366",
+  "prompts": {},
+  "sessions": {
+    "s_5623d682bb99ea": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1527c-59b3-7d63-8859-98b21129ef54",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
