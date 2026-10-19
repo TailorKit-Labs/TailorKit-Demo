@@ -1,0 +1,56 @@
+website/README.md
+  s_702cb61a7a3c4e::t_26ce231c4f9c87 77-78
+website/lib/agents/crm-agent.ts
+  s_702cb61a7a3c4e::t_6085abebfc196a 11,42
+website/scripts/test-agent-mcp.ts
+  s_702cb61a7a3c4e::t_57600f40593b38 12,32,98,101-102,113-116,120-123,181,279-292,297-298,302
+  s_702cb61a7a3c4e::t_d6de1c56312db2 248
+  s_702cb61a7a3c4e::t_3afc5c4473e8b5 4-10,99-100,103-112,117-119,192-197,249-277,299-301,303-306
+website/lib/agents/tailorkit-progress.ts
+  s_702cb61a7a3c4e::t_2abc2ed6f1e8db 69
+  s_702cb61a7a3c4e::t_6085abebfc196a 1-26,32-37,74-75,77-78,95-97
+  s_702cb61a7a3c4e::t_ecd859be58ee9f 27-31,38-68,70-73,76,79-94
+website/scripts/test-agent-rpc.ts
+  s_702cb61a7a3c4e::t_7d364f3e5f489a 79-80
+  s_702cb61a7a3c4e::t_254f61d4992f54 45-47,96-105,107-110,116-124,126,128-129,131-135,138-142,144-145,158-165,167-170,192,342-351,353-375,378-386,388-389,428-429
+  s_702cb61a7a3c4e::t_c7a9b40ebb8303 394-401,412-414,418-427
+  s_702cb61a7a3c4e::t_8bb604578c9a06 48,111-115,130,189,390-393,402-411,415-417
+  s_702cb61a7a3c4e::t_2d7d8d866c16f1 106,125,127,136-137,143,166,171-173,352,376-377,387
+website/lib/agents/tailorkit-tools.ts
+  s_702cb61a7a3c4e::t_6085abebfc196a 4,10,17,19,34-36,40
+  s_702cb61a7a3c4e::t_3afc5c4473e8b5 37-39
+website/routers/agent.ts
+  s_702cb61a7a3c4e::t_32157b2c89607e 13,87,100-105,126-127
+  s_702cb61a7a3c4e::t_26ce231c4f9c87 20-22,123,136
+  s_702cb61a7a3c4e::t_ecd859be58ee9f 2-8,93-98,106-122,124-125
+website/components/agent/agent-chat.tsx
+  s_702cb61a7a3c4e::t_32157b2c89607e 18,98,106
+  s_702cb61a7a3c4e::t_2abc2ed6f1e8db 83-84,86-90,119,410-416,418-420
+  s_702cb61a7a3c4e::t_ecd859be58ee9f 91-97,432-437,444-445,447-449
+  s_702cb61a7a3c4e::t_c7a9b40ebb8303 85
+  s_702cb61a7a3c4e::t_d6de1c56312db2 446
+  s_702cb61a7a3c4e::t_3afc5c4473e8b5 438-443
+  s_702cb61a7a3c4e::t_08f52c8ba7fa09 417
+website/package.json
+  s_702cb61a7a3c4e::t_64707c182be4bc 52
+pnpm-lock.yaml
+  s_702cb61a7a3c4e::t_8f33b74cc223a4 242-244,425-427
+pnpm-workspace.yaml
+  s_702cb61a7a3c4e::t_59affdaf756771 33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "46666deb8b16fc3105b3aedc8d3dcae9fafc2082",
+  "prompts": {},
+  "sessions": {
+    "s_702cb61a7a3c4e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1568f-712c-7731-9cdc-25fc6ecfa7a5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
