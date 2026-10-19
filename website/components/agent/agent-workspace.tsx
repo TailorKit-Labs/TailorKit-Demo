@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useMemo, useState } from "react";
+import { useCallback, useId, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { agentTransport } from "@/lib/agents/agent-transport";
@@ -85,14 +85,15 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     ),
   );
   const [input, setInput] = useState("");
-  const [chatId, setChatId] = useState<string | null>(history.latest?.id ?? null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const [focusInputOnHistoryClose, setFocusInputOnHistoryClose] = useState(false);
+  const [chatId, setChatId] = useState<string | null>(null);
   const [loadingChat, setLoadingChat] = useState(false);
   const [historyError, setHistoryError] = useState<Error>();
   const [historyOpen, setHistoryOpen] = useState(false);
   const { messages, setMessages, sendMessage, status, stop, error, clearError } =
     useChat<CrmAgentMessage>({
       transport: agentTransport,
-      messages: history.latest?.messages ?? [],
       // Refresh even after cancellation: a tool may already have committed a change.
       onFinish: () => refresh(),
       onError: () => refresh(),
@@ -119,6 +120,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
 
   function newChat() {
     if (busy || loadingChat) return;
+    setFocusInputOnHistoryClose(historyOpen);
     setChatId(null);
     setMessages([]);
     setInput("");
@@ -126,6 +128,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     setHistoryError(undefined);
     setHistoryOpen(false);
     setOpen(true);
+    inputRef.current?.focus();
   }
 
   async function restoreChat(chat: AgentChatSummary) {
@@ -185,7 +188,13 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     : "New chat";
   const recentChats = history.chats;
   const chatTitle = (
-    <DropdownMenu open={historyOpen} onOpenChange={setHistoryOpen}>
+    <DropdownMenu
+      open={historyOpen}
+      onOpenChange={(next) => {
+        setHistoryOpen(next);
+        if (next) setFocusInputOnHistoryClose(false);
+      }}
+    >
       <DropdownMenuTrigger
         render={<Button variant="ghost" size="sm" className="min-w-0 max-w-full" />}
         aria-label="Chat history"
@@ -193,7 +202,11 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
         <span className="truncate">{loadingChat ? "Loading chat…" : currentTitle}</span>
         <ChevronDownIcon data-icon="inline-end" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-72">
+      <DropdownMenuContent
+        align="start"
+        className="w-72"
+        finalFocus={focusInputOnHistoryClose ? inputRef : undefined}
+      >
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={newChat} disabled={busy || loadingChat}>
             <PlusIcon />
@@ -227,6 +240,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
       chatTitle={chatTitle}
       messages={messages}
       input={input}
+      inputRef={inputRef}
       onInputChange={setInput}
       onSubmit={submit}
       status={status}
@@ -274,7 +288,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
             }
           }}
           className={cn(
-            "hidden w-[390px] shrink-0 flex-col overflow-hidden rounded-2xl border bg-popover shadow-xs min-[1280px]:flex",
+            "hidden w-[390px] shrink-0 flex-col overflow-hidden rounded-2xl border bg-background shadow-xs min-[1280px]:flex",
             openOverride === false && "min-[1280px]:hidden",
           )}
         >

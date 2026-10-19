@@ -293,6 +293,7 @@ export function AgentChat({
   chatTitle,
   messages,
   input,
+  inputRef,
   onInputChange,
   onSubmit,
   status,
@@ -304,6 +305,7 @@ export function AgentChat({
   chatTitle: React.ReactNode;
   messages: CrmAgentMessage[];
   input: string;
+  inputRef: React.RefObject<HTMLTextAreaElement | null>;
   onInputChange: (value: string) => void;
   onSubmit: (text: string) => Promise<void>;
   status: ChatStatus;
@@ -431,6 +433,7 @@ export function AgentChat({
           >
             <InputGroup>
               <InputGroupTextarea
+                ref={inputRef}
                 aria-label="Message agent"
                 placeholder="Type a message…"
                 value={input}
