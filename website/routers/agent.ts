@@ -1,14 +1,24 @@
 import { randomUUID } from "node:crypto";
-import { consumeStream, createAgentUIStream, type UIMessageChunk } from "ai";
+import {
+  consumeStream,
+  createAgentUIStream,
+  createUIMessageStream,
+  type UIMessageChunk,
+  type UIMessageStreamWriter,
+} from "ai";
 import { ORPCError, streamToAsyncIteratorObject } from "@orpc/server";
 import { checkBotId } from "botid/server";
 import { protectedProcedure } from "./base";
 import { createCrmAgent } from "../lib/agents/crm-agent";
+import type { CrmAgentMessage } from "../lib/agents/crm-agent";
 import type { connectTailorKitTools as connectTools } from "../lib/agents/tailorkit-tools";
 import { AGENT_TIMEOUT_MS } from "../lib/agents/agent-limits";
 import { agentRequest } from "../lib/agents/agent-request";
 import { AGENT_BOT_CHECK_LEVEL } from "../lib/agents/agent-protection";
 import { beginAgentChat, finishAgentMessages, saveAgentChat } from "./chats";
+
+const agentStreamError = () =>
+  "The agent could not finish this request. Please try again. Check the page before repeating a creation.";
 
 export const agentChat = protectedProcedure
   .input(agentRequest)
@@ -74,26 +84,47 @@ export const agentChat = protectedProcedure
       });
     }
     try {
+      let progressWriter: UIMessageStreamWriter<CrmAgentMessage> | undefined;
       const { connectTailorKitTools } = await import("../lib/agents/tailorkit-tools");
       tailorkit = await connectTailorKitTools(
         tenant,
         await resolveUserId(),
         signal ?? request.signal,
+        (progress) =>
+          progressWriter?.write({
+            type: "data-tailorkit-progress",
+            id: progress.toolCallId,
+            data: progress,
+          }),
       );
-      const stream = await createAgentUIStream({
-        agent: createCrmAgent(
-          tenant,
-          {
-            page: input.page,
-            date: input.date ?? new Date().toISOString().slice(0, 10),
-            timeZone: input.timeZone,
-          },
-          undefined,
-          tailorkit?.tools,
-        ),
-        uiMessages: chatTurn.messages,
-        generateMessageId: randomUUID,
-        onUIMessageStepEnd: ({ messages }) => saveAgentChat(chatTurn, messages),
+      const stream = createUIMessageStream<CrmAgentMessage>({
+        originalMessages: chatTurn.messages as CrmAgentMessage[],
+        generateId: randomUUID,
+        execute: async ({ writer }) => {
+          progressWriter = writer;
+          writer.write({ type: "start" });
+          writer.merge(
+            await createAgentUIStream({
+              agent: createCrmAgent(
+                tenant,
+                {
+                  page: input.page,
+                  date: input.date ?? new Date().toISOString().slice(0, 10),
+                  timeZone: input.timeZone,
+                },
+                undefined,
+                tailorkit?.tools,
+              ),
+              uiMessages: chatTurn.messages,
+              sendStart: false,
+              onEnd: ({ outcome }) => writer.setOutcome(outcome),
+              abortSignal: signal ?? request.signal,
+              timeout: AGENT_TIMEOUT_MS,
+              onError: agentStreamError,
+            }),
+          );
+        },
+        onStepEnd: ({ messages }) => saveAgentChat(chatTurn, messages),
         onEnd: ({ messages, outcome, isAborted, isCancelled }) =>
           saveAgentChat(
             chatTurn,
@@ -102,10 +133,7 @@ export const agentChat = protectedProcedure
               isAborted || !!isCancelled || outcome.status !== "completed",
             ),
           ),
-        abortSignal: signal ?? request.signal,
-        timeout: AGENT_TIMEOUT_MS,
-        onError: () =>
-          "The agent could not finish this request. Please try again. Check the page before repeating a creation.",
+        onError: agentStreamError,
       });
       const [clientStream, serverStream] = stream.tee();
       streamConsumption = consumeStream({ stream: serverStream });

@@ -1,19 +1,22 @@
 import type { ToolSet } from "ai";
 import { createMCPClient } from "@ai-sdk/mcp";
 import { tailorKit } from "../tailorkit-server";
+import { createTailorKitProgress, type TailorKitProgress } from "./tailorkit-progress";
 
 export async function connectTailorKitTools(
   tenant: { id: string },
   subjectId: string,
   signal: AbortSignal,
+  onProgress: (progress: TailorKitProgress) => void = () => {},
 ): Promise<{ tools: ToolSet; close: () => Promise<void> } | undefined> {
   if (!process.env.TAILORKIT_PROJECT_KEY) return undefined;
   const transport = await tailorKit.mcp.transport({
     subjectId,
     scopes: { workspace: { workspaceId: tenant.id } },
   });
+  const progress = createTailorKitProgress(onProgress);
   const client = await createMCPClient({
-    transport: { type: "http", ...transport },
+    transport: { type: "http", ...transport, fetch: progress.fetch },
     initializationOptions: { signal, timeout: 10000 },
   });
   try {
@@ -28,6 +31,13 @@ export async function connectTailorKitTools(
     }
     const tools = client.toolsFromDefinitions({ ...definitions, tools: discovered });
     for (const tool of Object.values(tools)) {
+      const execute = tool.execute;
+      if (execute) {
+        tool.execute = (args, options) =>
+          progress.calls.run({ toolCallId: options?.toolCallId ?? crypto.randomUUID() }, () =>
+            execute(args, options),
+          );
+      }
       const toModelOutput = tool.toModelOutput;
       if (!toModelOutput) continue;
       tool.toModelOutput = async (options) => {

@@ -1,9 +1,15 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { once } from "node:events";
-import { createAgentUIStreamResponse, simulateReadableStream, type UIMessage } from "ai";
+import {
+  createAgentUIStream,
+  createUIMessageStream,
+  createUIMessageStreamResponse,
+  simulateReadableStream,
+  type UIMessageStreamWriter,
+} from "ai";
 import { MockLanguageModelV4 } from "ai/test";
-import { createCrmAgent } from "../lib/agents/crm-agent";
+import { createCrmAgent, type CrmAgentMessage } from "../lib/agents/crm-agent";
 import { finishAgentMessages } from "../routers/chats";
 import { AGENT_TIMEOUT_MS } from "../lib/agents/agent-limits";
 import { contract } from "../lib/tailorkit";
@@ -23,6 +29,7 @@ let holdCall = false;
 let toolError = false;
 let callStarted: (() => void) | undefined;
 let callCancelled: (() => void) | undefined;
+let releaseResult: (() => void) | undefined;
 const definition = (name: string) => ({
   name,
   description: "List or build workspace apps.",
@@ -88,7 +95,32 @@ const server = createServer(async (request, response) => {
           ],
         };
         assert.equal(message.params.name, "list_apps", "Prefix must not reach the MCP server");
-        break;
+        response.writeHead(200, { "content-type": "text/event-stream" });
+        const emit = (value: unknown) =>
+          response.write(`event: message\r\ndata: ${JSON.stringify(value)}\r\n\r\n`);
+        const token = message.params._meta.progressToken;
+        assert.equal(typeof token, "string", "Tools must opt in to progress");
+        const progress = (chunk: unknown, progressToken = token) =>
+          emit({
+            jsonrpc: "2.0",
+            method: "notifications/progress",
+            params: {
+              progressToken,
+              progress: 1,
+              message: JSON.stringify({ appId: "app", runId: "run", chunk }),
+            },
+          });
+        progress({ type: "text-delta", delta: "Wrong request" }, "wrong-token");
+        progress({ type: "reasoning-delta", delta: "Private reasoning" });
+        progress({ type: "text-start", id: "text" });
+        progress({ type: "text-delta", id: "text", delta: "Building your app…" });
+        await new Promise<void>((resolve) => {
+          releaseResult = resolve;
+        });
+        progress({ type: "text-delta", id: "text", delta: " Done." });
+        emit({ jsonrpc: "2.0", id: message.id, result: { resultType: "complete", ...result } });
+        response.end();
+        return;
       default:
         throw new Error(`Unexpected MCP method: ${message.method}`);
     }
@@ -146,6 +178,7 @@ async function main() {
     });
     assert.equal(unauthorized.status, 401);
 
+    let progressWriter: UIMessageStreamWriter<CrmAgentMessage> | undefined;
     for (const identity of [
       tenant,
       { ...tenant, id: "workspace-two" },
@@ -156,6 +189,12 @@ async function main() {
         identity,
         identity.subjectId,
         controller.signal,
+        (progress) =>
+          progressWriter?.write({
+            type: "data-tailorkit-progress",
+            id: progress.toolCallId,
+            data: progress,
+          }),
       );
       assert.ok(connection);
       connections.push(connection);
@@ -206,24 +245,65 @@ async function main() {
           },
         ],
       });
-      let saved: UIMessage[] = [];
-      const response = await createAgentUIStreamResponse({
-        agent: createCrmAgent(
-          tenant,
-          { page: "/", date: "2026-10-15", timeZone: "UTC" },
-          model,
-          connection.tools,
-        ),
-        uiMessages: [{ id: "user", role: "user", parts: [{ type: "text", text: "List my apps" }] }],
-        onEnd: ({ messages }) => {
-          saved = messages;
-        },
+      let saved: CrmAgentMessage[] = [];
+      const response = createUIMessageStreamResponse({
+        stream: createUIMessageStream<CrmAgentMessage>({
+          originalMessages: [
+            { id: "user", role: "user", parts: [{ type: "text", text: "List my apps" }] },
+          ],
+          execute: async ({ writer }) => {
+            progressWriter = writer;
+            writer.write({ type: "start" });
+            writer.merge(
+              await createAgentUIStream({
+                agent: createCrmAgent(
+                  tenant,
+                  { page: "/", date: "2026-10-15", timeZone: "UTC" },
+                  model,
+                  connection.tools,
+                ),
+                uiMessages: [
+                  { id: "user", role: "user", parts: [{ type: "text", text: "List my apps" }] },
+                ],
+                sendStart: false,
+                onEnd: ({ outcome }) => writer.setOutcome(outcome),
+              }),
+            );
+          },
+          onEnd: ({ messages, outcome }) => {
+            assert.equal(outcome.status, "completed");
+            saved = messages;
+          },
+        }),
       });
-      const stream = await response.text();
+      const reader = response.body!.pipeThrough(new TextDecoderStream()).getReader();
+      let stream = "";
+      while (!stream.includes("Building your app…")) {
+        const { value, done } = await reader.read();
+        assert.ok(!done, "Progress must arrive before the tool result");
+        stream += value;
+      }
+      assert.ok(!stream.includes('"type":"tool-output-available"'));
+      releaseResult!();
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        stream += value;
+      }
       assert.ok(stream.includes('"dynamic":true'));
       assert.ok(stream.includes('"type":"tool-output-available"'));
       assert.ok(stream.includes(reply));
       assert.ok(!stream.includes("fixture-project-key"));
+      assert.ok(!stream.includes("Wrong request"));
+      assert.ok(!stream.includes("Private reasoning"));
+      const progress = saved
+        .at(-1)
+        ?.parts.filter((part) => part.type === "data-tailorkit-progress");
+      assert.equal(progress?.length, 1, "Deltas update one persisted part per call");
+      assert.deepEqual(progress?.[0].data, {
+        toolCallId: "apps",
+        text: "Building your app… Done.",
+      });
       assert.equal(model.doStreamCalls.length, 2);
       const toolResult = model.doStreamCalls[1].prompt
         .filter((message) => message.role === "tool")
