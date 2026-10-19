@@ -15,6 +15,7 @@ import {
   SquarePenIcon,
 } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
+import type { TailorKitProgress } from "@/lib/agents/tailorkit-progress";
 import {
   Conversation,
   ConversationContent,
@@ -79,7 +80,22 @@ const tailorKitToolTitles: Record<string, string> = {
   tailorkit_edit_app: "Edit an app",
 };
 
-function DynamicToolResult({ part }: { part: DynamicToolUIPart }) {
+function TailorKitUpdates({ progress }: { progress: TailorKitProgress }) {
+  return (
+    <div className="whitespace-pre-wrap break-words text-sm" aria-label="TailorKit agent updates">
+      {progress.text}
+    </div>
+  );
+}
+
+function DynamicToolResult({
+  part,
+  progress,
+}: {
+  part: DynamicToolUIPart;
+  progress?: TailorKitProgress;
+}) {
+  const running = part.state === "input-streaming" || part.state === "input-available";
   const failed =
     part.state === "output-available" &&
     typeof part.output === "object" &&
@@ -87,7 +103,7 @@ function DynamicToolResult({ part }: { part: DynamicToolUIPart }) {
     "isError" in part.output &&
     part.output.isError === true;
   const hasError = part.state === "output-error" || failed;
-  const [open, setOpen] = useState(hasError);
+  const [open, setOpen] = useState(hasError || running);
   useEffect(() => {
     if (part.state === "output-error" || failed) setOpen(true);
   }, [part.state, failed]);
@@ -100,6 +116,7 @@ function DynamicToolResult({ part }: { part: DynamicToolUIPart }) {
         title={tailorKitToolTitles[part.toolName] ?? part.title ?? part.toolName}
       />
       <ToolContent>
+        {progress?.text ? <TailorKitUpdates progress={progress} /> : null}
         <p className="text-sm text-muted-foreground">
           {part.state === "output-error" || failed
             ? "The app request could not finish. Check your apps before repeating a change."
@@ -390,6 +407,17 @@ export function AgentChat({
                 <Message from={message.role} key={message.id} className="max-w-full">
                   <MessageContent className="w-full">
                     {message.parts.map((part, index) => {
+                      // Interrupted calls are removed from history, but their
+                      // streamed text is still useful when reopening the chat.
+                      if (
+                        part.type === "data-tailorkit-progress" &&
+                        !message.parts.some(
+                          (item) =>
+                            item.type === "dynamic-tool" &&
+                            item.toolCallId === part.data.toolCallId,
+                        )
+                      )
+                        return <TailorKitUpdates key={index} progress={part.data} />;
                       if (part.type === "text")
                         return (
                           <MessageResponse
@@ -401,7 +429,24 @@ export function AgentChat({
                           </MessageResponse>
                         );
                       if (part.type === "dynamic-tool")
-                        return <DynamicToolResult key={index} part={part} />;
+                        return (
+                          <DynamicToolResult
+                            key={index}
+                            part={part}
+                            progress={
+                              message.parts.find(
+                                (
+                                  item,
+                                ): item is Extract<
+                                  CrmAgentMessage["parts"][number],
+                                  { type: "data-tailorkit-progress" }
+                                > =>
+                                  item.type === "data-tailorkit-progress" &&
+                                  item.data.toolCallId === part.toolCallId,
+                              )?.data
+                            }
+                          />
+                        );
                       if (part.type.startsWith("tool-"))
                         return <ToolResult key={index} part={part as ToolPart} />;
                       return null;

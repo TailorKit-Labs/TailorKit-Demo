@@ -49,6 +49,7 @@
     "cn": "catalog:",
     "dotenv": "catalog:",
     "drizzle-orm": "^1.0.0-rc.4",
+    "eventsource-parser": "catalog:",
     "lucide-react": "catalog:",
     "motion": "catalog:",
     "nanoid": "catalog:",

@@ -8,6 +8,7 @@ import {
   type ToolSet,
 } from "ai";
 import { createCrmTools } from "./crm-tools";
+import type { TailorKitProgress } from "./tailorkit-progress";
 
 export function createCrmAgent(
   tenant: { id: string; name: string },
@@ -38,6 +39,6 @@ You cannot access other workspaces, browse the web, send messages, or change acc
 
 export type CrmAgentMessage = UIMessage<
   unknown,
-  never,
+  { "tailorkit-progress": TailorKitProgress },
   InferUITools<ReturnType<typeof createCrmTools>>
 >;

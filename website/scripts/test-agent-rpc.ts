@@ -42,6 +42,10 @@ async function main() {
   let modelCalls = 0;
   let holdModel = false;
   let modelAborted = false;
+  let streamApp = false;
+  let appStep = 0;
+  let finishApp: (() => void) | undefined;
+  let appAborted = false;
   const runCleanup = async () => {
     for (const work of cleanup.splice(0)) await work();
   };
@@ -72,6 +76,8 @@ async function main() {
     const tenant = await tenantFromHeaders(new Headers({ cookie }));
     env.VERCEL = "1";
     env.AI_GATEWAY_API_KEY = "test-key-no-provider-spend";
+    env.TAILORKIT_PROJECT_KEY = "fixture-project-key";
+    await import("../lib/agents/tailorkit-tools");
     delete env.TAILORKIT_PROJECT_KEY;
     globals[contextSymbol] = {
       get: () => ({
@@ -87,6 +93,56 @@ async function main() {
     assert.equal(AGENT_BOT_CHECK_LEVEL, "deepAnalysis");
     globalThis.fetch = async (url, init) => {
       const requestUrl = url instanceof Request ? url.url : url.toString();
+      if (requestUrl === "https://tailorkit.dev/api/platform/app-agent/mcp") {
+        const message = JSON.parse(init?.body as string);
+        const result =
+          message.method === "server/discover"
+            ? { supportedVersions: ["2026-07-28"], capabilities: { tools: {} } }
+            : { tools: [{ name: "create_app", inputSchema: { type: "object", properties: {} } }] };
+        if (message.method !== "tools/call")
+          return Response.json({
+            jsonrpc: "2.0",
+            id: message.id,
+            result: { resultType: "complete", ...result },
+          });
+        return new Response(
+          new ReadableStream<Uint8Array>({
+            start(controller) {
+              const onAbort = () => {
+                appAborted = true;
+                controller.error(new DOMException("Aborted", "AbortError"));
+              };
+              init?.signal?.addEventListener("abort", onAbort, { once: true });
+              const emit = (event: unknown) =>
+                controller.enqueue(new TextEncoder().encode(`data: ${JSON.stringify(event)}\n\n`));
+              emit({
+                jsonrpc: "2.0",
+                method: "notifications/progress",
+                params: {
+                  progressToken: message.params._meta.progressToken,
+                  progress: 1,
+                  message: JSON.stringify({
+                    chunk: { type: "text-delta", delta: "Building your app live." },
+                  }),
+                },
+              });
+              finishApp = () => {
+                init?.signal?.removeEventListener("abort", onAbort);
+                emit({
+                  jsonrpc: "2.0",
+                  id: message.id,
+                  result: {
+                    resultType: "complete",
+                    content: [{ type: "text", text: "App built." }],
+                  },
+                });
+                controller.close();
+              };
+            },
+          }),
+          { headers: { "content-type": "text/event-stream" } },
+        );
+      }
       if (requestUrl.startsWith("https://api.vercel.com/bot-protection/")) {
         botChecks++;
         assert.equal(typeof init?.body, "string");
@@ -99,11 +155,22 @@ async function main() {
         `Unexpected external request: ${requestUrl}`,
       );
       modelCalls++;
-      const chunks = [
-        { type: "stream-start", warnings: [] },
-        { type: "text-start", id: "answer" },
-        { type: "text-delta", id: "answer", delta: "Hello from oRPC." },
-      ];
+      const callApp = streamApp && appStep++ === 0;
+      const chunks = callApp
+        ? [
+            { type: "stream-start", warnings: [] },
+            {
+              type: "tool-call",
+              toolCallId: "build-app",
+              toolName: "tailorkit_create_app",
+              input: "{}",
+            },
+          ]
+        : [
+            { type: "stream-start", warnings: [] },
+            { type: "text-start", id: "answer" },
+            { type: "text-delta", id: "answer", delta: "Hello from oRPC." },
+          ];
       const stream = new ReadableStream<Uint8Array>({
         start(controller) {
           const emit = (chunk: unknown) =>
@@ -119,10 +186,10 @@ async function main() {
               { once: true },
             );
           } else {
-            emit({ type: "text-end", id: "answer" });
+            if (!callApp) emit({ type: "text-end", id: "answer" });
             emit({
               type: "finish",
-              finishReason: { unified: "stop" },
+              finishReason: { unified: callApp ? "tool-calls" : "stop" },
               usage: {
                 inputTokens: { total: 30000 },
                 outputTokens: { total: 30000 },
@@ -272,6 +339,94 @@ async function main() {
     });
     await send(recovered, "Continue a chat saved with missing reply IDs");
     assert.equal(recovered.messages.length, 8);
+
+    streamApp = true;
+    env.TAILORKIT_PROJECT_KEY = "fixture-project-key";
+    const appChatId = crypto.randomUUID();
+    const appTransport = createAgentTransport(client.agent.chat);
+    const appStream = await appTransport.sendMessages({
+      trigger: "submit-message",
+      chatId: "sdk",
+      messageId: undefined,
+      messages: [
+        { id: "build-request", role: "user", parts: [{ type: "text", text: "Build an app" }] },
+      ],
+      body: { chatId: appChatId },
+      abortSignal: undefined,
+    });
+    const appReader = appStream.getReader();
+    while (true) {
+      const { value, done } = await appReader.read();
+      assert.ok(!done, "MCP progress must reach the browser transport before completion");
+      assert.notEqual(value?.type, "tool-output-available");
+      if (value?.type === "data-tailorkit-progress") {
+        assert.deepEqual(value.data, { toolCallId: "build-app", text: "Building your app live." });
+        break;
+      }
+    }
+    finishApp!();
+    while (!(await appReader.read()).done) {}
+    await runCleanup();
+    const appSaved = await client.chats.get({ id: appChatId });
+    assert.ok(
+      appSaved.messages
+        .at(-1)
+        ?.parts.some(
+          (part) =>
+            part.type === "data-tailorkit-progress" && part.data.text === "Building your app live.",
+        ),
+    );
+    assert.ok(appSaved.messages.every((message) => message.id));
+    assert.ok(!JSON.stringify(appSaved).includes("fixture-project-key"));
+    const appReopened = new Chat<CrmAgentMessage>({ transport, messages: appSaved.messages });
+    await appReopened.sendMessage({ text: "Continue" }, { body: { chatId: appChatId } });
+    await runCleanup();
+    assert.equal(
+      appReopened.error,
+      undefined,
+      "Persisted progress must not break follow-up validation",
+    );
+    assert.equal(appReopened.messages.length, 4);
+    appStep = 0;
+    const appAbort = new AbortController();
+    const stoppedChatId = crypto.randomUUID();
+    const stoppedStream = await appTransport.sendMessages({
+      trigger: "submit-message",
+      chatId: "sdk",
+      messageId: undefined,
+      messages: [
+        { id: "stop-request", role: "user", parts: [{ type: "text", text: "Build an app" }] },
+      ],
+      body: { chatId: stoppedChatId },
+      abortSignal: appAbort.signal,
+    });
+    const stoppedReader = stoppedStream.getReader();
+    while (true) {
+      const { value, done } = await stoppedReader.read();
+      assert.ok(!done);
+      if (value?.type === "data-tailorkit-progress") break;
+    }
+    appAbort.abort();
+    try {
+      while (!(await stoppedReader.read()).done) {}
+    } catch {
+      /* Expected client abort. */
+    }
+    await runCleanup();
+    assert.ok(appAborted, "Stopping the chat must cancel the MCP request");
+    const stoppedChat = await client.chats.get({ id: stoppedChatId });
+    assert.ok(
+      stoppedChat.messages.at(-1)?.parts.some((part) => part.type === "data-tailorkit-progress"),
+    );
+    assert.ok(
+      stoppedChat.messages
+        .at(-1)
+        ?.parts.some(
+          (part) => part.type === "text" && part.text.includes("stopped before finishing"),
+        ),
+    );
+    streamApp = false;
+    delete env.TAILORKIT_PROJECT_KEY;
     console.log(
       "PASS: actual agent oRPC HTTP + AI SDK transport, stable streamed/persisted IDs, follow-ups, reopening, Deep Analysis on every request, no IP/token quotas, persistence, bot rejection/outage, direct-client guard, and cancellation.",
     );
