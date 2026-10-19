@@ -15,8 +15,8 @@ export const agentChat = protectedProcedure
   .handler(async ({ input, context, signal }): Promise<AsyncIteratorObject<UIMessageChunk>> => {
     // Inference requires HTTP request identity and a response-lifetime hook.
     // Direct server/tool clients cannot bypass the browser bot check.
-    const { request, afterResponse, tenant } = context;
-    if (!request || !afterResponse) throw new ORPCError("FORBIDDEN");
+    const { request, afterResponse, tenant, resolveUserId } = context;
+    if (!request || !afterResponse || !resolveUserId) throw new ORPCError("FORBIDDEN");
     // On Vercel, the SDK resolves the current OIDC token from trusted request
     // context. An environment-variable-only check would incorrectly block it.
     if (
@@ -75,7 +75,11 @@ export const agentChat = protectedProcedure
     }
     try {
       const { connectTailorKitTools } = await import("../lib/agents/tailorkit-tools");
-      tailorkit = await connectTailorKitTools(tenant, signal ?? request.signal);
+      tailorkit = await connectTailorKitTools(
+        tenant,
+        await resolveUserId(),
+        signal ?? request.signal,
+      );
       const stream = await createAgentUIStream({
         agent: createCrmAgent(
           tenant,

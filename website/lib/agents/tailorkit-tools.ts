@@ -4,10 +4,12 @@ import { tailorKit } from "../tailorkit-server";
 
 export async function connectTailorKitTools(
   tenant: { id: string },
+  subjectId: string,
   signal: AbortSignal,
 ): Promise<{ tools: ToolSet; close: () => Promise<void> } | undefined> {
   if (!process.env.TAILORKIT_PROJECT_KEY) return undefined;
   const transport = await tailorKit.mcp.transport({
+    subjectId,
     scopes: { workspace: { workspaceId: tenant.id } },
   });
   const client = await createMCPClient({
