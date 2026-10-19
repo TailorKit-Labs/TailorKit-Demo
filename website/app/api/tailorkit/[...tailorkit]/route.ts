@@ -1,12 +1,15 @@
 import { tailorKit } from "@/lib/tailorkit-server";
-import { requireTenant } from "@/lib/workspace";
+import { requireTenant, requireUserId } from "@/lib/workspace-session";
 
 async function handleRequest(request: Request) {
   return tailorKit.handler(request, {
     authenticate: async () => {
       try {
         const tenant = await requireTenant();
-        return { scopes: { workspace: { workspaceId: tenant.id } } };
+        return {
+          subjectId: await requireUserId(),
+          scopes: { workspace: { workspaceId: tenant.id } },
+        };
       } catch {
         return null;
       }

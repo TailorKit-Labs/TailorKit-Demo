@@ -279,8 +279,8 @@ catalogs:
       specifier: ^2.7.0
       version: 2.7.0
     tailorkit:
-      specifier: ^0.1.0-beta.44
-      version: 0.1.0-beta.44
+      specifier: 0.1.0-beta.51
+      version: 0.1.0-beta.51
     tailwind-merge:
       specifier: ^3.7.0
       version: 3.7.0
@@ -327,7 +327,7 @@ importers:
         version: 11.0.1
       tailorkit:
         specifier: 'catalog:'
-        version: 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
+        version: 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -463,7 +463,7 @@ importers:
         version: 2.7.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@7.2.0)
       tailorkit:
         specifier: 'catalog:'
-        version: 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
+        version: 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
       tailwind-merge:
         specifier: 'catalog:'
         version: 3.7.0
@@ -2664,23 +2664,26 @@ packages:
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
 
-  '@tailorkit/app@0.1.0-beta.44':
-    resolution: {integrity: sha512-ee2qGFUH8OzCVSIv3nqsmG50fLcGFbwwYkt5spAFhdQrDMHny7uQWzTU/kgTBdOokmZ8eJ6RAIZ3Xk6Ak2uw8A==}
+  '@tailorkit/app-db@0.1.0-beta.51':
+    resolution: {integrity: sha512-6O3soP0cFJy3DU2AJa3zJ42OhY1T6xvSLmkMK5vHDBOkCtnMK6r4ROWwJT++llOT7kObR56DSE2whWv4h8s++g==}
+
+  '@tailorkit/app@0.1.0-beta.51':
+    resolution: {integrity: sha512-EdESr32klwI2uhBZ52Ou6pH6AO6li3gwN+ZDTjhdLEJ6thjwNE7f0VtrZfRNav7wjS5IxrVSd9iiRK6PFQUfBg==}
     peerDependencies:
       preact: ^11.0.0
 
-  '@tailorkit/cli@0.1.0-beta.44':
-    resolution: {integrity: sha512-oGMDFbvLJFzwXIY4RBNVJ4028PBMRLWdSpltnUEsvGT5GAdE6NiIRv3bH7LIjM0zZXoO3/ieKYZj7u8/eeVtMQ==}
+  '@tailorkit/cli@0.1.0-beta.51':
+    resolution: {integrity: sha512-4Alal5HHi20VBX5lCQOhrT7lr0fRPqjqX+Bk9nJJFE2tVxKdxasvBJ4WNsOYXXOSCW8ltTeJJFr6eUoIgLSzkg==}
     hasBin: true
 
-  '@tailorkit/client-core@0.1.0-beta.44':
-    resolution: {integrity: sha512-0/bDlJyKwMfgLkc2etpkZiNmISSHDesnNEfbYY6ahCkPHwTTDM33twOORGxRsQPdILr0mtgbt6NyFLmS0e5WLA==}
+  '@tailorkit/client-core@0.1.0-beta.51':
+    resolution: {integrity: sha512-vWNPar+WnrxNz2ahrgrSoJyRgzn/E/mfbuDQgC3QzuDs48UD7CTJAzmL0cq0Z+qqRj7sEkQB91zLA02AY4JTMg==}
 
-  '@tailorkit/client-platform@0.1.0-beta.44':
-    resolution: {integrity: sha512-vheHn+eBmhd5tyE3WJU38I787+r/4o9YzPyLn1PAeiYGcbuBohANe+3P5cx/3NCDavQmpF/xUvqj3eFJd2po0w==}
+  '@tailorkit/client-platform@0.1.0-beta.51':
+    resolution: {integrity: sha512-JR2BHJAFSOcLGe4wrH6dPlu3LbG8U/veNtWNO5MK+UVZCB1mEWwSgoHpgEJZshlC4AIESjFYo82x6brQA1PcPg==}
 
-  '@tailorkit/core@0.1.0-beta.44':
-    resolution: {integrity: sha512-ZvVSswwySQQkyNgI+u6mu5CIoBQJ+nAQtK+KBCX56MmbULMYuZXXedgD4/IeMAyyKKWofn+4qMsVlaKrGRPGQg==}
+  '@tailorkit/core@0.1.0-beta.51':
+    resolution: {integrity: sha512-Uh+X4gAz2tmxKSzqJEI3oht4OaUl2oG0eG818WMhiBXZQKY+OVVNpGKGHi3P2aX/z71SDumWJadLXifZgSzf0Q==}
     peerDependencies:
       arktype: '>=2.1.0'
       zod: '>=4.0.0'
@@ -2690,16 +2693,16 @@ packages:
       zod:
         optional: true
 
-  '@tailorkit/react@0.1.0-beta.44':
-    resolution: {integrity: sha512-K7/Fhn8ZqMZOw7HwAFVcnLIWII2FYnTuSB0OkAXZmYwClmwzGLf2PAC005b0VfAe3WkUKK8x2Buo7xF2GdQBdQ==}
+  '@tailorkit/react@0.1.0-beta.51':
+    resolution: {integrity: sha512-yTKc7uE5JYF+/VB++qu8fBPPnYiF88coOz4D37pltLLSC8eqBj+5DzpyBf5YA1KSH/szWD9EMELhdSY0JcaLIQ==}
     peerDependencies:
       react: '>=19.2.6'
 
-  '@tailorkit/sandbox@0.1.0-beta.44':
-    resolution: {integrity: sha512-lRfW87ZvKQXu03Vj7/jrEHm3gceOyW2vTtb9CCj6yRFavfQlt/Krwhyi29LcR3LjLLBSDmPOwoz44sj9HZDcXg==}
+  '@tailorkit/sandbox@0.1.0-beta.51':
+    resolution: {integrity: sha512-DeGaosgOExlWZ3O23Y9YJwxcPwNHv/U/NPeXrnBfKEPtXmkTwKGJuhdoMOJd71dQI1Fdu+Hbl98mHvC1EUbXEQ==}
 
-  '@tailorkit/vite@0.1.0-beta.44':
-    resolution: {integrity: sha512-f4GBF+rLGnqco+R6GPU7i2PnOtftFU8nh7ad/DGlZaoJR4MF1875GqeaVzPN/Kmh0qj54F+KU5g8rdwqaAB7MQ==}
+  '@tailorkit/vite@0.1.0-beta.51':
+    resolution: {integrity: sha512-4Ub8CqQaWt9HDjyeOdZ1pmFeWEVsOuAkgK4hF+btkQpxkGEQ51G7WaBpzr5mUoRXhiKXL/xPH0JcVvj3G3UcdA==}
     peerDependencies:
       vite: ^8.0.0 || ^1.0.0
 
@@ -6234,8 +6237,8 @@ packages:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
 
-  tailorkit@0.1.0-beta.44:
-    resolution: {integrity: sha512-vOS/FTDawTdXxjoBfFKhXzEAWhJxNEMY/1GczPJMWwfUgf/Zescn4C8FLqTp45Nab82MyMGTtw0swwulp3ZNzQ==}
+  tailorkit@0.1.0-beta.51:
+    resolution: {integrity: sha512-945+x6CoANe65CG6MwBgL4zU50vKkIiJgug8M9e0yA/MLfra9oD82TC4LzHn/CIl1ba9XjcUOTMEv/Lrs55Kug==}
     hasBin: true
     peerDependencies:
       arktype: '>=2.1.0'
@@ -8222,13 +8225,55 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@tailorkit/app@0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@tailorkit/app-db@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)':
+    dependencies:
+      drizzle-orm: 1.0.0-rc.4-5d5b77c(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - arktype
+      - better-sqlite3
+      - bun-types
+      - effect
+      - expo-sqlite
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - sql.js
+      - sqlite3
+      - typebox
+      - valibot
+      - zod
+
+  '@tailorkit/app@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@nanostores/preact': 1.1.1(nanostores@1.5.5)(preact@11.0.1)
       '@orpc/client': 2.0.0-beta.40
       '@orpc/contract': 2.0.0-beta.40
       '@standard-schema/spec': 1.1.0
-      drizzle-orm: 1.0.0-rc.4-5d5b77c(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+      '@tailorkit/app-db': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
       nanostores: 1.5.5
       preact: 11.0.1
       valibot: 1.5.0(typescript@7.0.2)
@@ -8271,14 +8316,14 @@ snapshots:
       - typescript
       - zod
 
-  '@tailorkit/cli@0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)':
+  '@tailorkit/cli@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)':
     dependencies:
       '@ai-sdk/tui': 1.0.138(zod@4.6.7)
       '@clack/prompts': 1.8.1
       '@orpc/client': 2.0.0-beta.40
-      '@tailorkit/client-platform': 0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/core': 0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/vite': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.1.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/client-platform': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/vite': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.1.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       ai: 7.0.142(zod@4.6.7)
       cac: 7.1.0
       jose: 6.2.12
@@ -8348,12 +8393,12 @@ snapshots:
       - vue-tsc
       - yaml
 
-  '@tailorkit/client-core@0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@tailorkit/client-core@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@nanostores/async': 0.1.0(nanostores@1.5.5)
-      '@tailorkit/app': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/core': 0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/sandbox': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/sandbox': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       nanostores: 1.5.5
       valibot: 1.5.0(typescript@7.0.2)
     transitivePeerDependencies:
@@ -8398,7 +8443,7 @@ snapshots:
       - typescript
       - zod
 
-  '@tailorkit/client-platform@0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)':
+  '@tailorkit/client-platform@0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@orpc/client': 2.0.0-beta.40
       ai: 7.0.142(zod@4.6.7)
@@ -8407,13 +8452,13 @@ snapshots:
       - typescript
       - zod
 
-  '@tailorkit/core@0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)':
+  '@tailorkit/core@0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@orpc/client': 2.0.0-beta.40
       '@orpc/contract': 2.0.0-beta.40
       '@orpc/server': 2.0.0-beta.40
       '@standard-schema/spec': 1.1.0
-      '@tailorkit/client-platform': 0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/client-platform': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
       valibot: 1.5.0(typescript@7.0.2)
     optionalDependencies:
       zod: 4.6.7
@@ -8422,16 +8467,16 @@ snapshots:
       - fastify
       - typescript
 
-  '@tailorkit/react@0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@tailorkit/react@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@floating-ui/react-dom': 2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@nanostores/react': 2.0.1(nanostores@1.5.5)(react@19.3.1)
       '@standard-schema/spec': 1.1.0
-      '@tailorkit/app': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/client-core': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/client-platform': 0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/core': 0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/sandbox': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/client-core': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/client-platform': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/sandbox': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       nanostores: 1.5.5
       react: 19.3.1
     transitivePeerDependencies:
@@ -8477,10 +8522,10 @@ snapshots:
       - typescript
       - zod
 
-  '@tailorkit/sandbox@0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@tailorkit/sandbox@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
-      '@tailorkit/app': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/core': 0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
       valibot: 1.5.0(typescript@7.0.2)
     transitivePeerDependencies:
       - '@aws-sdk/client-rds-data'
@@ -8524,9 +8569,9 @@ snapshots:
       - typescript
       - zod
 
-  '@tailorkit/vite@0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.1.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@tailorkit/vite@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.1.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
-      '@tailorkit/app': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       cosmiconfig: 10.0.1
       valibot: 1.5.0(typescript@7.0.2)
       vite: '@voidzero-dev/vite-plus-core@1.1.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
@@ -8570,9 +8615,9 @@ snapshots:
       - typescript
       - zod
 
-  '@tailorkit/vite@0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@tailorkit/vite@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
-      '@tailorkit/app': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       cosmiconfig: 10.0.1
       valibot: 1.5.0(typescript@7.0.2)
       vite: '@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
@@ -8616,9 +8661,9 @@ snapshots:
       - typescript
       - zod
 
-  '@tailorkit/vite@0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@tailorkit/vite@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
-      '@tailorkit/app': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       cosmiconfig: 10.0.1
       valibot: 1.5.0(typescript@7.0.2)
       vite: '@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
@@ -12461,13 +12506,14 @@ snapshots:
 
   tagged-tag@1.0.0: {}
 
-  tailorkit@0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
+  tailorkit@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
     dependencies:
-      '@tailorkit/app': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/cli': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
-      '@tailorkit/core': 0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/react': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/vite': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/app-db': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+      '@tailorkit/cli': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
+      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/react': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/vite': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
     optionalDependencies:
       valibot: 1.5.0(typescript@7.0.2)
       zod: 4.6.7
@@ -12534,13 +12580,14 @@ snapshots:
       - vue-tsc
       - yaml
 
-  tailorkit@0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
+  tailorkit@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
     dependencies:
-      '@tailorkit/app': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/cli': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
-      '@tailorkit/core': 0.1.0-beta.44(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/react': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/vite': 0.1.0-beta.44(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/app-db': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+      '@tailorkit/cli': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
+      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/react': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+      '@tailorkit/vite': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.2.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
     optionalDependencies:
       valibot: 1.5.0(typescript@7.0.2)
       zod: 4.6.7

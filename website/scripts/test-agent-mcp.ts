@@ -12,9 +12,10 @@ const originalFetch = globalThis.fetch;
 const originalKey = process.env.TAILORKIT_PROJECT_KEY;
 const originalOrigin = process.env.BETTER_AUTH_URL;
 const originalVercelEnv = process.env.VERCEL_ENV;
-type CallerContext = { scopes: { workspace: { workspaceId: string } } };
+type CallerContext = { subjectId: string; scopes: { workspace: { workspaceId: string } } };
 const requests: { method: string; context: CallerContext }[] = [];
-const callerContext = (tenant: { id: string }): CallerContext => ({
+const callerContext = (tenant: { id: string; subjectId: string }): CallerContext => ({
+  subjectId: tenant.subjectId,
   scopes: { workspace: { workspaceId: tenant.id } },
 });
 let failDiscovery = false;
@@ -120,12 +121,15 @@ async function main() {
   delete process.env.VERCEL_ENV;
   const { connectTailorKitTools } = await import("../lib/agents/tailorkit-tools");
   const { tailorKit: host } = await import("../lib/tailorkit-server");
-  const tenant = { id: "workspace-one", name: "Demo" };
+  const tenant = { id: "workspace-one", name: "Demo", subjectId: "user-one" };
   const controller = new AbortController();
   const connections: NonNullable<Awaited<ReturnType<typeof connectTailorKitTools>>>[] = [];
   try {
     delete process.env.TAILORKIT_PROJECT_KEY;
-    assert.equal(await connectTailorKitTools(tenant, controller.signal), undefined);
+    assert.equal(
+      await connectTailorKitTools(tenant, tenant.subjectId, controller.signal),
+      undefined,
+    );
     assert.equal(requests.length, 0, "Unconfigured CRM must not make MCP requests");
     process.env.TAILORKIT_PROJECT_KEY = "fixture-project-key";
     const metadata = await host.handler(new Request("https://forma.test/api/tailorkit/meta"), {
@@ -142,9 +146,17 @@ async function main() {
     });
     assert.equal(unauthorized.status, 401);
 
-    for (const identity of [tenant, { ...tenant, id: "workspace-two" }]) {
+    for (const identity of [
+      tenant,
+      { ...tenant, id: "workspace-two" },
+      { ...tenant, subjectId: "user-two" },
+    ]) {
       const start: number = requests.length;
-      const connection = await connectTailorKitTools(identity, controller.signal);
+      const connection = await connectTailorKitTools(
+        identity,
+        identity.subjectId,
+        controller.signal,
+      );
       assert.ok(connection);
       connections.push(connection);
       assert.deepEqual(Object.keys(connection.tools), [
@@ -276,9 +288,9 @@ async function main() {
     holdCall = false;
 
     failDiscovery = true;
-    await assert.rejects(connectTailorKitTools(tenant, controller.signal));
+    await assert.rejects(connectTailorKitTools(tenant, tenant.subjectId, controller.signal));
     controller.abort();
-    await assert.rejects(connectTailorKitTools(tenant, controller.signal));
+    await assert.rejects(connectTailorKitTools(tenant, tenant.subjectId, controller.signal));
 
     const interrupted = finishAgentMessages(
       [
