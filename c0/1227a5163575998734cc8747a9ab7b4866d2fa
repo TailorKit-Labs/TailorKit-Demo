@@ -1,0 +1,49 @@
+pnpm-workspace.yaml
+  s_702cb61a7a3c4e::t_2e34f3fe2e91f2 33
+website/package.json
+  s_702cb61a7a3c4e::t_9c79df3aa8591a 51
+pnpm-lock.yaml
+  s_e6694765307426::t_4451e0888e88ea 242-244,422-424,4393-4395,10498-10499
+website/README.md
+  s_702cb61a7a3c4e::t_cc2f87b6b604e2 97-109
+website/app/globals.css
+  s_e6694765307426::t_6b27c70abaa8f0 3,8-101
+website/components/agent/agent-chat.tsx
+  s_e6694765307426::t_bcfde993a8fd22 15,34,351-353,355,360,362-363,367-368,371,377-378,433,443
+website/components/agent/agent-workspace.tsx
+  s_e6694765307426::t_3e64ed71a513e5 3,39-40,43-44,52,80-87,129-130,273-301,336-342,364-370
+website/components/agent/apps-panel.tsx
+  s_e6694765307426::t_f6b0cee91678a1 97,131
+website/components/app/demo-profile.tsx
+  s_e6694765307426::t_ab139ea5aa0f4d 3-4,15,32,55-58
+website/components/crm-shell.tsx
+  s_e6694765307426::t_e81644ccde34b2 9,24-46,48-51
+website/components/demo-intro/demo-intro-provider.tsx
+  s_e6694765307426::t_e519d6b1c7f5c1 1-143
+website/components/demo-intro/demo-intro-tour.tsx
+  s_e6694765307426::t_63a99eb06d07d3 1-149
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c01227a5163575998734cc8747a9ab7b4866d2fa",
+  "prompts": {},
+  "sessions": {
+    "s_702cb61a7a3c4e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1568f-712c-7731-9cdc-25fc6ecfa7a5",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_e6694765307426": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15692-6666-7020-bfd8-9e872c345123",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
