@@ -13,9 +13,9 @@ import { Spinner } from "@/components/ui/spinner";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-const MIN_STEP_DISPLAY_MS = 1_000;
-const COMPLETION_DISPLAY_MS = 1_000;
-const FADE_DURATION_MS = 700;
+const MIN_STEP_DISPLAY_MS = 250;
+const COMPLETION_DISPLAY_MS = 250;
+const FADE_DURATION_MS = 200;
 
 const delay = (duration: number) => new Promise<void>((resolve) => setTimeout(resolve, duration));
 async function finishStep(startedAt: number) {
@@ -70,7 +70,7 @@ export function DemoSetup() {
   return (
     <main
       className={cn(
-        "flex min-h-svh items-center justify-center p-6 transition-all duration-700 motion-reduce:transition-none",
+        "flex min-h-svh items-center justify-center p-6 transition-all duration-200 motion-reduce:transition-none",
         step === 4 && "opacity-0 scale-95",
       )}
     >
