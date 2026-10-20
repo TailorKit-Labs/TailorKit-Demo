@@ -1,0 +1,19 @@
+apps/messages/patchsmith.config.ts
+  s_13c7b5d5aaf59e::t_4da85d5f7c2fb0 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6ffdb6a02ce45d607000d549a2f9fc1dac79821f",
+  "prompts": {},
+  "sessions": {
+    "s_13c7b5d5aaf59e": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a158b6-4e60-76b2-ad47-f186ff2cc836",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
