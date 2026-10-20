@@ -30,7 +30,7 @@ catalog:
   cmdk: ^1.1.1
   cn: ^0.5.0
   dotenv: ^18.0.8
-  lucide-react: ^1.59.0
+  lucide-react: ^1.60.0
   motion: 14.3.0
   nanoid: ^6.0.2
   next: 16.4.2
@@ -79,3 +79,4 @@ minimumReleaseAgeExclude:
   - "@patchsmith/sandbox@0.1.0-beta.53"
   - "@patchsmith/vite@0.1.0-beta.53"
   - patchsmith@0.1.0-beta.53
+  - lucide-react@1.60.0
