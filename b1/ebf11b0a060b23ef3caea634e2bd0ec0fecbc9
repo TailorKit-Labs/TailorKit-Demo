@@ -1,0 +1,105 @@
+README.md
+  s_df038e5b049c58::t_e1dbe38beda261 5,17
+apps/messages/.gitignore
+  s_df038e5b049c58::t_640de2a279f7a9 4-5
+apps/messages/README.md
+  s_df038e5b049c58::t_d0063e18a8a6e8 3,27,35,43
+apps/messages/package.json
+  s_2bf01f57399467::t_8628417be16289 7,11-12,21
+apps/messages/patchsmith.config.ts
+  s_df038e5b049c58::t_8d85fd8f52c34a 1,7,12
+apps/messages/src/messages.ts
+  s_df038e5b049c58::t_0459c46f905140 1,5,7
+apps/messages/src/patchsmith.gen.ts
+  s_df038e5b049c58::t_57cb4606b66cd8 2-3,8,11,292-294,303,584,850,893
+apps/messages/src/root.tsx
+  s_df038e5b049c58::t_710002e43e71e4 1
+apps/messages/src/slots/navbar/index.view.tsx
+  s_df038e5b049c58::t_7ba40832365282 2-3
+apps/messages/src/slots/panel/contacts.detail.view.tsx
+  s_df038e5b049c58::t_5a899f688fd349 2,17
+apps/messages/src/slots/panel/index.view.tsx
+  s_df038e5b049c58::t_b590e2806cb2fa 2,18
+apps/messages/src/use-messages.ts
+  s_df038e5b049c58::t_7d16de21759526 2
+apps/messages/tsconfig.json
+  s_df038e5b049c58::t_221234815246bd 18
+apps/messages/vite.config.ts
+  s_df038e5b049c58::t_66494e327ed1ef 2,5,7,10
+pnpm-lock.yaml
+  s_df038e5b049c58::t_57ca172787269c 257-259,325-327,437-439,538-539,1483-1490,2280-2336,3120-3124,3558-3559,3561-3563,3565-3568,4461-4464,5476-5494,6468,6470,7152-7165,7648,7650-7660,7662,7664-7702,7704,7706-7751,7753,7755-7828,7830,7832-7878,7880,7882-7887,7889,7891-7896,7898-7902,7904,7906-7914,7916-7957,7959,7961-8004,8006-8193,8401,8403,8405-8406,8408,8410-8413,8415,8417,8419-8424,8788-8791,10188-10191,11525-11605,11607-11679
+pnpm-workspace.yaml
+  s_df038e5b049c58::t_c2b7a9a60f1c56 48,71-81
+vite.config.ts
+  s_df038e5b049c58::t_f40fe3393bd0d5 9-10,27-28
+website/.env.example
+  s_df038e5b049c58::t_bd909a54405b51 14
+website/README.md
+  s_df038e5b049c58::t_10e8a284c852a5 3,27,77,79,101-103,105,117,121,123
+website/app/api/patchsmith/[...patchsmith]/route.ts
+  s_df038e5b049c58::t_906fc1dd4e6049 1,5
+website/components/agent/agent-chat.tsx
+  s_df038e5b049c58::t_9ac46e3a99cbff 76-79,100
+website/components/agent/agent-workspace.tsx
+  s_df038e5b049c58::t_dfe8d49ed5f8cb 38
+website/components/agent/apps-panel.tsx
+  s_df038e5b049c58::t_23ed178ee64bf0 9,130
+website/components/app/app-mobile-navigation.tsx
+  s_df038e5b049c58::t_ce729c4d28cb74 5
+website/components/app/app-navbar.tsx
+  s_df038e5b049c58::t_8da2d2320ed706 3
+website/components/app/app-page.tsx
+  s_df038e5b049c58::t_808cbabb3d065e 3
+website/components/app/app-sidebar.tsx
+  s_df038e5b049c58::t_9d6c4e7488a872 4
+website/components/crm-pages.tsx
+  s_df038e5b049c58::t_3c97cd1b6d7a00 20,28
+website/components/crm-shell.tsx
+  s_df038e5b049c58::t_8840ad34b962e4 8,21,49
+website/lib/agents/patchsmith-tools.ts
+  s_df038e5b049c58::t_bae893a355bfc3 3,5,10-11,49
+website/lib/app-pages.ts
+  s_df038e5b049c58::t_d346b62e36dc3c 1
+website/lib/install-messages.ts
+  s_df038e5b049c58::t_bfe0876db4eb0e 1,3,12,17
+website/lib/patchsmith-client.tsx
+  s_df038e5b049c58::t_b77779a78c5642 8-9,89,96,98,100,344,368,384
+website/lib/patchsmith-server.ts
+  s_df038e5b049c58::t_181a57143b572c 1-2,6,24,74-75
+website/lib/patchsmith.ts
+  s_df038e5b049c58::t_53ffcae66dd207 1-2,28,102,207
+website/package.json
+  s_2bf01f57399467::t_ee859c56c3da62 57
+website/routers/agent.ts
+  s_df038e5b049c58::t_e9cb75075a0d88 7,33,43,77-78,92
+website/scripts/install-messages.test.ts
+  s_df038e5b049c58::t_9c5de33334d4e2 3-5,7,25,80
+website/scripts/test-agent-mcp.ts
+  s_df038e5b049c58::t_cb0b3aaad7adf1 9,12,53,55,116,119,122-123,126,128,130,134-135,144,155,163-165,169,190,247,254,274,291,293,303,310,334-335
+website/scripts/test-agent-rpc.ts
+  s_df038e5b049c58::t_3ae08164ad83bd 31,75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b1ebf11b0a060b23ef3caea634e2bd0ec0fecbc9",
+  "prompts": {},
+  "sessions": {
+    "s_2bf01f57399467": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15882-3315-7710-9932-08ee56d11b7b",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_df038e5b049c58": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15880-b0c1-7462-bc22-a406256c4fd7",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
