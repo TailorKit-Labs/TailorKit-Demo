@@ -1,4 +1,4 @@
-import type { SlotItem } from "tailorkit/react";
+import type { SlotItem } from "patchsmith/react";
 
 export function appPageHref(page: SlotItem<true>) {
   return `/app-pages/${encodeURIComponent(page.app.id)}?instance=${encodeURIComponent(page.key)}`;

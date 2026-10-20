@@ -1,9 +1,9 @@
-import { createServer } from "tailorkit/server";
-import type { ToolContext } from "tailorkit";
+import { createServer } from "patchsmith/server";
+import type { ToolContext } from "patchsmith";
 import { call } from "@orpc/server";
 import { router } from "../routers";
 import { verifiedWorkspaceContext } from "../routers/context";
-import { contract } from "./tailorkit";
+import { contract } from "./patchsmith";
 
 // Patchsmith verifies the capability before calling a tool. Workspace identity
 // comes from its signed scope, never from tool input.
@@ -21,7 +21,7 @@ const origin =
         ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
         : "http://localhost:3000"));
 
-export const tailorKit = createServer({
+export const patchsmith = createServer({
   contract,
   tools: {
     workspace: {
@@ -71,6 +71,6 @@ export const tailorKit = createServer({
         call(router.activities.addNote, input, { context: rpcContext(context) }),
     },
   },
-  projectKey: process.env.TAILORKIT_PROJECT_KEY,
-  baseUrl: new URL("/api/tailorkit", origin),
+  projectKey: process.env.PATCHSMITH_PROJECT_KEY,
+  baseUrl: new URL("/api/patchsmith", origin),
 });

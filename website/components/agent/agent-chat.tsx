@@ -73,10 +73,10 @@ function AgentLink({ href, children, ...props }: AnchorHTMLAttributes<HTMLAnchor
 }
 const markdownComponents = { a: AgentLink };
 
-const tailorKitToolTitles: Record<string, string> = {
-  tailorkit_list_apps: "View apps",
-  tailorkit_create_app: "Build an app",
-  tailorkit_edit_app: "Edit an app",
+const patchsmithToolTitles: Record<string, string> = {
+  patchsmith_list_apps: "View apps",
+  patchsmith_create_app: "Build an app",
+  patchsmith_edit_app: "Edit an app",
 };
 
 function DynamicToolResult({ part }: { part: DynamicToolUIPart }) {
@@ -97,7 +97,7 @@ function DynamicToolResult({ part }: { part: DynamicToolUIPart }) {
         type="dynamic-tool"
         toolName={part.toolName}
         state={failed ? "output-error" : part.state}
-        title={tailorKitToolTitles[part.toolName] ?? part.title ?? part.toolName}
+        title={patchsmithToolTitles[part.toolName] ?? part.title ?? part.toolName}
       />
       <ToolContent>
         <p className="text-sm text-muted-foreground">

@@ -6,10 +6,10 @@ import { MockLanguageModelV4 } from "ai/test";
 import { createCrmAgent } from "../lib/agents/crm-agent";
 import { finishAgentMessages } from "../routers/chats";
 import { AGENT_TIMEOUT_MS } from "../lib/agents/agent-limits";
-import { contract } from "../lib/tailorkit";
+import { contract } from "../lib/patchsmith";
 
 const originalFetch = globalThis.fetch;
-const originalKey = process.env.TAILORKIT_PROJECT_KEY;
+const originalKey = process.env.PATCHSMITH_PROJECT_KEY;
 const originalOrigin = process.env.BETTER_AUTH_URL;
 const originalVercelEnv = process.env.VERCEL_ENV;
 type CallerContext = { subjectId: string; scopes: { workspace: { workspaceId: string } } };
@@ -50,9 +50,9 @@ const server = createServer(async (request, response) => {
     assert.equal(request.method, "POST");
     assert.equal(request.headers.authorization, "Bearer fixture-project-key");
     const context = JSON.parse(
-      Buffer.from(String(request.headers["x-tailorkit-context"]), "base64url").toString(),
+      Buffer.from(String(request.headers["x-patchsmith-context"]), "base64url").toString(),
     );
-    assert.equal(context.hostUrl, "https://forma.test/api/tailorkit");
+    assert.equal(context.hostUrl, "https://forma.test/api/patchsmith");
     let body = "";
     for await (const chunk of request) body += chunk;
     const message = JSON.parse(body);
@@ -113,26 +113,26 @@ async function main() {
   assert.ok(address && typeof address === "object");
   globalThis.fetch = (input, init) => {
     const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-    assert.equal(url, "https://tailorkit.dev/api/platform/app-agent/mcp");
+    assert.equal(url, "https://patchsmith.io/api/platform/app-agent/mcp");
     return originalFetch(`http://127.0.0.1:${address.port}/mcp`, init);
   };
-  process.env.TAILORKIT_PROJECT_KEY = "fixture-project-key";
+  process.env.PATCHSMITH_PROJECT_KEY = "fixture-project-key";
   process.env.BETTER_AUTH_URL = "https://forma.test";
   delete process.env.VERCEL_ENV;
-  const { connectTailorKitTools } = await import("../lib/agents/tailorkit-tools");
-  const { tailorKit: host } = await import("../lib/tailorkit-server");
+  const { connectPatchsmithTools } = await import("../lib/agents/patchsmith-tools");
+  const { patchsmith: host } = await import("../lib/patchsmith-server");
   const tenant = { id: "workspace-one", name: "Demo", subjectId: "user-one" };
   const controller = new AbortController();
-  const connections: NonNullable<Awaited<ReturnType<typeof connectTailorKitTools>>>[] = [];
+  const connections: NonNullable<Awaited<ReturnType<typeof connectPatchsmithTools>>>[] = [];
   try {
-    delete process.env.TAILORKIT_PROJECT_KEY;
+    delete process.env.PATCHSMITH_PROJECT_KEY;
     assert.equal(
-      await connectTailorKitTools(tenant, tenant.subjectId, controller.signal),
+      await connectPatchsmithTools(tenant, tenant.subjectId, controller.signal),
       undefined,
     );
     assert.equal(requests.length, 0, "Unconfigured CRM must not make MCP requests");
-    process.env.TAILORKIT_PROJECT_KEY = "fixture-project-key";
-    const metadata = await host.handler(new Request("https://forma.test/api/tailorkit/meta"), {
+    process.env.PATCHSMITH_PROJECT_KEY = "fixture-project-key";
+    const metadata = await host.handler(new Request("https://forma.test/api/patchsmith/meta"), {
       authenticate: () => callerContext(tenant),
     });
     assert.equal(metadata.status, 200, "App builders must be able to read the host contract");
@@ -141,7 +141,7 @@ async function main() {
     assert.ok(hostMetadata.includes('"contacts"'), "MCP must use the existing CRM host tools");
     assert.ok(hostMetadata.includes('"Button"'), "MCP must use the existing host components");
     assert.equal(host.contract, contract);
-    const unauthorized = await host.handler(new Request("https://forma.test/api/tailorkit/apps"), {
+    const unauthorized = await host.handler(new Request("https://forma.test/api/patchsmith/apps"), {
       authenticate: () => null,
     });
     assert.equal(unauthorized.status, 401);
@@ -152,7 +152,7 @@ async function main() {
       { ...tenant, subjectId: "user-two" },
     ]) {
       const start: number = requests.length;
-      const connection = await connectTailorKitTools(
+      const connection = await connectPatchsmithTools(
         identity,
         identity.subjectId,
         controller.signal,
@@ -160,13 +160,13 @@ async function main() {
       assert.ok(connection);
       connections.push(connection);
       assert.deepEqual(Object.keys(connection.tools), [
-        "tailorkit_list_apps",
-        "tailorkit_create_app",
-        "tailorkit_edit_app",
+        "patchsmith_list_apps",
+        "patchsmith_create_app",
+        "patchsmith_edit_app",
       ]);
       for (const recorded of requests.slice(start)) {
         assert.deepEqual(recorded.context, {
-          hostUrl: "https://forma.test/api/tailorkit",
+          hostUrl: "https://forma.test/api/patchsmith",
           ...callerContext(identity),
         });
       }
@@ -187,7 +187,7 @@ async function main() {
                 {
                   type: "tool-call",
                   toolCallId: "apps",
-                  toolName: "tailorkit_list_apps",
+                  toolName: "patchsmith_list_apps",
                   input: "{}",
                 },
                 { type: "finish", finishReason: { unified: "tool-calls", raw: undefined }, usage },
@@ -244,14 +244,14 @@ async function main() {
       );
       assert.ok(saved.at(-1)?.parts.some((part) => part.type === "dynamic-tool"));
       assert.deepEqual(requests.at(-1)?.context, {
-        hostUrl: "https://forma.test/api/tailorkit",
+        hostUrl: "https://forma.test/api/patchsmith",
         ...callerContext(tenant),
       });
     }
     await connection.close();
     await assert.rejects(
       run(
-        connection.tools.tailorkit_list_apps.execute!(
+        connection.tools.patchsmith_list_apps.execute!(
           {},
           {
             toolCallId: "closed",
@@ -271,7 +271,7 @@ async function main() {
       callCancelled = resolve;
     });
     const abort = new AbortController();
-    const pending = connections[1].tools.tailorkit_create_app.execute!(
+    const pending = connections[1].tools.patchsmith_create_app.execute!(
       {},
       {
         toolCallId: "cancel",
@@ -288,9 +288,9 @@ async function main() {
     holdCall = false;
 
     failDiscovery = true;
-    await assert.rejects(connectTailorKitTools(tenant, tenant.subjectId, controller.signal));
+    await assert.rejects(connectPatchsmithTools(tenant, tenant.subjectId, controller.signal));
     controller.abort();
-    await assert.rejects(connectTailorKitTools(tenant, tenant.subjectId, controller.signal));
+    await assert.rejects(connectPatchsmithTools(tenant, tenant.subjectId, controller.signal));
 
     const interrupted = finishAgentMessages(
       [
@@ -300,14 +300,14 @@ async function main() {
           parts: [
             {
               type: "dynamic-tool",
-              toolName: "tailorkit_create_app",
+              toolName: "patchsmith_create_app",
               toolCallId: "pending",
               state: "input-available",
               input: {},
             },
             {
               type: "dynamic-tool",
-              toolName: "tailorkit_list_apps",
+              toolName: "patchsmith_list_apps",
               toolCallId: "done",
               state: "output-available",
               input: {},
@@ -331,8 +331,8 @@ async function main() {
   } finally {
     await Promise.all(connections.map((connection) => connection.close()));
     globalThis.fetch = originalFetch;
-    if (originalKey === undefined) delete process.env.TAILORKIT_PROJECT_KEY;
-    else process.env.TAILORKIT_PROJECT_KEY = originalKey;
+    if (originalKey === undefined) delete process.env.PATCHSMITH_PROJECT_KEY;
+    else process.env.PATCHSMITH_PROJECT_KEY = originalKey;
     if (originalOrigin === undefined) delete process.env.BETTER_AUTH_URL;
     else process.env.BETTER_AUTH_URL = originalOrigin;
     if (originalVercelEnv === undefined) delete process.env.VERCEL_ENV;

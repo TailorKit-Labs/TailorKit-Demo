@@ -4,7 +4,7 @@ import { ORPCError, streamToAsyncIteratorObject } from "@orpc/server";
 import { checkBotId } from "botid/server";
 import { protectedProcedure } from "./base";
 import { createCrmAgent } from "../lib/agents/crm-agent";
-import type { connectTailorKitTools as connectTools } from "../lib/agents/tailorkit-tools";
+import type { connectPatchsmithTools as connectTools } from "../lib/agents/patchsmith-tools";
 import { AGENT_TIMEOUT_MS } from "../lib/agents/agent-limits";
 import { agentRequest } from "../lib/agents/agent-request";
 import { AGENT_BOT_CHECK_LEVEL } from "../lib/agents/agent-protection";
@@ -30,7 +30,7 @@ export const agentChat = protectedProcedure
       });
     }
     let streamConsumption: Promise<void> | undefined;
-    let tailorkit: Awaited<ReturnType<typeof connectTools>>;
+    let patchsmith: Awaited<ReturnType<typeof connectTools>>;
     afterResponse(async () => {
       // Drain on the server so disconnects still run persistence callbacks. The
       // request signal still cancels model generation and tool execution.
@@ -40,7 +40,7 @@ export const agentChat = protectedProcedure
         console.error("Agent stream consumption failed:", error);
       }
       try {
-        await tailorkit?.close();
+        await patchsmith?.close();
       } catch {
         console.error("Patchsmith MCP connection could not be closed.");
       }
@@ -74,8 +74,8 @@ export const agentChat = protectedProcedure
       });
     }
     try {
-      const { connectTailorKitTools } = await import("../lib/agents/tailorkit-tools");
-      tailorkit = await connectTailorKitTools(
+      const { connectPatchsmithTools } = await import("../lib/agents/patchsmith-tools");
+      patchsmith = await connectPatchsmithTools(
         tenant,
         await resolveUserId(),
         signal ?? request.signal,
@@ -89,7 +89,7 @@ export const agentChat = protectedProcedure
             timeZone: input.timeZone,
           },
           undefined,
-          tailorkit?.tools,
+          patchsmith?.tools,
         ),
         uiMessages: chatTurn.messages,
         generateMessageId: randomUUID,

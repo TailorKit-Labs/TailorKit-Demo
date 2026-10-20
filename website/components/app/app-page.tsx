@@ -1,6 +1,6 @@
 "use client";
 
-import { RenderSlot, useViews, useViewContext } from "@/lib/tailorkit-client";
+import { RenderSlot, useViews, useViewContext } from "@/lib/patchsmith-client";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
 import { AppPageHeading } from "./app-page-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";

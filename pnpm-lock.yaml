@@ -254,6 +254,9 @@ catalogs:
     next-themes:
       specifier: ^0.4.6
       version: 0.4.6
+    patchsmith:
+      specifier: 0.1.0-beta.53
+      version: 0.1.0-beta.53
     react:
       specifier: 19.3.1
       version: 19.3.1
@@ -278,9 +281,6 @@ catalogs:
     streamdown:
       specifier: ^2.7.0
       version: 2.7.0
-    tailorkit:
-      specifier: 0.1.0-beta.51
-      version: 0.1.0-beta.51
     tailwind-merge:
       specifier: ^3.7.0
       version: 3.7.0
@@ -322,12 +322,12 @@ importers:
 
   apps/messages:
     dependencies:
+      patchsmith:
+        specifier: 'catalog:'
+        version: 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
       preact:
         specifier: 11.0.1
         version: 11.0.1
-      tailorkit:
-        specifier: 'catalog:'
-        version: 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
       zod:
         specifier: 'catalog:'
         version: 4.6.7
@@ -434,6 +434,9 @@ importers:
       next-themes:
         specifier: 'catalog:'
         version: 0.4.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      patchsmith:
+        specifier: 'catalog:'
+        version: 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
       pg:
         specifier: ^8.23.1
         version: 8.23.1
@@ -461,9 +464,6 @@ importers:
       streamdown:
         specifier: 'catalog:'
         version: 2.7.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@7.2.0)
-      tailorkit:
-        specifier: 'catalog:'
-        version: 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
       tailwind-merge:
         specifier: 'catalog:'
         version: 3.7.0
@@ -507,18 +507,6 @@ importers:
 
 packages:
 
-  '@ai-sdk/gateway@4.0.110':
-    resolution: {integrity: sha512-5IwnOR6v7KC+D9eddUqsCobXl/FbLUVb2LaQc/uyuQdpP3/n9s0YLc9zl4/W3IS/R2pjHrqUfCzEAeOu7bFLoQ==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/gateway@4.0.115':
-    resolution: {integrity: sha512-Xn+gDWM4Ti2FzYmxhlZtjEuGBGZlOYaQMpwcVRSN4c9qCMUszD5F5TAbkxgLV/tHKeMfEX+WEuTCl6Kkj2r73A==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
   '@ai-sdk/gateway@4.0.116':
     resolution: {integrity: sha512-YK2As2GpxmyHi5w6R4FLepiLcs6MbIMxh6nyTMgHaoHKoM5aWEXvKDe/JqdMQ1ivOy3EPJiEBgRI677YTGxfHQ==}
     engines: {node: '>=22'}
@@ -531,31 +519,11 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider-utils@5.0.58':
-    resolution: {integrity: sha512-iXSwKR/7LpHzAlyrUl+bTinwzmZ3Nmup1viwPisM5Gn5cogRdIG4rV9w1ZDuKFcrXyu/AeVs42E1CX/0aNwrfQ==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/provider-utils@5.0.61':
-    resolution: {integrity: sha512-Y+Z3539UXw0ctFDNepTtG23VqBQHr2A6yI2qUxvQcg75DJYgJoD2F9U2Vp5OgQjX7lxto1BLgFtKuOhzrr52vQ==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
   '@ai-sdk/provider-utils@5.0.62':
     resolution: {integrity: sha512-//6sHa6QNQdM2KHOg5pxp1UMFQB4U8cqdw/kSm9BMr0DLeaFgG3TXZfxhpwRZmxgBpOrzMVZ/gwLXH309+Ortw==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
-
-  '@ai-sdk/provider@4.0.26':
-    resolution: {integrity: sha512-BZ443uBEq6HuMA+Z4b7Hpm65GpZSo7pWqnYqpf/7tAO3C48JbtvAhOE2JnODFj+jodsZzfRHkAyQb64xuD2tZQ==}
-    engines: {node: '>=22'}
-
-  '@ai-sdk/provider@4.0.28':
-    resolution: {integrity: sha512-6ThcmkJQXSMlBrf6mirIjUUS04Q5/kApbYTOzd5lZfYXLa1XPpnDLxP/G96/DKc00fDIUOW9S2ls0mSzb0+l9w==}
-    engines: {node: '>=22'}
 
   '@ai-sdk/provider@4.0.29':
     resolution: {integrity: sha512-nV7UpLADtKn9f0xfnxVZAeFEKuNkScJv5rOpHL7qeWe2EwEEBa3pd6P0QVK6D6coCJ0E8FyCgoM50AffTYrzDQ==}
@@ -567,8 +535,8 @@ packages:
     peerDependencies:
       react: ^18 || ~19.0.1 || ~19.1.2 || ^19.2.1
 
-  '@ai-sdk/tui@1.0.138':
-    resolution: {integrity: sha512-FtkWRsYz89mi+fjsMsHajXboqDjZgP68PR2TjbngrLfbgspMQbhYtlNwRTZ5KhaohVNfK3WK6s82QzO0O/rCvA==}
+  '@ai-sdk/tui@1.0.144':
+    resolution: {integrity: sha512-5FvicUb8w1Iz+I2m/XHIjtWPbWglaAEYs1V2ITBrJjbgNBl3cfozX6TZN00XVUQ4HdBkWlz9FD/4ijStLm+NNg==}
     engines: {node: '>=22'}
 
   '@alloc/quick-lru@5.3.0':
@@ -1512,6 +1480,14 @@ packages:
   '@mermaid-js/parser@1.2.1':
     resolution: {integrity: sha512-n12NohV3mrUyUL2o93IgG/ifeW9FTyeJn3zDxkhwa8MJ9Fxg3HQMlA3RiGmD/3UnJvheztkjjQAjA2T4LmUcpw==}
 
+  '@modelcontextprotocol/client@2.3.1':
+    resolution: {integrity: sha512-mIGZXpHsjnZ6lD+gD/WCMpR5k8yVQQ8nNFH1N0Srf7AvnwTUMYD6pvTY8ng2+He5FfV7YMZLmrjL7cLa/cc3dQ==}
+    engines: {node: '>=20'}
+
+  '@modelcontextprotocol/core@2.3.1':
+    resolution: {integrity: sha512-laVmIhPGpWi7rG9q+0UigblRN0Hws/Yjlb6qLFtVqryXVLkc4h+yN8z731POD2LnAGQlFe7/tXhUm7Bi0YB91g==}
+    engines: {node: '>=20'}
+
   '@nanostores/async@0.1.0':
     resolution: {integrity: sha512-sFz5p7L+O7EXkAah65wAIxFs8UW/fHCnqmA5IMXW+ocGqiBY+GvTXyUvGu48qjEaqI886sQSImctmu9L2m5jzw==}
     engines: {node: ^20.0.0 || >=22.0.0}
@@ -1883,10 +1859,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@oxc-project/runtime@0.153.0':
-    resolution: {integrity: sha512-rXJvtlsVG4xJNq64hiaUTIatE7jbBgpa6l4QgmEa2jLgT3ULH9scUBkpsC9N1DfmqixLEyT6DuK6OSXozziIlw==}
-    engines: {node: ^20.19.0 || >=22.12.0}
-
   '@oxc-project/runtime@0.154.0':
     resolution: {integrity: sha512-cBQNGoh659BNgvA8OC/e4BNDtFkv03dJaYdkp2adgOQNtISNAPQ+nB4S8XvWtNk7Xl+0g+7aa+iRGR25Xycd1Q==}
     engines: {node: ^20.19.0 || >=22.12.0}
@@ -1896,9 +1868,6 @@ packages:
 
   '@oxc-project/types@0.121.0':
     resolution: {integrity: sha512-CGtOARQb9tyv7ECgdAlFxi0Fv7lmzvmlm2rpD/RdijOO9rfk/JvB1CjT8EnoD+tjna/IYgKKw3IV7objRb+aYw==}
-
-  '@oxc-project/types@0.153.0':
-    resolution: {integrity: sha512-jSNrRIyvPVLL5E1z/tS5zLAprosGz/FuI1PWwEOz59j3E4TTTzSpqKb/RDGqJhhW0QHYISGXxq582wGx6T11Tw==}
 
   '@oxc-project/types@0.154.0':
     resolution: {integrity: sha512-KYOUGQFlLWR+s4QMV2Q9ko38TZm7EdO87Qm7rvZLqk/webse/cDjtyxKhg/47l0byCbs/k46LT8qc4PKjAikzA==}
@@ -2308,6 +2277,63 @@ packages:
     resolution: {integrity: sha512-G2xbfWTrbqYRhR/vfeKNMQf/sS3/ti0iKJAAkRxHuXWZH/hne/dyIb9QKk5LuR6cJLARxsL6FMoAYmfspd74MQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
+  '@patchsmith/ai-sdk@0.1.0-beta.53':
+    resolution: {integrity: sha512-yU/cNHjowrSYKI2EpvzAolwfqfLC2N1ingjW6HCy9ZwLFIhyX0+49mgzWqDTKjbuRKcA0FazzAb8IlFX4cOUfA==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      ai: ^7.0.137
+
+  '@patchsmith/app-db@0.1.0-beta.53':
+    resolution: {integrity: sha512-A6kN3JWMX+A1sXYcYQfRq7KFg7+0K0LJkRoSMVz1qkQbh7ESFYjvcVkM05Zh1qCksAuHBtsZyFHOOPCDTCyn7A==}
+    engines: {node: '>=22'}
+
+  '@patchsmith/app@0.1.0-beta.53':
+    resolution: {integrity: sha512-5goILmu08NNG0RNaTcGgin6fp8AueqxBNuH7str1Fc3H0/k7c/px9CBKRasNwCXfnEJt1nbWt3t0wKp8C2Sx6g==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      preact: ^11.0.0
+
+  '@patchsmith/cli@0.1.0-beta.53':
+    resolution: {integrity: sha512-e+7Fw6fSfSt4D2QZpmCFEpOP0iDlQscWiSRFKhngXgc9Y+oCDbnKMiTK8yZviHr0Vq7TznLd5dZY59Ujk3kIxw==}
+    engines: {node: '>=22'}
+    hasBin: true
+
+  '@patchsmith/client-core@0.1.0-beta.53':
+    resolution: {integrity: sha512-OZrJ3QlWknn5sk3i9H1lJv0Bie/ArPlzVngWcEjYbULyOwopDy5LWkJdg5XYrZaCcMWUmE3o63gkcJE4zzqfCQ==}
+    engines: {node: '>=22'}
+
+  '@patchsmith/client-platform@0.1.0-beta.53':
+    resolution: {integrity: sha512-64q4gv3hvFdWHHdyD5SbxPT9/LXp+sT64wclzQXViJ/a1YugLE7h5jO144GdxpqRmy9Za1XTiNQxmOi/+wZkKQ==}
+    engines: {node: '>=22'}
+
+  '@patchsmith/core@0.1.0-beta.53':
+    resolution: {integrity: sha512-5Tt4AxWkM/biIEhC96cmNJLSrYE5YJPsNlRkP178jsbklijVkhTt/VCwmxq+KlUPNi8dHvT0aBYddE8Mw5WBAw==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      arktype: '>=2.1.0'
+      zod: '>=4.0.0'
+    peerDependenciesMeta:
+      arktype:
+        optional: true
+      zod:
+        optional: true
+
+  '@patchsmith/react@0.1.0-beta.53':
+    resolution: {integrity: sha512-LbFYXUYkTS87QwoSnEJqDgnjiJiBRubdJG2LEYiSlDDZ/elai6NndhQt8cpqK64ZB9EnZSSf1UcsXReVzUCJ/w==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      react: '>=19.2.6'
+
+  '@patchsmith/sandbox@0.1.0-beta.53':
+    resolution: {integrity: sha512-YAP5+Z2d/b7EprafLbfmdLad0KlgVg8Mqo/4ZsC8zKthBXaN1P4QBkRINbvE+J++SGV2Dl00Ni3OhojT8vGI9Q==}
+    engines: {node: '>=22'}
+
+  '@patchsmith/vite@0.1.0-beta.53':
+    resolution: {integrity: sha512-tz3eOQSUca1AHt+onXN7qskbyJOcXWeMyCOjpsfWXTpoP6pW0J6Ku/CMJ+0wXxegB6pRjy3CWwH8oSmlZyBdVQ==}
+    engines: {node: '>=22'}
+    peerDependencies:
+      vite: ^8.0.0 || ^1.0.0
+
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
 
@@ -2679,48 +2705,6 @@ packages:
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
-
-  '@tailorkit/app-db@0.1.0-beta.51':
-    resolution: {integrity: sha512-6O3soP0cFJy3DU2AJa3zJ42OhY1T6xvSLmkMK5vHDBOkCtnMK6r4ROWwJT++llOT7kObR56DSE2whWv4h8s++g==}
-
-  '@tailorkit/app@0.1.0-beta.51':
-    resolution: {integrity: sha512-EdESr32klwI2uhBZ52Ou6pH6AO6li3gwN+ZDTjhdLEJ6thjwNE7f0VtrZfRNav7wjS5IxrVSd9iiRK6PFQUfBg==}
-    peerDependencies:
-      preact: ^11.0.0
-
-  '@tailorkit/cli@0.1.0-beta.51':
-    resolution: {integrity: sha512-4Alal5HHi20VBX5lCQOhrT7lr0fRPqjqX+Bk9nJJFE2tVxKdxasvBJ4WNsOYXXOSCW8ltTeJJFr6eUoIgLSzkg==}
-    hasBin: true
-
-  '@tailorkit/client-core@0.1.0-beta.51':
-    resolution: {integrity: sha512-vWNPar+WnrxNz2ahrgrSoJyRgzn/E/mfbuDQgC3QzuDs48UD7CTJAzmL0cq0Z+qqRj7sEkQB91zLA02AY4JTMg==}
-
-  '@tailorkit/client-platform@0.1.0-beta.51':
-    resolution: {integrity: sha512-JR2BHJAFSOcLGe4wrH6dPlu3LbG8U/veNtWNO5MK+UVZCB1mEWwSgoHpgEJZshlC4AIESjFYo82x6brQA1PcPg==}
-
-  '@tailorkit/core@0.1.0-beta.51':
-    resolution: {integrity: sha512-Uh+X4gAz2tmxKSzqJEI3oht4OaUl2oG0eG818WMhiBXZQKY+OVVNpGKGHi3P2aX/z71SDumWJadLXifZgSzf0Q==}
-    peerDependencies:
-      arktype: '>=2.1.0'
-      zod: '>=4.0.0'
-    peerDependenciesMeta:
-      arktype:
-        optional: true
-      zod:
-        optional: true
-
-  '@tailorkit/react@0.1.0-beta.51':
-    resolution: {integrity: sha512-yTKc7uE5JYF+/VB++qu8fBPPnYiF88coOz4D37pltLLSC8eqBj+5DzpyBf5YA1KSH/szWD9EMELhdSY0JcaLIQ==}
-    peerDependencies:
-      react: '>=19.2.6'
-
-  '@tailorkit/sandbox@0.1.0-beta.51':
-    resolution: {integrity: sha512-DeGaosgOExlWZ3O23Y9YJwxcPwNHv/U/NPeXrnBfKEPtXmkTwKGJuhdoMOJd71dQI1Fdu+Hbl98mHvC1EUbXEQ==}
-
-  '@tailorkit/vite@0.1.0-beta.51':
-    resolution: {integrity: sha512-4Ub8CqQaWt9HDjyeOdZ1pmFeWEVsOuAkgK4hF+btkQpxkGEQ51G7WaBpzr5mUoRXhiKXL/xPH0JcVvj3G3UcdA==}
-    peerDependencies:
-      vite: ^8.0.0 || ^1.0.0
 
   '@tailwindcss/node@4.3.3':
     resolution: {integrity: sha512-/T8IKEsf9VTU6tLjgC7+sv2mOPtQxzE2jMw7u4Tt40Tx+QSZxpzh95/H6cMKoja9XuW7iMdLJYBB0o9G1CaAgg==}
@@ -3133,6 +3117,11 @@ packages:
   '@upsetjs/venn.js@2.0.0':
     resolution: {integrity: sha512-WbBhLrooyePuQ1VZxrJjtLvTc4NVfpOyKx0sKqioq9bX1C1m7Jgykkn8gLrtwumBioXIqam8DLxp88Adbue6Hw==}
 
+  '@valibot/to-json-schema@1.8.0':
+    resolution: {integrity: sha512-a0M+uwCuQZEPAo65NYkFSJ14O5c213KoSZmPdoCfuFvUhfULi4T2Z6Tpjv6lTVMW9RoLm74RpRAjNEa43KcN+g==}
+    peerDependencies:
+      valibot: ^1.5.0
+
   '@vercel/backends@19.0.3':
     resolution: {integrity: sha512-Y7KSWqsNv/CZ2ADJrnUoi3ugblaUOHdcFI5Dlp5dUgWARI+Am2ZxjymIKGfrEmELl5f6TCpEsILpRryo6O1sYQ==}
     peerDependencies:
@@ -3373,75 +3362,6 @@ packages:
   '@vitest/utils@5.0.5':
     resolution: {integrity: sha512-/rBu7gzLDQI/SC79Tn98b5DwOgaHU/Gt4I9OVeP3YofzNaYtbImRCOJQmT1S6vOJg9gEIlWC+r3QxKkjuSa1nQ==}
 
-  '@voidzero-dev/vite-plus-core@1.1.0':
-    resolution: {integrity: sha512-Ai6HQP1zG0H3ZrmStEaMVKtDzW0xU3VgMzm3LFaXDQMEp8nAqvp0VGoU8HmpB9xv9vDSl+UxiSNOpuY9T714OQ==}
-    engines: {node: ^20.19.0 || ^22.18.0 || >=24.11.0}
-    peerDependencies:
-      '@arethetypeswrong/core': ^0.18.1
-      '@types/node': ^20.19.0 || >=22.12.0
-      '@typescript/native-preview': '*'
-      '@vitejs/devtools': ^0.7.1
-      '@volar/typescript': ~2.4.0
-      '@vue/language-core': ~3.2.0 || ~3.3.0
-      esbuild: ^0.27.0 || ^0.28.0
-      jiti: '>=1.21.0'
-      less: ^4.0.0
-      publint: ^0.3.8
-      sass: ^1.70.0
-      sass-embedded: ^1.70.0
-      stylus: '>=0.54.8'
-      sugarss: ^5.0.0
-      terser: ^5.16.0
-      tsx: ^4.8.1
-      typescript: ^5.0.0 || ^6.0.0 || ^7.0.0
-      unplugin-unused: '>=0.5.0'
-      unrun: '*'
-      vue-tsc: ~3.2.0 || ~3.3.0
-      yaml: ^2.4.2
-    peerDependenciesMeta:
-      '@arethetypeswrong/core':
-        optional: true
-      '@types/node':
-        optional: true
-      '@typescript/native-preview':
-        optional: true
-      '@vitejs/devtools':
-        optional: true
-      '@volar/typescript':
-        optional: true
-      '@vue/language-core':
-        optional: true
-      esbuild:
-        optional: true
-      jiti:
-        optional: true
-      less:
-        optional: true
-      publint:
-        optional: true
-      sass:
-        optional: true
-      sass-embedded:
-        optional: true
-      stylus:
-        optional: true
-      sugarss:
-        optional: true
-      terser:
-        optional: true
-      tsx:
-        optional: true
-      typescript:
-        optional: true
-      unplugin-unused:
-        optional: true
-      unrun:
-        optional: true
-      vue-tsc:
-        optional: true
-      yaml:
-        optional: true
-
   '@voidzero-dev/vite-plus-core@1.3.0':
     resolution: {integrity: sha512-Bk/LBwNrxoB8XbGUtGJE3r+U9P4puvdZ6UH36ekygE1J+on/ytwM/yBgQwBnvmX6/MVax+2xxj8wk0N/KkyNeA==}
     engines: {node: ^20.19.0 || ^22.18.0 || >=24.11.0}
@@ -3511,22 +3431,10 @@ packages:
       yaml:
         optional: true
 
-  '@voidzero-dev/vite-plus-darwin-arm64@1.1.0':
-    resolution: {integrity: sha512-iWJdQZBRZWB6X1Aadk0Rrs/NJeP32Qb0OGeWnu1AYL0g6ZCj1yy3l9Oa+HasDyG97s+4UYo523LdBAAv3dlFwg==}
-    engines: {node: '>=20.0.0'}
-    cpu: [arm64]
-    os: [darwin]
-
   '@voidzero-dev/vite-plus-darwin-arm64@1.3.0':
     resolution: {integrity: sha512-BF4W+UwGxUkHPrH2pZLhafJfkJT20WZIbMzZgZLGQ44LPpZPX8Sb+qtblUnXUkkCzTqad4XtSPgiLKglvZkNQQ==}
     engines: {node: '>=20.0.0'}
     cpu: [arm64]
-    os: [darwin]
-
-  '@voidzero-dev/vite-plus-darwin-x64@1.1.0':
-    resolution: {integrity: sha512-IYSQ2KdigRMuVkKCC+e5uNliCTSHa8j3ajHsFG2cfXoiGHS1f4ausbMEzNYtn9Tcn0Xsyo7l0LN8lvB7MapJhA==}
-    engines: {node: '>=20.0.0'}
-    cpu: [x64]
     os: [darwin]
 
   '@voidzero-dev/vite-plus-darwin-x64@1.3.0':
@@ -3535,26 +3443,12 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@voidzero-dev/vite-plus-linux-arm64-gnu@1.1.0':
-    resolution: {integrity: sha512-PmrJG8Md5KCWi/akWJz5GRjei2QfRf48R4rPB9CfualzAAlpMOmaMGeV3eloWVAFye85uhdtzCmIAqN5OUVBJA==}
-    engines: {node: '>=20.0.0'}
-    cpu: [arm64]
-    os: [linux]
-    libc: [glibc]
-
   '@voidzero-dev/vite-plus-linux-arm64-gnu@1.3.0':
     resolution: {integrity: sha512-H43Dj9RkEyjOFXxTk3DLTa6hqmHhxUN9vbbqNdwQoc3/TPNhC1zsLZy3qgUFbYGLdS7M9jICCqFzj5GDSYrhIw==}
     engines: {node: '>=20.0.0'}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
-
-  '@voidzero-dev/vite-plus-linux-arm64-musl@1.1.0':
-    resolution: {integrity: sha512-zFr57++m5U474XEMcFGV025TOv9V2I5d87yylcuI/SvxQwDE9P7T5iRl55vGzQOzzInSnQuru6ByNIfmGa+84A==}
-    engines: {node: '>=20.0.0'}
-    cpu: [arm64]
-    os: [linux]
-    libc: [musl]
 
   '@voidzero-dev/vite-plus-linux-arm64-musl@1.3.0':
     resolution: {integrity: sha512-Se2GlvzUZOvFy+5hoQHoG7LFeiplKs+EJwaskayCSLwZAP+e6/LTK7EK+8OcdMpmdsLPtZoTJHkIjSzrQowJwQ==}
@@ -3563,26 +3457,12 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@voidzero-dev/vite-plus-linux-x64-gnu@1.1.0':
-    resolution: {integrity: sha512-DXeRuTMylEbIVCQX+pSBM27lSPQwAKO6PDnGBJ6nFGhu37AmNeVl7cIChtcniXOuykbFduhSt3eIr/6CZHoEag==}
-    engines: {node: '>=20.0.0'}
-    cpu: [x64]
-    os: [linux]
-    libc: [glibc]
-
   '@voidzero-dev/vite-plus-linux-x64-gnu@1.3.0':
     resolution: {integrity: sha512-moxojk6zmog2SaLE4/cG75acE6X3cjR0/52Ba8OG2ct0r+dv55VSE0kellAuxS6o9VHy7TBhkIpwpFpQ34rnAA==}
     engines: {node: '>=20.0.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
-
-  '@voidzero-dev/vite-plus-linux-x64-musl@1.1.0':
-    resolution: {integrity: sha512-J7/Mb/kxtENUsL5Gh+8SSr/p054fSqU4oj0GEthr/2VEFSwZouOUigk6CzE7ANKFeTNJm40n8QCnjm7Oiy09pQ==}
-    engines: {node: '>=20.0.0'}
-    cpu: [x64]
-    os: [linux]
-    libc: [musl]
 
   '@voidzero-dev/vite-plus-linux-x64-musl@1.3.0':
     resolution: {integrity: sha512-CykxH008Dy9u20Myki9/UIqq3Dbo1ZMqa098aS6AtWp3QKyEKzSLPB3jKDUklgmu83xiFe5BpPA+33oF0yNY7A==}
@@ -3591,22 +3471,10 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@voidzero-dev/vite-plus-win32-arm64-msvc@1.1.0':
-    resolution: {integrity: sha512-EXWz8Tt7skmI0fLMSq5zYcuHo6SCF0reG55qDB/NMvWVIAca6Dborq7D1HyKA8v6p39zOl8r07gR7yXuYv7eeQ==}
-    engines: {node: '>=20.0.0'}
-    cpu: [arm64]
-    os: [win32]
-
   '@voidzero-dev/vite-plus-win32-arm64-msvc@1.3.0':
     resolution: {integrity: sha512-l61S9b8aeiDpi8wPRfz4HonqRkLpt/OVYs0sCskvlXYSW/L8qfLOtuWH/xpF8xDjMIfBefKejBVfU1UlRax5Tw==}
     engines: {node: '>=20.0.0'}
     cpu: [arm64]
-    os: [win32]
-
-  '@voidzero-dev/vite-plus-win32-x64-msvc@1.1.0':
-    resolution: {integrity: sha512-K9k77Mj/TszFHKsZePKsyfsIPo8HbjKeJUxaSJ6YZKAmSh9QvDsMFe4i4/HALwyii/PR1EQ8N0iN1nf9cNimGQ==}
-    engines: {node: '>=20.0.0'}
-    cpu: [x64]
     os: [win32]
 
   '@voidzero-dev/vite-plus-win32-x64-msvc@1.3.0':
@@ -3620,72 +3488,6 @@ packages:
 
   '@workflow/serde@4.1.0-beta.2':
     resolution: {integrity: sha512-8kkeoQKLDaKXefjV5dbhBj2aErfKp1Mc4pb6tj8144cF+Em5SPbyMbyLCHp+BVrFfFVCBluCtMx+jjvaFVZGww==}
-
-  '@yuku-codegen/binding-android-arm64@0.9.5':
-    resolution: {integrity: sha512-jrOY5WM+AaAqkv51fHP1x28ifto4WgcZVzodLUyMU1jMWn5Sq+VciRdk/n8E0Ey5w4p4cWWE+m5GfXWOYh7Kzw==}
-    cpu: [arm64]
-    os: [android]
-
-  '@yuku-codegen/binding-darwin-arm64@0.9.5':
-    resolution: {integrity: sha512-4O4lkCQIzPZGjiNB1GORSI6hBECbiiSBS/APZXPvNKYH+nhY4uuqv03LNXA+SET3hoBjvr95P5rIhY8KQaQUBA==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@yuku-codegen/binding-darwin-x64@0.9.5':
-    resolution: {integrity: sha512-9EvoUO0SEhD6/d8VHdWuPerepPMSR1y84+UEgz8Un1Ope14Oe7xMvePpEQLTLovoIFZ8Zg3iZ8z8E11pZMqC3g==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@yuku-codegen/binding-freebsd-x64@0.9.5':
-    resolution: {integrity: sha512-HqT78WwgHTmp8lwujoUa9CrIortX4DdpuiVC18ZPSGvuuJf4ylpIEI6QrQEM78Zwz3muhAWAOXZ5irdiYY+AyA==}
-    cpu: [x64]
-    os: [freebsd]
-
-  '@yuku-codegen/binding-linux-arm-gnu@0.9.5':
-    resolution: {integrity: sha512-QJXwIW6Ms3QIawbcBIedmrmXnfdpuAOjZJ/eAABq5XTzWvSxZ7lutu9W5yIHahlaTaFnBo7ikrVMD1szLTpPUw==}
-    cpu: [arm]
-    os: [linux]
-    libc: [glibc]
-
-  '@yuku-codegen/binding-linux-arm-musl@0.9.5':
-    resolution: {integrity: sha512-eHbFy3IHGb+IYarrYwAo0yWSEQV3eAmEn6VrsKA6I1Wy1YPJxWqSJlV69JhqsHtJuJlljUIF3ex0y46yaKIu9w==}
-    cpu: [arm]
-    os: [linux]
-    libc: [musl]
-
-  '@yuku-codegen/binding-linux-arm64-gnu@0.9.5':
-    resolution: {integrity: sha512-ByoJMbySTaDhjAXSu8q6Lh7HKg3YoesXpcT72aYk0Aiw4PCznmY4ybpLTq0RCvp0RIPhFm/6yECFiGBwyCC1nw==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [glibc]
-
-  '@yuku-codegen/binding-linux-arm64-musl@0.9.5':
-    resolution: {integrity: sha512-gD9vfXIoBw1toSxhO9rgmSu/FEfy3PMznJAxVjIuH8DrWEiDKXmJO0pJKfj1Ltbe/TmtWVZR+TjISqeSIGQzMg==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [musl]
-
-  '@yuku-codegen/binding-linux-x64-gnu@0.9.5':
-    resolution: {integrity: sha512-BARvdnvqMGjOr5Iel2JH+9H5vAIE0R6H0Z2fsT02xrvmI/1ZXNB8lkuX+ZGevPhZb3zJ9WeC/R8JZstrsUOK5g==}
-    cpu: [x64]
-    os: [linux]
-    libc: [glibc]
-
-  '@yuku-codegen/binding-linux-x64-musl@0.9.5':
-    resolution: {integrity: sha512-x8flcevS1fbb7ESrmpOY/pON4eInSaE/7Ktjqx2udOE2W33BNSZmJuwpyUgo54AoHNqrcaM7szqydyJn5fNvew==}
-    cpu: [x64]
-    os: [linux]
-    libc: [musl]
-
-  '@yuku-codegen/binding-win32-arm64@0.9.5':
-    resolution: {integrity: sha512-KOL/rBatWqH4ZpCNoF8ZtSNdOJbAxBJLmk/VeRciepGROPTbPum1A9t67GpFgOU7qrkUWlPJdJ+KHKbvbmOt+w==}
-    cpu: [arm64]
-    os: [win32]
-
-  '@yuku-codegen/binding-win32-x64@0.9.5':
-    resolution: {integrity: sha512-FxENahEjWSan59Syh/us/Kf4wNq8qrJLFJ3R2N4Oiwtb6yNdz/rWLNTIoNSssnsp7IoWJdUP6o/Z8ppg7lXMcg==}
-    cpu: [x64]
-    os: [win32]
 
   '@yuku-core/binding-android-arm64@0.19.0':
     resolution: {integrity: sha512-wdL2XmTiZixAOaHk9Z0JJZ8u9Qm8d333Zjpc6gaxXFX+UR5BlsfxZ7a2+2Rm71pamppsPYGUGFq2oVLbh6DISw==}
@@ -3753,77 +3555,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@yuku-parser/binding-android-arm64@0.9.5':
-    resolution: {integrity: sha512-A2JCFCSHfnficqYEw4Iujpx7XrkMM3UfFcgJFmYpZSo9zM4nyhmdIIE0FogSduuU60lhM0/UcfuUBXIVNBMlGQ==}
-    cpu: [arm64]
-    os: [android]
-
-  '@yuku-parser/binding-darwin-arm64@0.9.5':
-    resolution: {integrity: sha512-3PiyU+Eare4YuKaQ22N98/yAiROPY5o/NQJHraICzDvk4pgS+m+bgLKOvkGBRn33OnV95Vdv1Mn38b+MQHpULQ==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@yuku-parser/binding-darwin-x64@0.9.5':
-    resolution: {integrity: sha512-blFMAFI7AInI83XaiOF8cIeiRM46Nz9EfpZtZPRLbKxSA9aAr5v8aHYpmfN6NoyXxAv/10pwS4gsAuc1W6fy5Q==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@yuku-parser/binding-freebsd-x64@0.9.5':
-    resolution: {integrity: sha512-TsNuL4qsZdO0tHp5GW43Y5fHeLPpPHA675wdcPNTcdq2ZO5AvsQWFFoiDg8CH4oBktfsQ9tdvKhjLnLYwKvp4g==}
-    cpu: [x64]
-    os: [freebsd]
-
-  '@yuku-parser/binding-linux-arm-gnu@0.9.5':
-    resolution: {integrity: sha512-b0afYK5gHeV8RdmOcqAlgM8ONsye4cax4DMnIBaoJyPMd1UTGvTbpkqQcPVdhmHlcfcGVGMV1laeVovlr/dscw==}
-    cpu: [arm]
-    os: [linux]
-    libc: [glibc]
-
-  '@yuku-parser/binding-linux-arm-musl@0.9.5':
-    resolution: {integrity: sha512-fD3lKzl+r6j6n8DwiMY53qnh5DLqD8KJjCp+NbVud54Nnh3Q9Wprqss3YzyMHP3NSJk663Wlg1E1X5qOuFVFig==}
-    cpu: [arm]
-    os: [linux]
-    libc: [musl]
-
-  '@yuku-parser/binding-linux-arm64-gnu@0.9.5':
-    resolution: {integrity: sha512-aRU/aCphV1MWCl/lvI6NX8LgucHQ68Fx+vz7NBb/5MEr2EuzCxiPOQqeFcMdWh+2AED/p0AvAREch0c+cSnlhA==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [glibc]
-
-  '@yuku-parser/binding-linux-arm64-musl@0.9.5':
-    resolution: {integrity: sha512-5+Guro0l8H473YXlEjVNBRLN/IbPbJdnQh1zo0OLt49xxnON+XMJRRaEyTOTfkn9QSRg0+BhEKGR4W9Gu2uZJQ==}
-    cpu: [arm64]
-    os: [linux]
-    libc: [musl]
-
-  '@yuku-parser/binding-linux-x64-gnu@0.9.5':
-    resolution: {integrity: sha512-pwwSyV9q+GlvzSXlsMZBMlgk22L5bud714/vqZCdeUTivzeUVltQzUaf3IQXOGXdpc59JYTeuMCtbGquaAUoCA==}
-    cpu: [x64]
-    os: [linux]
-    libc: [glibc]
-
-  '@yuku-parser/binding-linux-x64-musl@0.9.5':
-    resolution: {integrity: sha512-z18j6JN3lBHH8vzN7gG1M8fI0nlgItSfnC9PfbmUbt97iHViKfw2iA2G9fGwRMe5LyPRZBrejIlapbygPbpdaw==}
-    cpu: [x64]
-    os: [linux]
-    libc: [musl]
-
-  '@yuku-parser/binding-win32-arm64@0.9.5':
-    resolution: {integrity: sha512-s6Gwttb1dQvtPX6Bgkw+UPC9IO3UBDXc6Zezog8MMgvu3UfJBBB9TQqKBX/2quu0Eyh+lLSAyNlIyyecaagUPg==}
-    cpu: [arm64]
-    os: [win32]
-
-  '@yuku-parser/binding-win32-x64@0.9.5':
-    resolution: {integrity: sha512-FrERt9YWatY3bJfSUdi4YWY+6iQcyo3MzCC821BxlWM5TFZEHijnpz/bknR79VHlXY/9CvXz8ZlaAGPsTtN3nw==}
-    cpu: [x64]
-    os: [win32]
-
   '@yuku-toolchain/types@0.19.0':
     resolution: {integrity: sha512-tFkNbsP4WXX9UMUC5syJGdK9dPMLK0PPaIuXCcCYH75sZ8MrebfBZ2XvCILRTw8AgLivSSCfDa4R67iYBDa4Kg==}
-
-  '@yuku-toolchain/types@0.9.5':
-    resolution: {integrity: sha512-KiuLNNgX9uNealaWAR+G3/cMXnRk9x4TY2EkYe/KIag+UPdwiA0RRf1hr1WAxzTP8KGzCTkqUdLPvqh32sEO3w==}
 
   abbrev@3.0.1:
     resolution: {integrity: sha512-AO2ac6pjRB3SJmGJo+v5/aK6Omggp6fsLrs6wN9bd35ulu4cCwaAU9+7ZhXjeqHVkaHThLuzH0nZr0YpCDhygg==}
@@ -3842,18 +3575,6 @@ packages:
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
-
-  ai@7.0.137:
-    resolution: {integrity: sha512-JxrPkSQknxIN/gYqS3UQksExS6eWI23QMPBrKMGXeeFHhru6xFtF4MuMq17WaHD+lXPh0lne6H0BM2Z2VMW9EQ==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
-
-  ai@7.0.142:
-    resolution: {integrity: sha512-Tifni6/6nNhCu4GnFEeYYR7CGmJ3Yhm44SGxYrOupqP2aaZwmGGiiB5Zx4hiauJR0AWimcXULejDT+Qsj+SHOQ==}
-    engines: {node: '>=22'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4.1.8
 
   ai@7.0.143:
     resolution: {integrity: sha512-y9QNgCK9QRHRCcHEUNoU2vemJ+q2zFX5M9T7xHCMZutfcWCqZPckkAfDbp+KHwqZDiJs5AqoKazj64cb20m5PA==}
@@ -4735,6 +4456,10 @@ packages:
 
   eventsource-parser@3.1.1:
     resolution: {integrity: sha512-EKN1vKAMcZ8MlYMpaNuxN6R9yakzH6uajHcHVTqWJzvu5pWw9DyhbP35HH8MVBQ+dZjAfDxk+A8NiR9KWaXiyQ==}
+    engines: {node: '>=18.0.0'}
+
+  eventsource@3.0.7:
+    resolution: {integrity: sha512-CRT1WTyuQoD771GW56XEZFQ/ZoSfWid1alKGDYMmkt2yl8UXrVR4pspqWNEcqKvVIzg6PAltWjxcSSPrboA4iA==}
     engines: {node: '>=18.0.0'}
 
   execa@3.2.0:
@@ -5748,6 +5473,25 @@ packages:
   parse5@7.3.0:
     resolution: {integrity: sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw==}
 
+  patchsmith@0.1.0-beta.53:
+    resolution: {integrity: sha512-NZKkc021Czt4p8d/2v5fMqHUFa+UF40VXRGXOqw3R4w6PB0IxEzwzPAbpr5p+5kbJnG9Bi08mLjYYHb1uLD/Ww==}
+    engines: {node: '>=22'}
+    hasBin: true
+    peerDependencies:
+      ai: ^7.0.137
+      arktype: '>=2.1.0'
+      valibot: '>=1.0.0'
+      zod: '>=4.0.0'
+    peerDependenciesMeta:
+      ai:
+        optional: true
+      arktype:
+        optional: true
+      valibot:
+        optional: true
+      zod:
+        optional: true
+
   path-browserify@1.0.1:
     resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
 
@@ -6275,21 +6019,6 @@ packages:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
 
-  tailorkit@0.1.0-beta.51:
-    resolution: {integrity: sha512-945+x6CoANe65CG6MwBgL4zU50vKkIiJgug8M9e0yA/MLfra9oD82TC4LzHn/CIl1ba9XjcUOTMEv/Lrs55Kug==}
-    hasBin: true
-    peerDependencies:
-      arktype: '>=2.1.0'
-      valibot: '>=1.0.0'
-      zod: '>=4.0.0'
-    peerDependenciesMeta:
-      arktype:
-        optional: true
-      valibot:
-        optional: true
-      zod:
-        optional: true
-
   tailwind-merge@3.7.0:
     resolution: {integrity: sha512-XPPUyAc+cvspz3lHTcR/QgPfW2A0lv/xQNIjX3HGhLR+Nq2lHaLq5MtTesHn8GUr3W3DguT2KT5x3NVgRtYwmA==}
 
@@ -6674,12 +6403,6 @@ packages:
   yauzl@2.10.0:
     resolution: {integrity: sha512-p4a9I6X6nu6IhoGmBqAcbJy1mlC4j27vEPZX9F4L4/vZT3Lyq1VkFHw/V/PUcB9Buo+DG3iHkT0x3Qya58zc3g==}
 
-  yuku-ast@0.9.5:
-    resolution: {integrity: sha512-Q8qW8WwQnN5Cm0ZZivdRIfv0sRLTjUq0YumXJkw8CYN1aCdICH9rk4C47/4n6kA5EqDtlj+F608twoTSV2MwdQ==}
-
-  yuku-codegen@0.9.5:
-    resolution: {integrity: sha512-zGUVyDpSK4b6c9B0yyxi2P0wujn1XZTbG9dCb7d6gyAoP63EMgyLzUwPUvwxPG5jgYqhlI7w+S3oCyapqGr4PA==}
-
   yuku-core@0.19.0:
     resolution: {integrity: sha512-kYK9e1XdfirNhkipzW0wmMcSWcVF/CWnuugodfVYRCUwvoBefweL9HzB96OiKEhsx78V5WbUxbJqlizMX869Qg==}
     engines: {node: '>=14.18.0'}
@@ -6687,9 +6410,6 @@ packages:
   yuku-parser@0.19.0:
     resolution: {integrity: sha512-XrBh9ZiQK5mJVRxZBAvD6LwRyAYrK3MFtH3+onyuxFL5hFD44EC3QOmIC1FjTj6H2MMwq46/NAI+NZxLZPZgxg==}
     engines: {node: '>=14.18.0'}
-
-  yuku-parser@0.9.5:
-    resolution: {integrity: sha512-IBnAdNVMswWbJcM7woPluOudectJzFjJ1N8jVRxP9Uq4CIv5hZdBIcdmtRbFDYF/Ph2j2gVup4YJ4N9mh0jYFA==}
 
   zod@3.22.4:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
@@ -6704,20 +6424,6 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
-
-  '@ai-sdk/gateway@4.0.110(zod@4.6.7)':
-    dependencies:
-      '@ai-sdk/provider': 4.0.26
-      '@ai-sdk/provider-utils': 5.0.58(zod@4.6.7)
-      '@vercel/oidc': 3.2.0
-      zod: 4.6.7
-
-  '@ai-sdk/gateway@4.0.115(zod@4.6.7)':
-    dependencies:
-      '@ai-sdk/provider': 4.0.28
-      '@ai-sdk/provider-utils': 5.0.61(zod@4.6.7)
-      '@vercel/oidc': 3.2.0
-      zod: 4.6.7
 
   '@ai-sdk/gateway@4.0.116(zod@4.6.7)':
     dependencies:
@@ -6734,24 +6440,6 @@ snapshots:
       pkce-challenge: 5.0.1
       zod: 4.6.7
 
-  '@ai-sdk/provider-utils@5.0.58(zod@4.6.7)':
-    dependencies:
-      '@ai-sdk/provider': 4.0.26
-      '@standard-schema/spec': 1.1.0
-      '@workflow/serde': 4.1.0
-      eventsource-parser: 3.1.1
-      undici: 7.30.0
-      zod: 4.6.7
-
-  '@ai-sdk/provider-utils@5.0.61(zod@4.6.7)':
-    dependencies:
-      '@ai-sdk/provider': 4.0.28
-      '@standard-schema/spec': 1.1.0
-      '@workflow/serde': 4.1.0
-      eventsource-parser: 3.1.1
-      undici: 7.30.0
-      zod: 4.6.7
-
   '@ai-sdk/provider-utils@5.0.62(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.29
@@ -6760,14 +6448,6 @@ snapshots:
       eventsource-parser: 3.1.1
       undici: 7.30.0
       zod: 4.6.7
-
-  '@ai-sdk/provider@4.0.26':
-    dependencies:
-      json-schema: 0.4.0
-
-  '@ai-sdk/provider@4.0.28':
-    dependencies:
-      json-schema: 0.4.0
 
   '@ai-sdk/provider@4.0.29':
     dependencies:
@@ -6785,9 +6465,9 @@ snapshots:
     transitivePeerDependencies:
       - zod
 
-  '@ai-sdk/tui@1.0.138(zod@4.6.7)':
+  '@ai-sdk/tui@1.0.144(zod@4.6.7)':
     dependencies:
-      ai: 7.0.137(zod@4.6.7)
+      ai: 7.0.143(zod@4.6.7)
     transitivePeerDependencies:
       - zod
 
@@ -7469,6 +7149,20 @@ snapshots:
     dependencies:
       '@chevrotain/types': 11.1.2
 
+  '@modelcontextprotocol/client@2.3.1':
+    dependencies:
+      '@modelcontextprotocol/core': 2.3.1
+      cross-spawn: 7.0.6
+      eventsource: 3.0.7
+      eventsource-parser: 3.1.1
+      jose: 6.2.12
+      pkce-challenge: 5.0.1
+      zod: 4.6.7
+
+  '@modelcontextprotocol/core@2.3.1':
+    dependencies:
+      zod: 4.6.7
+
   '@nanostores/async@0.1.0(nanostores@1.5.5)':
     dependencies:
       nanostores: 1.5.5
@@ -7744,15 +7438,11 @@ snapshots:
   '@oxc-parser/binding-win32-x64-msvc@0.121.0':
     optional: true
 
-  '@oxc-project/runtime@0.153.0': {}
-
   '@oxc-project/runtime@0.154.0': {}
 
   '@oxc-project/types@0.110.0': {}
 
   '@oxc-project/types@0.121.0': {}
-
-  '@oxc-project/types@0.153.0': {}
 
   '@oxc-project/types@0.154.0': {}
 
@@ -7954,6 +7644,456 @@ snapshots:
     optional: true
 
   '@oxlint/plugins@1.88.0': {}
+
+  '@patchsmith/ai-sdk@0.1.0-beta.53(ai@7.0.143(zod@4.6.7))(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      '@modelcontextprotocol/client': 2.3.1
+      '@patchsmith/core': 0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)
+      '@valibot/to-json-schema': 1.8.0(valibot@1.5.0(typescript@7.0.2))
+      ai: 7.0.143(zod@4.6.7)
+      valibot: 1.5.0(typescript@7.0.2)
+    transitivePeerDependencies:
+      - arktype
+      - crossws
+      - fastify
+      - typescript
+      - zod
+
+  '@patchsmith/app-db@0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)':
+    dependencies:
+      drizzle-orm: 1.0.0-rc.4-5d5b77c(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - arktype
+      - better-sqlite3
+      - bun-types
+      - effect
+      - expo-sqlite
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - sql.js
+      - sqlite3
+      - typebox
+      - valibot
+      - zod
+
+  '@patchsmith/app@0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      '@nanostores/preact': 1.1.1(nanostores@1.5.5)(preact@11.0.1)
+      '@orpc/client': 2.0.0-beta.40
+      '@orpc/contract': 2.0.0-beta.40
+      '@patchsmith/app-db': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+      '@standard-schema/spec': 1.1.0
+      nanostores: 1.5.5
+      preact: 11.0.1
+      valibot: 1.5.0(typescript@7.0.2)
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - arktype
+      - better-sqlite3
+      - bun-types
+      - effect
+      - expo-sqlite
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - sql.js
+      - sqlite3
+      - typebox
+      - typescript
+      - zod
+
+  '@patchsmith/cli@0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)':
+    dependencies:
+      '@ai-sdk/tui': 1.0.144(zod@4.6.7)
+      '@clack/prompts': 1.8.1
+      '@orpc/client': 2.0.0-beta.40
+      '@patchsmith/client-platform': 0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/core': 0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/vite': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      ai: 7.0.143(zod@4.6.7)
+      cac: 7.1.0
+      jose: 6.2.12
+      liquidjs: 10.30.0
+      picocolors: 1.1.1
+      valibot: 1.5.0(typescript@7.0.2)
+      vite: '@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
+      zod: 4.6.7
+    transitivePeerDependencies:
+      - '@arethetypeswrong/core'
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/node'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@typescript/native-preview'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@vitejs/devtools'
+      - '@volar/typescript'
+      - '@vue/language-core'
+      - '@xata.io/client'
+      - arktype
+      - better-sqlite3
+      - bun-types
+      - crossws
+      - effect
+      - esbuild
+      - expo-sqlite
+      - fastify
+      - jiti
+      - less
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - preact
+      - publint
+      - sass
+      - sass-embedded
+      - sql.js
+      - sqlite3
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - typebox
+      - typescript
+      - unplugin-unused
+      - unrun
+      - vue-tsc
+      - yaml
+
+  '@patchsmith/client-core@0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      '@nanostores/async': 0.1.0(nanostores@1.5.5)
+      '@patchsmith/app': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/core': 0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/sandbox': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      nanostores: 1.5.5
+      valibot: 1.5.0(typescript@7.0.2)
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - arktype
+      - better-sqlite3
+      - bun-types
+      - crossws
+      - effect
+      - expo-sqlite
+      - fastify
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - preact
+      - sql.js
+      - sqlite3
+      - typebox
+      - typescript
+      - zod
+
+  '@patchsmith/client-platform@0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      '@orpc/client': 2.0.0-beta.40
+      ai: 7.0.143(zod@4.6.7)
+      valibot: 1.5.0(typescript@7.0.2)
+    transitivePeerDependencies:
+      - typescript
+      - zod
+
+  '@patchsmith/core@0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      '@orpc/client': 2.0.0-beta.40
+      '@orpc/contract': 2.0.0-beta.40
+      '@orpc/server': 2.0.0-beta.40
+      '@patchsmith/client-platform': 0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)
+      '@standard-schema/spec': 1.1.0
+      valibot: 1.5.0(typescript@7.0.2)
+    optionalDependencies:
+      zod: 4.6.7
+    transitivePeerDependencies:
+      - crossws
+      - fastify
+      - typescript
+
+  '@patchsmith/react@0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      '@floating-ui/react-dom': 2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      '@nanostores/react': 2.0.1(nanostores@1.5.5)(react@19.3.1)
+      '@patchsmith/app': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/client-core': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/client-platform': 0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/core': 0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/sandbox': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@standard-schema/spec': 1.1.0
+      nanostores: 1.5.5
+      react: 19.3.1
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - arktype
+      - better-sqlite3
+      - bun-types
+      - crossws
+      - effect
+      - expo-sqlite
+      - fastify
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - preact
+      - react-dom
+      - sql.js
+      - sqlite3
+      - typebox
+      - typescript
+      - zod
+
+  '@patchsmith/sandbox@0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      '@patchsmith/app': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/core': 0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)
+      valibot: 1.5.0(typescript@7.0.2)
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - arktype
+      - better-sqlite3
+      - bun-types
+      - crossws
+      - effect
+      - expo-sqlite
+      - fastify
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - preact
+      - sql.js
+      - sqlite3
+      - typebox
+      - typescript
+      - zod
+
+  '@patchsmith/vite@0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      '@patchsmith/app': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      cosmiconfig: 10.0.1
+      valibot: 1.5.0(typescript@7.0.2)
+      vite: '@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - arktype
+      - better-sqlite3
+      - bun-types
+      - effect
+      - expo-sqlite
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - preact
+      - sql.js
+      - sqlite3
+      - typebox
+      - typescript
+      - zod
+
+  '@patchsmith/vite@0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+    dependencies:
+      '@patchsmith/app': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      cosmiconfig: 10.0.1
+      valibot: 1.5.0(typescript@7.0.2)
+      vite: '@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
+    transitivePeerDependencies:
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@xata.io/client'
+      - arktype
+      - better-sqlite3
+      - bun-types
+      - effect
+      - expo-sqlite
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - preact
+      - sql.js
+      - sqlite3
+      - typebox
+      - typescript
+      - zod
 
   '@polka/url@1.0.0-next.29': {}
 
@@ -8282,488 +8422,6 @@ snapshots:
   '@swc/helpers@0.5.23':
     dependencies:
       tslib: 2.8.1
-
-  '@tailorkit/app-db@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)':
-    dependencies:
-      drizzle-orm: 1.0.0-rc.4-5d5b77c(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - arktype
-      - better-sqlite3
-      - bun-types
-      - effect
-      - expo-sqlite
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - sql.js
-      - sqlite3
-      - typebox
-      - valibot
-      - zod
-
-  '@tailorkit/app@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
-    dependencies:
-      '@nanostores/preact': 1.1.1(nanostores@1.5.5)(preact@11.0.1)
-      '@orpc/client': 2.0.0-beta.40
-      '@orpc/contract': 2.0.0-beta.40
-      '@standard-schema/spec': 1.1.0
-      '@tailorkit/app-db': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
-      nanostores: 1.5.5
-      preact: 11.0.1
-      valibot: 1.5.0(typescript@7.0.2)
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - arktype
-      - better-sqlite3
-      - bun-types
-      - effect
-      - expo-sqlite
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - sql.js
-      - sqlite3
-      - typebox
-      - typescript
-      - zod
-
-  '@tailorkit/cli@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)':
-    dependencies:
-      '@ai-sdk/tui': 1.0.138(zod@4.6.7)
-      '@clack/prompts': 1.8.1
-      '@orpc/client': 2.0.0-beta.40
-      '@tailorkit/client-platform': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/vite': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.1.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      ai: 7.0.142(zod@4.6.7)
-      cac: 7.1.0
-      jose: 6.2.12
-      liquidjs: 10.30.0
-      picocolors: 1.1.1
-      valibot: 1.5.0(typescript@7.0.2)
-      vite: '@voidzero-dev/vite-plus-core@1.1.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
-      zod: 4.6.7
-    transitivePeerDependencies:
-      - '@arethetypeswrong/core'
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/node'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@typescript/native-preview'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@vitejs/devtools'
-      - '@volar/typescript'
-      - '@vue/language-core'
-      - '@xata.io/client'
-      - arktype
-      - better-sqlite3
-      - bun-types
-      - crossws
-      - effect
-      - esbuild
-      - expo-sqlite
-      - fastify
-      - jiti
-      - less
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - preact
-      - publint
-      - sass
-      - sass-embedded
-      - sql.js
-      - sqlite3
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - typebox
-      - typescript
-      - unplugin-unused
-      - unrun
-      - vue-tsc
-      - yaml
-
-  '@tailorkit/client-core@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
-    dependencies:
-      '@nanostores/async': 0.1.0(nanostores@1.5.5)
-      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/sandbox': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      nanostores: 1.5.5
-      valibot: 1.5.0(typescript@7.0.2)
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - arktype
-      - better-sqlite3
-      - bun-types
-      - crossws
-      - effect
-      - expo-sqlite
-      - fastify
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - preact
-      - sql.js
-      - sqlite3
-      - typebox
-      - typescript
-      - zod
-
-  '@tailorkit/client-platform@0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)':
-    dependencies:
-      '@orpc/client': 2.0.0-beta.40
-      ai: 7.0.142(zod@4.6.7)
-      valibot: 1.5.0(typescript@7.0.2)
-    transitivePeerDependencies:
-      - typescript
-      - zod
-
-  '@tailorkit/core@0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)':
-    dependencies:
-      '@orpc/client': 2.0.0-beta.40
-      '@orpc/contract': 2.0.0-beta.40
-      '@orpc/server': 2.0.0-beta.40
-      '@standard-schema/spec': 1.1.0
-      '@tailorkit/client-platform': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
-      valibot: 1.5.0(typescript@7.0.2)
-    optionalDependencies:
-      zod: 4.6.7
-    transitivePeerDependencies:
-      - crossws
-      - fastify
-      - typescript
-
-  '@tailorkit/react@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
-    dependencies:
-      '@floating-ui/react-dom': 2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@nanostores/react': 2.0.1(nanostores@1.5.5)(react@19.3.1)
-      '@standard-schema/spec': 1.1.0
-      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/client-core': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/client-platform': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/sandbox': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      nanostores: 1.5.5
-      react: 19.3.1
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - arktype
-      - better-sqlite3
-      - bun-types
-      - crossws
-      - effect
-      - expo-sqlite
-      - fastify
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - preact
-      - react-dom
-      - sql.js
-      - sqlite3
-      - typebox
-      - typescript
-      - zod
-
-  '@tailorkit/sandbox@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
-    dependencies:
-      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
-      valibot: 1.5.0(typescript@7.0.2)
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - arktype
-      - better-sqlite3
-      - bun-types
-      - crossws
-      - effect
-      - expo-sqlite
-      - fastify
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - preact
-      - sql.js
-      - sqlite3
-      - typebox
-      - typescript
-      - zod
-
-  '@tailorkit/vite@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.1.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
-    dependencies:
-      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      cosmiconfig: 10.0.1
-      valibot: 1.5.0(typescript@7.0.2)
-      vite: '@voidzero-dev/vite-plus-core@1.1.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - arktype
-      - better-sqlite3
-      - bun-types
-      - effect
-      - expo-sqlite
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - preact
-      - sql.js
-      - sqlite3
-      - typebox
-      - typescript
-      - zod
-
-  '@tailorkit/vite@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
-    dependencies:
-      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      cosmiconfig: 10.0.1
-      valibot: 1.5.0(typescript@7.0.2)
-      vite: '@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - arktype
-      - better-sqlite3
-      - bun-types
-      - effect
-      - expo-sqlite
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - preact
-      - sql.js
-      - sqlite3
-      - typebox
-      - typescript
-      - zod
-
-  '@tailorkit/vite@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
-    dependencies:
-      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      cosmiconfig: 10.0.1
-      valibot: 1.5.0(typescript@7.0.2)
-      vite: '@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
-    transitivePeerDependencies:
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@xata.io/client'
-      - arktype
-      - better-sqlite3
-      - bun-types
-      - effect
-      - expo-sqlite
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - preact
-      - sql.js
-      - sqlite3
-      - typebox
-      - typescript
-      - zod
 
   '@tailwindcss/node@4.3.3':
     dependencies:
@@ -9126,6 +8784,10 @@ snapshots:
     optionalDependencies:
       d3-selection: 3.0.0
       d3-transition: 3.0.1(d3-selection@3.0.0)
+
+  '@valibot/to-json-schema@1.8.0(valibot@1.5.0(typescript@7.0.2))':
+    dependencies:
+      valibot: 1.5.0(typescript@7.0.2)
 
   '@vercel/backends@19.0.3(@emnapi/core@1.11.3)(@emnapi/runtime@1.11.3)(@vercel/build-utils@14.21.3)(supports-color@7.2.0)':
     dependencies:
@@ -9766,31 +9428,6 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.2.0
 
-  '@voidzero-dev/vite-plus-core@1.1.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)':
-    dependencies:
-      '@oxc-project/runtime': 0.153.0
-      '@oxc-project/types': 0.153.0
-      lightningcss: 1.33.0
-      postcss: 8.5.30
-      yuku-codegen: 0.9.5
-      yuku-parser: 0.9.5
-    optionalDependencies:
-      '@types/node': 26.6.5
-      '@voidzero-dev/vite-plus-darwin-arm64': 1.1.0
-      '@voidzero-dev/vite-plus-darwin-x64': 1.1.0
-      '@voidzero-dev/vite-plus-linux-arm64-gnu': 1.1.0
-      '@voidzero-dev/vite-plus-linux-arm64-musl': 1.1.0
-      '@voidzero-dev/vite-plus-linux-x64-gnu': 1.1.0
-      '@voidzero-dev/vite-plus-linux-x64-musl': 1.1.0
-      '@voidzero-dev/vite-plus-win32-arm64-msvc': 1.1.0
-      '@voidzero-dev/vite-plus-win32-x64-msvc': 1.1.0
-      esbuild: 0.28.2
-      fsevents: 2.3.3
-      jiti: 2.7.0
-      tsx: 4.23.15
-      typescript: 7.0.2
-      yaml: 2.9.1
-
   '@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)':
     dependencies:
       '@oxc-project/runtime': 0.154.0
@@ -9839,49 +9476,25 @@ snapshots:
       typescript: 7.0.2
       yaml: 2.9.1
 
-  '@voidzero-dev/vite-plus-darwin-arm64@1.1.0':
-    optional: true
-
   '@voidzero-dev/vite-plus-darwin-arm64@1.3.0':
-    optional: true
-
-  '@voidzero-dev/vite-plus-darwin-x64@1.1.0':
     optional: true
 
   '@voidzero-dev/vite-plus-darwin-x64@1.3.0':
     optional: true
 
-  '@voidzero-dev/vite-plus-linux-arm64-gnu@1.1.0':
-    optional: true
-
   '@voidzero-dev/vite-plus-linux-arm64-gnu@1.3.0':
-    optional: true
-
-  '@voidzero-dev/vite-plus-linux-arm64-musl@1.1.0':
     optional: true
 
   '@voidzero-dev/vite-plus-linux-arm64-musl@1.3.0':
     optional: true
 
-  '@voidzero-dev/vite-plus-linux-x64-gnu@1.1.0':
-    optional: true
-
   '@voidzero-dev/vite-plus-linux-x64-gnu@1.3.0':
-    optional: true
-
-  '@voidzero-dev/vite-plus-linux-x64-musl@1.1.0':
     optional: true
 
   '@voidzero-dev/vite-plus-linux-x64-musl@1.3.0':
     optional: true
 
-  '@voidzero-dev/vite-plus-win32-arm64-msvc@1.1.0':
-    optional: true
-
   '@voidzero-dev/vite-plus-win32-arm64-msvc@1.3.0':
-    optional: true
-
-  '@voidzero-dev/vite-plus-win32-x64-msvc@1.1.0':
     optional: true
 
   '@voidzero-dev/vite-plus-win32-x64-msvc@1.3.0':
@@ -9890,42 +9503,6 @@ snapshots:
   '@workflow/serde@4.1.0': {}
 
   '@workflow/serde@4.1.0-beta.2': {}
-
-  '@yuku-codegen/binding-android-arm64@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-darwin-arm64@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-darwin-x64@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-freebsd-x64@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-linux-arm-gnu@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-linux-arm-musl@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-linux-arm64-gnu@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-linux-arm64-musl@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-linux-x64-gnu@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-linux-x64-musl@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-win32-arm64@0.9.5':
-    optional: true
-
-  '@yuku-codegen/binding-win32-x64@0.9.5':
-    optional: true
 
   '@yuku-core/binding-android-arm64@0.19.0':
     optional: true
@@ -9963,45 +9540,7 @@ snapshots:
   '@yuku-core/binding-win32-x64@0.19.0':
     optional: true
 
-  '@yuku-parser/binding-android-arm64@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-darwin-arm64@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-darwin-x64@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-freebsd-x64@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-linux-arm-gnu@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-linux-arm-musl@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-linux-arm64-gnu@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-linux-arm64-musl@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-linux-x64-gnu@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-linux-x64-musl@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-win32-arm64@0.9.5':
-    optional: true
-
-  '@yuku-parser/binding-win32-x64@0.9.5':
-    optional: true
-
   '@yuku-toolchain/types@0.19.0': {}
-
-  '@yuku-toolchain/types@0.9.5': {}
 
   abbrev@3.0.1: {}
 
@@ -10012,20 +9551,6 @@ snapshots:
   acorn@8.18.0: {}
 
   agent-base@7.1.4: {}
-
-  ai@7.0.137(zod@4.6.7):
-    dependencies:
-      '@ai-sdk/gateway': 4.0.110(zod@4.6.7)
-      '@ai-sdk/provider': 4.0.26
-      '@ai-sdk/provider-utils': 5.0.58(zod@4.6.7)
-      zod: 4.6.7
-
-  ai@7.0.142(zod@4.6.7):
-    dependencies:
-      '@ai-sdk/gateway': 4.0.115(zod@4.6.7)
-      '@ai-sdk/provider': 4.0.28
-      '@ai-sdk/provider-utils': 5.0.61(zod@4.6.7)
-      zod: 4.6.7
 
   ai@7.0.143(zod@4.6.7):
     dependencies:
@@ -10659,6 +10184,10 @@ snapshots:
       - bare-abort-controller
 
   eventsource-parser@3.1.1: {}
+
+  eventsource@3.0.7:
+    dependencies:
+      eventsource-parser: 3.1.1
 
   execa@3.2.0:
     dependencies:
@@ -11997,6 +11526,158 @@ snapshots:
     dependencies:
       entities: 6.0.1
 
+  patchsmith@0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
+    dependencies:
+      '@patchsmith/ai-sdk': 0.1.0-beta.53(ai@7.0.143(zod@4.6.7))(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app-db': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+      '@patchsmith/cli': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
+      '@patchsmith/core': 0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/react': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/vite': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+    optionalDependencies:
+      ai: 7.0.143(zod@4.6.7)
+      valibot: 1.5.0(typescript@7.0.2)
+      zod: 4.6.7
+    transitivePeerDependencies:
+      - '@arethetypeswrong/core'
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/node'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@typescript/native-preview'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@vitejs/devtools'
+      - '@volar/typescript'
+      - '@vue/language-core'
+      - '@xata.io/client'
+      - better-sqlite3
+      - bun-types
+      - crossws
+      - effect
+      - esbuild
+      - expo-sqlite
+      - fastify
+      - jiti
+      - less
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - preact
+      - publint
+      - react
+      - react-dom
+      - sass
+      - sass-embedded
+      - sql.js
+      - sqlite3
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - typebox
+      - typescript
+      - unplugin-unused
+      - unrun
+      - vite
+      - vue-tsc
+      - yaml
+
+  patchsmith@0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
+    dependencies:
+      '@patchsmith/ai-sdk': 0.1.0-beta.53(ai@7.0.143(zod@4.6.7))(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app-db': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+      '@patchsmith/cli': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
+      '@patchsmith/core': 0.1.0-beta.53(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/react': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/vite': 0.1.0-beta.53(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+    optionalDependencies:
+      ai: 7.0.143(zod@4.6.7)
+      valibot: 1.5.0(typescript@7.0.2)
+      zod: 4.6.7
+    transitivePeerDependencies:
+      - '@arethetypeswrong/core'
+      - '@aws-sdk/client-rds-data'
+      - '@cloudflare/workers-types'
+      - '@effect/sql-pg'
+      - '@electric-sql/pglite'
+      - '@libsql/client'
+      - '@libsql/client-wasm'
+      - '@neondatabase/serverless'
+      - '@op-engineering/op-sqlite'
+      - '@opentelemetry/api'
+      - '@planetscale/database'
+      - '@sinclair/typebox'
+      - '@sqlitecloud/drivers'
+      - '@tidbcloud/serverless'
+      - '@tursodatabase/database'
+      - '@tursodatabase/database-common'
+      - '@tursodatabase/database-wasm'
+      - '@types/better-sqlite3'
+      - '@types/mssql'
+      - '@types/node'
+      - '@types/pg'
+      - '@types/sql.js'
+      - '@typescript/native-preview'
+      - '@upstash/redis'
+      - '@vercel/postgres'
+      - '@vitejs/devtools'
+      - '@volar/typescript'
+      - '@vue/language-core'
+      - '@xata.io/client'
+      - better-sqlite3
+      - bun-types
+      - crossws
+      - effect
+      - esbuild
+      - expo-sqlite
+      - fastify
+      - jiti
+      - less
+      - mssql
+      - mysql2
+      - pg
+      - postgres
+      - preact
+      - publint
+      - react
+      - react-dom
+      - sass
+      - sass-embedded
+      - sql.js
+      - sqlite3
+      - stylus
+      - sugarss
+      - terser
+      - tsx
+      - typebox
+      - typescript
+      - unplugin-unused
+      - unrun
+      - vite
+      - vue-tsc
+      - yaml
+
   path-browserify@1.0.1: {}
 
   path-data-parser@0.1.0: {}
@@ -12578,154 +12259,6 @@ snapshots:
       use-sync-external-store: 1.7.0(react@19.3.1)
 
   tagged-tag@1.0.0: {}
-
-  tailorkit@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
-    dependencies:
-      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/app-db': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
-      '@tailorkit/cli': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
-      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/react': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/vite': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-    optionalDependencies:
-      valibot: 1.5.0(typescript@7.0.2)
-      zod: 4.6.7
-    transitivePeerDependencies:
-      - '@arethetypeswrong/core'
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/node'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@typescript/native-preview'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@vitejs/devtools'
-      - '@volar/typescript'
-      - '@vue/language-core'
-      - '@xata.io/client'
-      - better-sqlite3
-      - bun-types
-      - crossws
-      - effect
-      - esbuild
-      - expo-sqlite
-      - fastify
-      - jiti
-      - less
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - preact
-      - publint
-      - react
-      - react-dom
-      - sass
-      - sass-embedded
-      - sql.js
-      - sqlite3
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - typebox
-      - typescript
-      - unplugin-unused
-      - unrun
-      - vite
-      - vue-tsc
-      - yaml
-
-  tailorkit@0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
-    dependencies:
-      '@tailorkit/app': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/app-db': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
-      '@tailorkit/cli': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
-      '@tailorkit/core': 0.1.0-beta.51(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/react': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
-      '@tailorkit/vite': 0.1.0-beta.51(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-    optionalDependencies:
-      valibot: 1.5.0(typescript@7.0.2)
-      zod: 4.6.7
-    transitivePeerDependencies:
-      - '@arethetypeswrong/core'
-      - '@aws-sdk/client-rds-data'
-      - '@cloudflare/workers-types'
-      - '@effect/sql-pg'
-      - '@electric-sql/pglite'
-      - '@libsql/client'
-      - '@libsql/client-wasm'
-      - '@neondatabase/serverless'
-      - '@op-engineering/op-sqlite'
-      - '@opentelemetry/api'
-      - '@planetscale/database'
-      - '@sinclair/typebox'
-      - '@sqlitecloud/drivers'
-      - '@tidbcloud/serverless'
-      - '@tursodatabase/database'
-      - '@tursodatabase/database-common'
-      - '@tursodatabase/database-wasm'
-      - '@types/better-sqlite3'
-      - '@types/mssql'
-      - '@types/node'
-      - '@types/pg'
-      - '@types/sql.js'
-      - '@typescript/native-preview'
-      - '@upstash/redis'
-      - '@vercel/postgres'
-      - '@vitejs/devtools'
-      - '@volar/typescript'
-      - '@vue/language-core'
-      - '@xata.io/client'
-      - better-sqlite3
-      - bun-types
-      - crossws
-      - effect
-      - esbuild
-      - expo-sqlite
-      - fastify
-      - jiti
-      - less
-      - mssql
-      - mysql2
-      - pg
-      - postgres
-      - preact
-      - publint
-      - react
-      - react-dom
-      - sass
-      - sass-embedded
-      - sql.js
-      - sqlite3
-      - stylus
-      - sugarss
-      - terser
-      - tsx
-      - typebox
-      - typescript
-      - unplugin-unused
-      - unrun
-      - vite
-      - vue-tsc
-      - yaml
 
   tailwind-merge@3.7.0: {}
 
@@ -13322,27 +12855,6 @@ snapshots:
       buffer-crc32: 0.2.13
       fd-slicer: 1.1.0
 
-  yuku-ast@0.9.5:
-    dependencies:
-      '@yuku-toolchain/types': 0.9.5
-
-  yuku-codegen@0.9.5:
-    dependencies:
-      '@yuku-toolchain/types': 0.9.5
-    optionalDependencies:
-      '@yuku-codegen/binding-android-arm64': 0.9.5
-      '@yuku-codegen/binding-darwin-arm64': 0.9.5
-      '@yuku-codegen/binding-darwin-x64': 0.9.5
-      '@yuku-codegen/binding-freebsd-x64': 0.9.5
-      '@yuku-codegen/binding-linux-arm-gnu': 0.9.5
-      '@yuku-codegen/binding-linux-arm-musl': 0.9.5
-      '@yuku-codegen/binding-linux-arm64-gnu': 0.9.5
-      '@yuku-codegen/binding-linux-arm64-musl': 0.9.5
-      '@yuku-codegen/binding-linux-x64-gnu': 0.9.5
-      '@yuku-codegen/binding-linux-x64-musl': 0.9.5
-      '@yuku-codegen/binding-win32-arm64': 0.9.5
-      '@yuku-codegen/binding-win32-x64': 0.9.5
-
   yuku-core@0.19.0:
     dependencies:
       '@yuku-toolchain/types': 0.19.0
@@ -13364,24 +12876,6 @@ snapshots:
     dependencies:
       '@yuku-toolchain/types': 0.19.0
       yuku-core: 0.19.0
-
-  yuku-parser@0.9.5:
-    dependencies:
-      '@yuku-toolchain/types': 0.9.5
-      yuku-ast: 0.9.5
-    optionalDependencies:
-      '@yuku-parser/binding-android-arm64': 0.9.5
-      '@yuku-parser/binding-darwin-arm64': 0.9.5
-      '@yuku-parser/binding-darwin-x64': 0.9.5
-      '@yuku-parser/binding-freebsd-x64': 0.9.5
-      '@yuku-parser/binding-linux-arm-gnu': 0.9.5
-      '@yuku-parser/binding-linux-arm-musl': 0.9.5
-      '@yuku-parser/binding-linux-arm64-gnu': 0.9.5
-      '@yuku-parser/binding-linux-arm64-musl': 0.9.5
-      '@yuku-parser/binding-linux-x64-gnu': 0.9.5
-      '@yuku-parser/binding-linux-x64-musl': 0.9.5
-      '@yuku-parser/binding-win32-arm64': 0.9.5
-      '@yuku-parser/binding-win32-x64': 0.9.5
 
   zod@3.22.4: {}
 

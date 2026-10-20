@@ -1,5 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
-import { tools } from "#tailorkit";
+import { tools } from "#patchsmith";
 import { readMessages, type Contact, type Message } from "./messages";
 
 export function useMessages(workspaceId: string, contactId?: string) {

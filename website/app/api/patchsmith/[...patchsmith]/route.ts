@@ -1,8 +1,8 @@
-import { tailorKit } from "@/lib/tailorkit-server";
+import { patchsmith } from "@/lib/patchsmith-server";
 import { requireTenant, requireUserId } from "@/lib/workspace-session";
 
 async function handleRequest(request: Request) {
-  return tailorKit.handler(request, {
+  return patchsmith.handler(request, {
     authenticate: async () => {
       try {
         const tenant = await requireTenant();

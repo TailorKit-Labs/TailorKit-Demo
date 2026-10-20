@@ -1,5 +1,5 @@
 import { useState } from "preact/hooks";
-import { defineView } from "tailorkit/client";
+import { defineView } from "patchsmith/client";
 import {
   Alert,
   Avatar,
@@ -15,7 +15,7 @@ import {
   Spinner,
   Text,
   tools,
-} from "#tailorkit";
+} from "#patchsmith";
 import { channels, examples } from "../../messages";
 import { useMessages } from "../../use-messages";
 

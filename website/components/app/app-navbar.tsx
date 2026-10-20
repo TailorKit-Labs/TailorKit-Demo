@@ -1,6 +1,6 @@
 "use client";
 
-import { RenderSlot, useViews } from "@/lib/tailorkit-client";
+import { RenderSlot, useViews } from "@/lib/patchsmith-client";
 
 export function AppNavbar() {
   const { data: items } = useViews({ slot: "navbar" });

@@ -2,7 +2,7 @@
 
 import { FileTextIcon, MenuIcon, Settings2Icon, XIcon } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useViews } from "@/lib/tailorkit-client";
+import { useViews } from "@/lib/patchsmith-client";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
 import { Button } from "@/components/ui/button";
 import {

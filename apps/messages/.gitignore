@@ -1,8 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Patchsmith SDK build output
-.tailorkit
-tailorkit.preview.config.ts
+.patchsmith
+patchsmith.preview.config.ts
 
 # debug
 npm-debug.log*

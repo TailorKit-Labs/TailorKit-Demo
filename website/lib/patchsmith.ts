@@ -1,5 +1,5 @@
-import { defineContract, tool } from "tailorkit";
-import { primitives, type TailorKitTheme } from "tailorkit/zod";
+import { defineContract, tool } from "patchsmith";
+import { primitives, type PatchsmithTheme } from "patchsmith/zod";
 import { z } from "zod";
 import { schemas, stage, status } from "../routers/schemas";
 import type { Contact, Deal, Workspace } from "./workspace";
@@ -25,7 +25,7 @@ const serverTool = <I extends z.ZodType, O extends z.ZodType>(schema: { input: I
 
 // Pass the same theme to schema generation and the renderer so token names and
 // their runtime CSS values cannot drift. Semantic variables follow light/dark mode.
-export const tailorKitTheme = {
+export const patchsmithTheme = {
   breakpoints: {
     sm: "640px",
     md: "800px",
@@ -99,7 +99,7 @@ export const tailorKitTheme = {
       "0": "0",
     },
   },
-} satisfies TailorKitTheme;
+} satisfies PatchsmithTheme;
 
 // View metadata uses Patchsmith's restricted schema dialect. Keep fields and
 // enums aligned with tool records, without unsupported formats or size limits.
@@ -204,7 +204,7 @@ const viewPaths = Object.keys(views) as (keyof typeof views)[];
 export const contract = defineContract({
   scopes: { workspace: z.object({ workspaceId: z.string().min(1) }) },
   components: {
-    ...primitives(tailorKitTheme),
+    ...primitives(patchsmithTheme),
     Text: {
       fields: z.object({
         text,

@@ -1,5 +1,5 @@
 import { useRef, useState } from "preact/hooks";
-import { defineView } from "tailorkit/client";
+import { defineView } from "patchsmith/client";
 import {
   Alert,
   Box,
@@ -14,7 +14,7 @@ import {
   Textarea,
   tools,
   type ViewProps,
-} from "#tailorkit";
+} from "#patchsmith";
 import {
   channels,
   encodeMessage,
