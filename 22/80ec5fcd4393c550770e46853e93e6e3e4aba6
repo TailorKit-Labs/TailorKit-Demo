@@ -1,0 +1,55 @@
+README.md
+  s_31a2013e829523::t_b3fb3ddd7b9a5e 1,3-5
+apps/messages/.gitignore
+  s_31a2013e829523::t_334904fd72a979 3
+apps/messages/README.md
+  s_31a2013e829523::t_69c9fab17865c6 5,43
+apps/messages/package.json
+  s_31a2013e829523::t_966d2d322b3558 4
+package.json
+  s_31a2013e829523::t_98d1030f8b0dbd 2
+website/.env.example
+  s_31a2013e829523::t_fed2baf50715e6 13
+website/README.md
+  s_31a2013e829523::t_b6ab0f0b7ea02c 3-4,27,42,65,67,77,79,97,103,121,125,164
+website/app/layout.tsx
+  s_31a2013e829523::t_e9f32d6fbf6517 13
+website/components/app/app-sidebar.tsx
+  s_31a2013e829523::t_d857de4c3e6b91 113
+website/components/demo-setup.tsx
+  s_31a2013e829523::t_6013d53e0a5b1d 80,87,93
+website/lib/agents/crm-agent.ts
+  s_31a2013e829523::t_039bc391d12cc7 34
+website/lib/install-messages.ts
+  s_31a2013e829523::t_dc811a1dbde2b9 7
+website/lib/tailorkit-server.ts
+  s_31a2013e829523::t_d9bb301e92e569 8
+website/lib/tailorkit.ts
+  s_31a2013e829523::t_7ceca52e141cd2 13,104
+website/routers/agent.ts
+  s_31a2013e829523::t_b59c82ddeee268 45
+website/routers/context.ts
+  s_31a2013e829523::t_710e5671d313af 29,63
+website/routers/schemas.ts
+  s_31a2013e829523::t_3d1c00c80587f9 55
+website/scripts/test-agent-mcp.ts
+  s_31a2013e829523::t_8cd7bb03991f86 42,329
+website/scripts/test-provision.ts
+  s_31a2013e829523::t_6404dfcfc905ad 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2280ec5fcd4393c550770e46853e93e6e3e4aba6",
+  "prompts": {},
+  "sessions": {
+    "s_31a2013e829523": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a156ab-7014-7a73-926d-8e7550f26f75",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
