@@ -4,9 +4,7 @@ import { tenants } from "./schema";
 import { seedWorkspace } from "./seed";
 import { installMessages } from "./install-messages";
 
-// Temporarily allow seeded workspaces without installing Messages so the CLI can log in.
-// Keep them at version 1 so restoring version 2 retries the pending installation.
-export const CURRENT_SETUP_VERSION = 1;
+export const CURRENT_SETUP_VERSION = 2;
 export async function provisionForUser(
   userId: string,
   {
