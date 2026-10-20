@@ -104,8 +104,10 @@ export const agentChat = protectedProcedure
           ),
         abortSignal: signal ?? request.signal,
         timeout: AGENT_TIMEOUT_MS,
-        onError: () =>
-          "The agent could not finish this request. Please try again. Check the page before repeating a creation.",
+        onError: (error) => {
+          console.error("Agent stream failed:", error);
+          return "The agent could not finish this request. Please try again. Check the page before repeating a creation.";
+        },
       });
       const [clientStream, serverStream] = stream.tee();
       streamConsumption = consumeStream({ stream: serverStream });

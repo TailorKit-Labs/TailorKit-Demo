@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// Bound the public demo's context and reject client-supplied system instructions.
+// Bound each public request and reject client-supplied system instructions.
 export const agentRequest = z.object({
   chatId: z.uuid(),
   messages: z
