@@ -1,0 +1,43 @@
+package.json
+  s_5f7e1cabffe8e0::t_f6539cb4ad0b71 14
+website/README.md
+  s_5f7e1cabffe8e0::t_81e7b520304234 29-30,89
+website/instrumentation-client.ts
+  s_5f7e1cabffe8e0::t_3a2402814706c5 3,7-14
+website/lib/auth.ts
+  s_e4ba6afff8b44a::t_7623dd5c67cfb6 2,7,29-35
+website/lib/setup-protection.ts
+  s_e4ba6afff8b44a::t_1f4c5857f19004 1-7
+website/lib/setup-verification.ts
+  s_e4ba6afff8b44a::t_225682d957be83 1-30
+website/package.json
+  s_5f7e1cabffe8e0::t_a1f835b90435ff 21
+website/routers/workspace.ts
+  s_e4ba6afff8b44a::t_571e8aba72cb21 2,11,13-21,26
+website/scripts/test-setup-protection.ts
+  s_e4ba6afff8b44a::t_59bbd51d211494 1-170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7ad7112abb8e23688c185ffeeef16a182a68513b",
+  "prompts": {},
+  "sessions": {
+    "s_5f7e1cabffe8e0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a158a6-dcb6-7282-9710-59fcefd4947f",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_e4ba6afff8b44a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a158a6-1988-78e3-a006-6927fa5aadc6",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
