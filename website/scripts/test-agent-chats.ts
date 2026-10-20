@@ -9,6 +9,7 @@ import { agentChats, user } from "../lib/schema";
 import { provisionForUser } from "./test-provision";
 import { createCrmTools } from "../lib/agents/crm-tools";
 import { agentRequest } from "../lib/agents/agent-request";
+import { AGENT_CHAT_MAX_INPUT_BYTES } from "../lib/agents/agent-limits";
 import {
   beginAgentChat,
   finishAgentMessages,
@@ -132,15 +133,33 @@ async function main() {
     const longId = randomUUID();
     const longFirst = prompt("Start long chat");
     const longTurn = await beginAgentChat(tenant.id, longId, input(longId, [longFirst]));
-    const longHistory = Array.from({ length: 20 }, (_, i) => prompt(`Message ${i}`));
+    const longHistory = Array.from({ length: 30 }, (_, i) => prompt(`Message ${i}`));
     await saveAgentChat(longTurn, longHistory);
-    // The API schema limits requests too; exercise the store's independent cap.
-    await assert.rejects(
-      beginAgentChat(tenant.id, longId, [
-        ...input(longId, longHistory),
-        ...input(longId, [prompt("Too long")]),
-      ]),
-      { code: "PAYLOAD_TOO_LARGE" },
+    const longNext = prompt("Continue beyond 20 messages");
+    const longContinued = await beginAgentChat(tenant.id, longId, input(longId, [longNext]));
+    assert.deepEqual(longContinued.messages, [...longHistory, longNext]);
+    const largeUserHistory = Array.from({ length: 230 }, () => prompt("x".repeat(4000)));
+    assert.ok(Buffer.byteLength(JSON.stringify(largeUserHistory)) > 60000);
+    assert.ok(Buffer.byteLength(JSON.stringify(largeUserHistory)) < AGENT_CHAT_MAX_INPUT_BYTES);
+    await saveAgentChat(longTurn, largeUserHistory);
+    const largeNext = prompt("Continue below 1 MB");
+    await beginAgentChat(tenant.id, longId, input(longId, [largeNext]));
+    assert.deepEqual(
+      (await loadAgentChat(tenant.id, longId))?.messages,
+      [...largeUserHistory, largeNext],
+      "Chats larger than the former 60 KB limit must still accept new turns",
+    );
+    const oversizedHistory = Array.from({ length: 250 }, () => prompt("🙂".repeat(1000)));
+    assert.ok(Buffer.byteLength(JSON.stringify(oversizedHistory)) > AGENT_CHAT_MAX_INPUT_BYTES);
+    assert.ok(JSON.stringify(oversizedHistory).length < AGENT_CHAT_MAX_INPUT_BYTES);
+    await saveAgentChat(longTurn, oversizedHistory);
+    await assert.rejects(beginAgentChat(tenant.id, longId, input(longId, [prompt("Continue")])), {
+      code: "PAYLOAD_TOO_LARGE",
+    });
+    assert.deepEqual(
+      (await loadAgentChat(tenant.id, longId))?.messages,
+      oversizedHistory,
+      "Rejected user input must not overwrite saved history",
     );
 
     const legacyId = randomUUID();
