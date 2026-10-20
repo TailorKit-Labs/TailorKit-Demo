@@ -75,7 +75,8 @@ async function main() {
       if (request.url.startsWith("https://api.vercel.com/bot-protection/")) {
         botChecks++;
         const body = await request.json();
-        assert.equal(body.forceCheckLevel, SETUP_BOT_CHECK_LEVEL);
+        assert.equal(SETUP_BOT_CHECK_LEVEL, "basic");
+        assert.equal(body.forceCheckLevel, "basic");
         assert.ok(SETUP_PROTECTED_PATHS.some((path) => path === new URL(body.url).pathname));
         if (mode === "unavailable") throw new Error("Simulated BotID outage");
         return Response.json(mode === "invalid" ? {} : { isBot: mode === "bot" });
