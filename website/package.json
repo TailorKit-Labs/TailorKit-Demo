@@ -18,6 +18,7 @@
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
     "test:db": "tsx scripts/test-db.ts",
+    "test:setup-protection": "tsx scripts/test-setup-protection.ts",
     "test:agent": "tsx scripts/test-agent.ts",
     "test:agent-rpc": "tsx scripts/test-agent-rpc.ts",
     "test:agent-mcp": "tsx scripts/test-agent-mcp.ts",

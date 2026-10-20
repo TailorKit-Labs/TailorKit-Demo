@@ -1,4 +1,5 @@
 import { aiSdkTool } from "@orpc/ai-sdk";
+import { ORPCError } from "@orpc/server";
 import { asc, desc, eq } from "drizzle-orm";
 import { db } from "../lib/drizzle";
 import { contacts, deals, tasks, activities } from "../lib/schema";
@@ -7,13 +8,22 @@ import { schemas } from "./schemas";
 import { RECORD_LIMIT } from "./shared";
 import { provisionForUser } from "../lib/provision";
 import type { Workspace } from "../lib/workspace";
+import { verifyDemoSetup } from "../lib/setup-verification";
 
-export const provisionWorkspace = sessionProcedure.handler(async ({ context }) => {
+const setupProcedure = sessionProcedure.use(async ({ context, next }) => {
+  // Setup requires a browser request; direct server/tool clients cannot bypass BotID.
+  if (!context.request) throw new ORPCError("FORBIDDEN");
+  const failure = await verifyDemoSetup();
+  if (failure) throw new ORPCError(failure.code, { message: failure.message });
+  return next();
+});
+
+export const provisionWorkspace = setupProcedure.handler(async ({ context }) => {
   await provisionForUser(context.userId, { complete: false });
   return { success: true as const };
 });
 
-export const installWorkspaceApps = sessionProcedure.handler(async ({ context }) => {
+export const installWorkspaceApps = setupProcedure.handler(async ({ context }) => {
   await provisionForUser(context.userId);
   return { success: true as const };
 });
