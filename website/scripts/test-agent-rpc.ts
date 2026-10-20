@@ -28,7 +28,7 @@ async function main() {
   const savedEnv = {
     VERCEL: env.VERCEL,
     AI_GATEWAY_API_KEY: env.AI_GATEWAY_API_KEY,
-    TAILORKIT_PROJECT_KEY: env.TAILORKIT_PROJECT_KEY,
+    PATCHSMITH_PROJECT_KEY: env.PATCHSMITH_PROJECT_KEY,
   };
   const originalFetch = globalThis.fetch;
   const contextSymbol = Symbol.for("@vercel/request-context");
@@ -72,7 +72,7 @@ async function main() {
     const tenant = await tenantFromHeaders(new Headers({ cookie }));
     env.VERCEL = "1";
     env.AI_GATEWAY_API_KEY = "test-key-no-provider-spend";
-    delete env.TAILORKIT_PROJECT_KEY;
+    delete env.PATCHSMITH_PROJECT_KEY;
     globals[contextSymbol] = {
       get: () => ({
         url: requests.getStore()?.url,

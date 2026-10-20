@@ -5,7 +5,7 @@ import { AppMobileHeader } from "@/components/app/app-mobile-header";
 import { AppSidebar } from "@/components/app/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AgentWorkspace } from "@/components/agent/agent-workspace";
-import { TailorKitProvider, useViewContext } from "@/lib/tailorkit-client";
+import { PatchsmithProvider, useViewContext } from "@/lib/patchsmith-client";
 
 export function CrmShell({
   children,
@@ -18,7 +18,7 @@ export function CrmShell({
 }) {
   const pathname = usePathname();
   return (
-    <TailorKitProvider key={workspaceId}>
+    <PatchsmithProvider key={workspaceId}>
       <WorkspaceContext workspaceId={workspaceId} name={name} />
       <SidebarProvider
         className="h-dvh min-h-0 overflow-hidden"
@@ -46,7 +46,7 @@ export function CrmShell({
           </AgentWorkspace>
         </main>
       </SidebarProvider>
-    </TailorKitProvider>
+    </PatchsmithProvider>
   );
 }
 

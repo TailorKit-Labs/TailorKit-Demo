@@ -17,7 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { Workspace, Contact, Deal, Task } from "@/lib/workspace";
 import { orpc } from "@/lib/orpc";
-import { useViewContext } from "@/lib/tailorkit-client";
+import { useViewContext } from "@/lib/patchsmith-client";
 import {
   overviewViewContext,
   contactsViewContext,
@@ -25,7 +25,7 @@ import {
   pipelineViewContext,
   tasksViewContext,
   settingsViewContext,
-} from "@/lib/tailorkit";
+} from "@/lib/patchsmith";
 import { SectionCards } from "@/components/section-cards";
 import { DashboardTable } from "@/components/dashboard-table";
 import { RecordDialog } from "@/components/record-dialog";

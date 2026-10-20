@@ -6,7 +6,7 @@ import { BlocksIcon, MousePointer2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { RenderSlot, useViews } from "@/lib/tailorkit-client";
+import { RenderSlot, useViews } from "@/lib/patchsmith-client";
 
 export type PanelApp = NonNullable<ReturnType<typeof useViews>["data"]>[number]["app"];
 
@@ -127,7 +127,7 @@ export function AppsPanel({
           <TabsPanel
             key={app.id}
             value={app.id}
-            className="min-h-0 overflow-y-auto p-4 [&>[data-tailorkit-view]]:h-full"
+            className="min-h-0 overflow-y-auto p-4 [&>[data-patchsmith-view]]:h-full"
           >
             <RenderSlot app={app} slot="panel" />
           </TabsPanel>

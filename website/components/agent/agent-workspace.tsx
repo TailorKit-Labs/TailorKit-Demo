@@ -35,7 +35,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
-import { usePanelAction, useViews } from "@/lib/tailorkit-client";
+import { usePanelAction, useViews } from "@/lib/patchsmith-client";
 
 export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();

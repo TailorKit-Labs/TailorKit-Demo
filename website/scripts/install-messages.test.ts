@@ -1,10 +1,10 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { defineContract } from "tailorkit";
-import { createServer } from "tailorkit/server";
-import messagesConfig from "../../apps/messages/tailorkit.config";
+import { defineContract } from "patchsmith";
+import { createServer } from "patchsmith/server";
+import messagesConfig from "../../apps/messages/patchsmith.config";
 import { installMessages } from "../lib/install-messages";
-import { contract } from "../lib/tailorkit";
+import { contract } from "../lib/patchsmith";
 
 const appId = "app-shared-messages";
 const scope = { name: "workspace", value: { workspaceId: "test-workspace" } };
@@ -22,7 +22,7 @@ function platform({ projectKey = "test-key", fail = false } = {}) {
   // Exercise the real SDK transport and the host's workspace scope validator.
   const server = createServer({
     contract: defineContract({ scopes: contract.scopes, components: {} }),
-    baseUrl: "http://localhost:3000/api/tailorkit",
+    baseUrl: "http://localhost:3000/api/patchsmith",
     projectKey,
     $internal: { platformFetch: request },
   });
@@ -77,7 +77,7 @@ void test("missing source app ID, project key or workspace fails before network 
   const { installApp, calls } = platform({ projectKey: "" });
   await assert.rejects(
     installMessages("test-workspace", { appId: "", installApp }),
-    /apps\/messages\/tailorkit\.config\.ts/,
+    /apps\/messages\/patchsmith\.config\.ts/,
   );
   await assert.rejects(installMessages("test-workspace", { appId, installApp }), /projectKey/);
   const configured = platform();

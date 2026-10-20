@@ -1,14 +1,14 @@
-import type { TailorKitConfig } from "tailorkit/app/config";
+import type { PatchsmithConfig } from "patchsmith/app/config";
 
 const config = {
   appId: "495fe61f-f98c-4dd2-b42a-fbbb1e610289",
   name: "Messages",
   slug: "messages",
-  host: "https://demo.tailorkit.dev/api/tailorkit",
+  host: "https://demo.patchsmith.io/api/patchsmith",
   logos: {
     dark: "logo-dark.svg",
     light: "logo-light.svg",
   },
-} satisfies TailorKitConfig;
+} satisfies PatchsmithConfig;
 
 export default config;

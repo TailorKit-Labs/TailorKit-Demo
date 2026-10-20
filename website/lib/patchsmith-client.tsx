@@ -5,8 +5,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { orpc } from "./orpc";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { createClient, primitives } from "tailorkit/react";
-import { contract, tailorKitTheme } from "./tailorkit";
+import { createClient, primitives } from "patchsmith/react";
+import { contract, patchsmithTheme } from "./patchsmith";
 import { toastManager } from "@/components/ui/toast";
 
 import { cn } from "@/lib/utils";
@@ -86,18 +86,18 @@ type HostAction =
   | { type: "open-panel"; appId: string }
   | { type: "refresh" }
   | { type: "theme"; theme: "light" | "dark" | "system" };
-const hostActionEvent = "tailorkit:host-action";
+const hostActionEvent = "patchsmith:host-action";
 function dispatch(action: HostAction) {
   const detail = { action, handled: false };
   window.dispatchEvent(new CustomEvent(hostActionEvent, { detail }));
   if (!detail.handled) throw new Error("The workspace is not ready. Please try again.");
 }
 
-export const tailorKitClient = createClient({
+export const patchsmithClient = createClient({
   contract,
-  theme: tailorKitTheme,
+  theme: patchsmithTheme,
   baseUrl: new URL(
-    "/api/tailorkit",
+    "/api/patchsmith",
     typeof window === "undefined" ? "http://localhost:3000" : window.location.origin,
   ),
   components: {
@@ -341,7 +341,7 @@ export const tailorKitClient = createClient({
   },
 });
 
-export function TailorKitProvider({ children }: { children: ReactNode }) {
+export function PatchsmithProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { setTheme } = useTheme();
@@ -365,7 +365,7 @@ export function TailorKitProvider({ children }: { children: ReactNode }) {
     window.addEventListener(hostActionEvent, handle);
     return () => window.removeEventListener(hostActionEvent, handle);
   }, [router, setTheme, queryClient]);
-  return <tailorKitClient.Provider>{children}</tailorKitClient.Provider>;
+  return <patchsmithClient.Provider>{children}</patchsmithClient.Provider>;
 }
 
 export function usePanelAction(openApp: (appId: string) => void) {
@@ -381,4 +381,4 @@ export function usePanelAction(openApp: (appId: string) => void) {
   }, [openApp]);
 }
 
-export const { RenderSlot, useViews, useViewContext } = tailorKitClient;
+export const { RenderSlot, useViews, useViewContext } = patchsmithClient;

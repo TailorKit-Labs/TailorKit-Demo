@@ -1,7 +1,7 @@
 "use client";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ArrowUpRightFromSquareIcon, CommandIcon, FileTextIcon, Settings2Icon } from "lucide-react";
-import { useViews } from "@/lib/tailorkit-client";
+import { useViews } from "@/lib/patchsmith-client";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
 import {
   Sidebar,

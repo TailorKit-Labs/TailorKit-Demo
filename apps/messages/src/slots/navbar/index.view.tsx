@@ -1,6 +1,6 @@
 import { useState } from "preact/hooks";
-import { defineView } from "tailorkit/client";
-import { Button, tools } from "#tailorkit";
+import { defineView } from "patchsmith/client";
+import { Button, tools } from "#patchsmith";
 
 function MessageButton() {
   const [opening, setOpening] = useState(false);

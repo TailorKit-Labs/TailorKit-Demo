@@ -1,12 +1,12 @@
 import { defineConfig, lazyPlugins } from "vite-plus";
-import { tailorkit } from "tailorkit/vite";
+import { patchsmith } from "patchsmith/vite";
 
 export default defineConfig({
-  plugins: lazyPlugins(() => [tailorkit()]),
+  plugins: lazyPlugins(() => [patchsmith()]),
   lint: {
-    ignorePatterns: ["src/tailorkit.gen.ts", ".tailorkit/**"],
+    ignorePatterns: ["src/patchsmith.gen.ts", ".patchsmith/**"],
   },
   fmt: {
-    ignorePatterns: ["src/tailorkit.gen.ts", ".tailorkit/**"],
+    ignorePatterns: ["src/patchsmith.gen.ts", ".patchsmith/**"],
   },
 });

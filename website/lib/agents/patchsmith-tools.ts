@@ -1,14 +1,14 @@
 import type { ToolSet } from "ai";
 import { createMCPClient } from "@ai-sdk/mcp";
-import { tailorKit } from "../tailorkit-server";
+import { patchsmith } from "../patchsmith-server";
 
-export async function connectTailorKitTools(
+export async function connectPatchsmithTools(
   tenant: { id: string },
   subjectId: string,
   signal: AbortSignal,
 ): Promise<{ tools: ToolSet; close: () => Promise<void> } | undefined> {
-  if (!process.env.TAILORKIT_PROJECT_KEY) return undefined;
-  const transport = await tailorKit.mcp.transport({
+  if (!process.env.PATCHSMITH_PROJECT_KEY) return undefined;
+  const transport = await patchsmith.mcp.transport({
     subjectId,
     scopes: { workspace: { workspaceId: tenant.id } },
   });
@@ -46,7 +46,7 @@ export async function connectTailorKitTools(
     // Prefix remote names so they cannot replace the CRM's tools.
     return {
       tools: Object.fromEntries(
-        Object.entries(tools).map(([name, tool]) => [`tailorkit_${name}`, tool]),
+        Object.entries(tools).map(([name, tool]) => [`patchsmith_${name}`, tool]),
       ),
       close: () => client.close(),
     };
