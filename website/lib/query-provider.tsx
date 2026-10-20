@@ -12,9 +12,13 @@ export function QueryProvider({ children }: { children: ReactNode }) {
     <QueryClientProvider client={queryClient}>
       <Suspense
         fallback={
-          <p role="status" className="p-6 text-sm text-muted-foreground">
-            Loading workspace…
-          </p>
+          <div role="status" className="flex h-dvh overflow-hidden bg-sidebar">
+            <span className="sr-only">Loading workspace…</span>
+            <div aria-hidden="true" className="hidden w-[17rem] shrink-0 min-[800px]:block" />
+            <div aria-hidden="true" className="flex min-w-0 flex-1 max-[799px]:pt-14 md:p-2">
+              <div className="min-w-0 flex-1 bg-background md:rounded-2xl md:border md:shadow-xs" />
+            </div>
+          </div>
         }
       >
         {children}
