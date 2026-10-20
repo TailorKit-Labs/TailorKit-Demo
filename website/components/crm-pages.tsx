@@ -203,11 +203,8 @@ function DeleteButton({
 }
 export function PageHeading({ title, children }: { title: string; children?: React.ReactNode }) {
   return (
-    <AppPageHeading>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
-        {children}
-      </div>
+    <AppPageHeading actions={children}>
+      <h1 className="text-xl font-semibold tracking-tight">{title}</h1>
     </AppPageHeading>
   );
 }

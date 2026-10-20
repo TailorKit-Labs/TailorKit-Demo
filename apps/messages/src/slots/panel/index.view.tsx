@@ -3,6 +3,7 @@ import { defineView } from "patchsmith/client";
 import {
   Alert,
   Avatar,
+  Box,
   Button,
   Empty,
   Flex,
@@ -12,7 +13,7 @@ import {
   Pressable,
   Select,
   Separator,
-  Spinner,
+  Skeleton,
   Text,
   tools,
 } from "#patchsmith";
@@ -20,6 +21,40 @@ import { channels, examples } from "../../messages";
 import { useMessages } from "../../use-messages";
 
 const view = defineView({ view: "/", component: Inbox });
+
+function InboxSkeleton() {
+  return (
+    <Flex direction="column" gap="none">
+      {["first", "second", "third"].map((row) => (
+        <Flex key={row} direction="column" gap="none">
+          <Flex align="center" gap="sm" padding="md">
+            <Box width="avatar" height="avatar" radius="full" overflow="hidden" shrink="0">
+              <Skeleton />
+              <Skeleton />
+            </Box>
+            <Flex direction="column" gap="xs" grow="1" minWidth="0">
+              <Flex gap="lg" align="center">
+                <Box grow="1">
+                  <Skeleton />
+                </Box>
+                <Box width="control">
+                  <Skeleton />
+                </Box>
+              </Flex>
+              <Flex>
+                <Box grow="1">
+                  <Skeleton />
+                </Box>
+                <Box width="avatar" />
+              </Flex>
+            </Flex>
+          </Flex>
+          <Separator />
+        </Flex>
+      ))}
+    </Flex>
+  );
+}
 
 function Inbox() {
   const context = view.useContext();
@@ -57,77 +92,72 @@ function Inbox() {
         <Heading text="Messages" level="h2" />
         <Button label="New message" size="sm" onClick={() => navigate("/contacts")} />
       </Flex>
-      {loading ? <Spinner label="Loading your inbox" /> : null}
       {error ? (
         <Flex direction="column" gap="sm">
           <Alert title="Something went wrong" description={error} variant="error" />
           <Button label="Reload inbox" variant="outline" onClick={reload} />
         </Flex>
       ) : null}
-      {!loading ? (
-        <>
-          <Grid columns={2} gap="sm">
-            <Input
-              label="Search"
-              type="search"
-              value={query}
-              placeholder="Search inbox…"
-              onChange={({ value }) => setQuery(value)}
-            />
-            <Select
-              label="Channel"
-              value={filter}
-              options={["All channels", ...channels].map((value) => ({ label: value, value }))}
-              onChange={({ value }) => setFilter(value)}
-            />
-          </Grid>
-          {threads.length === 0 ? (
-            <Empty
-              title={
-                contacts.length === 0 ? "Add a contact to get started" : "No conversations found"
-              }
-            />
-          ) : (
-            <Flex direction="column" gap="none">
-              <Separator />
-              {threads.map(({ contact, latest, hasSent }) => {
-                const preview = `${hasSent ? "You: " : ""}${latest.body}`.replace(/\s+/g, " ");
-                return (
-                  <Flex key={contact.id} direction="column" gap="none">
-                    <Pressable
-                      ariaLabel={`Message ${contact.name}`}
-                      layout="flex"
-                      align="center"
-                      gap="sm"
-                      padding="md"
-                      background={{
-                        default: "transparent",
-                        ":hover": "muted",
-                        ":active": "accent",
-                      }}
-                      width="100%"
-                      onPress={() => navigate(`/contacts/${contact.id}`)}
-                    >
-                      <Avatar name={contact.name} />
-                      <Flex direction="column" gap="xs" grow="1" minWidth="0">
-                        <Flex justify="between" align="center" gap="sm">
-                          <Text text={contact.name} size="sm" />
-                          <Text text={latest.channel} size="xs" tone="muted" />
-                        </Flex>
-                        <Text
-                          text={preview.length > 48 ? `${preview.slice(0, 48)}…` : preview}
-                          size="sm"
-                          tone="muted"
-                        />
-                      </Flex>
-                    </Pressable>
-                    <Separator />
+      <Grid columns={2} gap="sm">
+        <Input
+          label="Search"
+          type="search"
+          value={query}
+          placeholder="Search inbox…"
+          onChange={({ value }) => setQuery(value)}
+        />
+        <Select
+          label="Channel"
+          value={filter}
+          options={["All channels", ...channels].map((value) => ({ label: value, value }))}
+          onChange={({ value }) => setFilter(value)}
+        />
+      </Grid>
+      {loading ? <InboxSkeleton /> : null}
+      {!loading && !error && threads.length === 0 ? (
+        <Empty
+          title={contacts.length === 0 ? "Add a contact to get started" : "No conversations found"}
+        />
+      ) : null}
+      {!loading && threads.length > 0 ? (
+        <Flex direction="column" gap="none">
+          <Separator />
+          {threads.map(({ contact, latest, hasSent }) => {
+            const preview = `${hasSent ? "You: " : ""}${latest.body}`.replace(/\s+/g, " ");
+            return (
+              <Flex key={contact.id} direction="column" gap="none">
+                <Pressable
+                  ariaLabel={`Message ${contact.name}`}
+                  layout="flex"
+                  align="center"
+                  gap="sm"
+                  padding="md"
+                  background={{
+                    default: "transparent",
+                    ":hover": "muted",
+                    ":active": "accent",
+                  }}
+                  width="100%"
+                  onPress={() => navigate(`/contacts/${contact.id}`)}
+                >
+                  <Avatar name={contact.name} />
+                  <Flex direction="column" gap="xs" grow="1" minWidth="0">
+                    <Flex justify="between" align="center" gap="sm">
+                      <Text text={contact.name} size="sm" />
+                      <Text text={latest.channel} size="xs" tone="muted" />
+                    </Flex>
+                    <Text
+                      text={preview.length > 48 ? `${preview.slice(0, 48)}…` : preview}
+                      size="sm"
+                      tone="muted"
+                    />
                   </Flex>
-                );
-              })}
-            </Flex>
-          )}
-        </>
+                </Pressable>
+                <Separator />
+              </Flex>
+            );
+          })}
+        </Flex>
       ) : null}
     </Flex>
   );
