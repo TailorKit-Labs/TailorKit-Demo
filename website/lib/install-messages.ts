@@ -4,7 +4,7 @@ type InstallApp = typeof import("./tailorkit-server").tailorKit.experimental.ins
 type InstallOptions = { appId?: string; installApp?: InstallApp };
 
 // Provisioning supplies a session-derived workspace ID under its database lock.
-// The shared source app is published separately with the TailorKit CLI.
+// The shared source app is published separately with the Patchsmith CLI.
 export async function installMessages(workspaceId: string, options: InstallOptions = {}) {
   const appId = options.appId ?? messagesConfig.appId;
   if (!appId?.trim())

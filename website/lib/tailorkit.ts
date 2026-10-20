@@ -10,7 +10,7 @@ const siteHref = z
     /^\/(?:contacts(?:\/[A-Za-z0-9-]+)?|pipeline|tasks|settings|app-pages\/(?!(?:\.|%2[eE]){1,2}\?)(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+\?instance=(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+)?$/,
     "Choose a CRM page, contact detail URL, or app page URL.",
   );
-// Component metadata uses TailorKit's restricted JSON Schema dialect. Refinements
+// Component metadata uses Patchsmith's restricted JSON Schema dialect. Refinements
 // preserve runtime limits without emitting unsupported string-length keywords.
 const text = z.string().refine((value) => value.length <= 4000, "Maximum 4000 characters.");
 const label = z
@@ -101,7 +101,7 @@ export const tailorKitTheme = {
   },
 } satisfies TailorKitTheme;
 
-// View metadata uses TailorKit's restricted schema dialect. Keep fields and
+// View metadata uses Patchsmith's restricted schema dialect. Keep fields and
 // enums aligned with tool records, without unsupported formats or size limits.
 const contact = z.object({
   id: z.string(),

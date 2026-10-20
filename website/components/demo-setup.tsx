@@ -77,20 +77,20 @@ export function DemoSetup() {
       <div className="flex w-full max-w-md flex-col gap-8">
         <div className="flex items-center justify-center gap-2">
           <Image
-            src="/brand/tailorkit-mark-light.svg"
+            src="/brand/patchsmith-mark-light.svg"
             alt=""
             width={24}
             height={24}
             className="shrink-0 dark:hidden"
           />
           <Image
-            src="/brand/tailorkit-mark-dark.svg"
+            src="/brand/patchsmith-mark-dark.svg"
             alt=""
             width={24}
             height={24}
             className="hidden shrink-0 dark:block"
           />
-          <span className="text-xl font-semibold tracking-tight">TailorKit</span>
+          <span className="text-xl font-semibold tracking-tight">Patchsmith</span>
         </div>
         <Card>
           <CardHeader className="items-center text-center">
