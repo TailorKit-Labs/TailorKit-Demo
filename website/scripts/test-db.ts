@@ -25,16 +25,6 @@ async function main() {
     assert.equal(session?.user.id, payload.user.id);
     const baseTenant = await provisionDemo(payload.user.id, { complete: false });
     assert.equal(baseTenant.setupVersion, 1);
-    await assert.rejects(
-      provisionDemo(payload.user.id, {
-        install: async () => {
-          throw new Error("Install unavailable");
-        },
-      }),
-      /Install unavailable/,
-    );
-    const [incomplete] = await db.select().from(tenants).where(eq(tenants.id, baseTenant.id));
-    assert.equal(incomplete.setupVersion, 1, "A failed install must remain retryable");
     let installs = 0;
     const install = async () => {
       installs++;
@@ -43,7 +33,12 @@ async function main() {
       Array.from({ length: 4 }, () => provisionDemo(payload.user.id, { install })),
     );
     await provisionDemo(payload.user.id, { install });
-    assert.equal(installs, 1, "Concurrent setup and retries must install only once");
+    assert.equal(installs, 0, "Setup must not install Messages during the publishing pause");
+    assert.equal(
+      provisioned[0].setupVersion,
+      1,
+      "Paused setup must leave Messages installation pending for version 2",
+    );
     assert.equal(
       new Set(provisioned.map((t) => t.id)).size,
       1,
