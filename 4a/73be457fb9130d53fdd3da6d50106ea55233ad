@@ -1,0 +1,41 @@
+website/README.md
+  s_e09c3c5ed52f75::t_6358127496cf69 91
+website/lib/agents/agent-limits.ts
+  s_e09c3c5ed52f75::t_9fc101dfee058e 3-4
+website/lib/agents/agent-request.ts
+  s_e09c3c5ed52f75::t_2f1b02d798f6c1 3
+website/lib/agents/agent-transport.ts
+  s_e09c3c5ed52f75::t_d6d81de33195ee 10-11
+website/routers/agent.ts
+  s_e09c3c5ed52f75::t_70062c8b323d70 103-106
+website/routers/chats.ts
+  s_e09c3c5ed52f75::t_90723627adbeff 11,92-96,98
+website/scripts/test-agent-chats.ts
+  s_e09c3c5ed52f75::t_5172c52b204bef 12,136,138-162
+website/scripts/test-agent-rpc.ts
+  s_6ff1b1e741fd77::t_553abc8c4ab6d7 14-15,44,65-66,279-343,345
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4a73be457fb9130d53fdd3da6d50106ea55233ad",
+  "prompts": {},
+  "sessions": {
+    "s_6ff1b1e741fd77": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a153a7-bbd7-7113-926a-2679e2c2e490",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_e09c3c5ed52f75": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a153a7-2e1e-7c20-8395-1ac5b0e2fd96",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
