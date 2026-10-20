@@ -1,0 +1,21 @@
+website/lib/provision.ts
+  s_6d2f97b93468e4::t_7651e51a0b7733 7-9
+website/scripts/test-db.ts
+  s_6d2f97b93468e4::t_e4c4768d5fd648 36-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e86d718bbae2d7b7c564ab0267d118bbd412be11",
+  "prompts": {},
+  "sessions": {
+    "s_6d2f97b93468e4": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a158a0-64b3-79d0-996a-cf5cfe67e1c6",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
