@@ -1,0 +1,21 @@
+apps/messages/patchsmith.config.ts
+  s_a80ca0f198c57c::t_9eb6e8f08547c1 4
+apps/messages/src/slots/panel/index.view.tsx
+  s_a80ca0f198c57c::t_9f12d56e28cac1 20,25-36,38-54,57-74,77-79,81-92,162,167-173
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b0e496deeaed59c0c62a3c4961df26de2caabf27",
+  "prompts": {},
+  "sessions": {
+    "s_a80ca0f198c57c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15b30-5880-79d0-a706-55ef646ed679",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
