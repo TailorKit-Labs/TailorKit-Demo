@@ -39,7 +39,7 @@ async function run(result: unknown) {
   return resolved;
 }
 
-// A real HTTP endpoint speaking the stateless MCP version used by PatchSmith.
+// A real HTTP endpoint speaking the stateless MCP version used by Patchsmith.
 // Redirect only the platform origin to this local fixture; never call live APIs.
 const server = createServer(async (request, response) => {
   try {
@@ -326,7 +326,7 @@ async function main() {
     );
     assert.ok(AGENT_TIMEOUT_MS < 300000);
     console.log(
-      "PASS: scoped PatchSmith helper auth, host metadata, paginated HTTP MCP discovery, agent streaming, dynamic history, cancellation, failure handling, and client cleanup.",
+      "PASS: scoped Patchsmith helper auth, host metadata, paginated HTTP MCP discovery, agent streaming, dynamic history, cancellation, failure handling, and client cleanup.",
     );
   } finally {
     await Promise.all(connections.map((connection) => connection.close()));

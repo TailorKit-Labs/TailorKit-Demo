@@ -1,7 +1,7 @@
 {
   "name": "@demo/messages",
   "private": true,
-  "description": "A demo inbox for messaging Forma CRM contacts through PatchSmith's panel slot.",
+  "description": "A demo inbox for messaging Forma CRM contacts through Patchsmith's panel slot.",
   "type": "module",
   "imports": {
     "#tailorkit": "./src/tailorkit.gen.ts"

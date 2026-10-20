@@ -105,12 +105,12 @@ export function AppSidebar({ name }: { name: string }) {
           </SidebarMenuItem>
         </SidebarMenu>
         <a
-          href="https://tailorkit.dev/home"
+          href="https://patchsmith.io"
           target="_blank"
           rel="noopener noreferrer"
           className={buttonVariants({ variant: "default", className: "w-full justify-between" })}
         >
-          Powered by PatchSmith
+          Powered by Patchsmith
           <ArrowUpRightFromSquareIcon data-icon="inline-end" aria-hidden="true" />
           <span className="sr-only">(opens in a new tab)</span>
         </a>

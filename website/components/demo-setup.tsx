@@ -90,7 +90,7 @@ export function DemoSetup() {
             height={24}
             className="hidden shrink-0 dark:block"
           />
-          <span className="text-xl font-semibold tracking-tight">PatchSmith</span>
+          <span className="text-xl font-semibold tracking-tight">Patchsmith</span>
         </div>
         <Card>
           <CardHeader className="items-center text-center">

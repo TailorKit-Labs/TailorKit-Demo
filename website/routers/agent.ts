@@ -42,7 +42,7 @@ export const agentChat = protectedProcedure
       try {
         await tailorkit?.close();
       } catch {
-        console.error("PatchSmith MCP connection could not be closed.");
+        console.error("Patchsmith MCP connection could not be closed.");
       }
     });
     try {

@@ -1,6 +1,6 @@
 # Forma CRM
 
-The PatchSmith demo CRM. SDK identifiers and service URLs still use `tailorkit`; see the [workspace README](../README.md) for the compatibility details.
+The Patchsmith demo CRM. SDK identifiers and service URLs still use `tailorkit`; see the [workspace README](../README.md) for the compatibility details.
 
 Next.js App Router, official Coss UI components with the neutral theme and Geist font, Better Auth anonymous sessions, and Drizzle with PostgreSQL. Coss source files in `components/ui` stay unmodified; application components compose their APIs. Charts use Recharts directly.
 
@@ -24,7 +24,7 @@ The env example contains a public development-only signing key: never copy that 
 
 ## Routes and behavior
 
-Setup creates the account, seeds CRM data, then installs the Messages app in the workspace's PatchSmith `panel` slot. `TAILORKIT_PROJECT_KEY` is required. The shared app ID comes directly from `apps/messages/tailorkit.config.ts`, which is also used by `pnpm --filter @demo/messages deploy`. Setup uses `tailorKit.experimental.installApp` to install that published app in the authenticated workspace scope; it never builds or uploads assets. Website dev/build commands are independent of Messages publishing. Setup version 2 adds the app to returning version-1 workspaces without reseeding data; a failed install leaves setup incomplete and retryable. Per-user database locks prevent duplicate installations from concurrent tabs.
+Setup creates the account, seeds CRM data, then installs the Messages app in the workspace's Patchsmith `panel` slot. `TAILORKIT_PROJECT_KEY` is required. The shared app ID comes directly from `apps/messages/tailorkit.config.ts`, which is also used by `pnpm --filter @demo/messages deploy`. Setup uses `tailorKit.experimental.installApp` to install that published app in the authenticated workspace scope; it never builds or uploads assets. Website dev/build commands are independent of Messages publishing. Setup version 2 adds the app to returning version-1 workspaces without reseeding data; a failed install leaves setup incomplete and retryable. Per-user database locks prevent duplicate installations from concurrent tabs.
 
 Messages offers simulated Email, Slack, and SMS conversations with CRM contacts. Sent messages are readable contact activity notes and share the existing rolling 50-entry history. See [Messages](../apps/messages/README.md) for app development and binding generation.
 
@@ -39,7 +39,7 @@ Every query and mutation derives the workspace from the authenticated session. R
 
 ## API and SSR
 
-The oRPC API lives in `routers/`, alongside `app/` and `lib/`. Domain files (`contacts.ts`, `deals.ts`, `tasks.ts`, `activities.ts`, `workspace.ts`, and `chats.ts`) define procedures and contain their database logic. `routers/index.ts` assembles named procedure imports and is mounted at `POST /rpc`. Browser calls, server renders, the agent and PatchSmith tools share these procedures. `routers/schemas.ts` contains browser-safe schemas shared with the PatchSmith contract. Middleware resolves workspace identity; expected domain failures use native oRPC errors. HTTP requests use signed session cookies, same-origin checks, POST-only handling, a 60 KB body limit, and private/no-store responses.
+The oRPC API lives in `routers/`, alongside `app/` and `lib/`. Domain files (`contacts.ts`, `deals.ts`, `tasks.ts`, `activities.ts`, `workspace.ts`, and `chats.ts`) define procedures and contain their database logic. `routers/index.ts` assembles named procedure imports and is mounted at `POST /rpc`. Browser calls, server renders, the agent and Patchsmith tools share these procedures. `routers/schemas.ts` contains browser-safe schemas shared with the Patchsmith contract. Middleware resolves workspace identity; expected domain failures use native oRPC errors. HTTP requests use signed session cookies, same-origin checks, POST-only handling, a 60 KB body limit, and private/no-store responses.
 
 React Query owns browser data. `lib/orpc.ts` exports both the browser transport (`rpc`) and typed TanStack Query helpers (`orpc`). Client Components use `useSuspenseQuery(orpc.workspace.snapshot.queryOptions())` and `useMutation(orpc.contacts.create.mutationOptions())`. The query client's mutation cache invalidates oRPC query keys after successful writes, awaiting active refetches before clearing pending state. Counts, linked records and activity stay in sync; rejected mutations do not refetch. The existing views share a workspace snapshot query because their tables, forms and summaries use the same small, bounded collections.
 
@@ -62,9 +62,9 @@ return (
 
 The CRM layout prefetches chat history. It keys `QueryProvider` by workspace ID, preserving the cache across navigation and discarding it when the workspace changes. Every server request receives its own cache; authentication is resolved per invocation. Explicit browser/server entry points keep `next/headers`, the router and database out of the client bundle.
 
-There is no `revalidatePath`. Agent completion and the PatchSmith `ui.refresh` action invalidate React Query keys, picking up server-side tool writes. The only route refresh follows anonymous setup, to reveal the authenticated server layout. Provisioning uses a session-only procedure before a workspace exists; workspace-scoped tools cannot invoke it. Better Auth and AI streaming retain dedicated protocol handlers.
+There is no `revalidatePath`. Agent completion and the Patchsmith `ui.refresh` action invalidate React Query keys, picking up server-side tool writes. The only route refresh follows anonymous setup, to reveal the authenticated server layout. Provisioning uses a session-only procedure before a workspace exists; workspace-scoped tools cannot invoke it. Better Auth and AI streaming retain dedicated protocol handlers.
 
-Internal tools use oRPC `call(procedure, input, { context: verifiedWorkspaceContext(workspaceId) })` with an ID obtained from the authenticated session or verified PatchSmith scope. Never pass an ID from model arguments or a public request body to that context helper. oRPC packages are pinned to the v2 version used by PatchSmith; installed `middleapi/orpc` skills live in `.agents/skills`.
+Internal tools use oRPC `call(procedure, input, { context: verifiedWorkspaceContext(workspaceId) })` with an ID obtained from the authenticated session or verified Patchsmith scope. Never pass an ID from model arguments or a public request body to that context helper. oRPC packages are pinned to the v2 version used by Patchsmith; installed `middleapi/orpc` skills live in `.agents/skills`.
 
 Run `pnpm --filter website test:rpc` for PostgreSQL coverage of HTTP/direct calls, validation, hydrated/pending queries, mutation invalidation, request protections and concurrent workspace isolation. Add `RPC_SSR_URL=http://localhost:3010` to verify initial SSR HTML against a running production server.
 
@@ -74,9 +74,9 @@ Below 800px, a floating bar at the bottom center contains **Agent** and a menu i
 
 The agent uses AI SDK `ToolLoopAgent` and streams text and tool progress through the typed oRPC `agent.chat` procedure at `POST /rpc/agent/chat`. It can read workspace usage; search, create, edit and delete contacts, deals and follow-ups; move/reorder pipeline deals; complete/reopen tasks; and read activity or add contact notes. Its tools share the app's validated database operations, workspace isolation, activity logging, and collection limits. Agent completion invalidates the browser queries to show committed changes. Missing required information is requested in the conversation; new deals default to qualified, no contact, and an expected close in 30 days.
 
-With `TAILORKIT_PROJECT_KEY` configured, each admitted turn also connects to PatchSmith's MCP server through AI SDK `createMCPClient`. It uses the existing `tailorKit` server in `lib/tailorkit-server.ts`: `tailorKit.mcp.transport({ subjectId, scopes: { workspace: { workspaceId } } })` supplies the platform URL and auth headers. Both the subject ID (the user ID) and workspace ID come from the authenticated session and match the host handler; the workspace scope also matches installed apps. Neither model arguments nor request JSON can choose these identities. The existing contract, components, tools, host-origin configuration and `/api/tailorkit` route are reused. No additional host URL variable or MCP proxy is needed. The host must be reachable by PatchSmith's app agent; local app builds need a public tunnel configured through the existing `BETTER_AUTH_URL` setting.
+With `TAILORKIT_PROJECT_KEY` configured, each admitted turn also connects to Patchsmith's MCP server through AI SDK `createMCPClient`. It uses the existing `tailorKit` server in `lib/tailorkit-server.ts`: `tailorKit.mcp.transport({ subjectId, scopes: { workspace: { workspaceId } } })` supplies the platform URL and auth headers. Both the subject ID (the user ID) and workspace ID come from the authenticated session and match the host handler; the workspace scope also matches installed apps. Neither model arguments nor request JSON can choose these identities. The existing contract, components, tools, host-origin configuration and `/api/tailorkit` route are reused. No additional host URL variable or MCP proxy is needed. The host must be reachable by Patchsmith's app agent; local app builds need a public tunnel configured through the existing `BETTER_AUTH_URL` setting.
 
-Discovered tools are namespaced as `tailorkit_list_apps`, `tailorkit_create_app`, and `tailorkit_edit_app` alongside the CRM tools. Create/edit launches PatchSmith's app agent and publishes its changes. The host agent uses them for explicit app requests, carries app/thread IDs into related edits, and does not automatically retry interrupted writes. Chat shows dynamic tool status, including MCP `isError` failures; model-visible results preserve that flag alongside content. Completed results are saved, unfinished calls are removed from interrupted replies, and app tabs refresh after a turn finishes or fails. MCP initialization and each discovery page have a ten-second timeout; connections close after the response stream drains, including errors and cancellation. Without a project key, CRM chat works as before; configured MCP failures fail the turn instead of silently hiding the tools.
+Discovered tools are namespaced as `tailorkit_list_apps`, `tailorkit_create_app`, and `tailorkit_edit_app` alongside the CRM tools. Create/edit launches Patchsmith's app agent and publishes its changes. The host agent uses them for explicit app requests, carries app/thread IDs into related edits, and does not automatically retry interrupted writes. Chat shows dynamic tool status, including MCP `isError` failures; model-visible results preserve that flag alongside content. Completed results are saved, unfinished calls are removed from interrupted replies, and app tabs refresh after a turn finishes or fails. MCP initialization and each discovery page have a ten-second timeout; connections close after the response stream drains, including errors and cancellation. Without a project key, CRM chat works as before; configured MCP failures fail the turn instead of silently hiding the tools.
 
 The function permits five minutes, with a 270-second generation timeout. Longer builds are cancelled and may leave an app or published changes; inspect apps before starting another build. Run `pnpm --filter website test:agent-mcp` for the provider-free HTTP MCP integration test covering the shared host contract, workspace-scoped auth, discovery/execution, model-visible failures, streaming, cancellation and cleanup.
 
@@ -94,13 +94,13 @@ Generation stops after four steps, with 1,500 output tokens per step, a 270-seco
 
 Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration tests and a deterministic SDK tool-loop/streaming and persistence test that needs no provider key. Run `pnpm --filter website test:agent-chats` for chat history, legacy message-ID recovery, workspace isolation, authoritative context, overlapping replies, and interrupted messages. Run `pnpm --filter website test:agent-rpc` for the actual oRPC procedure/AI SDK transport with simulated BotID and Gateway responses, covering follow-ups, reopening, persistence, cancellation, bot rejection/outages, and repeated verified requests without IP or token quotas. Live model quality, provider authentication, and production BotID verification require a configured deployment.
 
-## PatchSmith apps
+## Patchsmith apps
 
 The host setup lives in three files:
 
 - `lib/tailorkit.ts`: the shared contract, theme, view schemas, and page context builders.
 - `lib/tailorkit-client.tsx`: component renderers, browser tools, provider, and hooks.
-- `lib/tailorkit-server.ts`: server tools and the PatchSmith server instance.
+- `lib/tailorkit-server.ts`: server tools and the Patchsmith server instance.
 
 `lib/tailorkit.ts` is the browser-safe `defineContract` shared by the host server and client. It declares the `workspace` scope, workspace/page context at `/`, plus a dedicated view for every CRM page. The `navbar` slot renders app actions in each page header. Apps call `ui.openPanel` to open their own installation's panel tab. Panel views render as tabs beside the agent. The `navbar` and `panel` slots support the page views below; apps can implement a specific view or fall back to `/`. The `page` slot uses only the root view `/` and allows multiple instances per app: each instance appears under **App pages** in the sidebar and mobile navigation. The entire group is hidden when no page instances are available.
 
@@ -118,11 +118,11 @@ View schemas and context builders live alongside the contract in `lib/tailorkit.
 
 Supply page instances with stable keys and `metadata: { label: "Reports" }` to name their links. Missing or blank labels fall back to the app name and instance key. Each link opens `/app-pages/<appId>?instance=<encoded-key>` and renders that exact instance with `RenderSlot`. Keeping the key in the query supports keys containing spaces, slashes, or other URL characters, and links survive reloads. Removed instances show a page-unavailable state. App discovery is refreshed after agent turns so newly created pages appear in navigation.
 
-Set `TAILORKIT_PROJECT_KEY` in the server environment to connect your PatchSmith project. Without a configured project, CRM and agent features still work and the panel reports that apps are unavailable.
+Set `TAILORKIT_PROJECT_KEY` in the server environment to connect your Patchsmith project. Without a configured project, CRM and agent features still work and the panel reports that apps are unavailable.
 
 `tailorKitTheme` in `lib/tailorkit.ts` supplies **the same theme** to `primitives()` and `createClient()`. Apps can use background, text, border, spacing, radius, size and responsive tokens. Semantic colors reference the existing CSS variables, so they follow light/dark mode. Layout breakpoints match the host's 800px mobile and 1280px side-panel boundaries. The SDK's default tokens remain available alongside host additions such as `background="card"`, `textColor="muted"`, `radius="full"`, `width="panel"` and `height="screen"`.
 
-The client implements contracted components using PatchSmith primitives and the existing Coss components:
+The client implements contracted components using Patchsmith primitives and the existing Coss components:
 
 - Layout and interaction: `Box`, `Flex`, `Grid`, `Inline`, `Pressable` (with `onPress()` and an accessible `ariaLabel`).
 - Content: `Text`, `Heading`, `Card`, `Badge`, `Avatar`.
@@ -161,7 +161,7 @@ For example, `contacts.create` accepts:
 
 Use the returned `contact.id` in `tasks.create` with `{ "title": "Follow up", "dueDate": "2026-11-01", "contactId": "…" }`, or in `ui.navigate` as `{ "href": "/contacts/<id>" }`.
 
-Verify the setup with `pnpm check`, `pnpm --filter website typecheck`, and `pnpm build`. Hosted app discovery, signed capability transport and sandbox rendering require a configured PatchSmith project.
+Verify the setup with `pnpm check`, `pnpm --filter website typecheck`, and `pnpm build`. Hosted app discovery, signed capability transport and sandbox rendering require a configured Patchsmith project.
 
 ## Anonymous setup
 
