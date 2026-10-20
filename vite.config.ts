@@ -8,6 +8,8 @@ export default defineConfig({
     ignorePatterns: [
       "apps/messages/src/tailorkit.gen.ts",
       "apps/messages/.tailorkit/**",
+      "apps/stripe/src/tailorkit.gen.ts",
+      "apps/stripe/.tailorkit/**",
       ".agents/**",
       "website/.agents/**",
       ".vite-hooks/**",
@@ -26,6 +28,8 @@ export default defineConfig({
       "website/.next/**",
       "apps/messages/src/tailorkit.gen.ts",
       "apps/messages/.tailorkit/**",
+      "apps/stripe/src/tailorkit.gen.ts",
+      "apps/stripe/.tailorkit/**",
     ],
     jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
     rules: { "vite-plus/prefer-vite-plus-imports": "error" },

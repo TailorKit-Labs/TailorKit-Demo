@@ -1,6 +1,6 @@
 # Patchsmith demo — Forma CRM
 
-A pnpm workspace. The Next.js CRM lives in `website/`; the Patchsmith Messages app lives in `apps/messages/`.
+A pnpm workspace. The Next.js CRM lives in `website/`; Patchsmith apps live in `apps/`: [Messages](apps/messages/README.md) and [Stripe](apps/stripe/README.md), a demo billing dashboard linked to CRM customers and contracts.
 
 [Patchsmith](https://patchsmith.io) is the platform brand; Forma is the demo CRM. The current SDK is still published as `tailorkit`, so package imports, CLI commands, configuration filenames, `TAILORKIT_PROJECT_KEY`, API routes, and service URLs retain their existing names for compatibility.
 

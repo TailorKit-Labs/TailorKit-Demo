@@ -1,0 +1,28 @@
+{
+  "name": "@demo/stripe",
+  "private": true,
+  "description": "Demo billing data linked to Forma CRM customers and contracts.",
+  "type": "module",
+  "imports": {
+    "#tailorkit": "./src/tailorkit.gen.ts"
+  },
+  "scripts": {
+    "build": "vp build",
+    "deploy": "tailorkit deploy",
+    "generate": "tailorkit generate",
+    "check": "vp check",
+    "test": "vp test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "preact": "11.0.1",
+    "tailorkit": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}
