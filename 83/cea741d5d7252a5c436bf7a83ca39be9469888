@@ -1,0 +1,23 @@
+website/README.md
+  s_e4ba6afff8b44a::t_55a7fab4a79788 29,89
+website/lib/setup-protection.ts
+  s_e4ba6afff8b44a::t_c4704f7992d858 2
+website/scripts/test-setup-protection.ts
+  s_e4ba6afff8b44a::t_ef50cf656d4aee 78-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "83cea741d5d7252a5c436bf7a83ca39be9469888",
+  "prompts": {},
+  "sessions": {
+    "s_e4ba6afff8b44a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a158a6-1988-78e3-a006-6927fa5aadc6",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
