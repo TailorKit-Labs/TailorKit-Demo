@@ -110,7 +110,7 @@ export function AppSidebar({ name }: { name: string }) {
           rel="noopener noreferrer"
           className={buttonVariants({ variant: "default", className: "w-full justify-between" })}
         >
-          Powered by TailorKit
+          Powered by PatchSmith
           <ArrowUpRightFromSquareIcon data-icon="inline-end" aria-hidden="true" />
           <span className="sr-only">(opens in a new tab)</span>
         </a>

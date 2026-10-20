@@ -52,7 +52,7 @@ const dealFields = z.object({
 });
 const taskFields = z.object({ title, dueDate: date, contactId: recordId.nullable() });
 
-// Browser-safe schemas shared by TailorKit, the agent, and integration tests.
+// Browser-safe schemas shared by PatchSmith, the agent, and integration tests.
 export const schemas = {
   workspace: {
     get: {

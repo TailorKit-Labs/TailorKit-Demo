@@ -5,7 +5,7 @@ import { router } from "../routers";
 import { verifiedWorkspaceContext } from "../routers/context";
 import { contract } from "./tailorkit";
 
-// TailorKit verifies the capability before calling a tool. Workspace identity
+// PatchSmith verifies the capability before calling a tool. Workspace identity
 // comes from its signed scope, never from tool input.
 function rpcContext(context: ToolContext) {
   if (context.scope.name !== "workspace") throw new Error("A workspace scope is required.");

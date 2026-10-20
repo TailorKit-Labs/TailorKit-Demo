@@ -10,7 +10,7 @@ const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 export const metadata: Metadata = {
   title: { default: "Forma — Your relationships, moving forward", template: "%s | Forma CRM" },
   description:
-    "A thoughtful CRM for contacts, opportunities, and the next step. Explore your own private demo workspace.",
+    "A PatchSmith demo CRM for contacts, opportunities, and the next step. Explore your own private workspace.",
 };
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
