@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { agentTransport } from "@/lib/agents/agent-transport";
@@ -36,8 +36,12 @@ import {
 import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
 import { usePanelAction, useViews } from "@/lib/tailorkit-client";
+import { DemoIntroTour } from "@/components/demo-intro/demo-intro-tour";
+import { FEATURE_PROMPT, useDemoIntro } from "@/components/demo-intro/demo-intro-provider";
 
 export function AgentWorkspace({ children }: { children: React.ReactNode }) {
+  const { step: introStep, dismiss: dismissIntro } = useDemoIntro();
+  const introActive = introStep !== null && introStep !== "welcome";
   const queryClient = useQueryClient();
   const { data: history } = useSuspenseQuery(orpc.chats.list.queryOptions());
   const pathname = usePathname();
@@ -45,6 +49,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const panelId = useId();
   const canDock = useMediaQuery("xl");
   const useDrawer = useMediaQuery("max-md");
+  const [settledSurface, setSettledSurface] = useState<"drawer" | "sheet" | null>(null);
   const [openOverride, setOpen] = useState<boolean | null>(null);
   const open = openOverride ?? canDock;
   const [activeTab, setActiveTab] = useState("agent");
@@ -72,6 +77,14 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
       };
       return rank(a.id) - rank(b.id);
     });
+  const messagesAppId = apps.find((app) => app.name?.toLowerCase() === "messages")?.id;
+  useEffect(() => {
+    if (!introStep || introStep === "welcome") return;
+    setOpen(true);
+    setOpenMobile(false);
+    setHistoryOpen(false);
+    setActiveTab(introStep === "agent" ? "agent" : (messagesAppId ?? "agent"));
+  }, [introStep, messagesAppId, setOpenMobile]);
   const selectedTab = apps.some((app) => app.id === activeTab) ? activeTab : "agent";
   usePanelAction(
     useCallback(
@@ -113,6 +126,8 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   );
 
   function changeOpen(next: boolean) {
+    if (!next && introActive) dismissIntro();
+    if (!next) setSettledSurface(null);
     setOpen(next);
     if (next) setOpenMobile(false);
     if (!next) setHistoryOpen(false);
@@ -255,18 +270,35 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   );
 
   const panel = (
-    <AppsPanel
-      apps={apps}
-      onReorder={(next) => setAppOrder(next.map((app) => app.id))}
-      activeTab={selectedTab}
-      appsStatus={appsError ? "error" : appsPending ? "loading" : undefined}
-      onTabChange={(tab) => {
-        setActiveTab(tab);
-        setHistoryOpen(false);
-      }}
-    >
-      {chat}
-    </AppsPanel>
+    <>
+      <DemoIntroTour
+        ready={
+          introActive &&
+          open &&
+          (canDock || settledSurface === (useDrawer ? "drawer" : "sheet")) &&
+          !appsPending &&
+          selectedTab === (introStep === "agent" ? "agent" : (messagesAppId ?? "agent"))
+        }
+        hasMessages={Boolean(messagesAppId)}
+        docked={canDock}
+        onUseExample={() => {
+          if (!busy && !loadingChat && !input.trim()) setInput(FEATURE_PROMPT);
+          requestAnimationFrame(() => inputRef.current?.focus());
+        }}
+      />
+      <AppsPanel
+        apps={apps}
+        onReorder={(next) => setAppOrder(next.map((app) => app.id))}
+        activeTab={selectedTab}
+        appsStatus={appsError ? "error" : appsPending ? "loading" : undefined}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+          setHistoryOpen(false);
+        }}
+      >
+        {chat}
+      </AppsPanel>
+    </>
   );
 
   return (
@@ -301,7 +333,13 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
           aria-label="Mobile tools"
           className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-xl border bg-popover p-1 shadow-xl"
         >
-          <Drawer open={open} onOpenChange={changeOpen}>
+          <Drawer
+            open={open}
+            onOpenChange={changeOpen}
+            onOpenChangeComplete={(next) => setSettledSurface(next ? "drawer" : null)}
+            modal={!introActive}
+            disablePointerDismissal={introActive}
+          >
             <DrawerTrigger render={<Button variant="ghost" size="sm" />} aria-label="Open apps">
               <PanelsTopLeftIcon data-icon="inline-start" />
               Apps
@@ -323,7 +361,13 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
           <AppMobileNavigation onOpen={() => changeOpen(false)} />
         </div>
       ) : !canDock ? (
-        <Sheet open={open} onOpenChange={changeOpen}>
+        <Sheet
+          open={open}
+          onOpenChange={changeOpen}
+          onOpenChangeComplete={(next) => setSettledSurface(next ? "sheet" : null)}
+          modal={!introActive}
+          disablePointerDismissal={introActive}
+        >
           <SheetPopup
             id={panelId}
             side="right"

@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/app/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AgentWorkspace } from "@/components/agent/agent-workspace";
 import { TailorKitProvider, useViewContext } from "@/lib/tailorkit-client";
+import { DemoIntroProvider } from "@/components/demo-intro/demo-intro-provider";
 
 export function CrmShell({
   children,
@@ -20,32 +21,34 @@ export function CrmShell({
   return (
     <TailorKitProvider key={workspaceId}>
       <WorkspaceContext workspaceId={workspaceId} name={name} />
-      <SidebarProvider
-        className="h-dvh min-h-0 overflow-hidden"
-        style={{ "--sidebar-width": "17rem" } as CSSProperties}
-      >
-        <AppMobileHeader name={name} />
-        <AppSidebar name={name} />
-        <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-sidebar max-[799px]:pt-14">
-          <AgentWorkspace>
-            <div
-              key={pathname}
-              data-slot="page-content"
-              className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
-              onScroll={(event) => {
-                const header = event.currentTarget.querySelector<HTMLElement>(
-                  '[data-slot="page-navbar"]',
-                );
-                if (header) header.dataset.scrolled = String(event.currentTarget.scrollTop > 0);
-              }}
-            >
-              <div className="flex flex-col gap-6 px-4 pb-5 max-[799px]:pb-24 md:px-6 md:pb-8">
-                {children}
+      <DemoIntroProvider key={workspaceId} workspaceId={workspaceId}>
+        <SidebarProvider
+          className="h-dvh min-h-0 overflow-hidden"
+          style={{ "--sidebar-width": "17rem" } as CSSProperties}
+        >
+          <AppMobileHeader name={name} />
+          <AppSidebar name={name} />
+          <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-sidebar max-[799px]:pt-14">
+            <AgentWorkspace>
+              <div
+                key={pathname}
+                data-slot="page-content"
+                className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+                onScroll={(event) => {
+                  const header = event.currentTarget.querySelector<HTMLElement>(
+                    '[data-slot="page-navbar"]',
+                  );
+                  if (header) header.dataset.scrolled = String(event.currentTarget.scrollTop > 0);
+                }}
+              >
+                <div className="flex flex-col gap-6 px-4 pb-5 max-[799px]:pb-24 md:px-6 md:pb-8">
+                  {children}
+                </div>
               </div>
-            </div>
-          </AgentWorkspace>
-        </main>
-      </SidebarProvider>
+            </AgentWorkspace>
+          </main>
+        </SidebarProvider>
+      </DemoIntroProvider>
     </TailorKitProvider>
   );
 }

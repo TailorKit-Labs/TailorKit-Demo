@@ -239,6 +239,9 @@ catalogs:
     dotenv:
       specifier: ^18.0.8
       version: 18.0.8
+    driver.js:
+      specifier: 1.10.2
+      version: 1.10.2
     lucide-react:
       specifier: ^1.59.0
       version: 1.59.0
@@ -416,6 +419,9 @@ importers:
       dotenv:
         specifier: 'catalog:'
         version: 18.0.8
+      driver.js:
+        specifier: 'catalog:'
+        version: 1.10.2
       drizzle-orm:
         specifier: ^1.0.0-rc.4
         version: 1.0.0-rc.5-ab785fc(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
@@ -4383,6 +4389,9 @@ packages:
     resolution: {integrity: sha512-2KDeoFoK/zRtcnbunCDlLG5VWVMcyqeQc6iK65o231nfNAcuGrKoqUQfJFUtBI+QlShk5HKIHxwebBtUl3rEfA==}
     engines: {node: '>=12'}
     hasBin: true
+
+  driver.js@1.10.2:
+    resolution: {integrity: sha512-L/EMTriJPAmg+5kIFmrjzt3TI+1NblhHOV/UZkfpgU/uxhSflGheynMBxk5oImDSy6seAEkIl6MzNOc0zdoKtg==}
 
   drizzle-kit@1.0.0-rc.4:
     resolution: {integrity: sha512-KZCpjRyu+oYHLj/UJogfFlOkWhHVkaEI2EOT1U3NDVXUzLoTyPjqwFxwOrlQxsY6jzRyxcz4EacqboGfhEeYrA==}
@@ -10485,6 +10494,8 @@ snapshots:
       '@types/trusted-types': 2.0.7
 
   dotenv@18.0.8: {}
+
+  driver.js@1.10.2: {}
 
   drizzle-kit@1.0.0-rc.4:
     dependencies:

@@ -1,8 +1,103 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "driver.js/dist/driver.css";
 @source "../node_modules/streamdown/dist/*.js";
 
 @custom-variant dark (&:is(.dark *));
+
+/* Driver renders outside React; keep its callouts in the host theme. */
+.demo-tour-popover.driver-popover {
+  width: min(320px, calc(100vw - 24px));
+  min-width: 0;
+  max-width: 320px;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--popover);
+  color: var(--popover-foreground);
+  font-family: var(--font-sans), sans-serif;
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--foreground) 12%, transparent);
+}
+
+.demo-tour-popover .driver-popover-title {
+  padding-right: 36px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.demo-tour-popover .driver-popover-description {
+  margin-top: 8px;
+  color: var(--muted-foreground);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.demo-tour-popover .driver-popover-close-btn {
+  top: 12px;
+  right: 12px;
+  width: auto;
+  height: auto;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.demo-tour-popover .driver-popover-progress-text {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+
+.demo-tour-popover .driver-popover-next-btn {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 13px;
+  font-weight: 500;
+  text-shadow: none;
+}
+
+.demo-tour-popover .driver-popover-next-btn:hover {
+  background: color-mix(in srgb, var(--primary) 90%, var(--background));
+}
+
+.demo-tour-popover button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.demo-tour-popover .driver-popover-arrow {
+  border-color: var(--popover);
+}
+
+.demo-tour-popover .driver-popover-arrow-side-left {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+}
+
+.demo-tour-popover .driver-popover-arrow-side-right {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+}
+
+.demo-tour-popover .driver-popover-arrow-side-top {
+  border-bottom-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.demo-tour-popover .driver-popover-arrow-side-bottom {
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
 
 @theme inline {
   --color-background: var(--background);

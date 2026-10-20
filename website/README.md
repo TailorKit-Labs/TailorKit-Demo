@@ -94,6 +94,19 @@ Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration 
 
 ## TailorKit apps
 
+First visits show a skippable introduction to TailorKit, followed by a three-part
+Driver.js tour of the apps panel, Messages, and the agent. Opening a conversation
+updates the Messages callout when the contact page appears. The final action fills
+an editable feature request without sending it or replacing an existing draft.
+Dismissal is remembered per workspace in browser storage; **Demo visitor profile →
+Replay introduction** opens it again on desktop and mobile. If Messages discovery
+fails, the tour offers the agent instead. The tour library loads only when needed.
+
+For browser verification, check welcome dismissal/reload/replay, Messages → contact
+navigation, Skip/Escape, and the editable example prompt at desktop, tablet, and
+mobile widths. Messages backend tools require a publicly reachable host (a deployed
+preview or a public development tunnel); localhost alone cannot serve those calls.
+
 The host setup lives in three files:
 
 - `lib/tailorkit.ts`: the shared contract, theme, view schemas, and page context builders.
