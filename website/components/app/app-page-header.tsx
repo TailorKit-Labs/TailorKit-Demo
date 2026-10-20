@@ -1,7 +1,13 @@
 import { AppsPanelTrigger } from "@/components/agent/apps-panel-context";
 import { AppNavbar } from "./app-navbar";
 
-export function AppPageHeading({ children }: { children: React.ReactNode }) {
+export function AppPageHeading({
+  children,
+  actions,
+}: {
+  children: React.ReactNode;
+  actions?: React.ReactNode;
+}) {
   return (
     <header
       data-slot="page-navbar"
@@ -9,6 +15,7 @@ export function AppPageHeading({ children }: { children: React.ReactNode }) {
     >
       <div className="min-w-0 flex-1">{children}</div>
       <AppNavbar />
+      {actions ? <div className="flex shrink-0 items-center gap-2">{actions}</div> : null}
       <AppsPanelTrigger />
     </header>
   );

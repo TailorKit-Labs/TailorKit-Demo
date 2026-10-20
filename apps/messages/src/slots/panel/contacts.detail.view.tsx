@@ -9,7 +9,7 @@ import {
   Heading,
   Select,
   Separator,
-  Spinner,
+  Skeleton,
   Text,
   Textarea,
   tools,
@@ -68,6 +68,28 @@ function MessageBubble({
   );
 }
 
+function ConversationSkeleton() {
+  return (
+    <Flex direction="column" gap="md">
+      {["incoming", "outgoing", "reply"].map((message) => (
+        <Flex key={message} gap="sm">
+          {message === "outgoing" ? <Box width="avatar" shrink="0" /> : null}
+          <Flex direction="column" gap="xs" padding="md" radius="2xl" background="muted" grow="1">
+            <Skeleton />
+            <Flex>
+              <Box grow="1">
+                <Skeleton />
+              </Box>
+              <Box width="avatar" />
+            </Flex>
+          </Flex>
+          {message !== "outgoing" ? <Box width="avatar" shrink="0" /> : null}
+        </Flex>
+      ))}
+    </Flex>
+  );
+}
+
 function Conversation({ workspaceId, contact }: { workspaceId: string; contact: Contact }) {
   const { contacts, messages, setMessages, loading, error, setError, reload } = useMessages(
     workspaceId,
@@ -120,7 +142,6 @@ function Conversation({ workspaceId, contact }: { workspaceId: string; contact: 
   return (
     <Flex direction="column" gap="md" height="100%" minHeight="0" overflow="auto">
       <Heading text="Messages" level="h2" />
-      {loading ? <Spinner label="Loading conversation" /> : null}
       {error ? (
         <Flex direction="column" gap="sm" shrink="0">
           <Alert title="Something went wrong" description={error} variant="error" />
@@ -132,23 +153,23 @@ function Conversation({ workspaceId, contact }: { workspaceId: string; contact: 
           />
         </Flex>
       ) : null}
-      {!loading ? (
-        <>
-          <Box shrink="0">
-            <Select
-              label="Send via"
-              value={channel}
-              options={channels.map((value) => ({ label: value, value }))}
-              disabled={sending}
-              onChange={({ value }) => {
-                if (channels.some((item) => item === value)) setChannel(value as Channel);
-              }}
-            />
-          </Box>
-          <Separator />
-          <Flex direction="column" gap="md" grow="1" basis="0" minHeight="0" overflow="auto">
-            {sample?.channel === channel ? <MessageBubble body={sample.body} /> : null}
-            {messages
+      <Box shrink="0">
+        <Select
+          label="Send via"
+          value={channel}
+          options={channels.map((value) => ({ label: value, value }))}
+          disabled={sending}
+          onChange={({ value }) => {
+            if (channels.some((item) => item === value)) setChannel(value as Channel);
+          }}
+        />
+      </Box>
+      <Separator />
+      <Flex direction="column" gap="md" grow="1" basis="0" minHeight="0" overflow="auto">
+        {loading ? <ConversationSkeleton /> : null}
+        {!loading && sample?.channel === channel ? <MessageBubble body={sample.body} /> : null}
+        {!loading
+          ? messages
               .filter((message) => message.channel === channel)
               .map((message) => (
                 <MessageBubble
@@ -160,35 +181,37 @@ function Conversation({ workspaceId, contact }: { workspaceId: string; contact: 
                     minute: "2-digit",
                   })}
                 />
-              ))}
+              ))
+          : null}
+      </Flex>
+      <Separator />
+      <Box shrink="0">
+        <Form
+          submitLabel={sending ? "Sending…" : "Send"}
+          disabled={loading || sending || !draft.length || draft.length > MAX_MESSAGE_LENGTH}
+          onSubmit={() => void send()}
+        >
+          <Textarea
+            label="Message"
+            submitOnEnter
+            value={draft}
+            placeholder="Write a message…"
+            disabled={sending}
+            required
+            onChange={({ value }) => {
+              setChannel(channel);
+              setDraft(value);
+            }}
+          />
+          <Flex justify="end">
+            <Text
+              text={`${draft.length}/${MAX_MESSAGE_LENGTH}`}
+              size="xs"
+              tone={draft.length > MAX_MESSAGE_LENGTH ? "destructive" : "muted"}
+            />
           </Flex>
-          <Separator />
-          <Box shrink="0">
-            <Form
-              submitLabel={sending ? "Sending…" : "Send"}
-              disabled={sending || !draft.length || draft.length > MAX_MESSAGE_LENGTH}
-              onSubmit={() => void send()}
-            >
-              <Textarea
-                label="Message"
-                submitOnEnter
-                value={draft}
-                placeholder="Write a message…"
-                disabled={sending}
-                required
-                onChange={({ value }) => setDraft(value)}
-              />
-              <Flex justify="end">
-                <Text
-                  text={`${draft.length}/${MAX_MESSAGE_LENGTH}`}
-                  size="xs"
-                  tone={draft.length > MAX_MESSAGE_LENGTH ? "destructive" : "muted"}
-                />
-              </Flex>
-            </Form>
-          </Box>
-        </>
-      ) : null}
+        </Form>
+      </Box>
     </Flex>
   );
 }
