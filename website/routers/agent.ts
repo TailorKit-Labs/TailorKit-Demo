@@ -69,12 +69,10 @@ export const agentChat = protectedProcedure
       });
     }
     try {
-      const patchsmithTools = process.env.PATCHSMITH_PROJECT_KEY
-        ? createTools(patchsmith, {
-            subjectId: await resolveUserId(),
-            scopes: { workspace: { workspaceId: tenant.id } },
-          })
-        : undefined;
+      const patchsmithTools = createTools(patchsmith, {
+        subjectId: await resolveUserId(),
+        scopes: { workspace: { workspaceId: tenant.id } },
+      });
       const stream = await createAgentUIStream({
         agent: createCrmAgent(
           tenant,

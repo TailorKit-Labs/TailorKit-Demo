@@ -30,7 +30,6 @@ async function main() {
   const savedEnv = {
     VERCEL: env.VERCEL,
     AI_GATEWAY_API_KEY: env.AI_GATEWAY_API_KEY,
-    PATCHSMITH_PROJECT_KEY: env.PATCHSMITH_PROJECT_KEY,
   };
   const originalFetch = globalThis.fetch;
   const originalTransport = patchsmith.mcp.transport;
@@ -80,7 +79,6 @@ async function main() {
     const tenant = await tenantFromHeaders(new Headers({ cookie }));
     env.VERCEL = "1";
     env.AI_GATEWAY_API_KEY = "test-key-no-provider-spend";
-    delete env.PATCHSMITH_PROJECT_KEY;
     globals[contextSymbol] = {
       get: () => ({
         url: requests.getStore()?.url,
@@ -370,7 +368,6 @@ async function main() {
     assert.equal(continuedBuild?.messages.length, 4);
     assert.deepEqual(continuedBuild?.messages[1], buildMessages[1], "Build IDs and output survive");
     // Exercise the SDK tools through the actual authenticated chat route.
-    env.PATCHSMITH_PROJECT_KEY = "fixture-project-key";
     patchsmith.mcp.transport = async (context) => {
       assert.deepEqual(context, {
         subjectId: userId,
