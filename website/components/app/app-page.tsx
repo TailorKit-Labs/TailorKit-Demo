@@ -52,7 +52,10 @@ export function AppPage({ target }: { target: AppPageTarget }) {
           </AlertDescription>
         </Alert>
       ) : page ? (
-        <div className="min-h-0 flex-1 [&>[data-patchsmith-view]]:h-full [&_canvas]:!h-full [&_canvas]:max-h-full [&_canvas]:!w-full [&_canvas]:max-w-full [&_canvas]:aspect-[4/3] [&_canvas]:object-contain [&_canvas]:[image-rendering:pixelated]">
+        <div
+          data-demo="app-page-surface"
+          className="min-h-0 flex-1 [&>[data-patchsmith-view]]:h-full [&_canvas]:!h-full [&_canvas]:max-h-full [&_canvas]:!w-full [&_canvas]:max-w-full [&_canvas]:aspect-[4/3] [&_canvas]:object-contain [&_canvas]:[image-rendering:pixelated]"
+        >
           <RenderSlot
             key={appPageHref(page, pages)}
             app={page.app}

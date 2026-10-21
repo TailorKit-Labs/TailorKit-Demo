@@ -98,6 +98,25 @@ Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration 
 
 ## Patchsmith apps
 
+After installation, setup fades into a brief welcome screen with an **Enter demo**
+button. Enter fades into the CRM and starts a three-step Driver.js guide: discover
+installed apps in the Apps panel, see Doom as a full-page app, then ask the agent
+to build a Quick follow-up action in the navbar. The first callout highlights the
+app tabs and introduces the preinstalled examples. The Doom step opens its installed page and closes the mobile
+apps drawer so the full-page example stays visible. Every tutorial button says
+**Next**; the final one submits the example request for a contact follow-up form
+that saves a CRM task, preserving any existing composer draft and waiting until
+the agent is idle.
+
+Dismissal is remembered per workspace in browser storage. **Demo visitor profile →
+Replay introduction** restarts at Messages on desktop and mobile. Missing demo apps
+have explanatory fallbacks, and the tour library loads only when needed. Each
+callout has one sentence and no Skip button; Escape or clicking outside dismisses
+the guide. Verify the install-to-welcome transition, Enter, contact navigation,
+dismissal/reload/replay, and the automatic navbar-action request at desktop, tablet,
+and mobile widths. App backend tools require a publicly reachable host (a deployed
+preview or public tunnel); localhost alone cannot serve those calls.
+
 The host setup lives in three files:
 
 - `lib/patchsmith.ts`: the shared contract, theme, view schemas, and page context builders.

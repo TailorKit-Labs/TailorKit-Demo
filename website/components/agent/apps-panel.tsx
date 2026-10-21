@@ -93,6 +93,7 @@ export function AppsPanel({
         <div className="flex min-w-0 shrink-0 items-center border-b px-2 py-3">
           <TabsList
             aria-label="Agent and apps"
+            data-demo="apps-tabs"
             className="min-w-0 flex-1 justify-start bg-transparent p-0 [&>[data-slot=tab-indicator]]:hidden"
           >
             <TabsTab value="agent" className={tabClassName}>
@@ -126,6 +127,7 @@ export function AppsPanel({
           <TabsPanel
             key={app.id}
             value={app.id}
+            data-demo={app.name?.toLowerCase() === "messages" ? "messages-panel" : undefined}
             className="min-h-0 overflow-y-auto p-4 [&>[data-patchsmith-view]]:h-full"
           >
             <RenderSlot app={app} slot="panel" />

@@ -10,9 +10,9 @@ import {
   ChevronRightIcon,
   ListTodoIcon,
   MousePointer2Icon,
-  PlusIcon,
   SquareIcon,
   SquarePenIcon,
+  SparklesIcon,
 } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
 import {
@@ -31,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
+import { FEATURE_PROMPT } from "@/components/demo-intro/demo-intro-provider";
 
 type AppToolPart = Extract<
   CrmAgentMessage["parts"][number],
@@ -359,12 +360,25 @@ export function AgentChat({
               >
                 <MousePointer2Icon className="mb-1 size-7 text-muted-foreground" />
                 <div className="flex flex-col gap-2 text-center">
-                  <h3 className="text-lg font-semibold tracking-tight">Welcome to Forma</h3>
+                  <h3 className="text-lg font-semibold tracking-tight">
+                    What would make this CRM yours?
+                  </h3>
                   <p className="max-w-64 text-sm leading-relaxed text-muted-foreground">
-                    Ask a question or tell me what you’d like to do in your workspace.
+                    Ask for a new feature, change an app, or get help with your workspace.
                   </p>
                 </div>
                 <div className="mt-2 flex flex-wrap justify-center gap-2">
+                  <Suggestion
+                    suggestion={FEATURE_PROMPT}
+                    onClick={(text) => {
+                      onInputChange(text);
+                      inputRef.current?.focus();
+                    }}
+                    size="default"
+                  >
+                    <SparklesIcon data-icon="inline-start" />
+                    Add a Quick follow-up button
+                  </Suggestion>
                   <Suggestion
                     suggestion="Show me my deals."
                     onClick={(text) => {
@@ -374,16 +388,6 @@ export function AgentChat({
                   >
                     <BriefcaseBusinessIcon data-icon="inline-start" />
                     View deals
-                  </Suggestion>
-                  <Suggestion
-                    suggestion="Help me add a new deal."
-                    onClick={(text) => {
-                      void onSubmit(text);
-                    }}
-                    size="default"
-                  >
-                    <PlusIcon data-icon="inline-start" />
-                    Add a deal
                   </Suggestion>
                   <Suggestion
                     suggestion="Show my incomplete follow-up tasks."
@@ -443,6 +447,7 @@ export function AgentChat({
         </Conversation>
         <div className="shrink-0 p-2">
           <form
+            data-demo="agent-composer"
             onSubmit={(event) => {
               event.preventDefault();
               if (!busy && input.trim()) void onSubmit(input);
@@ -452,7 +457,7 @@ export function AgentChat({
               <InputGroupTextarea
                 ref={inputRef}
                 aria-label="Message agent"
-                placeholder="Type a message…"
+                placeholder="Ask a question or describe a feature…"
                 value={input}
                 onChange={(event) => onInputChange(event.currentTarget.value)}
                 onKeyDown={(event) => {

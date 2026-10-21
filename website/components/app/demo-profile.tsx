@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { Settings2Icon } from "lucide-react";
+import { CircleHelpIcon, Settings2Icon } from "lucide-react";
+import { useDemoIntro } from "@/components/demo-intro/demo-intro-provider";
 import { useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ import {
   MenuGroup,
   MenuGroupLabel,
   MenuLinkItem,
+  MenuItem,
   MenuSeparator,
 } from "@/components/ui/menu";
 export function SidebarLink({ onClick, ...props }: React.ComponentProps<typeof Link>) {
@@ -27,6 +29,7 @@ export function SidebarLink({ onClick, ...props }: React.ComponentProps<typeof L
 }
 
 export function DemoProfile({ workspaceName }: { workspaceName: string }) {
+  const { replay } = useDemoIntro();
   return (
     <Menu>
       <MenuTrigger
@@ -49,6 +52,10 @@ export function DemoProfile({ workspaceName }: { workspaceName: string }) {
             </span>
           </MenuGroupLabel>
           <MenuSeparator />
+          <MenuItem onClick={replay}>
+            <CircleHelpIcon />
+            Replay introduction
+          </MenuItem>
           <MenuLinkItem render={<SidebarLink href="/settings" />}>
             <Settings2Icon />
             Workspace settings

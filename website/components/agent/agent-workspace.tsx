@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useId, useMemo, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { agentTransport } from "@/lib/agents/agent-transport";
 import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
@@ -36,15 +36,22 @@ import {
 import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
 import { usePanelAction, useViews } from "@/lib/patchsmith-client";
+import { DemoIntroTour } from "@/components/demo-intro/demo-intro-tour";
+import { FEATURE_PROMPT, useDemoIntro } from "@/components/demo-intro/demo-intro-provider";
+import { appPageHref } from "@/lib/app-pages";
 
 export function AgentWorkspace({ children }: { children: React.ReactNode }) {
+  const { step: introStep, setStep: setIntroStep, dismiss: dismissIntro } = useDemoIntro();
+  const introActive = introStep !== null;
   const queryClient = useQueryClient();
   const { data: history } = useSuspenseQuery(orpc.chats.list.queryOptions());
   const pathname = usePathname();
+  const router = useRouter();
   const { setOpenMobile } = useSidebar();
   const panelId = useId();
   const canDock = useMediaQuery("xl");
   const useDrawer = useMediaQuery("max-md");
+  const [settledSurface, setSettledSurface] = useState<"drawer" | "sheet" | null>(null);
   const [openOverride, setOpen] = useState<boolean | null>(null);
   const open = openOverride ?? canDock;
   const [activeTab, setActiveTab] = useState("agent");
@@ -54,7 +61,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     error: appsError,
     fetch: refreshApps,
   } = useViews({ slot: "panel" });
-  const { fetch: refreshPages } = useViews({ slot: "page" });
+  const { data: pages, isPending: pagesPending, fetch: refreshPages } = useViews({ slot: "page" });
   const { fetch: refreshNavbar } = useViews({ slot: "navbar" });
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: orpc.key() });
@@ -72,6 +79,27 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
       };
       return rank(a.id) - rank(b.id);
     });
+  const messagesAppId = apps.find((app) => app.name?.toLowerCase() === "messages")?.id;
+  const doomAppId = apps.find((app) => app.name?.toLowerCase() === "doom")?.id;
+  const doomPage = pages?.find(
+    (page) => page.app.name?.toLowerCase() === "doom" && page.key === "doom",
+  );
+  const doomHref = doomPage ? appPageHref(doomPage, pages) : undefined;
+  const doomVisible = pathname === doomHref;
+  const introTab =
+    introStep === "messages"
+      ? (messagesAppId ?? "agent")
+      : introStep === "doom"
+        ? (doomAppId ?? "agent")
+        : "agent";
+  useEffect(() => {
+    if (!introStep) return;
+    setOpen(introStep === "doom" && doomHref ? canDock : true);
+    setOpenMobile(false);
+    setHistoryOpen(false);
+    setActiveTab(introTab);
+    if (introStep === "doom" && doomHref) router.push(doomHref);
+  }, [introStep, introTab, doomHref, canDock, router, setOpenMobile]);
   const selectedTab = apps.some((app) => app.id === activeTab) ? activeTab : "agent";
   usePanelAction(
     useCallback(
@@ -113,6 +141,8 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   );
 
   function changeOpen(next: boolean) {
+    if (!next && introActive) dismissIntro();
+    if (!next) setSettledSurface(null);
     setOpen(next);
     if (next) setOpenMobile(false);
     if (!next) setHistoryOpen(false);
@@ -152,13 +182,13 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function submit(text: string) {
+  async function submit(text: string, preserveDraft = false) {
     if (!text.trim() || busy || loadingChat) return;
     clearError();
     setHistoryError(undefined);
     const id = chatId ?? crypto.randomUUID();
     setChatId(id);
-    setInput("");
+    if (!preserveDraft) setInput("");
     const now = new Date();
     const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     const page = pathname.startsWith("/contacts/")
@@ -263,6 +293,12 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
       onTabChange={(tab) => {
         setActiveTab(tab);
         setHistoryOpen(false);
+        if (introActive) {
+          if (tab === "agent") setIntroStep("agent");
+          else if (tab === messagesAppId) setIntroStep("messages");
+          else if (tab === doomAppId) setIntroStep("doom");
+          else dismissIntro();
+        }
       }}
     >
       {chat}
@@ -301,7 +337,13 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
           aria-label="Mobile tools"
           className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-xl border bg-popover p-1 shadow-xl"
         >
-          <Drawer open={open} onOpenChange={changeOpen}>
+          <Drawer
+            open={open}
+            onOpenChange={changeOpen}
+            onOpenChangeComplete={(next) => setSettledSurface(next ? "drawer" : null)}
+            modal={!introActive}
+            disablePointerDismissal={introActive}
+          >
             <DrawerTrigger render={<Button variant="ghost" size="sm" />} aria-label="Open apps">
               <PanelsTopLeftIcon data-icon="inline-start" />
               Apps
@@ -323,7 +365,13 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
           <AppMobileNavigation onOpen={() => changeOpen(false)} />
         </div>
       ) : !canDock ? (
-        <Sheet open={open} onOpenChange={changeOpen}>
+        <Sheet
+          open={open}
+          onOpenChange={changeOpen}
+          onOpenChangeComplete={(next) => setSettledSurface(next ? "sheet" : null)}
+          modal={!introActive}
+          disablePointerDismissal={introActive}
+        >
           <SheetPopup
             id={panelId}
             side="right"
@@ -335,6 +383,24 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
           </SheetPopup>
         </Sheet>
       ) : null}
+      <DemoIntroTour
+        ready={
+          introActive &&
+          (introStep !== "agent" || (!busy && !loadingChat)) &&
+          !appsPending &&
+          !pagesPending &&
+          (introStep === "doom" && doomHref
+            ? doomVisible && (canDock || (!open && settledSurface === null))
+            : open &&
+              (canDock || settledSurface === (useDrawer ? "drawer" : "sheet")) &&
+              selectedTab === introTab)
+        }
+        hasDoom={Boolean(doomHref)}
+        docked={canDock}
+        onUseExample={() => {
+          void submit(FEATURE_PROMPT, true);
+        }}
+      />
       <span className={cn("sr-only", !busy && "hidden")} role="status">
         Agent is working
       </span>
