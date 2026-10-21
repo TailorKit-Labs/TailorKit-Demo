@@ -1,0 +1,35 @@
+apps/doom/README.md
+  s_3c888d277a64dd::t_201b9f2a495ddd 7,21
+apps/doom/src/patchsmith.gen.ts
+  s_21303931c6e83d::t_7f9c6a309c46e7 1076,1083
+apps/doom/src/slots/page/index.view.tsx
+  s_3c888d277a64dd::t_af93da97759758 4,42
+website/lib/patchsmith-client.tsx
+  s_3c888d277a64dd::t_af655b1248c5e0 105
+website/lib/patchsmith.ts
+  s_3c888d277a64dd::t_05818f4dbeba44 208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3384c5ae7d2cdf9a7866d168b9a926da9f3079af",
+  "prompts": {},
+  "sessions": {
+    "s_21303931c6e83d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15bfc-9909-7503-8a80-8e6c63e3d919",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_3c888d277a64dd": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15c2b-3f83-7531-a5e2-de986491e61f",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
