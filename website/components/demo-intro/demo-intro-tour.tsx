@@ -36,23 +36,22 @@ export function DemoIntroTour({
     const content = {
       messages: {
         element: '[data-demo="apps-tabs"]',
-        title: "Apps panel",
-        description:
-          "Installed apps appear here, including a few examples we’ve added for you to try.",
+        title: "Installed apps",
+        description: "Your users’ apps appear here, alongside examples we’ve preinstalled.",
         progress: "1 of 3",
       },
       doom: {
         element: hasDoom ? '[data-demo="app-page-surface"]' : '[data-demo="apps-tabs"]',
-        title: "Full-page apps",
+        title: "Inside your product",
         description: hasDoom
-          ? "Apps appear where you allow, and yes, that’s Doom on its own page."
+          ? "You control where apps appear, from side panels to full pages like Doom."
           : "Apps can also fill a page; Doom is unavailable right now.",
         progress: "2 of 3",
       },
       agent: {
         element: '[data-demo="agent-composer"]',
-        title: "Agent",
-        description: "Next asks the agent to build a Quick follow-up button in the navbar.",
+        title: "Build a feature",
+        description: "Next asks the agent to build a navbar button for creating follow-up tasks.",
         progress: "3 of 3",
       },
     }[step];

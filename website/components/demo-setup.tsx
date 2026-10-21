@@ -116,8 +116,8 @@ export function DemoSetup() {
                 Welcome to Patchsmith demo app
               </h1>
               <p className="text-sm text-muted-foreground">
-                Explore a CRM with sample data and a few Patchsmith apps already installed, then ask
-                the agent to build something of your own.
+                This demo CRM lets you try Patchsmith: explore preinstalled apps, then ask the agent
+                to build a new feature.
               </p>
             </div>
             <Button autoFocus size="lg" disabled={entering} onClick={() => void enterDemo()}>
