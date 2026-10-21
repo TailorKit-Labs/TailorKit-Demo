@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { agentTransport } from "@/lib/agents/agent-transport";
 import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
@@ -38,13 +38,16 @@ import { cn } from "@/lib/utils";
 import { usePanelAction, useViews } from "@/lib/patchsmith-client";
 import { DemoIntroTour } from "@/components/demo-intro/demo-intro-tour";
 import { FEATURE_PROMPT, useDemoIntro } from "@/components/demo-intro/demo-intro-provider";
+import { appPageHref } from "@/lib/app-pages";
 
 export function AgentWorkspace({ children }: { children: React.ReactNode }) {
-  const { step: introStep, dismiss: dismissIntro } = useDemoIntro();
-  const introActive = introStep !== null && introStep !== "welcome";
+  const { step: introStep, setStep: setIntroStep, dismiss: dismissIntro } = useDemoIntro();
+  const introActive = introStep !== null;
   const queryClient = useQueryClient();
   const { data: history } = useSuspenseQuery(orpc.chats.list.queryOptions());
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const { setOpenMobile } = useSidebar();
   const panelId = useId();
   const canDock = useMediaQuery("xl");
@@ -59,7 +62,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     error: appsError,
     fetch: refreshApps,
   } = useViews({ slot: "panel" });
-  const { fetch: refreshPages } = useViews({ slot: "page" });
+  const { data: pages, isPending: pagesPending, fetch: refreshPages } = useViews({ slot: "page" });
   const { fetch: refreshNavbar } = useViews({ slot: "navbar" });
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: orpc.key() });
@@ -78,13 +81,27 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
       return rank(a.id) - rank(b.id);
     });
   const messagesAppId = apps.find((app) => app.name?.toLowerCase() === "messages")?.id;
+  const doomAppId = apps.find((app) => app.name?.toLowerCase() === "doom")?.id;
+  const doomPage = pages?.find(
+    (page) => page.app.name?.toLowerCase() === "doom" && page.key === "doom",
+  );
+  const doomHref = doomPage ? appPageHref(doomPage) : undefined;
+  const doomVisible =
+    pathname === doomHref?.split("?")[0] && searchParams.get("instance") === doomPage?.key;
+  const introTab =
+    introStep === "messages"
+      ? (messagesAppId ?? "agent")
+      : introStep === "doom"
+        ? (doomAppId ?? "agent")
+        : "agent";
   useEffect(() => {
-    if (!introStep || introStep === "welcome") return;
-    setOpen(true);
+    if (!introStep) return;
+    setOpen(introStep === "doom" && doomHref ? canDock : true);
     setOpenMobile(false);
     setHistoryOpen(false);
-    setActiveTab(introStep === "agent" ? "agent" : (messagesAppId ?? "agent"));
-  }, [introStep, messagesAppId, setOpenMobile]);
+    setActiveTab(introTab);
+    if (introStep === "doom" && doomHref) router.push(doomHref);
+  }, [introStep, introTab, doomHref, canDock, router, setOpenMobile]);
   const selectedTab = apps.some((app) => app.id === activeTab) ? activeTab : "agent";
   usePanelAction(
     useCallback(
@@ -270,35 +287,24 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   );
 
   const panel = (
-    <>
-      <DemoIntroTour
-        ready={
-          introActive &&
-          open &&
-          (canDock || settledSurface === (useDrawer ? "drawer" : "sheet")) &&
-          !appsPending &&
-          selectedTab === (introStep === "agent" ? "agent" : (messagesAppId ?? "agent"))
+    <AppsPanel
+      apps={apps}
+      onReorder={(next) => setAppOrder(next.map((app) => app.id))}
+      activeTab={selectedTab}
+      appsStatus={appsError ? "error" : appsPending ? "loading" : undefined}
+      onTabChange={(tab) => {
+        setActiveTab(tab);
+        setHistoryOpen(false);
+        if (introActive) {
+          if (tab === "agent") setIntroStep("agent");
+          else if (tab === messagesAppId) setIntroStep("messages");
+          else if (tab === doomAppId) setIntroStep("doom");
+          else dismissIntro();
         }
-        hasMessages={Boolean(messagesAppId)}
-        docked={canDock}
-        onUseExample={() => {
-          if (!busy && !loadingChat && !input.trim()) setInput(FEATURE_PROMPT);
-          requestAnimationFrame(() => inputRef.current?.focus());
-        }}
-      />
-      <AppsPanel
-        apps={apps}
-        onReorder={(next) => setAppOrder(next.map((app) => app.id))}
-        activeTab={selectedTab}
-        appsStatus={appsError ? "error" : appsPending ? "loading" : undefined}
-        onTabChange={(tab) => {
-          setActiveTab(tab);
-          setHistoryOpen(false);
-        }}
-      >
-        {chat}
-      </AppsPanel>
-    </>
+      }}
+    >
+      {chat}
+    </AppsPanel>
   );
 
   return (
@@ -379,6 +385,25 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
           </SheetPopup>
         </Sheet>
       ) : null}
+      <DemoIntroTour
+        ready={
+          introActive &&
+          !appsPending &&
+          !pagesPending &&
+          (introStep === "doom" && doomHref
+            ? doomVisible && (canDock || (!open && settledSurface === null))
+            : open &&
+              (canDock || settledSurface === (useDrawer ? "drawer" : "sheet")) &&
+              selectedTab === introTab)
+        }
+        hasMessages={Boolean(messagesAppId)}
+        hasDoom={Boolean(doomHref)}
+        docked={canDock}
+        onUseExample={() => {
+          if (!busy && !loadingChat && !input.trim()) setInput(FEATURE_PROMPT);
+          requestAnimationFrame(() => inputRef.current?.focus());
+        }}
+      />
       <span className={cn("sr-only", !busy && "hidden")} role="status">
         Agent is working
       </span>

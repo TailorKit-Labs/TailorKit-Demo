@@ -98,18 +98,21 @@ Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration 
 
 ## Patchsmith apps
 
-First visits show a skippable introduction to TailorKit, followed by a three-part
-Driver.js tour of the apps panel, Messages, and the agent. Opening a conversation
-updates the Messages callout when the contact page appears. The final action fills
-an editable feature request without sending it or replacing an existing draft.
-Dismissal is remembered per workspace in browser storage; **Demo visitor profile →
-Replay introduction** opens it again on desktop and mobile. If Messages discovery
-fails, the tour offers the agent instead. The tour library loads only when needed.
+First visits jump straight into a skippable, three-step Driver.js guide: try
+Messages in the side panel, see Doom as a full-page app, then ask the agent to build
+a Quick follow-up action in the navbar. Opening a conversation updates the first
+callout in place. The Doom step opens its installed page and closes the mobile
+apps drawer so the full-page example stays visible. The final action fills an
+editable request for a contact follow-up form that saves a CRM task; it never
+sends the request or replaces an existing draft.
 
-For browser verification, check welcome dismissal/reload/replay, Messages → contact
-navigation, Skip/Escape, and the editable example prompt at desktop, tablet, and
-mobile widths. Messages backend tools require a publicly reachable host (a deployed
-preview or a public development tunnel); localhost alone cannot serve those calls.
+Dismissal is remembered per workspace in browser storage. **Demo visitor profile →
+Replay introduction** restarts at Messages on desktop and mobile. Missing demo apps
+have explanatory fallbacks, and the tour library loads only when needed. There is
+no welcome dialog. Verify the three steps, contact navigation, Skip/Escape,
+dismissal/reload/replay, and the editable navbar-action prompt at desktop, tablet,
+and mobile widths. App backend tools require a publicly reachable host (a deployed
+preview or public tunnel); localhost alone cannot serve those calls.
 
 The host setup lives in three files:
 

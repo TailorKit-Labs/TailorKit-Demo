@@ -377,7 +377,7 @@ export function AgentChat({
                     size="default"
                   >
                     <SparklesIcon data-icon="inline-start" />
-                    Build a follow-up planner
+                    Add a Quick follow-up button
                   </Suggestion>
                   <Suggestion
                     suggestion="Show me my deals."

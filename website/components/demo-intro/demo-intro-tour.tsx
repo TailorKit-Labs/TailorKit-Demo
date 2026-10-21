@@ -10,67 +10,60 @@ import { useDemoIntro } from "./demo-intro-provider";
 export function DemoIntroTour({
   ready,
   hasMessages,
+  hasDoom,
   docked,
   onUseExample,
 }: {
   ready: boolean;
   hasMessages: boolean;
+  hasDoom: boolean;
   docked: boolean;
   onUseExample: () => void;
 }) {
   const { step, setStep, dismiss } = useDemoIntro();
   const pathname = usePathname();
+  const onContact = pathname.startsWith("/contacts/");
   const [loadFailed, setLoadFailed] = useState(false);
   const finish = useEffectEvent(dismiss);
   const next = useEffectEvent(() => {
-    if (step === "apps" && hasMessages) setStep("messages");
+    if (step === "messages") setStep("doom");
     else if (step === "agent") {
       dismiss();
       onUseExample();
     } else setStep("agent");
   });
 
-  // Messages navigates through the host, so no selectors inside its sandbox are needed.
   useEffect(() => {
-    if (step === "messages" && pathname.startsWith("/contacts/")) setStep("contact");
-  }, [pathname, step, setStep]);
-
-  useEffect(() => {
-    if (!ready || !step || step === "welcome") return;
+    if (!ready || !step) return;
     let cancelled = false;
     let tour: Driver | undefined;
 
     const content = {
-      apps: {
-        element: '[data-demo="apps-tabs"]',
-        title: "Your apps live here",
-        description: hasMessages
-          ? "Messages is an installed TailorKit app. Apps add features alongside your workspace. Its top-bar button opens this same panel."
-          : "Apps add features alongside your workspace. Messages is unavailable right now, but you can still explore the agent.",
-        button: hasMessages ? "Try a conversation" : "Try the agent",
+      messages: {
+        element: hasMessages ? '[data-demo="messages-panel"]' : '[data-demo="apps-tabs"]',
+        title: "Try Messages",
+        description: !hasMessages
+          ? "Patchsmith lets users add features inside your product. Installed apps live beside the agent. Messages is unavailable right now, but you can keep exploring."
+          : onContact
+            ? "Messages follows the contact you’re viewing in Forma. Patchsmith apps can use your product’s data and page context, right here in the side panel. Demo messages aren’t delivered."
+            : "Patchsmith lets users add features inside your product. Messages is one example: open a conversation to see it connect to a contact in this CRM. Demo messages aren’t delivered.",
+        button: "See a full-page app",
         progress: "1 of 3",
       },
-      messages: {
-        element: '[data-demo="messages-panel"]',
-        title: "Open a conversation",
-        description:
-          "Choose a conversation in Messages. It opens that contact in the CRM and shows their messages here. Demo messages aren’t delivered.",
-        button: "Try the agent",
-        progress: "2 of 3",
-      },
-      contact: {
-        element: '[data-demo="messages-panel"]',
-        title: "Messages follows your work",
-        description:
-          "You’re on a contact’s CRM page, and Messages now shows their conversation. TailorKit apps can use the page’s context and work with your existing data.",
-        button: "Build your own feature",
+      doom: {
+        element: hasDoom ? '[data-demo="app-page-surface"]' : '[data-demo="apps-tabs"]',
+        title: "Even Doom can live here",
+        description: hasDoom
+          ? "This is Doom running as a full-page app inside Forma. Apps can fill a page, sit in a side panel, or add actions to the top bar. The same building blocks can power tools for your users."
+          : "Apps can fill a page, sit in a side panel, or add actions to the top bar. Doom is our full-page example; it’s unavailable right now. Next, try building a useful action of your own.",
+        button: "Build your own action",
         progress: "2 of 3",
       },
       agent: {
         element: '[data-demo="agent-composer"]',
-        title: "Ask for a feature",
+        title: "Build a useful shortcut",
         description:
-          "Try building a follow-up planner with your contacts and tasks. Features can live in this panel, open as full pages, or add top-bar actions. You can ask for changes afterwards.",
+          "Ask the agent to add a Quick follow-up button to the top bar. It can open a form and save a task against a CRM contact. Start with the example, make it yours, then ask for changes as you use it.",
         button: "Use example prompt",
         progress: "3 of 3",
       },
@@ -134,9 +127,9 @@ export function DemoIntroTour({
       document.removeEventListener("keydown", onEscape, true);
       tour?.destroy();
     };
-  }, [ready, step, hasMessages, docked]);
+  }, [ready, step, hasMessages, hasDoom, docked, onContact]);
 
-  return loadFailed && step && step !== "welcome" ? (
+  return loadFailed && step ? (
     <Alert className="m-2 w-auto">
       <AlertDescription>The introduction couldn’t load. You can keep exploring.</AlertDescription>
       <AlertAction>
