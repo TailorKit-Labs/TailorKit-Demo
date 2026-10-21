@@ -1,9 +1,10 @@
 "use client";
 
-import { FileTextIcon, MenuIcon, Settings2Icon, XIcon } from "lucide-react";
+import { MenuIcon, Settings2Icon, XIcon } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useViews } from "@/lib/patchsmith-client";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
+import { AppLogo } from "@/components/app/app-logo";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -91,7 +92,7 @@ export function AppMobileNavigation({ onOpen }: { onOpen: () => void }) {
                         aria-current={active ? "page" : undefined}
                         className={cn("min-h-12", active && "bg-accent text-accent-foreground")}
                       >
-                        <FileTextIcon />
+                        <AppLogo app={page.app} />
                         <span className="truncate">{appPageLabel(page)}</span>
                       </DrawerMenuItem>
                     );

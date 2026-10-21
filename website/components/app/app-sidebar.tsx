@@ -1,8 +1,9 @@
 "use client";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ArrowUpRightFromSquareIcon, CommandIcon, FileTextIcon, Settings2Icon } from "lucide-react";
+import { ArrowUpRightFromSquareIcon, CommandIcon, Settings2Icon } from "lucide-react";
 import { useViews } from "@/lib/patchsmith-client";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
+import { AppLogo } from "@/components/app/app-logo";
 import {
   Sidebar,
   useSidebar,
@@ -80,8 +81,8 @@ export function AppSidebar({ name }: { name: string }) {
                           <SidebarLink href={href} aria-current={active ? "page" : undefined} />
                         }
                       >
-                        <FileTextIcon />
-                        <span>{appPageLabel(page)}</span>
+                        <AppLogo app={page.app} />
+                        <span className="truncate">{appPageLabel(page)}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
