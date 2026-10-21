@@ -2,7 +2,7 @@
 
 import { MenuIcon, Settings2Icon, XIcon } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useViews } from "@/lib/patchsmith-client";
+import { useAppPages } from "./app-pages-provider";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
 import { AppLogo } from "@/components/app/app-logo";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
 export function AppMobileNavigation({ onOpen }: { onOpen: () => void }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { data: pages } = useViews({ slot: "page" });
+  const { data: pages } = useAppPages();
   const { openMobile, setOpenMobile } = useSidebar();
   return (
     <Drawer
