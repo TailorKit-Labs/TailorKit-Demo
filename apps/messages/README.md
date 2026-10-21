@@ -1,8 +1,8 @@
 # Messages
 
-Scaffolded with `patchsmith init`. This Preact app renders in the CRM's `navbar` and `panel` slots using generated host components and tools. It has no standalone web page or external messaging provider.
+Scaffolded with `patchsmith init`. This Preact app renders in the CRM's `panel` slot using generated host components and tools. It has no standalone web page or external messaging provider.
 
-The navbar's Messages button calls `ui.openPanel` to open this installation's panel tab. The `/` panel view shows an inbox with three sample conversations using existing CRM contacts. Each Pressable row navigates to the contact's CRM page. The host registers `/contacts` collection context and `/contacts/detail` with that contact's full context, so Patchsmith loads the conversation view automatically. The other CRM pages have their own host views; Messages falls back to its `/` inbox on those pages. New message opens the CRM contacts list so you can choose a contact there.
+Open Messages from this installation's panel tab. The `/` panel view shows an inbox with three sample conversations using existing CRM contacts. Each Pressable row navigates to the contact's CRM page. The host registers `/contacts` collection context and `/contacts/detail` with that contact's full context, so Patchsmith loads the conversation view automatically. The other CRM pages have their own host views; Messages falls back to its `/` inbox on those pages. New message opens the CRM contacts list so you can choose a contact there.
 
 Compose or reply via Email, Slack, or SMS. The recipient comes from the host view context. Sends are simulated: the app saves a readable note through `activities.addNote`, reloads sent messages through `activities.list`, and refreshes the CRM. Changing contacts resets the draft and channel selection.
 
