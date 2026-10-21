@@ -111,7 +111,7 @@ export function DemoSetup() {
           >
             <div className="flex flex-col gap-2">
               <h1 id="demo-welcome-title" className="text-2xl font-semibold tracking-tight">
-                Welcome to Forma
+                Welcome to Patchsmith demo app
               </h1>
               <p className="text-sm text-muted-foreground">
                 A demo CRM with Patchsmith built into pages, side panels, and navbar actions.
