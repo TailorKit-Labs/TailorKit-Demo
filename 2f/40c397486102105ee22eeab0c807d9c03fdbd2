@@ -1,0 +1,41 @@
+docs/app-page-latency-investigation.md
+  s_b7f96b01258d9f::t_508f4fd68b844e 1-53
+package.json
+  s_684b5667ceae14::t_f90ded5db9661c 14
+website/README.md
+  s_b7f96b01258d9f::t_df3c7be473318c 140
+website/app/(crm)/apps/[appSlug]/[instance]/page.tsx
+  s_b7f96b01258d9f::t_165556c08c7289 11-13
+website/app/api/patchsmith/[...patchsmith]/route.ts
+  s_684b5667ceae14::t_28e2e11bc2fac7 2-3,6-8,10,12-16,18,23-24,28-37
+website/components/app/app-page.tsx
+  s_b7f96b01258d9f::t_146d89ebc0c21a 5,14-21,67,71-74
+website/package.json
+  s_684b5667ceae14::t_7f5aa70583916f 11
+website/scripts/patchsmith-handler.test.ts
+  s_b7f96b01258d9f::t_679b58fc5d0439 1-99
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2f40c397486102105ee22eeab0c807d9c03fdbd2",
+  "prompts": {},
+  "sessions": {
+    "s_684b5667ceae14": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15e3a-488a-7c72-a368-abc88df53dbb",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_b7f96b01258d9f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15e3a-008f-7410-91db-cc1710aec13f",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
