@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useEffectEvent, useState } from "react";
-import { usePathname } from "next/navigation";
 import type { Driver } from "driver.js";
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -9,20 +8,16 @@ import { useDemoIntro } from "./demo-intro-provider";
 
 export function DemoIntroTour({
   ready,
-  hasMessages,
   hasDoom,
   docked,
   onUseExample,
 }: {
   ready: boolean;
-  hasMessages: boolean;
   hasDoom: boolean;
   docked: boolean;
   onUseExample: () => void;
 }) {
   const { step, setStep, dismiss } = useDemoIntro();
-  const pathname = usePathname();
-  const onContact = pathname.startsWith("/contacts/");
   const [loadFailed, setLoadFailed] = useState(false);
   const finish = useEffectEvent(dismiss);
   const next = useEffectEvent(() => {
@@ -40,28 +35,24 @@ export function DemoIntroTour({
 
     const content = {
       messages: {
-        element: hasMessages ? '[data-demo="messages-panel"]' : '[data-demo="apps-tabs"]',
-        title: "Try Messages",
-        description: !hasMessages
-          ? "Patchsmith apps live beside the agent; Messages is unavailable right now."
-          : onContact
-            ? "Messages uses your CRM data to follow the contact you’re viewing."
-            : "Open a conversation to see how a Patchsmith app connects to your CRM contacts.",
+        element: '[data-demo="apps-tabs"]',
+        title: "Apps panel",
+        description:
+          "Installed apps appear here, including a few examples we’ve added for you to try.",
         progress: "1 of 3",
       },
       doom: {
         element: hasDoom ? '[data-demo="app-page-surface"]' : '[data-demo="apps-tabs"]',
-        title: "Even Doom can live here",
+        title: "Full-page apps",
         description: hasDoom
-          ? "Doom fills a page, but apps can also live in side panels or add top-bar actions."
-          : "Doom is unavailable, but apps can fill pages, sit in side panels, or add top-bar actions.",
+          ? "Apps can also fill a page, like Doom."
+          : "Apps can also fill a page; Doom is unavailable right now.",
         progress: "2 of 3",
       },
       agent: {
         element: '[data-demo="agent-composer"]',
-        title: "Build a useful shortcut",
-        description:
-          "Click Next to ask the agent to build a Quick follow-up button for saving CRM tasks.",
+        title: "Agent",
+        description: "Next asks the agent to build a Quick follow-up button in the navbar.",
         progress: "3 of 3",
       },
     }[step];
@@ -122,7 +113,7 @@ export function DemoIntroTour({
       document.removeEventListener("keydown", onEscape, true);
       tour?.destroy();
     };
-  }, [ready, step, hasMessages, hasDoom, docked, onContact]);
+  }, [ready, step, hasDoom, docked]);
 
   return loadFailed && step ? (
     <Alert className="m-2 w-auto">

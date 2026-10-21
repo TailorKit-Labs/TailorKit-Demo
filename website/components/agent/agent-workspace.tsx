@@ -395,7 +395,6 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
               (canDock || settledSurface === (useDrawer ? "drawer" : "sheet")) &&
               selectedTab === introTab)
         }
-        hasMessages={Boolean(messagesAppId)}
         hasDoom={Boolean(doomHref)}
         docked={canDock}
         onUseExample={() => {
