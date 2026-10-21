@@ -15,7 +15,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const MIN_STEP_DISPLAY_MS = 250;
 const COMPLETION_DISPLAY_MS = 250;
-const FADE_DURATION_MS = 200;
+const WELCOME_FADE_DURATION_MS = 600;
+const ENTER_FADE_DURATION_MS = 200;
 
 const delay = (duration: number) => new Promise<void>((resolve) => setTimeout(resolve, duration));
 async function finishStep(startedAt: number) {
@@ -60,7 +61,7 @@ export function DemoSetup() {
         setStep(3);
         await delay(COMPLETION_DISPLAY_MS);
         setStep(4);
-        await delay(FADE_DURATION_MS);
+        await delay(WELCOME_FADE_DURATION_MS);
         setWelcome(true);
         setStep(5);
       } catch (err) {
@@ -74,16 +75,17 @@ export function DemoSetup() {
   async function enterDemo() {
     if (entering) return;
     setEntering(true);
-    await delay(FADE_DURATION_MS);
+    await delay(ENTER_FADE_DURATION_MS);
     router.refresh();
   }
 
   return (
     <main
       className={cn(
-        "flex min-h-svh items-center justify-center p-6 transition-opacity duration-200 motion-reduce:transition-none",
+        "flex min-h-svh items-center justify-center p-6 transition-opacity motion-reduce:transition-none",
+        entering ? "duration-200" : "duration-600",
         (step === 4 || entering) && "opacity-0",
-        welcome && !entering && "animate-in fade-in duration-200 motion-reduce:animate-none",
+        welcome && !entering && "animate-in fade-in motion-reduce:animate-none",
       )}
     >
       <div className="flex w-full max-w-md flex-col gap-8">
