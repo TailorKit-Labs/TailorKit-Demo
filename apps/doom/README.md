@@ -4,7 +4,7 @@ A Patchsmith app in the CRM's full-page `page` slot. Its single instance is labe
 
 Press **Start Doom** to launch the first level, then click the game to focus it. Enter selects menu items; P opens or closes the menu. Arrow keys turn and move; W/S move forward/backward and A/D strafe. Space or F fires, E opens doors, Shift runs, and 1–7 select weapons. Tab releases focus. Pause freezes the game; Resume continues it; Restart starts a fresh first level. Leaving the page disposes the engine. Saves are in-memory and disappear on restart or navigation. Keyboard input is required.
 
-The app runs [ozkl/doomgeneric](https://github.com/ozkl/doomgeneric)'s published Emscripten/WebAssembly build inside Patchsmith's opaque iframe. SDL renders to an iframe-local canvas; the SDK transfers pixels to the host-owned `DoomCanvas`. Only approved keys and pointer events are forwarded while the host canvas is focused. The game runs at 35 FPS with a 640×480 presentation surface to correct Doom's original pixel aspect ratio. A timer drives the hidden iframe's game loop.
+The app runs [ozkl/doomgeneric](https://github.com/ozkl/doomgeneric)'s published Emscripten/WebAssembly build inside Patchsmith's opaque iframe. SDL renders to an iframe-local canvas; the SDK transfers pixels to the host-owned `Canvas`. Only approved keys and pointer events are forwarded while the host canvas is focused. The game runs at 35 FPS with a 640×480 presentation surface to correct Doom's original pixel aspect ratio. A timer drives the hidden iframe's game loop.
 
 Audio is disabled (`-nosound`): the opaque iframe cannot receive the user activation needed by Web Audio through the canvas input bridge. There is no host audio bridge in this demo.
 
@@ -18,7 +18,7 @@ pnpm --filter @demo/doom exec tsc --noEmit
 pnpm --filter @demo/doom run deploy --no-interactive
 ```
 
-The committed generated bindings include `DoomCanvas`. Generate against an upgraded host (the deployed host must include this branch's canvas contract):
+The committed generated bindings include `Canvas`. Generate against an upgraded host (the deployed host must include this branch's canvas contract):
 
 ```sh
 pnpm --filter @demo/doom generate

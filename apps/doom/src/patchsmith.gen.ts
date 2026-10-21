@@ -1073,14 +1073,14 @@ export const Pressable = /* @__PURE__ */ createRemoteComponent<PressableProps, t
   callbacks: { "onPress": 0 },
 });
 
-export interface DoomCanvasProps {
+export interface CanvasProps {
   ariaLabel?: string;
   height?: number;
   surface?: string;
   width?: number;
 }
 
-export const DoomCanvas = /* @__PURE__ */ createRemoteComponent<DoomCanvasProps, false>("DoomCanvas", {
+export const Canvas = /* @__PURE__ */ createRemoteComponent<CanvasProps, false>("Canvas", {
   children: false,
 });
 

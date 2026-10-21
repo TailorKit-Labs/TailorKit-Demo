@@ -1,7 +1,7 @@
 import { defineView, experimental_useCanvasSurface as useCanvasSurface } from "patchsmith/client";
 import { useState } from "preact/hooks";
 import { z } from "zod";
-import { Alert, Box, Button, DoomCanvas, Flex, Text } from "#patchsmith";
+import { Alert, Box, Button, Canvas, Flex, Text } from "#patchsmith";
 import { createDoom, type DoomEngine } from "../../doom";
 
 const view = defineView({
@@ -39,7 +39,7 @@ function Game({ paused }: { paused: boolean }) {
         ) : null}
       </Box>
       <Flex grow="1" minHeight="0" justify="center" align="center" overflow="hidden">
-        <DoomCanvas
+        <Canvas
           surface={surface.binding}
           width={640}
           height={480}

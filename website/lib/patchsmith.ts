@@ -205,7 +205,7 @@ export const contract = defineContract({
   scopes: { workspace: z.object({ workspaceId: z.string().min(1) }) },
   components: {
     ...primitives(patchsmithTheme),
-    DoomCanvas: experimental_canvas({
+    Canvas: experimental_canvas({
       maxPixels: 640 * 480,
       maxFramesPerSecond: 35,
       input: {

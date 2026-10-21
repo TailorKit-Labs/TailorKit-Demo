@@ -102,7 +102,7 @@ export const patchsmithClient = createClient({
   ),
   components: {
     ...primitives,
-    DoomCanvas: experimental_canvasRenderer,
+    Canvas: experimental_canvasRenderer,
     Text: ({ props }) => (
       <p className={cn(textTones[props.tone ?? "default"], textSizes[props.size ?? "sm"])}>
         {props.text}
