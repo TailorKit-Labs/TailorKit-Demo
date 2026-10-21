@@ -17,40 +17,98 @@ import {
   Text,
   tools,
 } from "#patchsmith";
-import { channels, examples } from "../../messages";
+import { channels, examples, type Channel, type Contact } from "../../messages";
 import { useMessages } from "../../use-messages";
 
 const view = defineView({ view: "/", component: Inbox });
 
+function SkeletonLine() {
+  return (
+    <Box height="100%" padding="2xs">
+      <Box height="100%" radius="sm" overflow="hidden">
+        <Skeleton />
+      </Box>
+    </Box>
+  );
+}
+
+// Both states use the same avatar and two fixed line slots, including on narrow panels.
+function InboxRow({
+  contact,
+  channel,
+  preview,
+  onPress,
+}: {
+  contact?: Contact;
+  channel?: Channel;
+  preview?: string;
+  onPress?: () => void;
+}) {
+  return (
+    <Flex direction="column" gap="none" shrink="0">
+      <Pressable
+        ariaLabel={contact ? `Message ${contact.name}` : "Loading conversation"}
+        disabled={!contact}
+        layout="flex"
+        align="center"
+        gap="sm"
+        padding="md"
+        background={{ default: "transparent", ":hover": "muted", ":active": "accent" }}
+        width="100%"
+        onPress={onPress}
+      >
+        <Box
+          width="control"
+          height="control"
+          radius="full"
+          overflow="hidden"
+          shrink="0"
+          background={contact ? "transparent" : "muted"}
+        >
+          {contact ? <Avatar name={contact.name} /> : null}
+        </Box>
+        <Flex direction="column" gap="none" height="avatar" grow="1" minWidth="0">
+          <Flex
+            justify="between"
+            align="start"
+            gap="sm"
+            grow="1"
+            basis="0"
+            minHeight="0"
+            overflow="hidden"
+          >
+            <Box grow="1" minWidth="0" height="100%" overflow="hidden">
+              {contact ? (
+                <Text text={contact.name} size="sm" />
+              ) : (
+                <Flex height="100%">
+                  <Box grow="1" minWidth="0" height="100%">
+                    <SkeletonLine />
+                  </Box>
+                  <Box width="avatar" shrink="0" />
+                </Flex>
+              )}
+            </Box>
+            <Box width="avatar" height="100%" shrink="0">
+              {contact ? <Text text={channel} size="xs" tone="muted" /> : <SkeletonLine />}
+            </Box>
+          </Flex>
+          <Box grow="1" basis="0" minHeight="0" overflow="hidden">
+            {contact ? <Text text={preview} size="sm" tone="muted" /> : <SkeletonLine />}
+          </Box>
+        </Flex>
+      </Pressable>
+      <Separator />
+    </Flex>
+  );
+}
+
 function InboxSkeleton() {
   return (
-    <Flex direction="column" gap="none">
-      {["first", "second", "third"].map((row) => (
-        <Flex key={row} direction="column" gap="none">
-          <Flex align="center" gap="sm" padding="md">
-            <Box width="avatar" height="avatar" radius="full" overflow="hidden" shrink="0">
-              <Skeleton />
-              <Skeleton />
-            </Box>
-            <Flex direction="column" gap="xs" grow="1" minWidth="0">
-              <Flex gap="lg" align="center">
-                <Box grow="1">
-                  <Skeleton />
-                </Box>
-                <Box width="control">
-                  <Skeleton />
-                </Box>
-              </Flex>
-              <Flex>
-                <Box grow="1">
-                  <Skeleton />
-                </Box>
-                <Box width="avatar" />
-              </Flex>
-            </Flex>
-          </Flex>
-          <Separator />
-        </Flex>
+    <Flex direction="column" gap="none" shrink="0">
+      <Separator />
+      {examples.map((_, index) => (
+        <InboxRow key={index} />
       ))}
     </Flex>
   );
@@ -120,41 +178,18 @@ function Inbox() {
         />
       ) : null}
       {!loading && threads.length > 0 ? (
-        <Flex direction="column" gap="none">
+        <Flex direction="column" gap="none" shrink="0">
           <Separator />
           {threads.map(({ contact, latest, hasSent }) => {
             const preview = `${hasSent ? "You: " : ""}${latest.body}`.replace(/\s+/g, " ");
             return (
-              <Flex key={contact.id} direction="column" gap="none">
-                <Pressable
-                  ariaLabel={`Message ${contact.name}`}
-                  layout="flex"
-                  align="center"
-                  gap="sm"
-                  padding="md"
-                  background={{
-                    default: "transparent",
-                    ":hover": "muted",
-                    ":active": "accent",
-                  }}
-                  width="100%"
-                  onPress={() => navigate(`/contacts/${contact.id}`)}
-                >
-                  <Avatar name={contact.name} />
-                  <Flex direction="column" gap="xs" grow="1" minWidth="0">
-                    <Flex justify="between" align="center" gap="sm">
-                      <Text text={contact.name} size="sm" />
-                      <Text text={latest.channel} size="xs" tone="muted" />
-                    </Flex>
-                    <Text
-                      text={preview.length > 48 ? `${preview.slice(0, 48)}…` : preview}
-                      size="sm"
-                      tone="muted"
-                    />
-                  </Flex>
-                </Pressable>
-                <Separator />
-              </Flex>
+              <InboxRow
+                key={contact.id}
+                contact={contact}
+                channel={latest.channel}
+                preview={preview.length > 48 ? `${preview.slice(0, 48)}…` : preview}
+                onPress={() => navigate(`/contacts/${contact.id}`)}
+              />
             );
           })}
         </Flex>
