@@ -1,7 +1,7 @@
 import type { PatchsmithConfig } from "patchsmith/app/config";
 
 const config = {
-  appId: "bfb3dca3-6af5-4e53-a844-d58626afb199",
+  appId: "497584e7-8337-4fed-a23b-3a068a916e70",
   name: "Messages",
   slug: "messages",
   host: "https://demo.patchsmith.io/api/patchsmith",
