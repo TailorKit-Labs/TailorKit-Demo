@@ -1,0 +1,25 @@
+website/components/crm-shell.tsx
+  s_559ee0323f1d32::t_78014348f0e796 28
+website/components/demo-setup.tsx
+  s_559ee0323f1d32::t_07168ba6b0a507 108-111,125-167
+  s_559ee0323f1d32::t_78014348f0e796 29-30,64-65,72-80,84-85,107,112-118,120-124,168
+  s_559ee0323f1d32::t_95377ff5ca2260 86
+website/README.md
+  s_559ee0323f1d32::t_436c5c5c48eb74 101-102,112-114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c0a69afc4da743dc76974d6feddfc1da42681382",
+  "prompts": {},
+  "sessions": {
+    "s_559ee0323f1d32": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15da1-f5a2-77f2-8a1f-8ff4565dc843",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
