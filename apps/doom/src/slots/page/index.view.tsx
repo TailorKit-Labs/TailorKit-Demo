@@ -43,7 +43,7 @@ function Game({ paused }: { paused: boolean }) {
           surface={surface.binding}
           width={640}
           height={480}
-          ariaLabel="Doom game. Click to focus. Arrow keys or WASD to move, F to fire, E or Space to use, P for menu, Enter to select."
+          ariaLabel="Doom game. Click to focus. Arrow keys or WASD to move, Space or F to fire, E to use, P for menu, Enter to select."
         />
       </Flex>
     </Flex>
@@ -95,7 +95,7 @@ function Doom() {
         text={
           paused
             ? "Paused. Press Resume, then click the game to continue."
-            : "Click game to focus · Arrows / WASD move · F fire · E / Space use · Shift run · 1–7 weapons · P menu · Enter select. Use Tab to leave the game."
+            : "Click game to focus · Arrows / WASD move · Space / F fire · E use · Shift run · 1–7 weapons · P menu · Enter select. Use Tab to leave the game."
         }
         size="xs"
         tone="muted"

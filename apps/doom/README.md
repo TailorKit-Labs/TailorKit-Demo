@@ -2,7 +2,7 @@
 
 A Patchsmith app in the CRM's full-page `page` slot. Its single instance is labelled **Doom** in App pages. The host and app use SDK `0.1.0-beta.55`.
 
-Press **Start Doom**, then click the game to focus it. Enter selects menu items; P opens or closes the menu. Arrow keys turn and move; W/S move forward/backward and A/D strafe. F fires, E or Space opens doors, Shift runs, and 1–7 select weapons. Tab releases focus. Pause freezes the game; Resume continues it; Restart starts a fresh session. Leaving the page disposes the engine. Saves are in-memory and disappear on restart or navigation. Keyboard input is required.
+Press **Start Doom** to launch the first level, then click the game to focus it. Enter selects menu items; P opens or closes the menu. Arrow keys turn and move; W/S move forward/backward and A/D strafe. Space or F fires, E opens doors, Shift runs, and 1–7 select weapons. Tab releases focus. Pause freezes the game; Resume continues it; Restart starts a fresh first level. Leaving the page disposes the engine. Saves are in-memory and disappear on restart or navigation. Keyboard input is required.
 
 The app runs [ozkl/doomgeneric](https://github.com/ozkl/doomgeneric)'s published Emscripten/WebAssembly build inside Patchsmith's opaque iframe. SDL renders to an iframe-local canvas; the SDK transfers pixels to the host-owned `DoomCanvas`. Only approved keys and pointer events are forwarded while the host canvas is focused. The game runs at 35 FPS with a 640×480 presentation surface to correct Doom's original pixel aspect ratio. A timer drives the hidden iframe's game loop.
 
@@ -17,6 +17,8 @@ pnpm --filter @demo/doom build
 pnpm --filter @demo/doom exec tsc --noEmit
 pnpm --filter @demo/doom run deploy --no-interactive
 ```
+
+With the website dev server running, open `/doom-verification` to play the local build through the real SDK sandbox and canvas without a platform installation or project key. Rebuild Doom and reload the page after app changes. This page and its client-bundle endpoint return 404 outside development.
 
 The committed generated bindings include `DoomCanvas`. Generate against an upgraded host (the deployed host must include this branch's canvas contract):
 

@@ -19,7 +19,7 @@ export const keyCodes: Readonly<Record<string, number>> = {
   KeyF: 17,
   KeyE: 32,
   KeyP: 27,
-  Space: 32,
+  Space: 17,
   Enter: 13,
   ShiftLeft: 16,
   ShiftRight: 16,
@@ -137,7 +137,8 @@ export async function createDoom(
       signal.addEventListener("abort", () => fail(signal.reason), { once: true });
       const module: DoomModule = {
         canvas: source,
-        arguments: ["-iwad", "doom1.wad", "-nosound"],
+        // Start a playable first level instead of Doom's automatic demo playback.
+        arguments: ["-iwad", "doom1.wad", "-nosound", "-warp", "1", "1"],
         noInitialRun: true,
         onRuntimeInitialized: () => {
           if (signal.aborted) {
