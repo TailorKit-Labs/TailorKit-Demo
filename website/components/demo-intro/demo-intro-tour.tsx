@@ -56,10 +56,10 @@ export function DemoIntroTour({
       },
     }[step];
 
+    setLoadFailed(false);
     void import("driver.js")
       .then(({ driver }) => {
         if (cancelled) return;
-        setLoadFailed(false);
         tour = driver({
           animate: false,
           overlayOpacity: 0.35,
