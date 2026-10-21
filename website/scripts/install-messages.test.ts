@@ -87,6 +87,20 @@ void test("platform failures propagate so provisioning cannot mark setup complet
   assert.equal(calls.length, 1);
 });
 
+void test("installs the shared Doom app separately in every workspace, like Messages", async () => {
+  const { installApp, calls } = platform();
+  for (const workspaceId of ["workspace-a", "workspace-b"]) {
+    await installDoom(workspaceId, { installApp });
+  }
+  assert.deepEqual(
+    calls.map((call) => call.body),
+    ["workspace-a", "workspace-b"].map((workspaceId) => ({
+      app: { id: doomConfig.appId },
+      scope: { name: "workspace", value: { workspaceId } },
+    })),
+  );
+});
+
 void test("missing source app ID, project key or workspace fails before network work", async () => {
   const { installApp, calls } = platform({ projectKey: "" });
   await assert.rejects(

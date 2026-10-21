@@ -1,3 +1,5 @@
+import { createDoomInput } from "./input";
+
 // Use the browser build published by doomgeneric's author. Its data package
 // includes Doom shareware and the SDL/Timidity sound assets.
 const upstream = "https://ozkl.github.io/doomgeneric/";
@@ -5,31 +7,6 @@ const integrity = {
   "doomgeneric.js": "sha256-c7VuvTVUEdHAXtKRkbevMejk6NTPd1aRgMDq8YwyLq0=",
   "doomgeneric.wasm": "sha256-JmjO9B7/FN/MMIkhpdYlGT9bVcsn/2oLFdmsQbjnjbM=",
   "doomgeneric.data": "sha256-baQC2FHDIOiEnaDkZGNZQiVig85NNLIHYZ8xwx9Eij0=",
-};
-
-export const keyCodes: Readonly<Record<string, number>> = {
-  ArrowUp: 38,
-  ArrowDown: 40,
-  ArrowLeft: 37,
-  ArrowRight: 39,
-  KeyW: 38,
-  KeyS: 40,
-  KeyA: 188,
-  KeyD: 190,
-  KeyF: 17,
-  KeyE: 32,
-  KeyP: 27,
-  Space: 17,
-  Enter: 13,
-  ShiftLeft: 16,
-  ShiftRight: 16,
-  Digit1: 49,
-  Digit2: 50,
-  Digit3: 51,
-  Digit4: 52,
-  Digit5: 53,
-  Digit6: 54,
-  Digit7: 55,
 };
 
 interface DoomModule {
@@ -88,19 +65,9 @@ export async function createDoom(
   document.body.append(source);
   let paused = false;
   let disposed = false;
-  const held = new Map<string, number>();
   let stop: (() => void) | undefined;
 
-  function key(code: string, down: boolean) {
-    const keyCode = keyCodes[code];
-    if (keyCode === undefined || disposed || (paused && down)) return;
-    if (down) {
-      if (held.has(code)) return;
-      held.set(code, keyCode);
-    } else {
-      held.delete(code);
-      if ([...held.values()].includes(keyCode)) return;
-    }
+  const input = createDoomInput((keyCode, down) => {
     // SDL's Emscripten build uses legacy keyCode, which the SDK deliberately
     // does not forward. Reconstruct it solely from the approved physical code.
     const event = new KeyboardEvent(down ? "keydown" : "keyup", { bubbles: true });
@@ -109,15 +76,16 @@ export async function createDoom(
       which: { value: keyCode },
     });
     document.dispatchEvent(event);
-  }
+  });
 
-  function releaseKeys() {
-    for (const code of held.keys()) key(code, false);
+  function key(code: string, down: boolean) {
+    if (disposed || (paused && down)) return;
+    input.key(code, down);
   }
 
   function dispose() {
     if (disposed) return;
-    releaseKeys();
+    input.release();
     disposed = true;
     stop?.();
     source.remove();
@@ -186,7 +154,7 @@ export async function createDoom(
       };
       canvas.addEventListener("keydown", audio, { signal });
       canvas.addEventListener("pointerdown", audio, { signal });
-      canvas.addEventListener("blur", releaseKeys, { signal });
+      canvas.addEventListener("blur", input.release, { signal });
       canvas.addEventListener(
         "keydown",
         (event) => {
@@ -207,7 +175,7 @@ export async function createDoom(
       draw: () => context.drawImage(source, 0, 0, canvas.width, canvas.height),
       key,
       pause: (value) => {
-        releaseKeys();
+        input.release();
         paused = value;
       },
       dispose,
