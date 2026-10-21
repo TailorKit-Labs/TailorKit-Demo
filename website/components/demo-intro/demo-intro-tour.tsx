@@ -45,7 +45,7 @@ export function DemoIntroTour({
         element: hasDoom ? '[data-demo="app-page-surface"]' : '[data-demo="apps-tabs"]',
         title: "Full-page apps",
         description: hasDoom
-          ? "Apps can also fill a page, like Doom."
+          ? "Apps appear where you allow, and yes, that’s Doom on its own page."
           : "Apps can also fill a page; Doom is unavailable right now.",
         progress: "2 of 3",
       },
