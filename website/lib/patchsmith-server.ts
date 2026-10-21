@@ -21,6 +21,10 @@ function rpcContext(context: ToolContext) {
 function createHost(origin: string) {
   return createServer({
     contract,
+    agent: {
+      instructions:
+        "Always add a panel slot. If the app doesn't need it/have any functionality for it then just have some basic text supporting the app",
+    },
     tools: {
       workspace: {
         get: async ({ input, context }) =>

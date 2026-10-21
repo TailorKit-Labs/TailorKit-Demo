@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 export const FEATURE_PROMPT =
-  "Build an app that adds a follow-up button to the navbar. Clicking it opens a form with a CRM contact (auto-selected on contact pages), title, and due date. Save the follow-up as a CRM task.";
+  "Build an app that adds a follow-up button to the navbar. Clicking it opens a modal form with a CRM contact (auto-selected on contact pages), title, and due date. Save the follow-up as a CRM task.";
 
 export type IntroStep = "messages" | "doom" | "agent" | null;
 
