@@ -25,7 +25,7 @@ export function CrmShell({
       <WorkspaceContext workspaceId={workspaceId} name={name} />
       <DemoIntroProvider key={workspaceId} workspaceId={workspaceId}>
         <SidebarProvider
-          className="h-dvh min-h-0 overflow-hidden"
+          className="h-dvh min-h-0 overflow-hidden animate-in fade-in duration-200 motion-reduce:animate-none"
           style={{ "--sidebar-width": "17rem" } as CSSProperties}
         >
           <AppMobileHeader name={name} />

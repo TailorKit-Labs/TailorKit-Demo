@@ -98,7 +98,8 @@ Run `pnpm --filter website test:agent` for the real PostgreSQL tool integration 
 
 ## Patchsmith apps
 
-First visits jump straight into a skippable, three-step Driver.js guide: try
+After installation, setup fades into a brief welcome screen with an **Enter demo**
+button. Enter fades into the CRM and starts a three-step Driver.js guide: try
 Messages in the side panel, see Doom as a full-page app, then ask the agent to build
 a Quick follow-up action in the navbar. Opening a conversation updates the first
 callout in place. The Doom step opens its installed page and closes the mobile
@@ -108,8 +109,9 @@ sends the request or replaces an existing draft.
 
 Dismissal is remembered per workspace in browser storage. **Demo visitor profile →
 Replay introduction** restarts at Messages on desktop and mobile. Missing demo apps
-have explanatory fallbacks, and the tour library loads only when needed. There is
-no welcome dialog. Verify the three steps, contact navigation, Skip/Escape,
+have explanatory fallbacks, and the tour library loads only when needed. Each
+callout has one sentence and no Skip button; Escape or clicking outside dismisses
+the guide. Verify the install-to-welcome transition, Enter, contact navigation,
 dismissal/reload/replay, and the editable navbar-action prompt at desktop, tablet,
 and mobile widths. App backend tools require a publicly reachable host (a deployed
 preview or public tunnel); localhost alone cannot serve those calls.

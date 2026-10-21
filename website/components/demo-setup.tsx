@@ -26,6 +26,8 @@ export function DemoSetup() {
   const [step, setStep] = useState(0);
   const [error, setError] = useState("");
   const [attempt, setAttempt] = useState(0);
+  const [welcome, setWelcome] = useState(false);
+  const [entering, setEntering] = useState(false);
   const running = useRef(false);
   const router = useRouter();
   const { mutateAsync: provision } = useMutation(orpc.workspace.provision.mutationOptions());
@@ -59,19 +61,29 @@ export function DemoSetup() {
         await delay(COMPLETION_DISPLAY_MS);
         setStep(4);
         await delay(FADE_DURATION_MS);
-        router.refresh();
+        setWelcome(true);
+        setStep(5);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Setup could not finish. Please try again.");
         running.current = false;
       }
     }
     void setup();
-  }, [attempt, router, provision, installApps]);
+  }, [attempt, provision, installApps]);
+
+  async function enterDemo() {
+    if (entering) return;
+    setEntering(true);
+    await delay(FADE_DURATION_MS);
+    router.refresh();
+  }
+
   return (
     <main
       className={cn(
-        "flex min-h-svh items-center justify-center p-6 transition-all duration-200 motion-reduce:transition-none",
-        step === 4 && "opacity-0 scale-95",
+        "flex min-h-svh items-center justify-center p-6 transition-opacity duration-200 motion-reduce:transition-none",
+        (step === 4 || entering) && "opacity-0",
+        welcome && !entering && "animate-in fade-in duration-200 motion-reduce:animate-none",
       )}
     >
       <div className="flex w-full max-w-md flex-col gap-8">
@@ -92,49 +104,68 @@ export function DemoSetup() {
           />
           <span className="text-xl font-semibold tracking-tight">Patchsmith</span>
         </div>
-        <Card>
-          <CardHeader className="items-center text-center">
-            <CardTitle>Setting up your demo</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-5">
-            <Progress
-              value={step >= 3 ? 100 : step === 2 ? 75 : step === 1 ? 40 : 10}
-              aria-label="Workspace setup progress"
-            />
-            <div role="status" aria-live="polite" className="flex flex-col gap-4">
-              {[
-                "Create your anonymous account",
-                "Prepare your contacts, deals, and tasks",
-                "Install Messages and Doom",
-              ].map((label, i) => (
-                <div
-                  key={label}
-                  className={cn(
-                    "flex items-center gap-3 text-sm",
-                    step < i && "text-muted-foreground",
-                  )}
-                >
-                  {step > i ? (
-                    <CheckIcon className="size-4 shrink-0" />
-                  ) : step === i && !error ? (
-                    <Spinner className="size-4 shrink-0" />
-                  ) : (
-                    <span className="size-4 shrink-0 rounded-full border" />
-                  )}
-                  {label}
-                </div>
-              ))}
+        {welcome ? (
+          <section
+            aria-labelledby="demo-welcome-title"
+            className="flex flex-col items-center gap-5 text-center"
+          >
+            <div className="flex flex-col gap-2">
+              <h1 id="demo-welcome-title" className="text-2xl font-semibold tracking-tight">
+                Welcome to Forma
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                A demo CRM with Patchsmith built into pages, side panels, and navbar actions.
+              </p>
             </div>
-            {error ? (
-              <>
-                <Alert variant="error">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
-                <Button onClick={() => setAttempt((n) => n + 1)}>Try again</Button>
-              </>
-            ) : null}
-          </CardContent>
-        </Card>
+            <Button autoFocus size="lg" disabled={entering} onClick={() => void enterDemo()}>
+              Enter demo
+            </Button>
+          </section>
+        ) : (
+          <Card>
+            <CardHeader className="items-center text-center">
+              <CardTitle>Setting up your demo</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-5">
+              <Progress
+                value={step >= 3 ? 100 : step === 2 ? 75 : step === 1 ? 40 : 10}
+                aria-label="Workspace setup progress"
+              />
+              <div role="status" aria-live="polite" className="flex flex-col gap-4">
+                {[
+                  "Create your anonymous account",
+                  "Prepare your contacts, deals, and tasks",
+                  "Install Messages and Doom",
+                ].map((label, i) => (
+                  <div
+                    key={label}
+                    className={cn(
+                      "flex items-center gap-3 text-sm",
+                      step < i && "text-muted-foreground",
+                    )}
+                  >
+                    {step > i ? (
+                      <CheckIcon className="size-4 shrink-0" />
+                    ) : step === i && !error ? (
+                      <Spinner className="size-4 shrink-0" />
+                    ) : (
+                      <span className="size-4 shrink-0 rounded-full border" />
+                    )}
+                    {label}
+                  </div>
+                ))}
+              </div>
+              {error ? (
+                <>
+                  <Alert variant="error">
+                    <AlertDescription>{error}</AlertDescription>
+                  </Alert>
+                  <Button onClick={() => setAttempt((n) => n + 1)}>Try again</Button>
+                </>
+              ) : null}
+            </CardContent>
+          </Card>
+        )}
       </div>
     </main>
   );
