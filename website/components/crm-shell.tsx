@@ -6,6 +6,7 @@ import { AppSidebar } from "@/components/app/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AgentWorkspace } from "@/components/agent/agent-workspace";
 import { PatchsmithProvider, useViewContext } from "@/lib/patchsmith-client";
+import { cn } from "@/lib/utils";
 
 export function CrmShell({
   children,
@@ -17,6 +18,7 @@ export function CrmShell({
   workspaceId: string;
 }) {
   const pathname = usePathname();
+  const appPage = pathname.startsWith("/app-pages/");
   return (
     <PatchsmithProvider key={workspaceId}>
       <WorkspaceContext workspaceId={workspaceId} name={name} />
@@ -39,7 +41,12 @@ export function CrmShell({
                 if (header) header.dataset.scrolled = String(event.currentTarget.scrollTop > 0);
               }}
             >
-              <div className="flex flex-col gap-6 px-4 pb-5 max-[799px]:pb-24 md:px-6 md:pb-8">
+              <div
+                className={cn(
+                  "flex flex-col gap-6 px-4 pb-5 max-[799px]:pb-24 md:px-6 md:pb-8",
+                  appPage && "h-full gap-4",
+                )}
+              >
                 {children}
               </div>
             </div>

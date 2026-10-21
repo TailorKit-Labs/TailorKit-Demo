@@ -105,7 +105,7 @@ export function DemoSetup() {
               {[
                 "Create your anonymous account",
                 "Prepare your contacts, deals, and tasks",
-                "Install your Messages demo app",
+                "Install Messages and Doom",
               ].map((label, i) => (
                 <div
                   key={label}
