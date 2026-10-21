@@ -18,7 +18,7 @@ Set `PATCHSMITH_PROJECT_KEY` in `website/.env.local`; workspace setup installs t
 
 Publish Messages with `pnpm --filter @demo/messages deploy`; see [Messages](apps/messages/README.md) for the initial publish and version updates. New workspaces install the shared published app without uploading files.
 
-Doom uses [doomgeneric](https://github.com/ozkl/doomgeneric) and the SDK canvas API (beta.55). Open **App pages → Doom** or use the Doom panel's **Play Doom** link. The first level starts automatically; click the game to focus it. See [Doom](apps/doom/README.md) for controls and publishing.
+Doom uses [doomgeneric](https://github.com/ozkl/doomgeneric) and the SDK canvas API (beta.55). Open **App pages → Can it run DOOM?** or use the Doom panel's **Play Doom** link. The first level starts automatically; click the game to focus it. See [Doom](apps/doom/README.md) for controls and publishing.
 
 ## Checks
 

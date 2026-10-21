@@ -6,5 +6,9 @@ export default {
   slug: "doom",
   description: "Play Doom shareware in a full-page canvas, powered by doomgeneric.",
   host: "https://demo.patchsmith.io/api/patchsmith",
+  logos: {
+    light: "logo-light.svg",
+    dark: "logo-dark.svg",
+  },
   server: { entry: "src/server.ts" },
 } satisfies PatchsmithConfig;

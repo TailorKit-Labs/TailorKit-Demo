@@ -8,7 +8,7 @@ const view = defineView({
   view: "/",
   instances: {
     dataSchema: z.object({}),
-    resolve: () => [{ key: "doom", metadata: { label: "Doom" }, data: {} }],
+    resolve: () => [{ key: "doom", metadata: { label: "Can it run DOOM?" }, data: {} }],
   },
   component: Doom,
 });
