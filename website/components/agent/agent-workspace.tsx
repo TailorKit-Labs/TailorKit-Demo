@@ -182,13 +182,13 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function submit(text: string) {
+  async function submit(text: string, preserveDraft = false) {
     if (!text.trim() || busy || loadingChat) return;
     clearError();
     setHistoryError(undefined);
     const id = chatId ?? crypto.randomUUID();
     setChatId(id);
-    setInput("");
+    if (!preserveDraft) setInput("");
     const now = new Date();
     const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     const page = pathname.startsWith("/contacts/")
@@ -386,6 +386,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
       <DemoIntroTour
         ready={
           introActive &&
+          (introStep !== "agent" || (!busy && !loadingChat)) &&
           !appsPending &&
           !pagesPending &&
           (introStep === "doom" && doomHref
@@ -398,8 +399,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
         hasDoom={Boolean(doomHref)}
         docked={canDock}
         onUseExample={() => {
-          if (!busy && !loadingChat && !input.trim()) setInput(FEATURE_PROMPT);
-          requestAnimationFrame(() => inputRef.current?.focus());
+          void submit(FEATURE_PROMPT, true);
         }}
       />
       <span className={cn("sr-only", !busy && "hidden")} role="status">

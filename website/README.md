@@ -103,16 +103,17 @@ button. Enter fades into the CRM and starts a three-step Driver.js guide: try
 Messages in the side panel, see Doom as a full-page app, then ask the agent to build
 a Quick follow-up action in the navbar. Opening a conversation updates the first
 callout in place. The Doom step opens its installed page and closes the mobile
-apps drawer so the full-page example stays visible. The final action fills an
-editable request for a contact follow-up form that saves a CRM task; it never
-sends the request or replaces an existing draft.
+apps drawer so the full-page example stays visible. Every tutorial button says
+**Next**; the final one submits the example request for a contact follow-up form
+that saves a CRM task, preserving any existing composer draft and waiting until
+the agent is idle.
 
 Dismissal is remembered per workspace in browser storage. **Demo visitor profile →
 Replay introduction** restarts at Messages on desktop and mobile. Missing demo apps
 have explanatory fallbacks, and the tour library loads only when needed. Each
 callout has one sentence and no Skip button; Escape or clicking outside dismisses
 the guide. Verify the install-to-welcome transition, Enter, contact navigation,
-dismissal/reload/replay, and the editable navbar-action prompt at desktop, tablet,
+dismissal/reload/replay, and the automatic navbar-action request at desktop, tablet,
 and mobile widths. App backend tools require a publicly reachable host (a deployed
 preview or public tunnel); localhost alone cannot serve those calls.
 

@@ -47,7 +47,6 @@ export function DemoIntroTour({
           : onContact
             ? "Messages uses your CRM data to follow the contact you’re viewing."
             : "Open a conversation to see how a Patchsmith app connects to your CRM contacts.",
-        button: "See a full-page app",
         progress: "1 of 3",
       },
       doom: {
@@ -56,15 +55,13 @@ export function DemoIntroTour({
         description: hasDoom
           ? "Doom fills a page, but apps can also live in side panels or add top-bar actions."
           : "Doom is unavailable, but apps can fill pages, sit in side panels, or add top-bar actions.",
-        button: "Build your own action",
         progress: "2 of 3",
       },
       agent: {
         element: '[data-demo="agent-composer"]',
         title: "Build a useful shortcut",
         description:
-          "Ask the agent to build a Quick follow-up button that saves tasks for your CRM contacts.",
-        button: "Use example prompt",
+          "Click Next to ask the agent to build a Quick follow-up button for saving CRM tasks.",
         progress: "3 of 3",
       },
     }[step];
@@ -83,7 +80,7 @@ export function DemoIntroTour({
           showButtons: ["next"],
           showProgress: true,
           progressText: content.progress,
-          doneBtnText: content.button,
+          doneBtnText: "Next",
           // Arrow keys inside Messages or the composer belong to those controls.
           allowKeyboardControl: false,
           onDoneClick: () => next(),
