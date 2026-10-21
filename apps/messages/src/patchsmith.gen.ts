@@ -294,7 +294,7 @@ declare module "patchsmith/client" {
   interface PatchsmithSlots {
     "navbar": { views: "/" | "/overview" | "/contacts" | "/contacts/detail" | "/pipeline" | "/tasks" | "/settings" | "/app-pages"; multiple: false };
     "panel": { views: "/" | "/overview" | "/contacts" | "/contacts/detail" | "/pipeline" | "/tasks" | "/settings" | "/app-pages"; multiple: false };
-    "page": { views: "/" | "/overview" | "/contacts" | "/contacts/detail" | "/pipeline" | "/tasks" | "/settings" | "/app-pages"; multiple: true };
+    "page": { views: "/"; multiple: true };
   }
 }
 
@@ -1056,12 +1056,23 @@ export interface PressableProps {
   ariaLabel?: AriaLabel;
   disabled?: Disabled;
   layout?: Layout;
-  onPress?: () => void;
+  onPress?: () => void | Promise<void>;
 }
 
 export const Pressable = /* @__PURE__ */ createRemoteComponent<PressableProps, true>("Pressable", {
   children: true,
   callbacks: { "onPress": 0 },
+});
+
+export interface CanvasProps {
+  ariaLabel?: string;
+  height?: number;
+  surface?: string;
+  width?: number;
+}
+
+export const Canvas = /* @__PURE__ */ createRemoteComponent<CanvasProps, false>("Canvas", {
+  children: false,
 });
 
 export interface TextProps {
@@ -1088,7 +1099,7 @@ export interface ButtonProps {
   variant?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "destructive-outline" | "link";
   size?: "xs" | "sm" | "default" | "lg";
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: () => void | Promise<void>;
 }
 
 export const Button = /* @__PURE__ */ createRemoteComponent<ButtonProps, false>("Button", {
@@ -1136,7 +1147,7 @@ export const Empty = /* @__PURE__ */ createRemoteComponent<EmptyProps, true>("Em
 export interface FormProps {
   submitLabel?: string;
   disabled?: boolean;
-  onSubmit?: () => void;
+  onSubmit?: () => void | Promise<void>;
 }
 
 export const Form = /* @__PURE__ */ createRemoteComponent<FormProps, true>("Form", {
@@ -1153,7 +1164,7 @@ export interface InputProps {
   required?: boolean;
   onChange?: (input: {
     value: string;
-  }) => void;
+  }) => void | Promise<void>;
 }
 
 export const Input = /* @__PURE__ */ createRemoteComponent<InputProps, false>("Input", {
@@ -1170,7 +1181,7 @@ export interface TextareaProps {
   required?: boolean;
   onChange?: (input: {
     value: string;
-  }) => void;
+  }) => void | Promise<void>;
 }
 
 export const Textarea = /* @__PURE__ */ createRemoteComponent<TextareaProps, false>("Textarea", {
@@ -1188,7 +1199,7 @@ export interface SelectProps {
   disabled?: boolean;
   onChange?: (input: {
     value: string;
-  }) => void;
+  }) => void | Promise<void>;
 }
 
 export const Select = /* @__PURE__ */ createRemoteComponent<SelectProps, false>("Select", {
@@ -1209,7 +1220,7 @@ export interface ComboboxProps {
   disabled?: boolean;
   onChange?: (input: {
     value: string;
-  }) => void;
+  }) => void | Promise<void>;
 }
 
 export const Combobox = /* @__PURE__ */ createRemoteComponent<ComboboxProps, false>("Combobox", {
@@ -1223,7 +1234,7 @@ export interface CheckboxProps {
   disabled?: boolean;
   onCheckedChange?: (input: {
     checked: boolean;
-  }) => void;
+  }) => void | Promise<void>;
 }
 
 export const Checkbox = /* @__PURE__ */ createRemoteComponent<CheckboxProps, false>("Checkbox", {
@@ -1237,7 +1248,7 @@ export interface SwitchProps {
   disabled?: boolean;
   onCheckedChange?: (input: {
     checked: boolean;
-  }) => void;
+  }) => void | Promise<void>;
 }
 
 export const Switch = /* @__PURE__ */ createRemoteComponent<SwitchProps, false>("Switch", {
@@ -1335,7 +1346,7 @@ export interface DialogProps {
   open?: boolean;
   onOpenChange?: (input: {
     open: boolean;
-  }) => void;
+  }) => void | Promise<void>;
 }
 
 export const Dialog = /* @__PURE__ */ createRemoteComponent<DialogProps, true>("Dialog", {

@@ -10,8 +10,11 @@ import { db, pool } from "../lib/drizzle";
 import { user, tenants } from "../lib/schema";
 import { SETUP_BOT_CHECK_LEVEL, SETUP_PROTECTED_PATHS } from "../lib/setup-protection";
 import { CURRENT_SETUP_VERSION } from "../lib/provision";
-import { router } from "../routers";
-import { handleRpcRequest } from "../routers/handler";
+// Configure the fixture before the router initializes the shared Patchsmith server.
+const originalProjectKey = process.env.PATCHSMITH_PROJECT_KEY;
+process.env.PATCHSMITH_PROJECT_KEY = "test-key-no-platform-spend";
+const { router } = await import("../routers");
+const { handleRpcRequest } = await import("../routers/handler");
 
 const origin = "http://localhost:3000";
 const hasCode = (code: string) => (error: unknown) =>
@@ -24,7 +27,7 @@ async function main() {
   const originalContext = globals[contextSymbol];
   const savedEnv = {
     VERCEL: process.env.VERCEL,
-    PATCHSMITH_PROJECT_KEY: process.env.PATCHSMITH_PROJECT_KEY,
+    PATCHSMITH_PROJECT_KEY: originalProjectKey,
   };
   const requests = new AsyncLocalStorage<Request>();
   let mode: "human" | "bot" | "unavailable" | "invalid" = "human";
@@ -58,7 +61,6 @@ async function main() {
   };
   try {
     process.env.VERCEL = "1"; // Exercise deployed verification, even in local tests.
-    process.env.PATCHSMITH_PROJECT_KEY = "test-key-no-platform-spend";
     globals[contextSymbol] = {
       get: () => ({
         url: requests.getStore()?.url,
