@@ -1,8 +1,8 @@
-import { patchsmith } from "@/lib/patchsmith-server";
+import { patchsmithForRequest } from "@/lib/patchsmith-server";
 import { requireTenant, requireUserId } from "@/lib/workspace-session";
 
 async function handleRequest(request: Request) {
-  return patchsmith.handler(request, {
+  return patchsmithForRequest(request).handler(request, {
     authenticate: async () => {
       try {
         const tenant = await requireTenant();

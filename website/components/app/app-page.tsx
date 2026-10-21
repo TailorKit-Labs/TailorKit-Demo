@@ -2,6 +2,7 @@
 
 import { RenderSlot, useViews, useViewContext } from "@/lib/patchsmith-client";
 import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
 import { appPageHref, appPageLabel, findAppPage, type AppPageTarget } from "@/lib/app-pages";
 import { AppLogo } from "./app-logo";
 import { AppPageHeading } from "./app-page-header";
@@ -13,13 +14,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function AppPage({ target }: { target: AppPageTarget }) {
   const { data: pages, isPending, error, fetch } = useViews({ slot: "page" });
   const page = pages ? findAppPage(pages, target) : undefined;
+  const [identity, setIdentity] = useState({
+    appId: "appId" in target ? target.appId : "",
+    instanceKey: "instanceKey" in target ? target.instanceKey : "",
+  });
+  useEffect(() => {
+    if (!page) return;
+    setIdentity((previous) =>
+      previous.appId === page.app.id && previous.instanceKey === page.key
+        ? previous
+        : { appId: page.app.id, instanceKey: page.key },
+    );
+  }, [page]);
+  // Discovery refetches when context changes. Keep the resolved identity while
+  // that query reloads, rather than alternating between an ID and an empty ID.
   useViewContext("/app-pages", {
-    context: {
-      appPage: {
-        appId: page?.app.id ?? ("appId" in target ? target.appId : ""),
-        instanceKey: page?.key ?? ("instanceKey" in target ? target.instanceKey : ""),
-      },
-    },
+    context: { appPage: identity },
   });
 
   if (page && !isPending && !error && "appId" in target) redirect(appPageHref(page, pages));

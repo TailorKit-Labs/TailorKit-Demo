@@ -192,6 +192,8 @@ Set the Vercel project Root Directory to `website`, using the Next.js preset. Co
 - `BETTER_AUTH_SECRET`: a generated secret with at least 32 characters, configured for both Preview and Production. These environments use separate keys.
 - `BETTER_AUTH_URL`: optionally override the production origin, including `https://`. Otherwise the Vercel production domain is used. Previews use their exact deployment and Git branch hostnames, so no per-preview URL setting is required.
 
+Patchsmith also accepts both Vercel preview hostnames. The API selects a host configured for the incoming deployment URL or the exact `VERCEL_BRANCH_URL`; other origins still fail the SDK's origin check. Configuring only `VERCEL_URL` causes app discovery and backend session requests through the branch alias to return `400 Invalid request` even when account setup succeeds.
+
 The build command is `pnpm run db:push && next build`. Every deployment pushes `lib/schema.ts` to its assigned database before building; a failed push stops the build. Drizzle uses `DATABASE_URL_UNPOOLED` when available for schema changes, while the app requires pooled `DATABASE_URL`. Missing `DATABASE_URL` fails with a configuration error in every environment, without falling back to localhost.
 
 In the Neon resource's **Projects → Update Project Connection** settings, enable **Create Database Branch For Deployment → Preview** and leave Production unchecked. Neon creates an isolated branch and injects its connection URLs before each preview build. Production builds push the main database. Database branches are not merged: production applies the schema from the code deployed to production.
