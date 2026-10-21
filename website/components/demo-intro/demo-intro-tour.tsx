@@ -43,10 +43,10 @@ export function DemoIntroTour({
         element: hasMessages ? '[data-demo="messages-panel"]' : '[data-demo="apps-tabs"]',
         title: "Try Messages",
         description: !hasMessages
-          ? "Patchsmith lets users add features inside your product. Installed apps live beside the agent. Messages is unavailable right now, but you can keep exploring."
+          ? "Patchsmith apps live beside the agent; Messages is unavailable right now."
           : onContact
-            ? "Messages follows the contact you’re viewing in Forma. Patchsmith apps can use your product’s data and page context, right here in the side panel. Demo messages aren’t delivered."
-            : "Patchsmith lets users add features inside your product. Messages is one example: open a conversation to see it connect to a contact in this CRM. Demo messages aren’t delivered.",
+            ? "Messages uses your CRM data to follow the contact you’re viewing."
+            : "Open a conversation to see how a Patchsmith app connects to your CRM contacts.",
         button: "See a full-page app",
         progress: "1 of 3",
       },
@@ -54,8 +54,8 @@ export function DemoIntroTour({
         element: hasDoom ? '[data-demo="app-page-surface"]' : '[data-demo="apps-tabs"]',
         title: "Even Doom can live here",
         description: hasDoom
-          ? "This is Doom running as a full-page app inside Forma. Apps can fill a page, sit in a side panel, or add actions to the top bar. The same building blocks can power tools for your users."
-          : "Apps can fill a page, sit in a side panel, or add actions to the top bar. Doom is our full-page example; it’s unavailable right now. Next, try building a useful action of your own.",
+          ? "Doom fills a page, but apps can also live in side panels or add top-bar actions."
+          : "Doom is unavailable, but apps can fill pages, sit in side panels, or add top-bar actions.",
         button: "Build your own action",
         progress: "2 of 3",
       },
@@ -63,7 +63,7 @@ export function DemoIntroTour({
         element: '[data-demo="agent-composer"]',
         title: "Build a useful shortcut",
         description:
-          "Ask the agent to add a Quick follow-up button to the top bar. It can open a form and save a task against a CRM contact. Start with the example, make it yours, then ask for changes as you use it.",
+          "Ask the agent to build a Quick follow-up button that saves tasks for your CRM contacts.",
         button: "Use example prompt",
         progress: "3 of 3",
       },
@@ -80,19 +80,17 @@ export function DemoIntroTour({
           popoverClass: "demo-tour-popover",
           stagePadding: 5,
           stageRadius: 12,
-          showButtons: ["next", "close"],
+          showButtons: ["next"],
           showProgress: true,
           progressText: content.progress,
           doneBtnText: content.button,
-          closeBtnLabel: "Skip introduction",
           // Arrow keys inside Messages or the composer belong to those controls.
           allowKeyboardControl: false,
           onDoneClick: () => next(),
           onDestroyed: (_element, _step, { reason }) => {
             if (!cancelled && reason !== "api") finish();
           },
-          onPopoverRender: ({ closeButton, nextButton }) => {
-            closeButton.textContent = "Skip";
+          onPopoverRender: ({ nextButton }) => {
             nextButton.focus();
           },
           steps: [
