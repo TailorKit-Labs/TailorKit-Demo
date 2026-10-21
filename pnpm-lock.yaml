@@ -362,6 +362,9 @@ importers:
       '@daypicker/react':
         specifier: 'catalog:'
         version: 10.0.2(@types/react@19.3.0)(react@19.3.1)
+      '@demo/messages':
+        specifier: workspace:*
+        version: link:../apps/messages
       '@neondatabase/serverless':
         specifier: 'catalog:'
         version: 1.2.0
