@@ -1,0 +1,19 @@
+apps/messages/src/slots/panel/index.view.tsx
+  s_a80ca0f198c57c::t_aa57026f738ea3 25-34,60-68,80-90,92-93,97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e0218d642e0d7869149a3d20197072b51caf7f73",
+  "prompts": {},
+  "sessions": {
+    "s_a80ca0f198c57c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15b30-5880-79d0-a706-55ef646ed679",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
