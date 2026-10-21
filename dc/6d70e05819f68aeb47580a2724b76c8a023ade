@@ -1,0 +1,22 @@
+website/components/agent/apps-panel.tsx
+  s_f209ceb61359f7::t_b7450cefa9f9b4 23
+  s_f209ceb61359f7::t_b24d50ace34b21 20-21
+  s_f209ceb61359f7::t_0439d527b92cfe 22,24,28
+  s_f209ceb61359f7::t_cce4aa7ee60f8d 4,10,17-19,25-27,29-55,94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dc6d70e05819f68aeb47580a2724b76c8a023ade",
+  "prompts": {},
+  "sessions": {
+    "s_f209ceb61359f7": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15c51-9d18-74b2-916d-2fef900d7d0c",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
