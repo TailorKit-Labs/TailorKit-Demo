@@ -1,0 +1,21 @@
+website/README.md
+  s_78cfe895d4a749::t_4d7e6cc5a88d61 79,123
+website/routers/agent.ts
+  s_78cfe895d4a749::t_d08c0dec2a4dcb 72-75
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6515b7542526603d6c04f4ea1d53859bbd197c71",
+  "prompts": {},
+  "sessions": {
+    "s_78cfe895d4a749": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15cff-8804-7a32-922e-9519af736a07",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
