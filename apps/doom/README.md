@@ -18,8 +18,6 @@ pnpm --filter @demo/doom exec tsc --noEmit
 pnpm --filter @demo/doom run deploy --no-interactive
 ```
 
-With the website dev server running, open `/doom-verification` to play the local build through the real SDK sandbox and canvas without a platform installation or project key. Rebuild Doom and reload the page after app changes. This page and its client-bundle endpoint return 404 outside development.
-
 The committed generated bindings include `DoomCanvas`. Generate against an upgraded host (the deployed host must include this branch's canvas contract):
 
 ```sh
