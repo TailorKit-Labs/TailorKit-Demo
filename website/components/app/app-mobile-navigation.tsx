@@ -1,7 +1,7 @@
 "use client";
 
 import { MenuIcon, Settings2Icon, XIcon } from "lucide-react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useViews } from "@/lib/patchsmith-client";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
 import { AppLogo } from "@/components/app/app-logo";
@@ -27,7 +27,6 @@ import { cn } from "@/lib/utils";
 
 export function AppMobileNavigation({ onOpen }: { onOpen: () => void }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { data: pages } = useViews({ slot: "page" });
   const { openMobile, setOpenMobile } = useSidebar();
   return (
@@ -81,10 +80,8 @@ export function AppMobileNavigation({ onOpen }: { onOpen: () => void }) {
                 <DrawerMenuGroup>
                   <DrawerMenuGroupLabel>App pages</DrawerMenuGroupLabel>
                   {pages.map((page) => {
-                    const href = appPageHref(page);
-                    const active =
-                      pathname === `/app-pages/${page.app.id}` &&
-                      searchParams.get("instance") === page.key;
+                    const href = appPageHref(page, pages);
+                    const active = pathname === href;
                     return (
                       <DrawerMenuItem
                         key={href}

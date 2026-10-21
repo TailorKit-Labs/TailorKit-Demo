@@ -2,7 +2,7 @@ import { expect, test } from "vite-plus/test";
 import type { Identity } from "patchsmith/server";
 import app from "./server";
 
-test("panel links target the authenticated workspace installation, not the source app", () => {
+test("panel links use the readable Doom page in every workspace", () => {
   for (const installationId of ["installation-a", "installation-b"]) {
     const identity: Identity = {
       appId: "shared-doom-source",
@@ -21,6 +21,6 @@ test("panel links target the authenticated workspace installation, not the sourc
         throw new Error("Opening the game should not need database access.");
       },
     });
-    expect(page).toEqual({ href: `/app-pages/${installationId}?instance=doom` });
+    expect(page).toEqual({ href: "/apps/doom/doom" });
   }
 });
