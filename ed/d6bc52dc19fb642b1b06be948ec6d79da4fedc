@@ -1,0 +1,43 @@
+apps/doom/logo-light.svg
+  s_200f2e6ab4ccc2::t_0a38c0bd55bc1d 1-4
+website/components/app/app-sidebar.tsx
+  s_200f2e6ab4ccc2::t_0a38c0bd55bc1d 3,6,84
+  s_200f2e6ab4ccc2::t_24542b5d5b9fa9 85
+website/components/app/app-page.tsx
+  s_200f2e6ab4ccc2::t_0a38c0bd55bc1d 5
+  s_200f2e6ab4ccc2::t_24542b5d5b9fa9 20-23
+website/components/app/app-mobile-navigation.tsx
+  s_200f2e6ab4ccc2::t_0a38c0bd55bc1d 3,7,95
+apps/doom/patchsmith.config.ts
+  s_200f2e6ab4ccc2::t_7026a88829da4f 9-12
+apps/doom/README.md
+  s_200f2e6ab4ccc2::t_d9b0c7289b330e 3,5
+  s_200f2e6ab4ccc2::t_f7fbc18f7e364b 30
+  s_200f2e6ab4ccc2::t_0a38c0bd55bc1d 29
+README.md
+  s_200f2e6ab4ccc2::t_d9b0c7289b330e 21
+website/components/app/app-logo.tsx
+  s_200f2e6ab4ccc2::t_0a38c0bd55bc1d 1-45
+apps/doom/logo-dark.svg
+  s_200f2e6ab4ccc2::t_0a38c0bd55bc1d 1-4
+website/components/agent/apps-panel.tsx
+  s_200f2e6ab4ccc2::t_0a38c0bd55bc1d 5,9-10
+apps/doom/src/slots/page/index.view.tsx
+  s_200f2e6ab4ccc2::t_d9b0c7289b330e 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "edd6bc52dc19fb642b1b06be948ec6d79da4fedc",
+  "prompts": {},
+  "sessions": {
+    "s_200f2e6ab4ccc2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15c75-7bc7-7700-9a68-d0a2a7c2ff4e",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
