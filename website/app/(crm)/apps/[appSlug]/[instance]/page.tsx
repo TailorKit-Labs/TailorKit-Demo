@@ -8,6 +8,7 @@ export default async function Page({
 }: {
   params: Promise<{ appSlug: string; instance: string }>;
 }) {
-  if (!(await getTenant())) return null;
-  return <AppPage target={await params} />;
+  const tenant = await getTenant();
+  if (!tenant) return null;
+  return <AppPage target={await params} workspace={{ id: tenant.id, name: tenant.name }} />;
 }
