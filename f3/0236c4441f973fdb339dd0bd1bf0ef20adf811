@@ -1,0 +1,46 @@
+website/scripts/test-setup-protection.ts
+  s_01c3a00274b817::t_c6f48ec46f57e1 13-17,30
+website/scripts/test-agent-rpc.ts
+  s_01c3a00274b817::t_aecc1895206ea5 22,36,49-50,105-118,120-121,127-138,154,157,372-396,399-400,402,407
+  s_01c3a00274b817::t_b1ee3f8bf67da3 323
+  s_6d484b9f2122e6::t_1c15522901394b 119,397-398
+website/lib/patchsmith-server.ts
+  s_01c3a00274b817::t_a2a386cca9422f 4-8,33,37,39,41,43,45,49,51,53,55,57,61,63,65,67,69,73,75
+website/README.md
+  s_01c3a00274b817::t_a2a386cca9422f 81,83
+website/scripts/test-agent-chats.ts
+  s_01c3a00274b817::t_b1ee3f8bf67da3 113-120,125-127
+website/components/agent/agent-chat.tsx
+  s_01c3a00274b817::t_a2a386cca9422f 35-38,84-86,415-420
+  s_01c3a00274b817::t_e754a47844e6ba 421
+website/routers/agent.ts
+  s_01c3a00274b817::t_a2a386cca9422f 5-6,72-77
+package.json
+  s_01c3a00274b817::t_a2a386cca9422f 14
+website/lib/agents/crm-agent.ts
+  s_01c3a00274b817::t_a2a386cca9422f 11,43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f30236c4441f973fdb339dd0bd1bf0ef20adf811",
+  "prompts": {},
+  "sessions": {
+    "s_01c3a00274b817": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15ce4-3917-7ec1-8daa-3bb2e57885bc",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_6d484b9f2122e6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15cef-6d99-7693-ad35-4ac3030a1574",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
