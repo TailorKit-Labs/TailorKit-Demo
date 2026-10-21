@@ -22,6 +22,16 @@ import { useMessages } from "../../use-messages";
 
 const view = defineView({ view: "/", component: Inbox });
 
+function SkeletonLine() {
+  return (
+    <Box height="100%" padding="2xs">
+      <Box height="100%" radius="sm" overflow="hidden">
+        <Skeleton />
+      </Box>
+    </Box>
+  );
+}
+
 // Both states use the same avatar and two fixed line slots, including on narrow panels.
 function InboxRow({
   contact,
@@ -47,15 +57,15 @@ function InboxRow({
         width="100%"
         onPress={onPress}
       >
-        <Box width="control" height="control" radius="full" overflow="hidden" shrink="0">
-          {contact ? (
-            <Avatar name={contact.name} />
-          ) : (
-            <>
-              <Skeleton />
-              <Skeleton />
-            </>
-          )}
+        <Box
+          width="control"
+          height="control"
+          radius="full"
+          overflow="hidden"
+          shrink="0"
+          background={contact ? "transparent" : "muted"}
+        >
+          {contact ? <Avatar name={contact.name} /> : null}
         </Box>
         <Flex direction="column" gap="none" height="avatar" grow="1" minWidth="0">
           <Flex
@@ -67,15 +77,24 @@ function InboxRow({
             minHeight="0"
             overflow="hidden"
           >
-            <Box grow="1" minWidth="0" overflow="hidden">
-              {contact ? <Text text={contact.name} size="sm" /> : <Skeleton />}
+            <Box grow="1" minWidth="0" height="100%" overflow="hidden">
+              {contact ? (
+                <Text text={contact.name} size="sm" />
+              ) : (
+                <Flex height="100%">
+                  <Box grow="1" minWidth="0" height="100%">
+                    <SkeletonLine />
+                  </Box>
+                  <Box width="avatar" shrink="0" />
+                </Flex>
+              )}
             </Box>
-            <Box width="avatar" shrink="0">
-              {contact ? <Text text={channel} size="xs" tone="muted" /> : <Skeleton />}
+            <Box width="avatar" height="100%" shrink="0">
+              {contact ? <Text text={channel} size="xs" tone="muted" /> : <SkeletonLine />}
             </Box>
           </Flex>
           <Box grow="1" basis="0" minHeight="0" overflow="hidden">
-            {contact ? <Text text={preview} size="sm" tone="muted" /> : <Skeleton />}
+            {contact ? <Text text={preview} size="sm" tone="muted" /> : <SkeletonLine />}
           </Box>
         </Flex>
       </Pressable>
