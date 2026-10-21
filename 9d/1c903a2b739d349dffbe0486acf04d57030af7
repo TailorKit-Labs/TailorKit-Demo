@@ -1,0 +1,38 @@
+website/components/crm-shell.tsx
+  s_386240b209cccf::t_620fa239f633d5 21
+website/lib/patchsmith-origin.ts
+  s_386240b209cccf::t_4e9f18be3c9835 1
+  s_386240b209cccf::t_620fa239f633d5 2-15,22-23
+  s_386240b209cccf::t_bb13c4071d3895 16-21
+website/app/api/patchsmith/[...patchsmith]/route.ts
+  s_386240b209cccf::t_620fa239f633d5 1,5
+website/components/app/app-page.tsx
+  s_386240b209cccf::t_620fa239f633d5 5,17-30,32
+website/README.md
+  s_386240b209cccf::t_bb13c4071d3895 195-196
+website/package.json
+  s_386240b209cccf::t_bb13c4071d3895 10
+website/scripts/patchsmith-origin.test.ts
+  s_386240b209cccf::t_87b29536f49002 3,5,7-13
+  s_386240b209cccf::t_bb13c4071d3895 1-2,4,6,14-74,79-86
+  s_386240b209cccf::t_ff254afe35cb63 75-78
+website/lib/patchsmith-server.ts
+  s_386240b209cccf::t_620fa239f633d5 11,21-22,74-88
+  s_386240b209cccf::t_ff254afe35cb63 23-70,72-73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9d1c903a2b739d349dffbe0486acf04d57030af7",
+  "prompts": {},
+  "sessions": {
+    "s_386240b209cccf": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15c97-a571-78e3-b084-d6fde503c4d6",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
