@@ -2,6 +2,7 @@
 
 import { RenderSlot, useViews, useViewContext } from "@/lib/patchsmith-client";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { appPageHref, appPageLabel, findAppPage, type AppPageTarget } from "@/lib/app-pages";
 import { AppLogo } from "./app-logo";
 import { AppPageHeading } from "./app-page-header";
@@ -10,7 +11,14 @@ import { Button } from "@/components/ui/button";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function AppPage({ target }: { target: AppPageTarget }) {
+export function AppPage({
+  target,
+  workspace,
+}: {
+  target: AppPageTarget;
+  workspace: { id: string; name: string };
+}) {
+  const pathname = usePathname();
   const { data: pages, isPending, error, fetch } = useViews({ slot: "page" });
   const page = pages ? findAppPage(pages, target) : undefined;
   const [identity, setIdentity] = useState({
@@ -56,11 +64,14 @@ export function AppPage({ target }: { target: AppPageTarget }) {
           data-demo="app-page-surface"
           className="min-h-0 flex-1 [&>[data-patchsmith-view]]:h-full [&_canvas]:!h-full [&_canvas]:max-h-full [&_canvas]:!w-full [&_canvas]:max-w-full [&_canvas]:aspect-[4/3] [&_canvas]:object-contain [&_canvas]:[image-rendering:pixelated]"
         >
-          <RenderSlot
+          <RenderSlot.Controlled
             key={appPageHref(page, pages)}
             app={page.app}
             slot="page"
-            instanceKey={page.key}
+            view="/"
+            status="ready"
+            context={{ workspace, page: pathname }}
+            instance={{ key: page.key, data: page.data, metadata: page.metadata }}
           />
         </div>
       ) : (
