@@ -1,0 +1,16 @@
+website/components/demo-intro/demo-intro-provider.tsx
+  h_18044dd1b61a81 6
+website/lib/patchsmith-server.ts
+  h_18044dd1b61a81 24-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2bb627855949278ae023c348d98f12ed4056681c",
+  "prompts": {},
+  "humans": {
+    "h_18044dd1b61a81": {
+      "author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
