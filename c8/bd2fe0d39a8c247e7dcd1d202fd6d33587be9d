@@ -1,0 +1,37 @@
+apps/doom/README.md
+  s_21303931c6e83d::t_5fd79c596cf2ed 5,21-22
+apps/doom/src/doom.ts
+  s_21303931c6e83d::t_3b7a848d2b2692 22,140-141
+apps/doom/src/slots/page/index.view.tsx
+  s_21303931c6e83d::t_13acf178a207ea 46,98
+website/app/doom-verification/client/route.ts
+  s_8d26ba5605f762::t_b32e889face017 1-17
+website/app/doom-verification/page.tsx
+  s_21303931c6e83d::t_e6f833e949949d 1-7
+website/app/doom-verification/preview.tsx
+  s_8d26ba5605f762::t_dbb9ab32991d9e 1-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c8bd2fe0d39a8c247e7dcd1d202fd6d33587be9d",
+  "prompts": {},
+  "sessions": {
+    "s_21303931c6e83d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15bfc-9909-7503-8a80-8e6c63e3d919",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_8d26ba5605f762": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15bfd-4739-7ac3-ac6a-853621a889d2",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
