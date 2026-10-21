@@ -31,6 +31,7 @@
     "@base-ui/react": "catalog:",
     "@better-auth/drizzle-adapter": "catalog:",
     "@daypicker/react": "catalog:",
+    "@demo/doom": "workspace:*",
     "@demo/messages": "workspace:*",
     "@neondatabase/serverless": "catalog:",
     "@orpc/ai-sdk": "catalog:",

@@ -36,14 +36,30 @@ async function main() {
     const [incomplete] = await db.select().from(tenants).where(eq(tenants.id, baseTenant.id));
     assert.equal(incomplete.setupVersion, 1, "A failed install must remain retryable");
     let installs = 0;
+    let doomInstalls = 0;
     const install = async () => {
       installs++;
     };
-    const provisioned = await Promise.all(
-      Array.from({ length: 4 }, () => provisionDemo(payload.user.id, { install })),
+    const installDoom = async () => {
+      doomInstalls++;
+    };
+    await assert.rejects(
+      provisionDemo(payload.user.id, {
+        install,
+        installDoom: async () => {
+          throw new Error("Doom unavailable");
+        },
+      }),
+      /Doom unavailable/,
     );
-    await provisionDemo(payload.user.id, { install });
+    const [messagesReady] = await db.select().from(tenants).where(eq(tenants.id, baseTenant.id));
+    assert.equal(messagesReady.setupVersion, 2, "A failed Doom install must preserve Messages");
+    const provisioned = await Promise.all(
+      Array.from({ length: 4 }, () => provisionDemo(payload.user.id, { install, installDoom })),
+    );
+    await provisionDemo(payload.user.id, { install, installDoom });
     assert.equal(installs, 1, "Concurrent setup and retries must install only once");
+    assert.equal(doomInstalls, 1, "Concurrent setup must install Doom only once");
     assert.equal(
       new Set(provisioned.map((t) => t.id)).size,
       1,

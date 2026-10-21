@@ -3,6 +3,8 @@ import { test } from "node:test";
 import { defineContract } from "patchsmith";
 import { createServer } from "patchsmith/server";
 import messagesConfig from "../../apps/messages/patchsmith.config";
+import doomConfig from "../../apps/doom/patchsmith.config";
+import { installDoom } from "../lib/install-doom";
 import { installMessages } from "../lib/install-messages";
 import { contract } from "../lib/patchsmith";
 
@@ -65,6 +67,18 @@ void test("uses the same source app for separate workspace installations", async
       },
     },
   ]);
+});
+
+void test("installs the published Doom app in the requested workspace without uploading assets", async () => {
+  const { installApp, calls } = platform();
+  assert.equal(await installDoom("test-workspace", { installApp }), "installation-1");
+  assert.deepEqual(calls, [
+    { path: "/api/platform/apps/install", body: { app: { id: doomConfig.appId }, scope } },
+  ]);
+  const failing = platform({ fail: true });
+  await assert.rejects(installDoom("test-workspace", { installApp: failing.installApp }));
+  await assert.rejects(installDoom("test-workspace", { appId: "", installApp }), /apps\/doom/);
+  assert.equal(calls.length, 1);
 });
 
 void test("platform failures propagate so provisioning cannot mark setup complete", async () => {

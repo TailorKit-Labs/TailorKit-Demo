@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { orpc } from "./orpc";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { createClient, primitives } from "patchsmith/react";
+import { createClient, experimental_canvasRenderer, primitives } from "patchsmith/react";
 import { contract, patchsmithTheme } from "./patchsmith";
 import { toastManager } from "@/components/ui/toast";
 
@@ -102,6 +102,7 @@ export const patchsmithClient = createClient({
   ),
   components: {
     ...primitives,
+    DoomCanvas: experimental_canvasRenderer,
     Text: ({ props }) => (
       <p className={cn(textTones[props.tone ?? "default"], textSizes[props.size ?? "sm"])}>
         {props.text}

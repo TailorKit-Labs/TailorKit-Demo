@@ -1,4 +1,4 @@
-import { defineContract, tool } from "patchsmith";
+import { defineContract, experimental_canvas, tool } from "patchsmith";
 import { primitives, type PatchsmithTheme } from "patchsmith/zod";
 import { z } from "zod";
 import { schemas, stage, status } from "../routers/schemas";
@@ -205,6 +205,37 @@ export const contract = defineContract({
   scopes: { workspace: z.object({ workspaceId: z.string().min(1) }) },
   components: {
     ...primitives(patchsmithTheme),
+    DoomCanvas: experimental_canvas({
+      maxPixels: 640 * 480,
+      maxFramesPerSecond: 35,
+      input: {
+        pointer: true,
+        keyboard: [
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          "KeyW",
+          "KeyA",
+          "KeyS",
+          "KeyD",
+          "KeyF",
+          "KeyE",
+          "KeyP",
+          "Enter",
+          "Space",
+          "ShiftLeft",
+          "ShiftRight",
+          "Digit1",
+          "Digit2",
+          "Digit3",
+          "Digit4",
+          "Digit5",
+          "Digit6",
+          "Digit7",
+        ],
+      },
+    }),
     Text: {
       fields: z.object({
         text,

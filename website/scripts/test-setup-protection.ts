@@ -145,7 +145,7 @@ async function main() {
     await browser.workspace.installApps();
     assert.equal((await tenant()).id, seeded.id);
     assert.equal((await tenant()).setupVersion, CURRENT_SETUP_VERSION);
-    assert.equal(installations, 1, "Retries must reuse the completed installation");
+    assert.equal(installations, 2, "Retries must reuse both completed installations");
     const beforeReads = botChecks;
     assert.equal((await browser.workspace.snapshot()).contacts.length, 30);
     assert.ok(await auth.api.getSession({ headers: new Headers({ cookie }) }));

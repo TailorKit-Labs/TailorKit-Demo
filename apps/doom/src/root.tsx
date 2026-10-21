@@ -1,0 +1,11 @@
+import { ClientProvider, defineRoute, Route } from "patchsmith/client";
+
+function Shell() {
+  return (
+    <ClientProvider>
+      <Route />
+    </ClientProvider>
+  );
+}
+
+export default defineRoute({ shellComponent: Shell });
