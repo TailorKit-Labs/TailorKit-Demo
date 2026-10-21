@@ -57,7 +57,6 @@ function Doom() {
     <Flex direction="column" gap="md" height="100%" minHeight="0">
       <Flex gap="sm" align="center" wrap="wrap" shrink="0">
         <Text text="Yep, it runs DOOM." />
-        <Text text="Shareware · Sound off" size="xs" tone="muted" />
         <Box grow="1" />
         <Button
           label={paused ? "Resume" : "Pause"}
