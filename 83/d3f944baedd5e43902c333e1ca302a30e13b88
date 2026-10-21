@@ -1,0 +1,61 @@
+package.json
+  s_559ee0323f1d32::t_da581ef09db44f 14
+apps/doom/src/server.ts
+  s_559ee0323f1d32::t_da581ef09db44f 7-8
+website/components/agent/agent-workspace.tsx
+  s_559ee0323f1d32::t_366f87875b7a69 4,87-88
+  s_559ee0323f1d32::t_da581ef09db44f 196
+website/components/app/app-sidebar.tsx
+  s_559ee0323f1d32::t_da581ef09db44f 2,70-71
+website/components/crm-shell.tsx
+  s_559ee0323f1d32::t_da581ef09db44f 22
+website/package.json
+  s_559ee0323f1d32::t_da581ef09db44f 10
+website/lib/patchsmith-server.ts
+  s_559ee0323f1d32::t_da581ef09db44f 11,21-70,72-88
+apps/doom/src/server.test.ts
+  s_559ee0323f1d32::t_da581ef09db44f 5,24
+website/app/(crm)/apps/[appSlug]/[instance]/page.tsx
+  s_559ee0323f1d32::t_da581ef09db44f 1-13
+website/scripts/patchsmith-origin.test.ts
+  s_559ee0323f1d32::t_da581ef09db44f 1-86
+website/scripts/app-pages.test.ts
+  s_559ee0323f1d32::t_da581ef09db44f 1-74
+apps/doom/src/slots/page/index.view.tsx
+  s_559ee0323f1d32::t_da581ef09db44f 59-60,78-84
+website/components/app/app-mobile-navigation.tsx
+  s_559ee0323f1d32::t_da581ef09db44f 4,83-84
+website/lib/app-pages.ts
+  s_559ee0323f1d32::t_da581ef09db44f 3-53
+website/app/api/patchsmith/[...patchsmith]/route.ts
+  s_559ee0323f1d32::t_da581ef09db44f 1,5
+website/lib/patchsmith-origin.ts
+  s_559ee0323f1d32::t_da581ef09db44f 1-23
+apps/doom/README.md
+  s_559ee0323f1d32::t_da581ef09db44f 3
+website/components/app/app-page.tsx
+  s_559ee0323f1d32::t_da581ef09db44f 4-5,13,15-32,59-64
+website/lib/patchsmith.ts
+  s_559ee0323f1d32::t_da581ef09db44f 10
+apps/doom/src/slots/panel/index.view.tsx
+  s_559ee0323f1d32::t_da581ef09db44f 23-26
+website/README.md
+  s_559ee0323f1d32::t_da581ef09db44f 135,139,213
+  s_559ee0323f1d32::t_a31590a9fd257d 214
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "83d3f944baedd5e43902c333e1ca302a30e13b88",
+  "prompts": {},
+  "sessions": {
+    "s_559ee0323f1d32": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15da1-f5a2-77f2-8a1f-8ff4565dc843",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
