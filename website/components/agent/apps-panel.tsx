@@ -1,17 +1,57 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { Reorder, useDragControls, MotionConfig } from "motion/react";
 import { BlocksIcon, MousePointer2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { RenderSlot, useViews } from "@/lib/patchsmith-client";
+import { patchsmithClient, RenderSlot, useViews } from "@/lib/patchsmith-client";
 
 export type PanelApp = NonNullable<ReturnType<typeof useViews>["data"]>[number]["app"];
 
 const tabClassName =
   "h-9 grow-0 gap-2 rounded-lg border-0 px-2 font-normal text-sm text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground sm:h-9";
+
+function AppLogoImage({ path }: { path?: string }) {
+  const [failed, setFailed] = useState(false);
+  if (!path || failed) return <BlocksIcon className="size-4" />;
+  const baseUrl = new URL(patchsmithClient.baseUrl);
+  if (!baseUrl.pathname.endsWith("/")) baseUrl.pathname += "/";
+  const url = new URL(path, baseUrl);
+  // Keep relative assets independent of the server's placeholder origin during SSR.
+  const src = URL.canParse(path) ? url.href : `${url.pathname}${url.search}${url.hash}`;
+
+  return (
+    <Image
+      src={src}
+      alt=""
+      width={16}
+      height={16}
+      className="size-4 object-contain"
+      draggable={false}
+      unoptimized
+      onError={() => setFailed(true)}
+    />
+  );
+}
+
+function AppLogo({ app }: { app: PanelApp }) {
+  const light = app.logoPaths?.light ?? app.logoPaths?.dark;
+  const dark = app.logoPaths?.dark ?? light;
+
+  return (
+    <span aria-hidden="true" className="size-4 shrink-0">
+      <span className="block dark:hidden">
+        <AppLogoImage key={light} path={light} />
+      </span>
+      <span className="hidden dark:block">
+        <AppLogoImage key={dark} path={dark} />
+      </span>
+    </span>
+  );
+}
 
 function AppTab({ app, onMove }: { app: PanelApp; onMove: (id: string, offset: number) => void }) {
   const controls = useDragControls();
@@ -51,9 +91,7 @@ function AppTab({ app, onMove }: { app: PanelApp; onMove: (id: string, offset: n
           }
         }}
       >
-        <span aria-hidden="true">
-          <BlocksIcon className="size-4" />
-        </span>
+        <AppLogo app={app} />
         {app.name ?? app.id}
       </TabsTab>
     </Reorder.Item>
