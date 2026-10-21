@@ -1,6 +1,7 @@
 "use client";
 
-import { RenderSlot, useViews, useViewContext } from "@/lib/patchsmith-client";
+import { RenderSlot, useViewContext } from "@/lib/patchsmith-client";
+import { useAppPages } from "./app-pages-provider";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
 import { AppLogo } from "./app-logo";
 import { AppPageHeading } from "./app-page-header";
@@ -11,7 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export function AppPage({ appId, instanceKey }: { appId: string; instanceKey: string }) {
   useViewContext("/app-pages", { context: { appPage: { appId, instanceKey } } });
-  const { data: pages, isPending, error, fetch } = useViews({ slot: "page" });
+  const { data: pages, isPending, error, fetch } = useAppPages();
   const page = pages?.find((page) => page.app.id === appId && page.key === instanceKey);
 
   return (

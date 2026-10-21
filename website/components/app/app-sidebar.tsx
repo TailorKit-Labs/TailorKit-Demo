@@ -1,7 +1,7 @@
 "use client";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ArrowUpRightFromSquareIcon, CommandIcon, Settings2Icon } from "lucide-react";
-import { useViews } from "@/lib/patchsmith-client";
+import { useAppPages } from "@/components/app/app-pages-provider";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
 import { AppLogo } from "@/components/app/app-logo";
 import {
@@ -24,7 +24,7 @@ import { navigation } from "@/components/app/app-navigation";
 export function AppSidebar({ name }: { name: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { data: pages } = useViews({ slot: "page" });
+  const { data: pages } = useAppPages();
   const { isMobile } = useSidebar();
   if (isMobile) return null;
   return (

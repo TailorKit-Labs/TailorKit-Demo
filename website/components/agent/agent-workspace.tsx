@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetPopup, SheetTitle } from "@/components/ui/sheet";
 import { useSidebar } from "@/components/ui/sidebar";
 import { AppMobileNavigation } from "@/components/app/app-mobile-navigation";
+import { useAppPages } from "@/components/app/app-pages-provider";
 import { AppsPanelContext } from "./apps-panel-context";
 import { AppsPanel } from "./apps-panel";
 import {
@@ -54,7 +55,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     error: appsError,
     fetch: refreshApps,
   } = useViews({ slot: "panel" });
-  const { fetch: refreshPages } = useViews({ slot: "page" });
+  const { fetch: refreshPages } = useAppPages();
   const { fetch: refreshNavbar } = useViews({ slot: "navbar" });
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: orpc.key() });
