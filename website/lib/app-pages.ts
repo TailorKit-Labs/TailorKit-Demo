@@ -2,9 +2,7 @@ import type { SlotItem } from "patchsmith/react";
 
 type AppPage = SlotItem<true>;
 
-export type AppPageTarget =
-  | { appId: string; instanceKey: string }
-  | { appSlug: string; instance: string };
+export type AppPageTarget = { appSlug: string; instance: string };
 
 function baseSlug(page: AppPage) {
   return (
@@ -49,10 +47,8 @@ export function appPageHref(page: AppPage, pages: AppPage[] = [page]) {
 }
 
 export function findAppPage(pages: AppPage[], target: AppPageTarget) {
-  const matches = pages.filter((page) =>
-    "appId" in target
-      ? page.app.id === target.appId && page.key === target.instanceKey
-      : appSlug(page, pages) === target.appSlug && instanceSegment(page) === target.instance,
+  const matches = pages.filter(
+    (page) => appSlug(page, pages) === target.appSlug && instanceSegment(page) === target.instance,
   );
   return matches.length === 1 ? matches[0] : undefined;
 }

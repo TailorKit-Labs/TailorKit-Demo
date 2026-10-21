@@ -163,7 +163,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     const page = pathname.startsWith("/contacts/")
       ? "/contacts"
-      : pathname.startsWith("/app-pages/") || pathname.startsWith("/apps/")
+      : pathname.startsWith("/apps/")
         ? "/app-pages"
         : pathname;
     await sendMessage(

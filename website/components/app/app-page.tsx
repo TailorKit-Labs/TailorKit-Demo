@@ -1,7 +1,6 @@
 "use client";
 
 import { RenderSlot, useViews, useViewContext } from "@/lib/patchsmith-client";
-import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { appPageHref, appPageLabel, findAppPage, type AppPageTarget } from "@/lib/app-pages";
 import { AppLogo } from "./app-logo";
@@ -15,8 +14,8 @@ export function AppPage({ target }: { target: AppPageTarget }) {
   const { data: pages, isPending, error, fetch } = useViews({ slot: "page" });
   const page = pages ? findAppPage(pages, target) : undefined;
   const [identity, setIdentity] = useState({
-    appId: "appId" in target ? target.appId : "",
-    instanceKey: "instanceKey" in target ? target.instanceKey : "",
+    appId: "",
+    instanceKey: "",
   });
   useEffect(() => {
     if (!page) return;
@@ -31,8 +30,6 @@ export function AppPage({ target }: { target: AppPageTarget }) {
   useViewContext("/app-pages", {
     context: { appPage: identity },
   });
-
-  if (page && !isPending && !error && "appId" in target) redirect(appPageHref(page, pages));
 
   return (
     <>

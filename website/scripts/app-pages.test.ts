@@ -15,13 +15,8 @@ void test("readable URLs resolve to the workspace installation and actual instan
   const doom = page("workspace-installation");
   assert.equal(appPageHref(doom), "/apps/doom/doom");
   assert.equal(findAppPage([doom], { appSlug: "doom", instance: "doom" }), doom);
-  assert.equal(
-    findAppPage([doom], { appId: doom.app.id, instanceKey: "doom" }),
-    doom,
-    "Published panels and bookmarks can still resolve their installation-based links",
-  );
   assert.equal(findAppPage([doom], { appSlug: "doom", instance: "missing" }), undefined);
-  assert.equal(findAppPage([doom], { appId: "another-workspace", instanceKey: "doom" }), undefined);
+  assert.equal(findAppPage([doom], { appSlug: "missing-app", instance: "doom" }), undefined);
 });
 
 void test("instance keys remain intact through URL encoding", () => {
@@ -52,19 +47,19 @@ void test("duplicate app names use distinct IDs, including shared ID prefixes", 
   assert.equal(findAppPage(pages, { appSlug: "doom", instance: "doom" }), undefined);
 });
 
-void test("app navigation accepts readable and legacy paths but rejects unsafe destinations", () => {
+void test("app navigation accepts readable paths and rejects old or unsafe destinations", () => {
   const input = contract.tools.ui.navigate.definition.input;
   assert.ok(input);
   for (const href of [
     "/apps/doom/doom",
     "/apps/reports/weekly%20report",
     "/apps/reports/a%2Fb%3Fc%23d",
-    "/app-pages/installation-1?instance=doom",
     "/contacts/contact-1",
   ]) {
     assert.equal(input.safeParse({ href }).success, true, href);
   }
   for (const href of [
+    "/app-pages/installation-1?instance=doom",
     "https://example.com/apps/doom/doom",
     "//example.com/apps/doom/doom",
     "/apps/doom",

@@ -114,11 +114,11 @@ Page contexts are registered by the page displaying the data and update as its q
 - `/pipeline`: the displayed deals, related contact records, search query, stage counts/values, total value, and currency.
 - `/tasks`: follow-ups, contact records, and pending/completed totals.
 - `/settings`: workspace collection usage, record limit, and currency.
-- `/app-pages`: the requested app ID and instance key, including keys containing spaces or slashes. Identity is available even while discovery is loading or the requested instance is unavailable.
+- `/app-pages` (internal view context for `/apps/<app-slug>/<instance-key>`): the resolved app ID and instance key, including keys containing spaces or slashes. Identity is retained while discovery refreshes. This context name is not a website route.
 
 View schemas and context builders live alongside the contract in `lib/patchsmith.ts`. Record contexts omit internal tenant IDs, retain message whitespace, and use the same `YYYY-MM-DD` calendar dates as the app tools. Timestamps remain ISO strings. The root workspace context stays mounted across navigation; page contexts unregister when their page unmounts. Apps implementing only `/` continue to receive that fallback on every page.
 
-Supply page instances with stable keys and `metadata: { label: "Reports" }` to name their links. Missing or blank labels fall back to the app name and instance key. Each link opens `/app-pages/<appId>?instance=<encoded-key>` and renders that exact instance with `RenderSlot`. Keeping the key in the query supports keys containing spaces, slashes, or other URL characters, and links survive reloads. Removed instances show a page-unavailable state. App discovery is refreshed after agent turns so newly created pages appear in navigation.
+Supply page instances with stable keys and `metadata: { label: "Reports" }` to name their links. Missing or blank labels fall back to the app name and instance key. Each link opens `/apps/<app-slug>/<instance-key>` and renders that exact instance with `RenderSlot`. Slugs derive from app names, with short ID fallbacks and duplicate-name disambiguation. Keys are encoded as path segments, supporting spaces, slashes, and other URL characters across reloads. Removed instances show a page-unavailable state. The old installation-ID route is removed; apps must navigate directly to the readable URL. App discovery is refreshed after agent turns so newly created pages appear in navigation.
 
 `PATCHSMITH_PROJECT_KEY` is required in the server environment to connect your Patchsmith project.
 
