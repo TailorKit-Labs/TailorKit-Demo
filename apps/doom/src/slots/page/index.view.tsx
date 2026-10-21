@@ -56,8 +56,8 @@ function Doom() {
   return (
     <Flex direction="column" gap="md" height="100%" minHeight="0">
       <Flex gap="sm" align="center" wrap="wrap" shrink="0">
-        <Text text="DOOM · Shareware" />
-        <Text text="Sound off" size="xs" tone="muted" />
+        <Text text="Yep, it runs DOOM." />
+        <Text text="Shareware · Sound off" size="xs" tone="muted" />
         <Box grow="1" />
         <Button
           label={paused ? "Resume" : "Pause"}
@@ -75,6 +75,13 @@ function Doom() {
           }}
         />
       </Flex>
+      <Box shrink="0">
+        <Text
+          text="The real game runs in its own sandbox. Patchsmith brings it into this page and sends your controls back, live."
+          size="sm"
+          tone="muted"
+        />
+      </Box>
       <Game key={revision} paused={paused} />
       <Text
         text={

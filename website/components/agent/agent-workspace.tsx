@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { agentTransport } from "@/lib/agents/agent-transport";
 import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
@@ -46,7 +46,6 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
   const { data: history } = useSuspenseQuery(orpc.chats.list.queryOptions());
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const router = useRouter();
   const { setOpenMobile } = useSidebar();
   const panelId = useId();
@@ -85,9 +84,8 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
   const doomPage = pages?.find(
     (page) => page.app.name?.toLowerCase() === "doom" && page.key === "doom",
   );
-  const doomHref = doomPage ? appPageHref(doomPage) : undefined;
-  const doomVisible =
-    pathname === doomHref?.split("?")[0] && searchParams.get("instance") === doomPage?.key;
+  const doomHref = doomPage ? appPageHref(doomPage, pages) : undefined;
+  const doomVisible = pathname === doomHref;
   const introTab =
     introStep === "messages"
       ? (messagesAppId ?? "agent")
@@ -195,7 +193,7 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
     const page = pathname.startsWith("/contacts/")
       ? "/contacts"
-      : pathname.startsWith("/app-pages/")
+      : pathname.startsWith("/apps/")
         ? "/app-pages"
         : pathname;
     await sendMessage(

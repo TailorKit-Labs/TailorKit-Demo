@@ -19,7 +19,7 @@ export function CrmShell({
   workspaceId: string;
 }) {
   const pathname = usePathname();
-  const appPage = pathname.startsWith("/app-pages/");
+  const appPage = pathname.startsWith("/apps/");
   return (
     <PatchsmithProvider key={workspaceId}>
       <WorkspaceContext workspaceId={workspaceId} name={name} />

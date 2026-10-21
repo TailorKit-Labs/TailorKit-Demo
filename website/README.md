@@ -132,11 +132,11 @@ Page contexts are registered by the page displaying the data and update as its q
 - `/pipeline`: the displayed deals, related contact records, search query, stage counts/values, total value, and currency.
 - `/tasks`: follow-ups, contact records, and pending/completed totals.
 - `/settings`: workspace collection usage, record limit, and currency.
-- `/app-pages`: the requested app ID and instance key, including keys containing spaces or slashes. Identity is available even while discovery is loading or the requested instance is unavailable.
+- `/app-pages` (internal view context for `/apps/<app-slug>/<instance-key>`): the resolved app ID and instance key, including keys containing spaces or slashes. Identity is retained while discovery refreshes. This context name is not a website route.
 
 View schemas and context builders live alongside the contract in `lib/patchsmith.ts`. Record contexts omit internal tenant IDs, retain message whitespace, and use the same `YYYY-MM-DD` calendar dates as the app tools. Timestamps remain ISO strings. The root workspace context stays mounted across navigation; page contexts unregister when their page unmounts. Apps implementing only `/` continue to receive that fallback on every page.
 
-Supply page instances with stable keys and `metadata: { label: "Reports" }` to name their links. Missing or blank labels fall back to the app name and instance key. Each link opens `/app-pages/<appId>?instance=<encoded-key>` and renders that exact instance with `RenderSlot`. Keeping the key in the query supports keys containing spaces, slashes, or other URL characters, and links survive reloads. Removed instances show a page-unavailable state. App discovery is refreshed after agent turns so newly created pages appear in navigation.
+Supply page instances with stable keys and `metadata: { label: "Reports" }` to name their links. Missing or blank labels fall back to the app name and instance key. Each link opens `/apps/<app-slug>/<instance-key>` and renders that exact instance with `RenderSlot`. Slugs derive from app names, with short ID fallbacks and duplicate-name disambiguation. Keys are encoded as path segments, supporting spaces, slashes, and other URL characters across reloads. Removed instances show a page-unavailable state. The old installation-ID route is removed; apps must navigate directly to the readable URL. App discovery is refreshed after agent turns so newly created pages appear in navigation.
 
 `PATCHSMITH_PROJECT_KEY` is required in the server environment to connect your Patchsmith project.
 
@@ -209,6 +209,8 @@ Set the Vercel project Root Directory to `website`, using the Next.js preset. Co
 - `DATABASE_URL_UNPOOLED`: the direct PostgreSQL connection URL, required for guarded production/CI pushes so the session advisory lock stays on one backend. Neon supplies this automatically through the Vercel integration.
 - `BETTER_AUTH_SECRET`: a generated secret with at least 32 characters, configured for both Preview and Production. These environments use separate keys.
 - `BETTER_AUTH_URL`: optionally override the production origin, including `https://`. Otherwise the Vercel production domain is used. Previews use their exact deployment and Git branch hostnames, so no per-preview URL setting is required.
+
+Patchsmith also accepts both Vercel preview hostnames. The API selects a host configured for the incoming deployment URL or the exact `VERCEL_BRANCH_URL`; other origins still fail the SDK's origin check. Configuring only `VERCEL_URL` causes app discovery and backend session requests through the branch alias to return `400 Invalid request` even when account setup succeeds.
 
 The build command is `pnpm run db:push && next build`. Every deployment pushes `lib/schema.ts` to its assigned database before building; a failed push stops the build. Drizzle uses `DATABASE_URL_UNPOOLED` when available for schema changes, while the app requires pooled `DATABASE_URL`. Missing `DATABASE_URL` fails with a configuration error in every environment, without falling back to localhost.
 
