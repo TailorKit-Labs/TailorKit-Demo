@@ -1,0 +1,298 @@
+.gitignore
+  h_18044dd1b61a81 10
+README.md
+  h_18044dd1b61a81 1,3-5,17,21-22
+apps/doom/.gitignore
+  h_18044dd1b61a81 1-31
+apps/doom/README.md
+  h_18044dd1b61a81 1-30
+apps/doom/logo-dark.svg
+  h_18044dd1b61a81 1-4
+apps/doom/logo-light.svg
+  h_18044dd1b61a81 1-4
+apps/doom/package.json
+  h_18044dd1b61a81 1-31
+apps/doom/patchsmith.config.ts
+  h_18044dd1b61a81 1-14
+apps/doom/src/doom.ts
+  h_18044dd1b61a81 1-187
+apps/doom/src/input.test.ts
+  h_18044dd1b61a81 1-61
+apps/doom/src/input.ts
+  h_18044dd1b61a81 1-51
+apps/doom/src/patchsmith.gen.ts
+  h_18044dd1b61a81 1-1364
+apps/doom/src/root.tsx
+  h_18044dd1b61a81 1-11
+apps/doom/src/server.test.ts
+  h_18044dd1b61a81 1-26
+apps/doom/src/server.ts
+  h_18044dd1b61a81 1-11
+apps/doom/src/slots/page/index.view.tsx
+  h_18044dd1b61a81 1-92
+apps/doom/src/slots/panel/index.view.tsx
+  h_18044dd1b61a81 1,3,5,7-13,15,17,22-33,37
+apps/doom/tsconfig.json
+  h_18044dd1b61a81 1-19
+apps/doom/vite.config.ts
+  h_18044dd1b61a81 1-12
+apps/messages/.agents/skills/patchsmith-capabilities/SKILL.md
+  h_18044dd1b61a81 1-21
+apps/messages/.agents/skills/patchsmith-capabilities/references/.generated
+  h_18044dd1b61a81 1
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Alert.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Avatar.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Badge.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Box.md
+  h_18044dd1b61a81 1-62
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Button.md
+  h_18044dd1b61a81 1-36
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Canvas.md
+  h_18044dd1b61a81 1-36
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Card.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Checkbox.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Combobox.md
+  h_18044dd1b61a81 1-38
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Dialog.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Empty.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Flex.md
+  h_18044dd1b61a81 1-67
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Form.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Grid.md
+  h_18044dd1b61a81 1-64
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Heading.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Inline.md
+  h_18044dd1b61a81 1-53
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Input.md
+  h_18044dd1b61a81 1-53
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Pressable.md
+  h_18044dd1b61a81 1-71
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Progress.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Select.md
+  h_18044dd1b61a81 1-36
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Separator.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Skeleton.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Spinner.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Switch.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Table.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/TableBody.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/TableCell.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/TableHead.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/TableHeader.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/TableRow.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Text.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Textarea.md
+  h_18044dd1b61a81 1-53
+apps/messages/.agents/skills/patchsmith-capabilities/references/index.md
+  h_18044dd1b61a81 1-45
+apps/messages/.agents/skills/patchsmith-capabilities/references/styling.md
+  h_18044dd1b61a81 1-10
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools.md
+  h_18044dd1b61a81 1-31
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/activities-addNote-21e90b1799d5cc2a.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/activities-list-d1f8b54e71f12c73.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/contacts-create-54d70d6a96d51575.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/contacts-delete-ec2b3a05ac5e6260.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/contacts-get-c3ce80b0e7ff09fb.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/contacts-list-cd340b43b15f40c9.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/contacts-update-f42624cd620c0238.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/deals-create-5e296134f0a1a01a.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/deals-delete-b6a4adb812052d2c.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/deals-list-b55e5e2bc57c48cd.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/deals-move-6c42d248f2b3d8ee.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/deals-update-9e9015c43afac4a9.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/tasks-create-7c0611f5eefc5ff2.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/tasks-delete-424d7efbad187838.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/tasks-list-e75ee53a7203a4fa.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/tasks-setCompleted-e9f392c1e6fbf8bb.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/tasks-update-598206543e93b918.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/ui-navigate-a49b89e513912fe8.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/ui-notify-aae11b76263faeb6.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/ui-openPanel-c5c73735203c4cb1.md
+  h_18044dd1b61a81 1-15
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/ui-refresh-d181cb5e1b4fd59f.md
+  h_18044dd1b61a81 1-15
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/ui-setTheme-7374012530431d11.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/workspace-get-4c4d5a8af3f5e90f.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/views.md
+  h_18044dd1b61a81 1-128
+apps/messages/.gitignore
+  h_18044dd1b61a81 3-5
+apps/messages/README.md
+  h_18044dd1b61a81 3,5,27,35,43
+apps/messages/logo-dark.svg
+  h_18044dd1b61a81 2,19
+apps/messages/logo-light.svg
+  h_18044dd1b61a81 2,19
+apps/messages/package.json
+  h_18044dd1b61a81 4,7,11-12,21
+apps/messages/patchsmith.config.ts
+  h_18044dd1b61a81 1,4,7,12
+apps/messages/src/messages.ts
+  h_18044dd1b61a81 1,5,7
+apps/messages/src/patchsmith.gen.ts
+  h_18044dd1b61a81 2-3,8,11,292-294,297,303,584,850,893,1059,1067-1077,1102,1150,1167,1184,1202,1223,1237,1251,1349
+apps/messages/src/root.tsx
+  h_18044dd1b61a81 1
+apps/messages/src/slots/panel/contacts.detail.view.tsx
+  h_18044dd1b61a81 2,12,17,71-92,156-172,184-211,213-214
+apps/messages/src/slots/panel/index.view.tsx
+  h_18044dd1b61a81 2,6,16,19-20,25-116,159-195
+apps/messages/src/use-messages.ts
+  h_18044dd1b61a81 2
+apps/messages/tsconfig.json
+  h_18044dd1b61a81 18
+apps/messages/vite.config.ts
+  h_18044dd1b61a81 2,5,7,10
+package.json
+  h_18044dd1b61a81 2,14
+pnpm-lock.yaml
+  h_18044dd1b61a81 243-244,257-259,323,325-327,331-344,346-355,387-392,455,468-470,569-570,1514-1521,2311-2367,3151-3155,3523-3524,3528-3529,3533-3534,3538-3539,3543-3544,3549-3550,3555-3556,3561-3562,3567-3568,3573-3574,3579-3580,3584-3585,3589-3590,3592-3594,4495-4498,5027-5028,5510-5528,6502,6504,7186-7199,7682,7684-7729,7731,7733-8229,8454-8460,8462-8465,8467,8469,8471,8473-8474,8476,8478-8479,8481,8483-8485,8487,8489-8500,8502-8506,8508,8510-8511,8513,8515-8518,8520,8522,8524-8529,8893-8896,10295-10298,10822,11632-11712,11714-11786
+pnpm-workspace.yaml
+  h_18044dd1b61a81 33,48,71-82
+vite.config.ts
+  h_18044dd1b61a81 9-13,30-34
+website/.env.example
+  h_18044dd1b61a81 13-14
+website/README.md
+  h_18044dd1b61a81 3-4,27-29,44,67,69,79,81,83,89,91,95,99,116-118,120,132,136,138,140,179
+website/app/(crm)/contacts/[id]/loading.tsx
+  h_18044dd1b61a81 1-47
+website/app/api/patchsmith/[...patchsmith]/route.ts
+  h_18044dd1b61a81 1,5
+website/app/layout.tsx
+  h_18044dd1b61a81 13
+website/components/agent/agent-chat.tsx
+  h_18044dd1b61a81 36-43,84-90,93-95,111-113,119,419-425
+website/components/agent/agent-workspace.tsx
+  h_18044dd1b61a81 38
+website/components/agent/apps-panel.tsx
+  h_18044dd1b61a81 5,9-10,55,131
+website/components/app/app-logo.tsx
+  h_18044dd1b61a81 1-45
+website/components/app/app-mobile-navigation.tsx
+  h_18044dd1b61a81 3,5,7,95
+website/components/app/app-navbar.tsx
+  h_18044dd1b61a81 3
+website/components/app/app-page-header.tsx
+  h_18044dd1b61a81 4-10,18
+website/components/app/app-page.tsx
+  h_18044dd1b61a81 3,5,20-23,38-40
+website/components/app/app-sidebar.tsx
+  h_18044dd1b61a81 3-4,6,84-85,109,114
+website/components/crm-pages.tsx
+  h_18044dd1b61a81 20,28,206-207
+website/components/crm-shell.tsx
+  h_18044dd1b61a81 8,10,22,24,46-51,59
+website/components/demo-setup.tsx
+  h_18044dd1b61a81 16-18,73,80,87,93,108
+website/instrumentation-client.ts
+  h_18044dd1b61a81 3,7-14
+website/lib/agents/agent-limits.ts
+  h_18044dd1b61a81 1,3-4
+website/lib/agents/agent-request.ts
+  h_18044dd1b61a81 3
+website/lib/agents/agent-transport.ts
+  h_18044dd1b61a81 10-11
+website/lib/agents/crm-agent.ts
+  h_18044dd1b61a81 11,35,43
+website/lib/app-pages.ts
+  h_18044dd1b61a81 1
+website/lib/auth.ts
+  h_18044dd1b61a81 2,7,29-35
+website/lib/install-doom.ts
+  h_18044dd1b61a81 1-17
+website/lib/install-messages.ts
+  h_18044dd1b61a81 1,3,7,12,17
+website/lib/patchsmith-client.tsx
+  h_18044dd1b61a81 8-9,89,96,98,100,105,345,369,385
+website/lib/patchsmith-server.ts
+  h_18044dd1b61a81 1-2,4-8,10,12,28,33,37,39,41,43,45,49,51,53,55,57,61,63,65,67,69,73,75,78-79
+website/lib/patchsmith.ts
+  h_18044dd1b61a81 1-2,13,28,102,104,207-238
+website/lib/provision.ts
+  h_18044dd1b61a81 6,8,14,18,44-65
+website/lib/query-provider.tsx
+  h_18044dd1b61a81 15-21
+website/lib/setup-protection.ts
+  h_18044dd1b61a81 1-7
+website/lib/setup-verification.ts
+  h_18044dd1b61a81 1-2,4-8,10-20,22-24,26-27
+website/package.json
+  h_18044dd1b61a81 21,32-33,59
+website/routers/agent.ts
+  h_18044dd1b61a81 5-6,72-75,85,100-103
+website/routers/chats.ts
+  h_18044dd1b61a81 11,92-96,98,130-132
+website/routers/context.ts
+  h_18044dd1b61a81 29,63
+website/routers/schemas.ts
+  h_18044dd1b61a81 55
+website/routers/workspace.ts
+  h_18044dd1b61a81 2,11,13-21,26
+website/scripts/install-messages.test.ts
+  h_18044dd1b61a81 3-7,9,27,72-83,90-103,108
+website/scripts/test-agent-chats.ts
+  h_18044dd1b61a81 12,113-120,125-127,147,149-173
+website/scripts/test-agent-rpc.ts
+  h_18044dd1b61a81 14-15,22,35,45,48-49,68-69,103-119,125-136,152,155,305-397,399,404
+website/scripts/test-db.ts
+  h_18044dd1b61a81 39,43-56,58,60,62
+website/scripts/test-provision.ts
+  h_18044dd1b61a81 3,5-6
+website/scripts/test-setup-protection.ts
+  h_18044dd1b61a81 1,3-17,19-21,24-30,32-48,50-58,60-84,86-88,90-97,100-120,122-125,127-134,136-154,156,160-166,170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8190482be5f454b94ef118acdfd57d32120c7036",
+  "prompts": {},
+  "humans": {
+    "h_18044dd1b61a81": {
+      "author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
