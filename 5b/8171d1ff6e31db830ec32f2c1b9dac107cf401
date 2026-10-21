@@ -1,0 +1,38 @@
+apps/doom/README.md
+  s_386240b209cccf::t_b2eb66293ef372 3
+website/components/agent/agent-workspace.tsx
+  s_386240b209cccf::t_46f56888079ae7 166
+website/scripts/app-pages.test.ts
+  s_386240b209cccf::t_b2eb66293ef372 19,50,62
+website/lib/patchsmith.ts
+  s_386240b209cccf::t_b2eb66293ef372 10
+apps/doom/src/server.ts
+  s_386240b209cccf::t_46f56888079ae7 7-8
+website/README.md
+  s_386240b209cccf::t_b2eb66293ef372 117,121
+website/lib/app-pages.ts
+  s_386240b209cccf::t_f66d82782a879c 50-51
+  s_386240b209cccf::t_46f56888079ae7 5
+apps/doom/src/server.test.ts
+  s_386240b209cccf::t_46f56888079ae7 5,24
+website/components/app/app-page.tsx
+  s_386240b209cccf::t_46f56888079ae7 17-18
+website/components/crm-shell.tsx
+  s_386240b209cccf::t_46f56888079ae7 21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5b8171d1ff6e31db830ec32f2c1b9dac107cf401",
+  "prompts": {},
+  "sessions": {
+    "s_386240b209cccf": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15c97-a571-78e3-b084-d6fde503c4d6",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
