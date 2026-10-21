@@ -8,6 +8,7 @@ import {
   type ToolSet,
 } from "ai";
 import { createCrmTools } from "./crm-tools";
+import type { createPatchsmithTools } from "./patchsmith-tools";
 
 export function createCrmAgent(
   tenant: { id: string; name: string },
@@ -39,5 +40,7 @@ You cannot access other workspaces, browse the web, send messages, or change acc
 export type CrmAgentMessage = UIMessage<
   unknown,
   never,
-  InferUITools<ReturnType<typeof createCrmTools>>
+  InferUITools<
+    ReturnType<typeof createCrmTools> & NonNullable<ReturnType<typeof createPatchsmithTools>>
+  >
 >;

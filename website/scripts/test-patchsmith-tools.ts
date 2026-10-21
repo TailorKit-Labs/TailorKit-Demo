@@ -18,23 +18,26 @@ const callerContext = (tenant: { id: string; subjectId: string }): CallerContext
   subjectId: tenant.subjectId,
   scopes: { workspace: { workspaceId: tenant.id } },
 });
-let failDiscovery = false;
+let failTransport = false;
 let holdCall = false;
 let toolError = false;
+let emitProgress = false;
+const buildResult = {
+  answer: "Published Workspace app.",
+  appId: "app-one",
+  runId: "run-one",
+  threadId: "00000000-0000-4000-8000-000000000001",
+  finishReason: "stop",
+};
 let callStarted: (() => void) | undefined;
 let callCancelled: (() => void) | undefined;
-const definition = (name: string) => ({
-  name,
-  description: "List or build workspace apps.",
-  inputSchema: { type: "object", properties: {}, additionalProperties: false },
-});
 
 async function run(result: unknown) {
   const resolved = await result;
   if (resolved && typeof resolved === "object" && Symbol.asyncIterator in resolved) {
-    for await (const _part of resolved as AsyncIterable<unknown>) {
-      // Tool execution may return a stream; consume it so errors surface.
-    }
+    let last: unknown;
+    for await (const part of resolved as AsyncIterable<unknown>) last = part;
+    return last;
   }
   return resolved;
 }
@@ -58,19 +61,14 @@ const server = createServer(async (request, response) => {
     const message = JSON.parse(body);
     assert.equal(request.headers["mcp-protocol-version"], "2026-07-28", message.method);
     requests.push({ method: message.method, context });
+    if (failTransport) {
+      response.writeHead(503).end("Transport unavailable");
+      return;
+    }
     let result: Record<string, unknown>;
     switch (message.method) {
       case "server/discover":
         result = { supportedVersions: ["2026-07-28"], capabilities: { tools: {} } };
-        break;
-      case "tools/list":
-        if (failDiscovery) {
-          response.writeHead(503).end("Discovery unavailable");
-          return;
-        }
-        result = message.params?.cursor
-          ? { tools: [definition("create_app"), definition("edit_app")] }
-          : { tools: [definition("list_apps")], nextCursor: "second-page" };
         break;
       case "tools/call":
         if (holdCall) {
@@ -87,19 +85,36 @@ const server = createServer(async (request, response) => {
             },
           ],
         };
-        assert.equal(message.params.name, "list_apps", "Prefix must not reach the MCP server");
+        assert.ok(["list_apps", "create_app", "edit_app"].includes(message.params.name));
+        if (!toolError && message.params.name !== "list_apps")
+          result.structuredContent = buildResult;
         break;
       default:
         throw new Error(`Unexpected MCP method: ${message.method}`);
     }
-    response.writeHead(200, { "content-type": "application/json" });
-    response.end(
-      JSON.stringify({
-        jsonrpc: "2.0",
-        id: message.id,
-        result: { resultType: "complete", ...result },
-      }),
-    );
+    const payload = {
+      jsonrpc: "2.0",
+      id: message.id,
+      result: { resultType: "complete", ...result },
+    };
+    if (emitProgress && message.method === "tools/call") {
+      response.writeHead(200, { "content-type": "text/event-stream" });
+      response.write(
+        `event: message\ndata: ${JSON.stringify({
+          jsonrpc: "2.0",
+          method: "notifications/progress",
+          params: {
+            progressToken: message.params._meta.progressToken,
+            progress: 1,
+            message: "Building the app",
+          },
+        })}\n\n`,
+      );
+      setTimeout(() => response.end(`event: message\ndata: ${JSON.stringify(payload)}\n\n`), 10);
+    } else {
+      response.writeHead(200, { "content-type": "application/json" });
+      response.end(JSON.stringify(payload));
+    }
   } catch (error) {
     console.error("MCP fixture rejected request:", error);
     response.writeHead(500).end(String(error));
@@ -119,17 +134,14 @@ async function main() {
   process.env.PATCHSMITH_PROJECT_KEY = "fixture-project-key";
   process.env.BETTER_AUTH_URL = "https://forma.test";
   delete process.env.VERCEL_ENV;
-  const { connectPatchsmithTools } = await import("../lib/agents/patchsmith-tools");
+  const { createPatchsmithTools } = await import("../lib/agents/patchsmith-tools");
   const { patchsmith: host } = await import("../lib/patchsmith-server");
   const tenant = { id: "workspace-one", name: "Demo", subjectId: "user-one" };
   const controller = new AbortController();
-  const connections: NonNullable<Awaited<ReturnType<typeof connectPatchsmithTools>>>[] = [];
+  const toolSets: NonNullable<ReturnType<typeof createPatchsmithTools>>[] = [];
   try {
     delete process.env.PATCHSMITH_PROJECT_KEY;
-    assert.equal(
-      await connectPatchsmithTools(tenant, tenant.subjectId, controller.signal),
-      undefined,
-    );
+    assert.equal(createPatchsmithTools(tenant, tenant.subjectId), undefined);
     assert.equal(requests.length, 0, "Unconfigured CRM must not make MCP requests");
     process.env.PATCHSMITH_PROJECT_KEY = "fixture-project-key";
     const metadata = await host.handler(new Request("https://forma.test/api/patchsmith/meta"), {
@@ -152,18 +164,36 @@ async function main() {
       { ...tenant, subjectId: "user-two" },
     ]) {
       const start: number = requests.length;
-      const connection = await connectPatchsmithTools(
-        identity,
-        identity.subjectId,
-        controller.signal,
-      );
-      assert.ok(connection);
-      connections.push(connection);
-      assert.deepEqual(Object.keys(connection.tools), [
+      const tools = createPatchsmithTools(identity, identity.subjectId);
+      assert.ok(tools);
+      toolSets.push(tools);
+      assert.deepEqual(Object.keys(tools), [
         "patchsmith_list_apps",
         "patchsmith_create_app",
         "patchsmith_edit_app",
       ]);
+      assert.equal(
+        requests.length,
+        start,
+        "Creating tools must not open a connection or discover tools",
+      );
+      const output = await run(
+        tools.patchsmith_list_apps.execute!(
+          { page: 1, pageSize: 100 },
+          {
+            toolCallId: "identity",
+            messages: [],
+            context: {},
+          },
+        ),
+      );
+      assert.deepEqual(output, {
+        status: "completed",
+        result: {
+          isError: false,
+          content: [{ type: "text", text: JSON.stringify({ apps: ["Workspace app"] }) }],
+        },
+      });
       for (const recorded of requests.slice(start)) {
         assert.deepEqual(recorded.context, {
           hostUrl: "https://forma.test/api/patchsmith",
@@ -171,11 +201,12 @@ async function main() {
         });
       }
     }
-    const connection = connections[0];
+    const tools = toolSets[0];
     const usage = {
       inputTokens: { total: 10, noCache: 10, cacheRead: undefined, cacheWrite: undefined },
       outputTokens: { total: 10, text: 10, reasoning: undefined },
     };
+    emitProgress = true;
     for (const isError of [false, true]) {
       toolError = isError;
       const reply = isError ? "App lookup failed." : "Found Workspace app.";
@@ -212,57 +243,98 @@ async function main() {
           tenant,
           { page: "/", date: "2026-10-15", timeZone: "UTC" },
           model,
-          connection.tools,
+          tools,
         ),
-        uiMessages: [{ id: "user", role: "user", parts: [{ type: "text", text: "List my apps" }] }],
+        uiMessages: [
+          { id: "legacy-user", role: "user", parts: [{ type: "text", text: "List my apps" }] },
+          {
+            id: "legacy-assistant",
+            role: "assistant",
+            parts: [
+              {
+                type: "dynamic-tool",
+                toolName: "patchsmith_list_apps",
+                toolCallId: "legacy",
+                state: "output-available",
+                input: {},
+                output: { isError: false, content: [{ type: "text", text: "Legacy app list" }] },
+              },
+            ],
+          },
+          { id: "user", role: "user", parts: [{ type: "text", text: "Refresh my apps" }] },
+        ],
         onEnd: ({ messages }) => {
           saved = messages;
         },
       });
       const stream = await response.text();
-      assert.ok(stream.includes('"dynamic":true'));
-      assert.ok(stream.includes('"type":"tool-output-available"'));
+      assert.ok(stream.includes('"toolName":"patchsmith_list_apps"'));
+      assert.ok(
+        stream.includes(isError ? '"type":"tool-output-error"' : '"type":"tool-output-available"'),
+      );
       assert.ok(stream.includes(reply));
       assert.ok(!stream.includes("fixture-project-key"));
+      assert.ok(
+        stream.includes('"preliminary":true'),
+        "Progress must stream as a preliminary result",
+      );
+      assert.ok(stream.includes("Building the app"));
       assert.equal(model.doStreamCalls.length, 2);
+      const legacy = model.doStreamCalls[0].prompt
+        .filter((message) => message.role === "tool")
+        .flatMap((message) => message.content)
+        .find((part) => part.type === "tool-result" && part.toolCallId === "legacy");
+      assert.ok(
+        JSON.stringify(legacy).includes("Legacy app list"),
+        "Existing dynamic tool history must remain model-visible",
+      );
       const toolResult = model.doStreamCalls[1].prompt
         .filter((message) => message.role === "tool")
         .flatMap((message) => message.content)
-        .find((part) => part.type === "tool-result");
-      assert.equal(toolResult?.output.type, "content");
-      assert.ok(toolResult?.output.type === "content");
+        .find((part) => part.type === "tool-result" && part.toolCallId === "apps");
+      assert.ok(toolResult?.type === "tool-result");
       assert.deepEqual(
-        toolResult.output.value,
-        [
-          { type: "text", text: JSON.stringify({ isError }) },
-          {
-            type: "text",
-            text: isError ? "App lookup failed." : JSON.stringify({ apps: ["Workspace app"] }),
-          },
-        ],
-        "Model-visible MCP output must preserve error status and content",
+        toolResult.output,
+        isError
+          ? { type: "error-text", value: "Error: App lookup failed." }
+          : {
+              type: "json",
+              value: {
+                status: "completed",
+                result: {
+                  isError: false,
+                  content: [{ type: "text", text: JSON.stringify({ apps: ["Workspace app"] }) }],
+                },
+              },
+            },
+        "The adapter must expose results and failures to the model",
       );
-      assert.ok(saved.at(-1)?.parts.some((part) => part.type === "dynamic-tool"));
+      assert.ok(saved.at(-1)?.parts.some((part) => part.type === "tool-patchsmith_list_apps"));
       assert.deepEqual(requests.at(-1)?.context, {
         hostUrl: "https://forma.test/api/patchsmith",
         ...callerContext(tenant),
       });
     }
-    await connection.close();
-    await assert.rejects(
-      run(
-        connection.tools.patchsmith_list_apps.execute!(
-          {},
-          {
-            toolCallId: "closed",
-            messages: [],
-            context: {},
-          },
-        ),
+    emitProgress = false;
+    toolError = false;
+    for (const call of [
+      tools.patchsmith_create_app.execute!(
+        { name: "Todo", prompt: "Build a todo app", scope: "workspace" },
+        { toolCallId: "create", messages: [], context: {} },
       ),
-      /closed/i,
-    );
-
+      tools.patchsmith_edit_app.execute!(
+        { appId: buildResult.appId, prompt: "Add filters", threadId: buildResult.threadId },
+        { toolCallId: "edit", messages: [], context: {} },
+      ),
+    ]) {
+      const output = await run(call);
+      assert.ok(output && typeof output === "object" && "result" in output);
+      assert.deepEqual(
+        (output.result as { structuredContent: unknown }).structuredContent,
+        buildResult,
+        "App and conversation IDs must survive the adapter result envelope",
+      );
+    }
     holdCall = true;
     const started = new Promise<void>((resolve) => {
       callStarted = resolve;
@@ -271,8 +343,9 @@ async function main() {
       callCancelled = resolve;
     });
     const abort = new AbortController();
-    const pending = connections[1].tools.patchsmith_create_app.execute!(
-      {},
+    toolError = false;
+    const pending = toolSets[1].patchsmith_create_app.execute!(
+      { name: "Test app", prompt: "Build a todo app", scope: "workspace" },
       {
         toolCallId: "cancel",
         messages: [],
@@ -287,10 +360,39 @@ async function main() {
     await cancelled;
     holdCall = false;
 
-    failDiscovery = true;
-    await assert.rejects(connectPatchsmithTools(tenant, tenant.subjectId, controller.signal));
+    failTransport = true;
+    const start = requests.length;
+    await assert.rejects(
+      run(
+        tools.patchsmith_list_apps.execute!(
+          { page: 1, pageSize: 100 },
+          {
+            toolCallId: "failed",
+            messages: [],
+            context: {},
+          },
+        ),
+      ),
+    );
+    assert.equal(requests.length, start + 1, "Failed calls must not be replayed");
+    failTransport = false;
     controller.abort();
-    await assert.rejects(connectPatchsmithTools(tenant, tenant.subjectId, controller.signal));
+    const beforeAbort = requests.length;
+    await assert.rejects(
+      run(
+        tools.patchsmith_list_apps.execute!(
+          { page: 1, pageSize: 100 },
+          {
+            toolCallId: "aborted",
+            messages: [],
+            context: {},
+            abortSignal: controller.signal,
+          },
+        ),
+      ),
+    );
+    assert.equal(requests.length, beforeAbort, "An aborted call must not contact Patchsmith");
+    assert.ok(requests.every(({ method }) => method !== "tools/list"));
 
     const interrupted = finishAgentMessages(
       [
@@ -304,6 +406,14 @@ async function main() {
               toolCallId: "pending",
               state: "input-available",
               input: {},
+            },
+            {
+              type: "tool-patchsmith_create_app",
+              toolCallId: "progress",
+              state: "output-available",
+              preliminary: true,
+              input: {},
+              output: { status: "running", progress: { progress: 1 } },
             },
             {
               type: "dynamic-tool",
@@ -324,12 +434,15 @@ async function main() {
     assert.ok(
       interrupted[0].parts.some((part) => "toolCallId" in part && part.toolCallId === "done"),
     );
+    assert.ok(
+      !interrupted[0].parts.some((part) => "toolCallId" in part && part.toolCallId === "progress"),
+      "Interrupted progress is not a completed result",
+    );
     assert.ok(AGENT_TIMEOUT_MS < 300000);
     console.log(
-      "PASS: scoped Patchsmith helper auth, host metadata, paginated HTTP MCP discovery, agent streaming, dynamic history, cancellation, failure handling, and client cleanup.",
+      "PASS: Patchsmith AI SDK tools, scoped auth, host metadata, no discovery, streamed progress, build/edit IDs, legacy history, cancellation, interrupted progress cleanup, and model-visible errors.",
     );
   } finally {
-    await Promise.all(connections.map((connection) => connection.close()));
     globalThis.fetch = originalFetch;
     if (originalKey === undefined) delete process.env.PATCHSMITH_PROJECT_KEY;
     else process.env.PATCHSMITH_PROJECT_KEY = originalKey;

@@ -1,57 +1,16 @@
-import type { ToolSet } from "ai";
-import { createMCPClient } from "@ai-sdk/mcp";
+import { createTools } from "patchsmith/ai-sdk";
 import { patchsmith } from "../patchsmith-server";
 
-export async function connectPatchsmithTools(
-  tenant: { id: string },
-  subjectId: string,
-  signal: AbortSignal,
-): Promise<{ tools: ToolSet; close: () => Promise<void> } | undefined> {
+export function createPatchsmithTools(tenant: { id: string }, subjectId: string) {
   if (!process.env.PATCHSMITH_PROJECT_KEY) return undefined;
-  const transport = await patchsmith.mcp.transport({
+  const { listApps, createApp, editApp } = createTools(patchsmith, {
     subjectId,
     scopes: { workspace: { workspaceId: tenant.id } },
   });
-  const client = await createMCPClient({
-    transport: { type: "http", ...transport },
-    initializationOptions: { signal, timeout: 10000 },
-  });
-  try {
-    let definitions = await client.listTools({ options: { signal, timeout: 10000 } });
-    const discovered = [...definitions.tools];
-    while (definitions.nextCursor) {
-      definitions = await client.listTools({
-        params: { cursor: definitions.nextCursor },
-        options: { signal, timeout: 10000 },
-      });
-      discovered.push(...definitions.tools);
-    }
-    const tools = client.toolsFromDefinitions({ ...definitions, tools: discovered });
-    for (const tool of Object.values(tools)) {
-      const toModelOutput = tool.toModelOutput;
-      if (!toModelOutput) continue;
-      tool.toModelOutput = async (options) => {
-        const converted = await toModelOutput(options);
-        if (converted.type !== "content") return converted;
-        // The SDK's content conversion omits the MCP envelope's error status.
-        return {
-          ...converted,
-          value: [
-            { type: "text", text: JSON.stringify({ isError: options.output.isError === true }) },
-            ...converted.value,
-          ],
-        };
-      };
-    }
-    // Prefix remote names so they cannot replace the CRM's tools.
-    return {
-      tools: Object.fromEntries(
-        Object.entries(tools).map(([name, tool]) => [`patchsmith_${name}`, tool]),
-      ),
-      close: () => client.close(),
-    };
-  } catch (error) {
-    await client.close();
-    throw error;
-  }
+  // Preserve the tool names used by existing chats.
+  return {
+    patchsmith_list_apps: listApps,
+    patchsmith_create_app: createApp,
+    patchsmith_edit_app: editApp,
+  };
 }

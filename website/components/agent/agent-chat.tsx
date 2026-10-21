@@ -32,7 +32,11 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
-type ToolPart = Extract<CrmAgentMessage["parts"][number], { type: `tool-${string}` }>;
+type AppToolPart = Extract<CrmAgentMessage["parts"][number], { type: `tool-patchsmith_${string}` }>;
+type ToolPart = Exclude<
+  Extract<CrmAgentMessage["parts"][number], { type: `tool-${string}` }>,
+  AppToolPart
+>;
 const toolTitles: Record<ToolPart["type"], string> = {
   "tool-getWorkspace": "View workspace",
   "tool-getContact": "View contact",
@@ -79,7 +83,9 @@ const patchsmithToolTitles: Record<string, string> = {
   patchsmith_edit_app: "Edit an app",
 };
 
-function DynamicToolResult({ part }: { part: DynamicToolUIPart }) {
+function AppToolResult({ part }: { part: DynamicToolUIPart | AppToolPart }) {
+  const toolName = part.type === "dynamic-tool" ? part.toolName : part.type.slice(5);
+  const preliminary = part.state === "output-available" && part.preliminary === true;
   const failed =
     part.state === "output-available" &&
     typeof part.output === "object" &&
@@ -95,15 +101,15 @@ function DynamicToolResult({ part }: { part: DynamicToolUIPart }) {
     <Tool className="mb-0" open={open} onOpenChange={setOpen}>
       <ToolHeader
         type="dynamic-tool"
-        toolName={part.toolName}
-        state={failed ? "output-error" : part.state}
-        title={patchsmithToolTitles[part.toolName] ?? part.title ?? part.toolName}
+        toolName={toolName}
+        state={failed ? "output-error" : preliminary ? "input-available" : part.state}
+        title={patchsmithToolTitles[toolName] ?? part.title ?? toolName}
       />
       <ToolContent>
         <p className="text-sm text-muted-foreground">
           {part.state === "output-error" || failed
             ? "The app request could not finish. Check your apps before repeating a change."
-            : part.state === "output-available"
+            : part.state === "output-available" && !preliminary
               ? "Finished. See the agent's response for details."
               : "Working on your apps. Building or editing can take a few minutes…"}
         </p>
@@ -400,8 +406,13 @@ export function AgentChat({
                             {part.text}
                           </MessageResponse>
                         );
-                      if (part.type === "dynamic-tool")
-                        return <DynamicToolResult key={index} part={part} />;
+                      if (part.type === "dynamic-tool" || part.type.startsWith("tool-patchsmith_"))
+                        return (
+                          <AppToolResult
+                            key={index}
+                            part={part as DynamicToolUIPart | AppToolPart}
+                          />
+                        );
                       if (part.type.startsWith("tool-"))
                         return <ToolResult key={index} part={part as ToolPart} />;
                       return null;
