@@ -26,7 +26,7 @@ export async function tenantFromHeaders(headers: Headers): Promise<RpcTenant> {
 }
 
 // Only trusted server callers use this with a session-derived tenant ID or a
-// TailorKit-verified workspace scope. The HTTP handler always uses cookie auth.
+// Patchsmith-verified workspace scope. The HTTP handler always uses cookie auth.
 export async function tenantFromVerifiedId(id: string): Promise<RpcTenant> {
   const [tenant] = await db
     .select({ id: tenants.id, name: tenants.name, setupVersion: tenants.setupVersion })
@@ -60,7 +60,7 @@ export function requestContext(headers: Headers): RpcContext {
   };
 }
 
-// Only use an ID resolved from a server session or a verified TailorKit scope.
+// Only use an ID resolved from a server session or a verified Patchsmith scope.
 // This capability does not grant access to session-only setup procedures.
 export function verifiedWorkspaceContext(tenantId: string): RpcContext {
   return { resolveTenant: () => tenantFromVerifiedId(tenantId) };

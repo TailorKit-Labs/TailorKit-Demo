@@ -1,6 +1,8 @@
-# Forma CRM demo
+# Patchsmith demo — Forma CRM
 
-A pnpm workspace. The Next.js CRM lives in `website/`; the TailorKit Messages app lives in `apps/messages/`.
+A pnpm workspace. The Next.js CRM lives in `website/`; the Patchsmith apps live in `apps/messages/` and `apps/doom/`.
+
+[Patchsmith](https://patchsmith.io) powers the apps platform; Forma is the demo CRM. The workspace uses the Patchsmith SDK beta, published as `patchsmith` and `@patchsmith/*`, with the `patchsmith` CLI and `patchsmith.config.ts` configuration.
 
 ## Run locally
 
@@ -12,9 +14,11 @@ pnpm --filter website db:push
 pnpm dev
 ```
 
-Set `TAILORKIT_PROJECT_KEY` in `website/.env.local`; workspace setup installs the shared app ID in `apps/messages/tailorkit.config.ts`. Then open http://localhost:3000. First visit creates an anonymous Better Auth account, provisions a private workspace with 30 contacts, 18 deals, and 12 tasks, and installs Messages into the apps panel. Returning visitors resume their workspace; older workspaces install Messages on their next visit. Each collection permits at most 50 records; activity history keeps the latest 50 entries.
+Set `PATCHSMITH_PROJECT_KEY` in `website/.env.local`; workspace setup installs the shared app ID in `apps/messages/patchsmith.config.ts`. Then open http://localhost:3000. First visit creates an anonymous Better Auth account, provisions a private workspace with 30 contacts, 18 deals, and 12 tasks, and installs Messages into the apps panel and Doom into a full-page canvas slot with a panel link. Returning visitors resume their workspace; older workspaces install missing demo apps on their next visit. Each collection permits at most 50 records; activity history keeps the latest 50 entries.
 
 Publish Messages with `pnpm --filter @demo/messages deploy`; see [Messages](apps/messages/README.md) for the initial publish and version updates. New workspaces install the shared published app without uploading files.
+
+Doom uses [doomgeneric](https://github.com/ozkl/doomgeneric) and the SDK canvas API (beta.55). Open **App pages → Can it run DOOM?** or use the Doom panel's **Play Doom** link. The first level starts automatically; click the game to focus it. See [Doom](apps/doom/README.md) for controls and publishing.
 
 ## Checks
 

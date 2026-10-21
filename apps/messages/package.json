@@ -1,15 +1,15 @@
 {
   "name": "@demo/messages",
   "private": true,
-  "description": "A demo inbox for messaging Forma CRM contacts through TailorKit's panel slot.",
+  "description": "A demo inbox for messaging Forma CRM contacts through Patchsmith's panel slot.",
   "type": "module",
   "imports": {
-    "#tailorkit": "./src/tailorkit.gen.ts"
+    "#patchsmith": "./src/patchsmith.gen.ts"
   },
   "scripts": {
     "build": "vp build",
-    "deploy": "tailorkit deploy",
-    "generate": "tailorkit generate",
+    "deploy": "patchsmith deploy",
+    "generate": "patchsmith generate",
     "lint": "vp lint",
     "format": "vp fmt --check",
     "format:fix": "vp fmt",
@@ -18,8 +18,8 @@
     "test": "vp test"
   },
   "dependencies": {
+    "patchsmith": "catalog:",
     "preact": "11.0.1",
-    "tailorkit": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

@@ -1,0 +1,26 @@
+import { expect, test } from "vite-plus/test";
+import type { Identity } from "patchsmith/server";
+import app from "./server";
+
+test("panel links target the authenticated workspace installation, not the source app", () => {
+  for (const installationId of ["installation-a", "installation-b"]) {
+    const identity: Identity = {
+      appId: "shared-doom-source",
+      installationId,
+      deploymentId: "published-doom",
+      projectId: "demo",
+      subjectId: "visitor",
+      toolUrl: "https://demo.patchsmith.io/api/patchsmith",
+      scope: { name: "workspace", value: { workspaceId: `workspace-${installationId}` } },
+      expiresAt: Date.now() + 60_000,
+    };
+    const page = app.functions.page.handler({
+      args: {},
+      identity,
+      get db(): never {
+        throw new Error("Opening the game should not need database access.");
+      },
+    });
+    expect(page).toEqual({ href: `/app-pages/${installationId}?instance=doom` });
+  }
+});

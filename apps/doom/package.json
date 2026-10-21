@@ -1,0 +1,31 @@
+{
+  "name": "@demo/doom",
+  "private": true,
+  "description": "Doom shareware in a full-page Patchsmith canvas slot.",
+  "type": "module",
+  "imports": {
+    "#patchsmith": "./src/patchsmith.gen.ts"
+  },
+  "scripts": {
+    "build": "vp build",
+    "deploy": "patchsmith deploy",
+    "generate": "patchsmith generate",
+    "lint": "vp lint",
+    "format": "vp fmt --check",
+    "format:fix": "vp fmt",
+    "check": "vp check",
+    "fix": "vp check --fix",
+    "test": "vp test"
+  },
+  "dependencies": {
+    "patchsmith": "catalog:",
+    "preact": "11.0.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

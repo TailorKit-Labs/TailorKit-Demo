@@ -7,7 +7,8 @@ import { rpc } from "../orpc";
 export function createAgentTransport(chat: typeof rpc.agent.chat): ChatTransport<CrmAgentMessage> {
   return {
     async sendMessages({ messages, body, abortSignal }) {
-      const input = agentRequest.parse({ ...body, messages });
+      // History, including large app-build results, already lives on the server.
+      const input = agentRequest.parse({ ...body, messages: messages.slice(-1) });
       return asyncIteratorToUnproxiedDataStream(await chat(input, { signal: abortSignal }));
     },
     async reconnectToStream() {

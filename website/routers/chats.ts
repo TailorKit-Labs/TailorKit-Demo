@@ -8,6 +8,7 @@ import { z } from "zod";
 import { ORPCError } from "@orpc/server";
 import { protectedProcedure } from "./base";
 import type { agentRequest } from "../lib/agents/agent-request";
+import { AGENT_CHAT_MAX_INPUT_BYTES } from "../lib/agents/agent-limits";
 
 // Old streams saved empty assistant IDs. Keep repairs stable across history reads
 // and persist them with the next admitted turn, without changing valid IDs.
@@ -88,9 +89,13 @@ export async function beginAgentChat(
     .where(and(eq(agentChats.tenantId, tenantId), eq(agentChats.id, id)));
   if (!chat) throw new ORPCError("NOT_FOUND", { message: "Chat not found." });
   const messages = [...withMessageIds(chat.id, chat.messages), message];
-  if (messages.length > 20 || Buffer.byteLength(JSON.stringify(messages)) > 60000)
+  // Tool results are server-generated and may contain an entire app build.
+  // Apply the input budget to user messages so a completed build cannot lock
+  // its own conversation out of subsequent turns.
+  const userMessages = messages.filter((entry) => entry.role === "user");
+  if (Buffer.byteLength(JSON.stringify(userMessages)) > AGENT_CHAT_MAX_INPUT_BYTES)
     throw new ORPCError("PAYLOAD_TOO_LARGE", {
-      message: "This conversation is too long. Start a new chat.",
+      message: "This chat has reached its 1 MB input limit. Start a new chat.",
     });
   const turn = { id, tenantId, messages };
   await saveAgentChat(turn, messages);
@@ -122,7 +127,9 @@ export function finishAgentMessages(messages: UIMessage[], interrupted: boolean)
               !(
                 (part.type.startsWith("tool-") || part.type === "dynamic-tool") &&
                 "state" in part &&
-                (part.state === "input-streaming" || part.state === "input-available")
+                (part.state === "input-streaming" ||
+                  part.state === "input-available" ||
+                  (part.state === "output-available" && part.preliminary === true))
               ),
           )
           .map((part) =>

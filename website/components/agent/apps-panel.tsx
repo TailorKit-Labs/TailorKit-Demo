@@ -2,11 +2,12 @@
 
 import { useRef, useState } from "react";
 import { Reorder, useDragControls, MotionConfig } from "motion/react";
-import { BlocksIcon, MousePointer2Icon } from "lucide-react";
+import { MousePointer2Icon } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { RenderSlot, useViews } from "@/lib/tailorkit-client";
+import { AppLogo } from "@/components/app/app-logo";
+import { RenderSlot, useViews } from "@/lib/patchsmith-client";
 
 export type PanelApp = NonNullable<ReturnType<typeof useViews>["data"]>[number]["app"];
 
@@ -51,9 +52,7 @@ function AppTab({ app, onMove }: { app: PanelApp; onMove: (id: string, offset: n
           }
         }}
       >
-        <span aria-hidden="true">
-          <BlocksIcon className="size-4" />
-        </span>
+        <AppLogo app={app} />
         {app.name ?? app.id}
       </TabsTab>
     </Reorder.Item>
@@ -129,7 +128,7 @@ export function AppsPanel({
             key={app.id}
             value={app.id}
             data-demo={app.name?.toLowerCase() === "messages" ? "messages-panel" : undefined}
-            className="min-h-0 overflow-y-auto p-4 [&>[data-tailorkit-view]]:h-full"
+            className="min-h-0 overflow-y-auto p-4 [&>[data-patchsmith-view]]:h-full"
           >
             <RenderSlot app={app} slot="panel" />
           </TabsPanel>

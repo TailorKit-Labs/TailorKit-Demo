@@ -11,13 +11,15 @@ import { db, pool } from "../lib/drizzle";
 import { agentChats, user } from "../lib/schema";
 import { AGENT_BOT_CHECK_LEVEL } from "../lib/agents/agent-protection";
 import { createAgentTransport } from "../lib/agents/agent-transport";
-import { loadAgentChat } from "../routers/chats";
+import { agentRequest } from "../lib/agents/agent-request";
+import { beginAgentChat, loadAgentChat, saveAgentChat } from "../routers/chats";
 import { handleRpcRequest } from "../routers/handler";
 import { tenantFromHeaders, verifiedWorkspaceContext } from "../routers/context";
 import type { router } from "../routers";
 import { router as serverRouter } from "../routers";
 import type { CrmAgentMessage } from "../lib/agents/crm-agent";
 import { provisionForUser } from "./test-provision";
+import { patchsmith } from "../lib/patchsmith-server";
 
 const origin = "http://localhost:3000";
 const hasCode = (code: string) => (error: unknown) =>
@@ -28,9 +30,9 @@ async function main() {
   const savedEnv = {
     VERCEL: env.VERCEL,
     AI_GATEWAY_API_KEY: env.AI_GATEWAY_API_KEY,
-    TAILORKIT_PROJECT_KEY: env.TAILORKIT_PROJECT_KEY,
   };
   const originalFetch = globalThis.fetch;
+  const originalTransport = patchsmith.mcp.transport;
   const contextSymbol = Symbol.for("@vercel/request-context");
   const globals = globalThis as unknown as Record<symbol, unknown>;
   const originalContext = globals[contextSymbol];
@@ -40,8 +42,11 @@ async function main() {
   let botMode: "human" | "bot" | "unavailable" = "human";
   let botChecks = 0;
   let modelCalls = 0;
+  let lastAgentRequestBytes = 0;
   let holdModel = false;
   let modelAborted = false;
+  let callAppTool = false;
+  let appCalls = 0;
   const runCleanup = async () => {
     for (const work of cleanup.splice(0)) await work();
   };
@@ -60,6 +65,8 @@ async function main() {
         headers: { origin, cookie },
         fetch: async (url, init) => {
           const request = new Request(url, init);
+          if (new URL(request.url).pathname === "/rpc/agent/chat")
+            lastAgentRequestBytes = Buffer.byteLength(await request.clone().text());
           const response = await requests.run(request, () =>
             handleRpcRequest(request, (work) => cleanup.push(work)),
           );
@@ -72,7 +79,6 @@ async function main() {
     const tenant = await tenantFromHeaders(new Headers({ cookie }));
     env.VERCEL = "1";
     env.AI_GATEWAY_API_KEY = "test-key-no-provider-spend";
-    delete env.TAILORKIT_PROJECT_KEY;
     globals[contextSymbol] = {
       get: () => ({
         url: requests.getStore()?.url,
@@ -94,16 +100,40 @@ async function main() {
         if (botMode === "unavailable") throw new Error("Simulated BotID outage");
         return Response.json({ isBot: botMode === "bot", isVerifiedBot: false, bypassed: false });
       }
+      if (requestUrl === "https://patchsmith.test/mcp") {
+        const message = JSON.parse(init!.body as string);
+        const result =
+          message.method === "server/discover"
+            ? { supportedVersions: ["2026-07-28"], capabilities: { tools: {} } }
+            : { content: [{ type: "text", text: "Workspace apps" }] };
+        if (message.method !== "server/discover") {
+          assert.equal(message.method, "tools/call", "The host must not discover tools");
+          assert.equal(message.params.name, "list_apps");
+          appCalls++;
+        }
+        return Response.json({
+          jsonrpc: "2.0",
+          id: message.id,
+          result: { resultType: "complete", ...result },
+        });
+      }
       assert.ok(
         requestUrl.startsWith("https://ai-gateway.vercel.sh/"),
         `Unexpected external request: ${requestUrl}`,
       );
       modelCalls++;
-      const chunks = [
-        { type: "stream-start", warnings: [] },
-        { type: "text-start", id: "answer" },
-        { type: "text-delta", id: "answer", delta: "Hello from oRPC." },
-      ];
+      const toolName = callAppTool ? "listApps" : undefined;
+      callAppTool = false;
+      const chunks = toolName
+        ? [
+            { type: "stream-start", warnings: [] },
+            { type: "tool-call", toolCallId: "apps", toolName, input: "{}" },
+          ]
+        : [
+            { type: "stream-start", warnings: [] },
+            { type: "text-start", id: "answer" },
+            { type: "text-delta", id: "answer", delta: "Hello from oRPC." },
+          ];
       const stream = new ReadableStream<Uint8Array>({
         start(controller) {
           const emit = (chunk: unknown) =>
@@ -119,10 +149,10 @@ async function main() {
               { once: true },
             );
           } else {
-            emit({ type: "text-end", id: "answer" });
+            if (!toolName) emit({ type: "text-end", id: "answer" });
             emit({
               type: "finish",
-              finishReason: { unified: "stop" },
+              finishReason: { unified: toolName ? "tool-calls" : "stop" },
               usage: {
                 inputTokens: { total: 30000 },
                 outputTokens: { total: 30000 },
@@ -272,12 +302,106 @@ async function main() {
     });
     await send(recovered, "Continue a chat saved with missing reply IDs");
     assert.equal(recovered.messages.length, 8);
+
+    // A successful app build can return more data than the public input limit.
+    // Keep that authoritative result for follow-ups without uploading it again.
+    const buildChatId = crypto.randomUUID();
+    const buildMessages: CrmAgentMessage[] = [
+      {
+        id: crypto.randomUUID(),
+        role: "user",
+        parts: [{ type: "text", text: "Build a basic todo app in the panel" }],
+      },
+      {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        parts: [
+          {
+            type: "dynamic-tool",
+            toolName: "patchsmith_create_app",
+            toolCallId: "build-todos",
+            state: "output-available",
+            input: { prompt: "Build a basic todo app in the panel" },
+            output: {
+              isError: false,
+              content: [
+                {
+                  type: "text",
+                  text: JSON.stringify({
+                    appId: "todos-app",
+                    threadId: "todos-thread",
+                    transcript: "Build output. ".repeat(10000),
+                  }),
+                },
+              ],
+            },
+          },
+          { type: "text", text: "Built and published Todos in the panel." },
+        ],
+      },
+    ];
+    const buildInput = agentRequest.parse({ chatId: buildChatId, messages: [buildMessages[0]] });
+    const buildTurn = await beginAgentChat(tenant.id, buildChatId, buildInput.messages);
+    await saveAgentChat(buildTurn, buildMessages);
+    const buildFollowUp: CrmAgentMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      parts: [{ type: "text", text: "What did you build?" }],
+    };
+    // The shared HTTP safety limit must remain intact for oversized callers.
+    await assert.rejects(
+      () =>
+        client.agent.chat(
+          agentRequest.parse({ chatId: buildChatId, messages: [...buildMessages, buildFollowUp] }),
+        ),
+      hasCode("PAYLOAD_TOO_LARGE"),
+    );
+    const buildChat = new Chat<CrmAgentMessage>({
+      transport,
+      messages: (await client.chats.get({ id: buildChatId })).messages,
+    });
+    await buildChat.sendMessage({ text: "What did you build?" }, { body: { chatId: buildChatId } });
+    await runCleanup();
+    assert.equal(buildChat.error, undefined, "Large build results must not block follow-ups");
+    assert.ok(lastAgentRequestBytes < 1000, "Only the new message should cross the wire");
+    const continuedBuild = await loadAgentChat(tenant.id, buildChatId);
+    assert.equal(continuedBuild?.messages.length, 4);
+    assert.deepEqual(continuedBuild?.messages[1], buildMessages[1], "Build IDs and output survive");
+    // Exercise the SDK tools through the actual authenticated chat route.
+    patchsmith.mcp.transport = async (context) => {
+      assert.deepEqual(context, {
+        subjectId: userId,
+        scopes: { workspace: { workspaceId: tenant.id } },
+      });
+      return { url: "https://patchsmith.test/mcp", headers: {} };
+    };
+    callAppTool = true;
+    const apps = input();
+    const appStream = await client.agent.chat(apps);
+    for await (const _chunk of appStream) {
+      /* Drain. */
+    }
+    await runCleanup();
+    assert.equal(appCalls, 1);
+    const savedApps = await loadAgentChat(tenant.id, apps.chatId);
+    assert.ok(
+      savedApps?.messages
+        .at(-1)
+        ?.parts.some(
+          (part) =>
+            part.type === "tool-listApps" &&
+            part.state === "output-available" &&
+            part.output.status === "completed",
+        ),
+    );
+
     console.log(
-      "PASS: actual agent oRPC HTTP + AI SDK transport, stable streamed/persisted IDs, follow-ups, reopening, Deep Analysis on every request, no IP/token quotas, persistence, bot rejection/outage, direct-client guard, and cancellation.",
+      "PASS: actual agent oRPC HTTP + AI SDK transport, stable streamed/persisted IDs, follow-ups, reopening, oversized app-build history with small requests, Deep Analysis on every request, no IP/token quotas, persistence, bot rejection/outage, direct-client guard, cancellation, and scoped Patchsmith SDK tools.",
     );
   } finally {
     await runCleanup();
     globalThis.fetch = originalFetch;
+    patchsmith.mcp.transport = originalTransport;
     if (originalContext === undefined) delete globals[contextSymbol];
     else globals[contextSymbol] = originalContext;
     for (const [key, value] of Object.entries(savedEnv)) {

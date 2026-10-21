@@ -13,9 +13,9 @@ import { Spinner } from "@/components/ui/spinner";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-const MIN_STEP_DISPLAY_MS = 1_000;
-const COMPLETION_DISPLAY_MS = 1_000;
-const FADE_DURATION_MS = 700;
+const MIN_STEP_DISPLAY_MS = 250;
+const COMPLETION_DISPLAY_MS = 250;
+const FADE_DURATION_MS = 200;
 
 const delay = (duration: number) => new Promise<void>((resolve) => setTimeout(resolve, duration));
 async function finishStep(startedAt: number) {
@@ -70,27 +70,27 @@ export function DemoSetup() {
   return (
     <main
       className={cn(
-        "flex min-h-svh items-center justify-center p-6 transition-all duration-700 motion-reduce:transition-none",
+        "flex min-h-svh items-center justify-center p-6 transition-all duration-200 motion-reduce:transition-none",
         step === 4 && "opacity-0 scale-95",
       )}
     >
       <div className="flex w-full max-w-md flex-col gap-8">
         <div className="flex items-center justify-center gap-2">
           <Image
-            src="/brand/tailorkit-mark-light.svg"
+            src="/brand/patchsmith-mark-light.svg"
             alt=""
             width={24}
             height={24}
             className="shrink-0 dark:hidden"
           />
           <Image
-            src="/brand/tailorkit-mark-dark.svg"
+            src="/brand/patchsmith-mark-dark.svg"
             alt=""
             width={24}
             height={24}
             className="hidden shrink-0 dark:block"
           />
-          <span className="text-xl font-semibold tracking-tight">TailorKit</span>
+          <span className="text-xl font-semibold tracking-tight">Patchsmith</span>
         </div>
         <Card>
           <CardHeader className="items-center text-center">
@@ -105,7 +105,7 @@ export function DemoSetup() {
               {[
                 "Create your anonymous account",
                 "Prepare your contacts, deals, and tasks",
-                "Install your Messages demo app",
+                "Install Messages and Doom",
               ].map((label, i) => (
                 <div
                   key={label}

@@ -2,9 +2,10 @@ import { randomUUID } from "node:crypto";
 import { consumeStream, createAgentUIStream, type UIMessageChunk } from "ai";
 import { ORPCError, streamToAsyncIteratorObject } from "@orpc/server";
 import { checkBotId } from "botid/server";
+import { createTools } from "patchsmith/ai-sdk";
+import { patchsmith } from "../lib/patchsmith-server";
 import { protectedProcedure } from "./base";
 import { createCrmAgent } from "../lib/agents/crm-agent";
-import type { connectTailorKitTools as connectTools } from "../lib/agents/tailorkit-tools";
 import { AGENT_TIMEOUT_MS } from "../lib/agents/agent-limits";
 import { agentRequest } from "../lib/agents/agent-request";
 import { AGENT_BOT_CHECK_LEVEL } from "../lib/agents/agent-protection";
@@ -30,7 +31,6 @@ export const agentChat = protectedProcedure
       });
     }
     let streamConsumption: Promise<void> | undefined;
-    let tailorkit: Awaited<ReturnType<typeof connectTools>>;
     afterResponse(async () => {
       // Drain on the server so disconnects still run persistence callbacks. The
       // request signal still cancels model generation and tool execution.
@@ -38,11 +38,6 @@ export const agentChat = protectedProcedure
         await streamConsumption;
       } catch (error) {
         console.error("Agent stream consumption failed:", error);
-      }
-      try {
-        await tailorkit?.close();
-      } catch {
-        console.error("TailorKit MCP connection could not be closed.");
       }
     });
     try {
@@ -74,12 +69,10 @@ export const agentChat = protectedProcedure
       });
     }
     try {
-      const { connectTailorKitTools } = await import("../lib/agents/tailorkit-tools");
-      tailorkit = await connectTailorKitTools(
-        tenant,
-        await resolveUserId(),
-        signal ?? request.signal,
-      );
+      const patchsmithTools = createTools(patchsmith, {
+        subjectId: await resolveUserId(),
+        scopes: { workspace: { workspaceId: tenant.id } },
+      });
       const stream = await createAgentUIStream({
         agent: createCrmAgent(
           tenant,
@@ -89,7 +82,7 @@ export const agentChat = protectedProcedure
             timeZone: input.timeZone,
           },
           undefined,
-          tailorkit?.tools,
+          patchsmithTools,
         ),
         uiMessages: chatTurn.messages,
         generateMessageId: randomUUID,
@@ -104,8 +97,10 @@ export const agentChat = protectedProcedure
           ),
         abortSignal: signal ?? request.signal,
         timeout: AGENT_TIMEOUT_MS,
-        onError: () =>
-          "The agent could not finish this request. Please try again. Check the page before repeating a creation.",
+        onError: (error) => {
+          console.error("Agent stream failed:", error);
+          return "The agent could not finish this request. Please try again. Check the page before repeating a creation.";
+        },
       });
       const [clientStream, serverStream] = stream.tee();
       streamConsumption = consumeStream({ stream: serverStream });

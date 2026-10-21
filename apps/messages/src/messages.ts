@@ -1,10 +1,10 @@
-import type { TailorKitTools } from "#tailorkit";
+import type { PatchsmithTools } from "#patchsmith";
 
 export const channels = ["Email", "Slack", "SMS"] as const;
 export type Channel = (typeof channels)[number];
-export type Contact = Awaited<ReturnType<TailorKitTools["contacts"]["list"]>>["contacts"][number];
+export type Contact = Awaited<ReturnType<PatchsmithTools["contacts"]["list"]>>["contacts"][number];
 export type Activity = Awaited<
-  ReturnType<TailorKitTools["activities"]["list"]>
+  ReturnType<PatchsmithTools["activities"]["list"]>
 >["activities"][number];
 export type Message = {
   id: string;
