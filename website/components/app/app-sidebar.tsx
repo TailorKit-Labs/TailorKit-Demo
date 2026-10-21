@@ -1,5 +1,5 @@
 "use client";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { ArrowUpRightFromSquareIcon, CommandIcon, Settings2Icon } from "lucide-react";
 import { useViews } from "@/lib/patchsmith-client";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
@@ -23,7 +23,6 @@ import { DemoProfile, SidebarLink } from "@/components/app/demo-profile";
 import { navigation } from "@/components/app/app-navigation";
 export function AppSidebar({ name }: { name: string }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { data: pages } = useViews({ slot: "page" });
   const { isMobile } = useSidebar();
   if (isMobile) return null;
@@ -68,10 +67,8 @@ export function AppSidebar({ name }: { name: string }) {
             <SidebarGroupContent>
               <SidebarMenu>
                 {pages.map((page) => {
-                  const href = appPageHref(page);
-                  const active =
-                    pathname === `/app-pages/${page.app.id}` &&
-                    searchParams.get("instance") === page.key;
+                  const href = appPageHref(page, pages);
+                  const active = pathname === href;
                   return (
                     <SidebarMenuItem key={href}>
                       <SidebarMenuButton

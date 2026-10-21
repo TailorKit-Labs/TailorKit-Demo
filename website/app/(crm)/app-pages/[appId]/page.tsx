@@ -12,5 +12,5 @@ export default async function Page({
 }) {
   if (!(await getTenant())) return null;
   const [{ appId }, { instance }] = await Promise.all([params, searchParams]);
-  return <AppPage appId={appId} instanceKey={typeof instance === "string" ? instance : ""} />;
+  return <AppPage target={{ appId, instanceKey: typeof instance === "string" ? instance : "" }} />;
 }

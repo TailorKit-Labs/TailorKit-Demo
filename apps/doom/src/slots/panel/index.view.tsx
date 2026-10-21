@@ -20,7 +20,10 @@ function DoomPanel() {
 
   return (
     <Flex direction="column" gap="md" height="100%" justify="center">
-      <Empty title="Doom" description="Take a break with the original Doom shareware episode.">
+      <Empty
+        title="Yep, it runs DOOM."
+        description="The real game, running in its own sandbox and brought right into this app by Patchsmith. Go on, play it."
+      >
         <Button label="Play Doom" variant="link" disabled={!page.data} onClick={openGame} />
       </Empty>
       {page.error || error ? (

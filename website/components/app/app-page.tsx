@@ -1,7 +1,8 @@
 "use client";
 
 import { RenderSlot, useViews, useViewContext } from "@/lib/patchsmith-client";
-import { appPageHref, appPageLabel } from "@/lib/app-pages";
+import { redirect } from "next/navigation";
+import { appPageHref, appPageLabel, findAppPage, type AppPageTarget } from "@/lib/app-pages";
 import { AppLogo } from "./app-logo";
 import { AppPageHeading } from "./app-page-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -9,10 +10,19 @@ import { Button } from "@/components/ui/button";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function AppPage({ appId, instanceKey }: { appId: string; instanceKey: string }) {
-  useViewContext("/app-pages", { context: { appPage: { appId, instanceKey } } });
+export function AppPage({ target }: { target: AppPageTarget }) {
   const { data: pages, isPending, error, fetch } = useViews({ slot: "page" });
-  const page = pages?.find((page) => page.app.id === appId && page.key === instanceKey);
+  const page = pages ? findAppPage(pages, target) : undefined;
+  useViewContext("/app-pages", {
+    context: {
+      appPage: {
+        appId: page?.app.id ?? ("appId" in target ? target.appId : ""),
+        instanceKey: page?.key ?? ("instanceKey" in target ? target.instanceKey : ""),
+      },
+    },
+  });
+
+  if (page && !isPending && !error && "appId" in target) redirect(appPageHref(page, pages));
 
   return (
     <>
@@ -36,7 +46,12 @@ export function AppPage({ appId, instanceKey }: { appId: string; instanceKey: st
         </Alert>
       ) : page ? (
         <div className="min-h-0 flex-1 [&>[data-patchsmith-view]]:h-full [&_canvas]:!h-full [&_canvas]:max-h-full [&_canvas]:!w-full [&_canvas]:max-w-full [&_canvas]:aspect-[4/3] [&_canvas]:object-contain [&_canvas]:[image-rendering:pixelated]">
-          <RenderSlot key={appPageHref(page)} app={page.app} slot="page" instanceKey={page.key} />
+          <RenderSlot
+            key={appPageHref(page, pages)}
+            app={page.app}
+            slot="page"
+            instanceKey={page.key}
+          />
         </div>
       ) : (
         <Empty>

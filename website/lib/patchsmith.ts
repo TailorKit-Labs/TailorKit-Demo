@@ -7,7 +7,7 @@ import type { Contact, Deal, Workspace } from "./workspace";
 const siteHref = z
   .string()
   .regex(
-    /^\/(?:contacts(?:\/[A-Za-z0-9-]+)?|pipeline|tasks|settings|app-pages\/(?!(?:\.|%2[eE]){1,2}\?)(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+\?instance=(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+)?$/,
+    /^\/(?:contacts(?:\/[A-Za-z0-9-]+)?|pipeline|tasks|settings|app-pages\/(?!(?:\.|%2[eE]){1,2}\?)(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+\?instance=(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+|apps\/(?!(?:\.|%2[eE]){1,2}\/)(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+\/(?!(?:\.|%2[eE]){1,2}$)(?:[A-Za-z0-9_.!~*'()-]|%[0-9A-Fa-f]{2})+)?$/,
     "Choose a CRM page, contact detail URL, or app page URL.",
   );
 // Component metadata uses Patchsmith's restricted JSON Schema dialect. Refinements
