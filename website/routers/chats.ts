@@ -127,7 +127,9 @@ export function finishAgentMessages(messages: UIMessage[], interrupted: boolean)
               !(
                 (part.type.startsWith("tool-") || part.type === "dynamic-tool") &&
                 "state" in part &&
-                (part.state === "input-streaming" || part.state === "input-available")
+                (part.state === "input-streaming" ||
+                  part.state === "input-available" ||
+                  (part.state === "output-available" && part.preliminary === true))
               ),
           )
           .map((part) =>

@@ -19,6 +19,7 @@ import type { router } from "../routers";
 import { router as serverRouter } from "../routers";
 import type { CrmAgentMessage } from "../lib/agents/crm-agent";
 import { provisionForUser } from "./test-provision";
+import { patchsmith } from "../lib/patchsmith-server";
 
 const origin = "http://localhost:3000";
 const hasCode = (code: string) => (error: unknown) =>
@@ -29,9 +30,9 @@ async function main() {
   const savedEnv = {
     VERCEL: env.VERCEL,
     AI_GATEWAY_API_KEY: env.AI_GATEWAY_API_KEY,
-    PATCHSMITH_PROJECT_KEY: env.PATCHSMITH_PROJECT_KEY,
   };
   const originalFetch = globalThis.fetch;
+  const originalTransport = patchsmith.mcp.transport;
   const contextSymbol = Symbol.for("@vercel/request-context");
   const globals = globalThis as unknown as Record<symbol, unknown>;
   const originalContext = globals[contextSymbol];
@@ -44,6 +45,8 @@ async function main() {
   let lastAgentRequestBytes = 0;
   let holdModel = false;
   let modelAborted = false;
+  let callAppTool = false;
+  let appCalls = 0;
   const runCleanup = async () => {
     for (const work of cleanup.splice(0)) await work();
   };
@@ -76,7 +79,6 @@ async function main() {
     const tenant = await tenantFromHeaders(new Headers({ cookie }));
     env.VERCEL = "1";
     env.AI_GATEWAY_API_KEY = "test-key-no-provider-spend";
-    delete env.PATCHSMITH_PROJECT_KEY;
     globals[contextSymbol] = {
       get: () => ({
         url: requests.getStore()?.url,
@@ -98,16 +100,40 @@ async function main() {
         if (botMode === "unavailable") throw new Error("Simulated BotID outage");
         return Response.json({ isBot: botMode === "bot", isVerifiedBot: false, bypassed: false });
       }
+      if (requestUrl === "https://patchsmith.test/mcp") {
+        const message = JSON.parse(init!.body as string);
+        const result =
+          message.method === "server/discover"
+            ? { supportedVersions: ["2026-07-28"], capabilities: { tools: {} } }
+            : { content: [{ type: "text", text: "Workspace apps" }] };
+        if (message.method !== "server/discover") {
+          assert.equal(message.method, "tools/call", "The host must not discover tools");
+          assert.equal(message.params.name, "list_apps");
+          appCalls++;
+        }
+        return Response.json({
+          jsonrpc: "2.0",
+          id: message.id,
+          result: { resultType: "complete", ...result },
+        });
+      }
       assert.ok(
         requestUrl.startsWith("https://ai-gateway.vercel.sh/"),
         `Unexpected external request: ${requestUrl}`,
       );
       modelCalls++;
-      const chunks = [
-        { type: "stream-start", warnings: [] },
-        { type: "text-start", id: "answer" },
-        { type: "text-delta", id: "answer", delta: "Hello from oRPC." },
-      ];
+      const toolName = callAppTool ? "listApps" : undefined;
+      callAppTool = false;
+      const chunks = toolName
+        ? [
+            { type: "stream-start", warnings: [] },
+            { type: "tool-call", toolCallId: "apps", toolName, input: "{}" },
+          ]
+        : [
+            { type: "stream-start", warnings: [] },
+            { type: "text-start", id: "answer" },
+            { type: "text-delta", id: "answer", delta: "Hello from oRPC." },
+          ];
       const stream = new ReadableStream<Uint8Array>({
         start(controller) {
           const emit = (chunk: unknown) =>
@@ -123,10 +149,10 @@ async function main() {
               { once: true },
             );
           } else {
-            emit({ type: "text-end", id: "answer" });
+            if (!toolName) emit({ type: "text-end", id: "answer" });
             emit({
               type: "finish",
-              finishReason: { unified: "stop" },
+              finishReason: { unified: toolName ? "tool-calls" : "stop" },
               usage: {
                 inputTokens: { total: 30000 },
                 outputTokens: { total: 30000 },
@@ -292,7 +318,7 @@ async function main() {
         parts: [
           {
             type: "dynamic-tool",
-            toolName: "tailorkit_create_app",
+            toolName: "patchsmith_create_app",
             toolCallId: "build-todos",
             state: "output-available",
             input: { prompt: "Build a basic todo app in the panel" },
@@ -341,12 +367,41 @@ async function main() {
     const continuedBuild = await loadAgentChat(tenant.id, buildChatId);
     assert.equal(continuedBuild?.messages.length, 4);
     assert.deepEqual(continuedBuild?.messages[1], buildMessages[1], "Build IDs and output survive");
+    // Exercise the SDK tools through the actual authenticated chat route.
+    patchsmith.mcp.transport = async (context) => {
+      assert.deepEqual(context, {
+        subjectId: userId,
+        scopes: { workspace: { workspaceId: tenant.id } },
+      });
+      return { url: "https://patchsmith.test/mcp", headers: {} };
+    };
+    callAppTool = true;
+    const apps = input();
+    const appStream = await client.agent.chat(apps);
+    for await (const _chunk of appStream) {
+      /* Drain. */
+    }
+    await runCleanup();
+    assert.equal(appCalls, 1);
+    const savedApps = await loadAgentChat(tenant.id, apps.chatId);
+    assert.ok(
+      savedApps?.messages
+        .at(-1)
+        ?.parts.some(
+          (part) =>
+            part.type === "tool-listApps" &&
+            part.state === "output-available" &&
+            part.output.status === "completed",
+        ),
+    );
+
     console.log(
-      "PASS: actual agent oRPC HTTP + AI SDK transport, stable streamed/persisted IDs, follow-ups, reopening, oversized app-build history with small requests, Deep Analysis on every request, no IP/token quotas, persistence, bot rejection/outage, direct-client guard, and cancellation.",
+      "PASS: actual agent oRPC HTTP + AI SDK transport, stable streamed/persisted IDs, follow-ups, reopening, oversized app-build history with small requests, Deep Analysis on every request, no IP/token quotas, persistence, bot rejection/outage, direct-client guard, cancellation, and scoped Patchsmith SDK tools.",
     );
   } finally {
     await runCleanup();
     globalThis.fetch = originalFetch;
+    patchsmith.mcp.transport = originalTransport;
     if (originalContext === undefined) delete globals[contextSymbol];
     else globals[contextSymbol] = originalContext;
     for (const [key, value] of Object.entries(savedEnv)) {
