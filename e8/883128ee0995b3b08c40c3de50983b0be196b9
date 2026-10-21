@@ -1,0 +1,41 @@
+apps/doom/src/server.test.ts
+  s_bcaa5a1ec47e56::t_7555d85c101686 1-26
+package.json
+  s_bcaa5a1ec47e56::t_4de77be7b07aaf 14
+apps/doom/src/server.ts
+  s_bcaa5a1ec47e56::t_29fc9e34f43793 5-8,10
+  s_bcaa5a1ec47e56::t_201d937fb8bc54 1-2,4,9,11
+apps/doom/src/input.test.ts
+  s_bcaa5a1ec47e56::t_4de77be7b07aaf 1-61
+apps/doom/src/slots/page/index.view.tsx
+  s_bcaa5a1ec47e56::t_201d937fb8bc54 46,62-76,78,83
+website/scripts/install-messages.test.ts
+  s_bcaa5a1ec47e56::t_4de77be7b07aaf 90-103
+apps/doom/src/slots/panel/index.view.tsx
+  s_bcaa5a1ec47e56::t_201d937fb8bc54 1-23,25-37
+  s_bcaa5a1ec47e56::t_d51cf9e481de9b 24
+apps/doom/src/doom.ts
+  s_bcaa5a1ec47e56::t_201d937fb8bc54 1-2,70,79,81-83,88,157,178
+apps/doom/README.md
+  s_bcaa5a1ec47e56::t_d51cf9e481de9b 3,5,11,18,22
+README.md
+  s_bcaa5a1ec47e56::t_d51cf9e481de9b 17,21
+apps/doom/src/input.ts
+  s_bcaa5a1ec47e56::t_201d937fb8bc54 1-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e8883128ee0995b3b08c40c3de50983b0be196b9",
+  "prompts": {},
+  "sessions": {
+    "s_bcaa5a1ec47e56": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a15c44-fd35-74e1-be3e-d27d776c6ad4",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
