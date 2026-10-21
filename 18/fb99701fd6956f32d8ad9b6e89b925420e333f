@@ -1,0 +1,138 @@
+.gitignore
+  h_18044dd1b61a81 10
+apps/messages/.agents/skills/patchsmith-capabilities/SKILL.md
+  h_18044dd1b61a81 1-21
+apps/messages/.agents/skills/patchsmith-capabilities/references/.generated
+  h_18044dd1b61a81 1
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Alert.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Avatar.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Badge.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Box.md
+  h_18044dd1b61a81 1-62
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Button.md
+  h_18044dd1b61a81 1-36
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Canvas.md
+  h_18044dd1b61a81 1-36
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Card.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Checkbox.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Combobox.md
+  h_18044dd1b61a81 1-38
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Dialog.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Empty.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Flex.md
+  h_18044dd1b61a81 1-67
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Form.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Grid.md
+  h_18044dd1b61a81 1-64
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Heading.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Inline.md
+  h_18044dd1b61a81 1-53
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Input.md
+  h_18044dd1b61a81 1-53
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Pressable.md
+  h_18044dd1b61a81 1-71
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Progress.md
+  h_18044dd1b61a81 1-34
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Select.md
+  h_18044dd1b61a81 1-36
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Separator.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Skeleton.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Spinner.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Switch.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Table.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/TableBody.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/TableCell.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/TableHead.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/TableHeader.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/TableRow.md
+  h_18044dd1b61a81 1-33
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Text.md
+  h_18044dd1b61a81 1-35
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Textarea.md
+  h_18044dd1b61a81 1-53
+apps/messages/.agents/skills/patchsmith-capabilities/references/index.md
+  h_18044dd1b61a81 1-45
+apps/messages/.agents/skills/patchsmith-capabilities/references/styling.md
+  h_18044dd1b61a81 1-10
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools.md
+  h_18044dd1b61a81 1-31
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/activities-addNote-21e90b1799d5cc2a.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/activities-list-d1f8b54e71f12c73.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/contacts-create-54d70d6a96d51575.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/contacts-delete-ec2b3a05ac5e6260.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/contacts-get-c3ce80b0e7ff09fb.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/contacts-list-cd340b43b15f40c9.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/contacts-update-f42624cd620c0238.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/deals-create-5e296134f0a1a01a.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/deals-delete-b6a4adb812052d2c.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/deals-list-b55e5e2bc57c48cd.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/deals-move-6c42d248f2b3d8ee.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/deals-update-9e9015c43afac4a9.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/tasks-create-7c0611f5eefc5ff2.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/tasks-delete-424d7efbad187838.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/tasks-list-e75ee53a7203a4fa.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/tasks-setCompleted-e9f392c1e6fbf8bb.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/tasks-update-598206543e93b918.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/ui-navigate-a49b89e513912fe8.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/ui-notify-aae11b76263faeb6.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/ui-openPanel-c5c73735203c4cb1.md
+  h_18044dd1b61a81 1-15
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/ui-refresh-d181cb5e1b4fd59f.md
+  h_18044dd1b61a81 1-15
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/ui-setTheme-7374012530431d11.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/tools/workspace-get-4c4d5a8af3f5e90f.md
+  h_18044dd1b61a81 1-16
+apps/messages/.agents/skills/patchsmith-capabilities/references/views.md
+  h_18044dd1b61a81 1-128
+apps/messages/src/patchsmith.gen.ts
+  h_18044dd1b61a81 297,1059,1067-1077,1102,1150,1167,1184,1202,1223,1237,1251,1349
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "18fb99701fd6956f32d8ad9b6e89b925420e333f",
+  "prompts": {},
+  "humans": {
+    "h_18044dd1b61a81": {
+      "author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
