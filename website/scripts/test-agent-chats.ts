@@ -110,10 +110,21 @@ async function main() {
       parts: [
         ...reply.parts,
         { type: "tool-listTasks", toolCallId: "unfinished", state: "input-available", input: {} },
+        {
+          type: "tool-createApp",
+          toolCallId: "building",
+          state: "output-available",
+          preliminary: true,
+          input: {},
+          output: { status: "running", progress: { progress: 1 } },
+        },
         { type: "text", text: "Partial reply", state: "streaming" },
       ],
     };
     const interrupted = finishAgentMessages([first, interruptedReply], true);
+    assert.ok(
+      !interrupted[1].parts.some((part) => "toolCallId" in part && part.toolCallId === "building"),
+    );
     assert.equal(
       interrupted[1].parts.some((part) => "toolCallId" in part && part.toolCallId === "unfinished"),
       false,

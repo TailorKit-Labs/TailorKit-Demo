@@ -1,7 +1,11 @@
 import { createServer } from "patchsmith/server";
 import type { ToolContext } from "patchsmith";
 import { call } from "@orpc/server";
-import { router } from "../routers";
+import * as workspace from "../routers/workspace";
+import * as contacts from "../routers/contacts";
+import * as deals from "../routers/deals";
+import * as tasks from "../routers/tasks";
+import * as activities from "../routers/activities";
 import { verifiedWorkspaceContext } from "../routers/context";
 import { contract } from "./patchsmith";
 
@@ -26,49 +30,49 @@ export const patchsmith = createServer({
   tools: {
     workspace: {
       get: async ({ input, context }) =>
-        call(router.workspace.get, input, { context: rpcContext(context) }),
+        call(workspace.getWorkspace, input, { context: rpcContext(context) }),
     },
     contacts: {
       list: async ({ input, context }) =>
-        call(router.contacts.list, input, { context: rpcContext(context) }),
+        call(contacts.listContacts, input, { context: rpcContext(context) }),
       get: async ({ input, context }) =>
-        call(router.contacts.get, input, { context: rpcContext(context) }),
+        call(contacts.getContact, input, { context: rpcContext(context) }),
       create: async ({ input, context }) =>
-        call(router.contacts.create, input, { context: rpcContext(context) }),
+        call(contacts.createContact, input, { context: rpcContext(context) }),
       update: async ({ input, context }) =>
-        call(router.contacts.update, input, { context: rpcContext(context) }),
+        call(contacts.updateContact, input, { context: rpcContext(context) }),
       delete: async ({ input, context }) =>
-        call(router.contacts.delete, input, { context: rpcContext(context) }),
+        call(contacts.deleteContact, input, { context: rpcContext(context) }),
     },
     deals: {
       list: async ({ input, context }) =>
-        call(router.deals.list, input, { context: rpcContext(context) }),
+        call(deals.listDeals, input, { context: rpcContext(context) }),
       create: async ({ input, context }) =>
-        call(router.deals.create, input, { context: rpcContext(context) }),
+        call(deals.createDeal, input, { context: rpcContext(context) }),
       update: async ({ input, context }) =>
-        call(router.deals.update, input, { context: rpcContext(context) }),
+        call(deals.updateDeal, input, { context: rpcContext(context) }),
       delete: async ({ input, context }) =>
-        call(router.deals.delete, input, { context: rpcContext(context) }),
+        call(deals.deleteDeal, input, { context: rpcContext(context) }),
       move: async ({ input, context }) =>
-        call(router.deals.move, input, { context: rpcContext(context) }),
+        call(deals.moveDeal, input, { context: rpcContext(context) }),
     },
     tasks: {
       list: async ({ input, context }) =>
-        call(router.tasks.list, input, { context: rpcContext(context) }),
+        call(tasks.listTasks, input, { context: rpcContext(context) }),
       create: async ({ input, context }) =>
-        call(router.tasks.create, input, { context: rpcContext(context) }),
+        call(tasks.createTask, input, { context: rpcContext(context) }),
       update: async ({ input, context }) =>
-        call(router.tasks.update, input, { context: rpcContext(context) }),
+        call(tasks.updateTask, input, { context: rpcContext(context) }),
       delete: async ({ input, context }) =>
-        call(router.tasks.delete, input, { context: rpcContext(context) }),
+        call(tasks.deleteTask, input, { context: rpcContext(context) }),
       setCompleted: async ({ input, context }) =>
-        call(router.tasks.setCompleted, input, { context: rpcContext(context) }),
+        call(tasks.setTaskCompleted, input, { context: rpcContext(context) }),
     },
     activities: {
       list: async ({ input, context }) =>
-        call(router.activities.list, input, { context: rpcContext(context) }),
+        call(activities.listActivities, input, { context: rpcContext(context) }),
       addNote: async ({ input, context }) =>
-        call(router.activities.addNote, input, { context: rpcContext(context) }),
+        call(activities.addNote, input, { context: rpcContext(context) }),
     },
   },
   projectKey: process.env.PATCHSMITH_PROJECT_KEY,

@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 import { consumeStream, createAgentUIStream, type UIMessageChunk } from "ai";
 import { ORPCError, streamToAsyncIteratorObject } from "@orpc/server";
 import { checkBotId } from "botid/server";
+import { createTools } from "patchsmith/ai-sdk";
+import { patchsmith } from "../lib/patchsmith-server";
 import { protectedProcedure } from "./base";
 import { createCrmAgent } from "../lib/agents/crm-agent";
 import { AGENT_TIMEOUT_MS } from "../lib/agents/agent-limits";
@@ -67,8 +69,12 @@ export const agentChat = protectedProcedure
       });
     }
     try {
-      const { createPatchsmithTools } = await import("../lib/agents/patchsmith-tools");
-      const patchsmithTools = createPatchsmithTools(tenant, await resolveUserId());
+      const patchsmithTools = process.env.PATCHSMITH_PROJECT_KEY
+        ? createTools(patchsmith, {
+            subjectId: await resolveUserId(),
+            scopes: { workspace: { workspaceId: tenant.id } },
+          })
+        : undefined;
       const stream = await createAgentUIStream({
         agent: createCrmAgent(
           tenant,

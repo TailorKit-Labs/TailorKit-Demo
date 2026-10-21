@@ -21,7 +21,6 @@
     "test:setup-protection": "tsx scripts/test-setup-protection.ts",
     "test:agent": "tsx scripts/test-agent.ts",
     "test:agent-rpc": "tsx scripts/test-agent-rpc.ts",
-    "test:patchsmith-tools": "tsx scripts/test-patchsmith-tools.ts",
     "test:agent-chats": "tsx scripts/test-agent-chats.ts",
     "test:rpc": "tsx scripts/test-rpc.ts"
   },

@@ -32,7 +32,10 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
-type AppToolPart = Extract<CrmAgentMessage["parts"][number], { type: `tool-patchsmith_${string}` }>;
+type AppToolPart = Extract<
+  CrmAgentMessage["parts"][number],
+  { type: "tool-listApps" | "tool-createApp" | "tool-editApp" }
+>;
 type ToolPart = Exclude<
   Extract<CrmAgentMessage["parts"][number], { type: `tool-${string}` }>,
   AppToolPart
@@ -78,6 +81,9 @@ function AgentLink({ href, children, ...props }: AnchorHTMLAttributes<HTMLAnchor
 const markdownComponents = { a: AgentLink };
 
 const patchsmithToolTitles: Record<string, string> = {
+  listApps: "View apps",
+  createApp: "Build an app",
+  editApp: "Edit an app",
   patchsmith_list_apps: "View apps",
   patchsmith_create_app: "Build an app",
   patchsmith_edit_app: "Edit an app",
@@ -406,13 +412,13 @@ export function AgentChat({
                             {part.text}
                           </MessageResponse>
                         );
-                      if (part.type === "dynamic-tool" || part.type.startsWith("tool-patchsmith_"))
-                        return (
-                          <AppToolResult
-                            key={index}
-                            part={part as DynamicToolUIPart | AppToolPart}
-                          />
-                        );
+                      if (
+                        part.type === "dynamic-tool" ||
+                        part.type === "tool-listApps" ||
+                        part.type === "tool-createApp" ||
+                        part.type === "tool-editApp"
+                      )
+                        return <AppToolResult key={index} part={part} />;
                       if (part.type.startsWith("tool-"))
                         return <ToolResult key={index} part={part as ToolPart} />;
                       return null;
