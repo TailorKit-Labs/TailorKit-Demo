@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 export const FEATURE_PROMPT =
-  "Build a Quick follow-up button in the navbar. Clicking it should open a form to choose a CRM contact, enter a follow-up title, and pick a due date. Save the follow-up to the CRM's tasks, refresh the workspace, and show a confirmation. Use the current contact by default when I'm on their page.";
+  "Build an app that adds a follow-up button to the navbar. Clicking it opens a form with a CRM contact (auto-selected on contact pages), title, and due date. Save the follow-up as a CRM task.";
 
 export type IntroStep = "messages" | "doom" | "agent" | null;
 
