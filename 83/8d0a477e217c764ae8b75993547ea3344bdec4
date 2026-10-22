@@ -1,0 +1,23 @@
+apps/doom/src/slots/page/index.view.tsx
+  s_9c188dbbf5111f::t_077e5ae4a41d0e 25-27
+apps/doom/README.md
+  s_9c188dbbf5111f::t_077e5ae4a41d0e 7
+apps/doom/src/doom.ts
+  s_9c188dbbf5111f::t_3cc189af6b7148 68,115-123,135-136,141-148,155,158,184-188
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "838d0a477e217c764ae8b75993547ea3344bdec4",
+  "prompts": {},
+  "sessions": {
+    "s_9c188dbbf5111f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16210-0d38-7bc2-aee5-73390ea5bd6d",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
