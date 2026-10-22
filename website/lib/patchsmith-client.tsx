@@ -22,6 +22,7 @@ import {
   EmptyContent,
 } from "@/components/ui/empty";
 import { Field, FieldLabel } from "@/components/ui/field";
+import { Fieldset, FieldsetLegend } from "@/components/ui/fieldset";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -161,6 +162,12 @@ export const patchsmithClient = createClient({
           </Button>
         </div>
       </form>
+    ),
+    Fieldset: ({ props, children }) => (
+      <Fieldset className="flex w-full flex-col gap-4" disabled={props.disabled}>
+        {props.legend ? <FieldsetLegend>{props.legend}</FieldsetLegend> : null}
+        {children}
+      </Fieldset>
     ),
     Input: ({ props }) => (
       <LabeledControl label={props.label}>

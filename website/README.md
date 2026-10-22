@@ -147,11 +147,22 @@ The client implements contracted components using Patchsmith primitives and the 
 
 - Layout and interaction: `Box`, `Flex`, `Grid`, `Inline`, `Pressable` (with `onPress()` and an accessible `ariaLabel`).
 - Content: `Text`, `Heading`, `Card`, `Badge`, `Avatar`.
-- Forms: `Form`, `Input`, `Textarea`, `Select`, `Combobox`, `Checkbox`, `Switch`, `Button`.
+- Forms: `Form`, `Fieldset`, `Input`, `Textarea`, `Select`, `Combobox`, `Checkbox`, `Switch`, `Button`.
 - Tables: `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell`.
 - Feedback and overlays: `Alert`, `Empty`, `Progress`, `Spinner`, `Skeleton`, `Separator`, `Dialog`.
 
 Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. `Form` handles native validation and includes a submit button, with configurable `submitLabel` and `disabled` props. Each input has a visible label and accessible name. `Combobox` searches option labels and optional descriptions, displays a configurable empty state, and emits the selected string ID through `onChange({ value })`. `Dialog` always provides a title. Compose table rows inside their header/body and cells inside rows.
+
+`Fieldset` groups related controls in a full-width vertical stack with consistent spacing, using the existing Coss `Fieldset` and `FieldsetLegend`. Its optional `legend` labels the group, and `disabled` disables its descendant controls. Compose it inside `Form` to create sections without adding another form or submit button:
+
+```tsx
+<Form submitLabel="Save contact">
+  <Fieldset legend="Contact details">
+    <Input label="Name" value={name} onChange={({ value }) => setName(value)} />
+    <Input label="Email" type="email" value={email} onChange={({ value }) => setEmail(value)} />
+  </Fieldset>
+</Form>
+```
 
 Apps have the same workspace operations as the CRM UI, plus task editing:
 
