@@ -1,0 +1,21 @@
+apps/doom/README.md
+  s_9c188dbbf5111f::t_f56312b2a82c34 3
+apps/doom/src/doom.ts
+  s_9c188dbbf5111f::t_cfe554e2d25ae6 112
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b1feb34b10b0c3a1237f47b0700766f9fbf6c90f",
+  "prompts": {},
+  "sessions": {
+    "s_9c188dbbf5111f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16210-0d38-7bc2-aee5-73390ea5bd6d",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
