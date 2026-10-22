@@ -46,3 +46,25 @@ await test("local connections and explicit SSL choices remain unchanged", () => 
     assert.equal(normalizeDatabaseUrl(connectionString), connectionString);
   }
 });
+
+await test("the last sslmode determines whether legacy modes are rewritten", () => {
+  const base = "postgresql://user:password@db.example.test/app?";
+  for (const mode of ["prefer", "require", "verify-ca"]) {
+    const normalized = normalizeDatabaseUrl(`${base}sslmode=disable&sslmode=${mode}`);
+    assert.deepEqual(new URL(normalized).searchParams.getAll("sslmode"), ["verify-full"]);
+    for (const finalMode of ["disable", "verify-full"]) {
+      const connectionString = `${base}sslmode=${mode}&sslmode=${finalMode}`;
+      assert.equal(normalizeDatabaseUrl(connectionString), connectionString);
+    }
+  }
+});
+
+await test("the last uselibpqcompat determines whether legacy modes are preserved", () => {
+  const base = "postgresql://user:password@db.example.test/app?sslmode=require&";
+  const compatible = `${base}uselibpqcompat=false&uselibpqcompat=true`;
+  assert.equal(normalizeDatabaseUrl(compatible), compatible);
+  const normalized = normalizeDatabaseUrl(`${base}uselibpqcompat=true&uselibpqcompat=false`);
+  const params = new URL(normalized).searchParams;
+  assert.equal(params.get("sslmode"), "verify-full");
+  assert.deepEqual(params.getAll("uselibpqcompat"), ["true", "false"]);
+});

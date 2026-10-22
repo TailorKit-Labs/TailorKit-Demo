@@ -10,8 +10,8 @@ export function normalizeDatabaseUrl(connectionString) {
     // Leave socket paths and other pg-specific formats to the driver.
     return connectionString;
   }
-  if (url.searchParams.get("uselibpqcompat") === "true") return connectionString;
-  const mode = url.searchParams.get("sslmode");
+  if (url.searchParams.getAll("uselibpqcompat").at(-1) === "true") return connectionString;
+  const mode = url.searchParams.getAll("sslmode").at(-1);
   if (mode !== "prefer" && mode !== "require" && mode !== "verify-ca") {
     return connectionString;
   }
