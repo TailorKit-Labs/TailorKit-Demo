@@ -1,6 +1,6 @@
 # Doom
 
-A Patchsmith app in the CRM's full-page `page` slot, with a lightweight placeholder in the `panel` slot linking directly to `/apps/doom/doom`. Its single page instance is labelled **Can it run DOOM?** in App pages. The host resolves that slug and instance key within the authenticated workspace. Publish the updated Doom app alongside the website so installed panels use the new URL. The host and app use SDK `0.1.0-beta.56`.
+A Patchsmith app in the CRM's full-page `page` slot, with a lightweight placeholder in the `panel` slot linking directly to `/apps/doom/doom`. Its single page instance is labelled **Can it run DOOM?** in App pages. The host resolves that slug and instance key within the authenticated workspace. Publish the updated Doom app alongside the website so installed panels use the new URL. The host and app use SDK `0.1.0-beta.60`.
 
 Opening **App pages → Can it run DOOM?** or the panel's **Play Doom** link automatically launches the first level; click the game to focus it. Enter selects menu items; P opens or closes the menu. Arrow keys turn and move; W/S move forward/backward and A/D strafe using Doom's native Alt + arrow controls. While either is held, Left/Right also strafe; releasing A/D restores turning. The upstream build's dedicated strafe defaults are custom key codes, not comma/period, and its config-file loading is disabled. Space or F fires, E opens doors, Shift runs, and 1–7 select weapons. Tab releases focus. Pause freezes the game; Resume continues it; Restart starts a fresh first level. Leaving the page disposes the engine. Saves are in-memory and disappear on restart or navigation. Keyboard input is required.
 
@@ -19,7 +19,9 @@ pnpm --filter @demo/doom test
 pnpm --filter @demo/doom run deploy --no-interactive
 ```
 
-The committed generated bindings include `Canvas`; the app server exposes the installed page URL to the panel. Generate against an upgraded host (the deployed host must include this branch's canvas contract):
+The committed generated bindings include `Canvas`. Backend functions are enabled with `server: {}` in `patchsmith.config.ts`; the CLI discovers routers under `src/functions/**/*.fn.ts` and creates the private server entry automatically. `src/functions/page.fn.ts` exports a router whose `get` query exposes the installed page URL to the panel as `api.page.get`.
+
+Run generation after adding or moving function modules, and commit both `src/patchsmith.gen.ts` and the type-only `src/patchsmith.functions.gen.ts` registry. Generate against an upgraded host (the deployed host must include this branch's canvas contract):
 
 ```sh
 pnpm --filter @demo/doom generate

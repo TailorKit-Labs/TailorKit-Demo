@@ -5,7 +5,7 @@ import { Alert, Button, Empty, Flex, api, tools } from "#patchsmith";
 const view = defineView({ view: "/", component: DoomPanel });
 
 function DoomPanel() {
-  const page = useQuery(api.page, {});
+  const page = useQuery(api.page.get, {});
   const [error, setError] = useState("");
 
   async function openGame() {
