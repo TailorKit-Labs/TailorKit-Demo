@@ -1,0 +1,36 @@
+website/README.md
+  s_0655853dc471b9::t_bc1badc2f2c8af 210
+  s_0655853dc471b9::t_a1cbd170c2b50b 209
+website/lib/drizzle.ts
+  s_0655853dc471b9::t_a1cbd170c2b50b 3,9-11
+website/drizzle.config.ts
+  s_0655853dc471b9::t_a1cbd170c2b50b 3,15
+website/lib/database-url.mjs
+  s_0655853dc471b9::t_a1cbd170c2b50b 1-20
+website/scripts/push-db.mjs
+  s_0655853dc471b9::t_a1cbd170c2b50b 3,24
+website/scripts/database-url.test.mjs
+  s_0655853dc471b9::t_f1683053dbe27f 6,38
+  s_0655853dc471b9::t_bc1badc2f2c8af 1-5,7-31,33-37,39-48
+  s_0655853dc471b9::t_a1bd289192c9de 32
+package.json
+  s_0655853dc471b9::t_bc1badc2f2c8af 14
+website/package.json
+  s_0655853dc471b9::t_bc1badc2f2c8af 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "996223709247ebb9f41e5dbd818c7498a0387acb",
+  "prompts": {},
+  "sessions": {
+    "s_0655853dc471b9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1656b-9de4-7f83-8f17-2606ce4db43a",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
