@@ -109,7 +109,7 @@ export async function createDoom(
         arguments: ["-iwad", "doom1.wad", "-nosound", "-warp", "1", "1"],
         noInitialRun: true,
         onRuntimeInitialized: () => {
-          if (signal.aborted) {
+          if (signal.aborted || disposed) {
             stop?.();
             fail(signal.reason);
           } else {
