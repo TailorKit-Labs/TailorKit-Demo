@@ -290,6 +290,10 @@ export const contract = defineContract({
       children: true,
       callbacks: { onSubmit: {} },
     },
+    Fieldset: {
+      fields: z.object({ legend: label.optional(), disabled }),
+      children: true,
+    },
     Input: {
       fields: z.object({
         label,
