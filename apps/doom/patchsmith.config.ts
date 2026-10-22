@@ -1,7 +1,7 @@
 import type { PatchsmithConfig } from "patchsmith/app/config";
 
 export default {
-  appId: "bf718401-f7c4-45cb-96a5-3c7f3fd1356b",
+  appId: "c829360e-41ac-4a91-b68b-ce38af081f61",
   name: "Doom",
   slug: "doom",
   description: "Play Doom shareware in a full-page canvas, powered by doomgeneric.",
@@ -10,5 +10,5 @@ export default {
     light: "logo-light.svg",
     dark: "logo-dark.svg",
   },
-  server: { entry: "src/server.ts" },
+  server: {},
 } satisfies PatchsmithConfig;

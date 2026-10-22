@@ -1,6 +1,6 @@
 import { expect, test } from "vite-plus/test";
 import type { Identity } from "patchsmith/server";
-import app from "./server";
+import pageRouter from "./page.fn";
 
 test("panel links use the readable Doom page in every workspace", () => {
   for (const installationId of ["installation-a", "installation-b"]) {
@@ -14,7 +14,7 @@ test("panel links use the readable Doom page in every workspace", () => {
       scope: { name: "workspace", value: { workspaceId: `workspace-${installationId}` } },
       expiresAt: Date.now() + 60_000,
     };
-    const page = app.functions.page.handler({
+    const page = pageRouter.get.handler({
       args: {},
       identity,
       get db(): never {
