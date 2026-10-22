@@ -41,7 +41,7 @@ void test("preview requests accept both Vercel deployment and branch origins", a
       },
     );
     assert.equal(response.status, 200, await response.clone().text());
-    assert.deepEqual(await response.json(), { data: [], status: "ready" });
+    assert.deepEqual(await response.json(), { data: [], status: "ready", warnings: [] });
   }
 });
 

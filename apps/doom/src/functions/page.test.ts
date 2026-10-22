@@ -1,6 +1,6 @@
 import { expect, test } from "vite-plus/test";
 import type { Identity } from "patchsmith/server";
-import pageRouter from "./page.fn";
+import pageRouter from "./page.router";
 
 test("panel links use the readable Doom page in every workspace", () => {
   for (const installationId of ["installation-a", "installation-b"]) {
@@ -17,9 +17,11 @@ test("panel links use the readable Doom page in every workspace", () => {
     const page = pageRouter.get.handler({
       args: {},
       identity,
-      get db(): never {
-        throw new Error("Opening the game should not need database access.");
-      },
+      db: new Proxy({} as Parameters<typeof pageRouter.get.handler>[0]["db"], {
+        get() {
+          throw new Error("Opening the game should not need database access.");
+        },
+      }),
     });
     expect(page).toEqual({ href: "/apps/doom/doom" });
   }

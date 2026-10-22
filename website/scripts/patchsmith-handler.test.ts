@@ -9,17 +9,17 @@ import { tenants, user } from "../lib/schema";
 import { CURRENT_SETUP_VERSION } from "../lib/provision";
 import { tenantForUser } from "../routers/context";
 
-void test("Patchsmith authenticates once per request and isolates workspace discovery", async () => {
+void test("Patchsmith authenticates once per request and isolates workspace view resolution", async () => {
   const nativeFetch = globalThis.fetch;
   const previousKey = process.env.PATCHSMITH_PROJECT_KEY;
   const users: string[] = [];
-  const discoveryScopes: unknown[] = [];
+  const resolutionScopes: unknown[] = [];
   process.env.PATCHSMITH_PROJECT_KEY = "test-project-key";
   globalThis.fetch = async (input, init) => {
     const request = input instanceof Request ? input : new Request(input, init);
-    assert.ok(new URL(request.url).pathname.endsWith("/apps/runtime/discover"));
-    discoveryScopes.push((await request.json()).scopes);
-    return Response.json({ items: [], pagination: { hasMore: false } });
+    assert.ok(new URL(request.url).pathname.endsWith("/apps/runtime/resolve"));
+    resolutionScopes.push((await request.json()).scopes);
+    return Response.json({ data: [], status: "ready", warnings: [] });
   };
   try {
     const { POST } = await import("../app/api/patchsmith/[...patchsmith]/route");
@@ -60,7 +60,7 @@ void test("Patchsmith authenticates once per request and isolates workspace disc
         }),
       });
     assert.equal((await POST(viewsRequest())).status, 401);
-    assert.equal(discoveryScopes.length, 0);
+    assert.equal(resolutionScopes.length, 0);
 
     for (const { cookie, workspaceId } of fixtures) {
       let queries = 0;
@@ -76,15 +76,15 @@ void test("Patchsmith authenticates once per request and isolates workspace disc
         assert.ok(oneAuthentication > 0);
         queries = 0;
         const response = await POST(viewsRequest(cookie));
-        assert.equal(response.status, 200);
-        assert.deepEqual(await response.json(), { data: [], status: "ready" });
+        assert.equal(response.status, 200, await response.clone().text());
+        assert.deepEqual(await response.json(), { data: [], status: "ready", warnings: [] });
         assert.equal(queries, oneAuthentication, "The route must read the session only once");
         assert.match(
           response.headers.get("server-timing") ?? "",
           /workspace_auth;dur=\d+\.\d, host;dur=\d+\.\d/,
         );
         assert.equal(response.headers.get("cache-control"), "no-store");
-        assert.deepEqual(discoveryScopes.at(-1), [{ name: "workspace", value: { workspaceId } }]);
+        assert.deepEqual(resolutionScopes.at(-1), [{ name: "workspace", value: { workspaceId } }]);
       } finally {
         pool.off("acquire", acquired);
       }
