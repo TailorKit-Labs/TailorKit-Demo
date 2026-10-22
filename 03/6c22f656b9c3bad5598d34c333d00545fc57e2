@@ -1,0 +1,39 @@
+apps/doom/src/functions/page.test.ts
+  s_ef54e1998cfd8d::t_fcbfee2e4c36f9 3
+  s_ef54e1998cfd8d::t_a1a6b3194bf247 20-24
+pnpm-workspace.yaml
+  s_ef54e1998cfd8d::t_fcbfee2e4c36f9 48
+  s_ef54e1998cfd8d::t_4b84c3e87fc66f 71-81
+apps/doom/src/patchsmith.functions.gen.ts
+  s_ef54e1998cfd8d::t_eba052b5c0398c 2
+apps/doom/src/functions/page.router.ts
+  s_ef54e1998cfd8d::t_fcbfee2e4c36f9 1,5,7
+  s_ef54e1998cfd8d::t_a78d197016c5be 6
+website/scripts/patchsmith-handler.test.ts
+  s_ef54e1998cfd8d::t_6b69cc3f380e51 79
+  s_ef54e1998cfd8d::t_9a3fa016c6a91c 80
+  s_ef54e1998cfd8d::t_ac706a4ee3868b 12,16,20-22,63,87
+website/scripts/patchsmith-origin.test.ts
+  s_ef54e1998cfd8d::t_9a3fa016c6a91c 44
+apps/doom/README.md
+  s_ef54e1998cfd8d::t_aea0d0ec4d03a7 3,7
+  s_ef54e1998cfd8d::t_17e21cd06190a1 22
+pnpm-lock.yaml
+  s_ef54e1998cfd8d::t_ab72e827bec47e 258-259,327,352,470,2316-2317,2322-2323,2326-2327,2332-2333,2337-2338,2341-2342,2345-2346,2357-2358,2363-2364,2367-2368,5518-5519,7702,7705,7753,7795,7800,7844,7849-7851,7924,7927-7929,7977,7986,7993-7994,8042,8046-8050,8100,8102-8103,8150,8152,8196,8198,11679,11681-11687,11758,11760-11766
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "036c22f656b9c3bad5598d34c333d00545fc57e2",
+  "prompts": {},
+  "sessions": {
+    "s_ef54e1998cfd8d": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a162e6-1a17-7642-88a1-7491545315db",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
