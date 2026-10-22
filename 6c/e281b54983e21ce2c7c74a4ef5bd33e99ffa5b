@@ -1,0 +1,35 @@
+apps/doom/src/functions/page.fn.ts
+  s_eb501c85dd6a44::t_809f783eb8dd42 1,4-5
+apps/doom/README.md
+  s_eb501c85dd6a44::t_809f783eb8dd42 3,22-24
+apps/doom/patchsmith.config.ts
+  s_eb501c85dd6a44::t_809f783eb8dd42 13
+apps/doom/vite.config.ts
+  s_eb501c85dd6a44::t_809f783eb8dd42 7,10
+apps/doom/src/functions/page.test.ts
+  s_eb501c85dd6a44::t_809f783eb8dd42 3,17
+apps/doom/src/patchsmith.functions.gen.ts
+  s_eb501c85dd6a44::t_1ab197445295d3 1-3
+apps/doom/src/slots/panel/index.view.tsx
+  s_eb501c85dd6a44::t_809f783eb8dd42 8
+apps/doom/src/patchsmith.gen.ts
+  s_eb501c85dd6a44::t_1ab197445295d3 12,17
+vite.config.ts
+  s_eb501c85dd6a44::t_809f783eb8dd42 12,34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6ce281b54983e21ce2c7c74a4ef5bd33e99ffa5b",
+  "prompts": {},
+  "sessions": {
+    "s_eb501c85dd6a44": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a161c0-7152-7033-9ca5-a5e2fe6cf475",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
