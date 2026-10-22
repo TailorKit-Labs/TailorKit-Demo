@@ -18,7 +18,6 @@ interface DoomModule {
   getPreloadedPackage: () => ArrayBuffer;
   locateFile: (file: string) => string;
   preMainLoop: () => boolean;
-  postMainLoop: () => void;
   onAbort: (reason: unknown) => void;
   print: (text: string) => void;
   printErr: (text: string) => void;
@@ -66,6 +65,7 @@ export async function createDoom(
   let paused = false;
   let disposed = false;
   let stop: (() => void) | undefined;
+  let tick: (() => void) | undefined;
 
   const input = createDoomInput((keyCode, down) => {
     // SDL's Emscripten build uses legacy keyCode, which the SDK deliberately
@@ -112,41 +112,50 @@ export async function createDoom(
           if (signal.aborted) {
             stop?.();
             fail(signal.reason);
-          } else runtime.start();
+          } else {
+            try {
+              runtime.start();
+              clearTimeout(timer);
+              resolve();
+            } catch (error) {
+              fail(error);
+            }
+          }
         },
         wasmBinary: wasm,
         getPreloadedPackage: () => data,
         locateFile: (file) => new URL(file, upstream).href,
         preMainLoop: () => !paused && !disposed,
-        postMainLoop: () => {
-          clearTimeout(timer);
-          resolve();
-        },
         onAbort: fail,
         print: () => {},
         printErr: (message) => console.warn(message),
       };
       // The upstream non-modular Emscripten script expects a local Module.
       // A function scope keeps each game's memory, SDL state and loop private.
-      // Hidden iframes cannot rely on requestAnimationFrame; pace SDL with a
-      // timer, while the SDK independently caps host presentations at 35 FPS.
+      // Chrome throttles timers and rAF in hidden sandbox iframes. Let the
+      // host-paced canvas draw callback advance SDL before presenting its pixels.
       // oxlint-disable-next-line typescript/no-implied-eval -- The upstream Emscripten browser build is a classic script requiring an isolated Module scope.
       const boot = new Function(
         "Module",
         `${script}\n
-        Browser.requestAnimationFrame = function(callback) {
-          return setTimeout(function() { callback(performance.now()); }, 1000 / 35);
-        };
-        return { start: function() { callMain(Module.arguments); }, stop: function() {
+        var nextFrame;
+        Browser.requestAnimationFrame = function(callback) { nextFrame = callback; };
+        return { start: function() { callMain(Module.arguments); }, tick: function() {
+          var callback = nextFrame;
+          nextFrame = undefined;
+          if (callback) callback(performance.now());
+        }, stop: function() {
+          nextFrame = undefined;
           Browser.mainLoop.pause();
           JSEvents.removeAllEventListeners();
           if (Module.SDL2 && Module.SDL2.audioContext) Module.SDL2.audioContext.close();
           if (GL.currentContext) GL.currentContext.GLctx.getExtension('WEBGL_lose_context')?.loseContext();
         }};
       `,
-      ) as (module: DoomModule) => { start: () => void; stop: () => void };
+      ) as (module: DoomModule) => { start: () => void; tick: () => void; stop: () => void };
       const runtime = boot(module);
       stop = runtime.stop;
+      tick = runtime.tick;
       if (signal.aborted) dispose();
 
       const audio = () => {
@@ -172,7 +181,11 @@ export async function createDoom(
     });
     signal.throwIfAborted();
     return {
-      draw: () => context.drawImage(source, 0, 0, canvas.width, canvas.height),
+      draw: () => {
+        if (disposed) return;
+        tick?.();
+        context.drawImage(source, 0, 0, canvas.width, canvas.height);
+      },
       key,
       pause: (value) => {
         input.release();

@@ -22,7 +22,9 @@ function Game({ paused }: { paused: boolean }) {
       dispose: (engine) => engine.dispose(),
     },
     [paused],
-    { continuous: true, framesPerSecond: 35 },
+    // Each host acknowledgement paces the next draw. The host's Canvas contract
+    // caps presentation at 35 FPS; an iframe-local timer would throttle in Chrome.
+    { continuous: true },
   );
 
   return (
