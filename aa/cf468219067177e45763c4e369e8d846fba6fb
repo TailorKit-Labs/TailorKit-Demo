@@ -1,0 +1,61 @@
+website/README.md
+  s_a2cb958143b1f5::t_c0428afc27944e 126-135
+website/app/(crm)/apps/[appSlug]/[instance]/page.tsx
+  s_a2cb958143b1f5::t_f5b5ee3fc5d169 3-4,13,15-24
+website/app/(crm)/contacts/[id]/page.tsx
+  s_a2cb958143b1f5::t_a57029e28b5f41 7,13
+website/app/(crm)/contacts/page.tsx
+  s_a2cb958143b1f5::t_637c44f322a173 5,8-9,11
+website/app/(crm)/layout.tsx
+  s_a2cb958143b1f5::t_b9def53dd43cb6 7,19-20
+website/app/(crm)/page.tsx
+  s_a2cb958143b1f5::t_7de92f841ff4f2 5,7-8,10
+website/app/(crm)/pipeline/page.tsx
+  s_a2cb958143b1f5::t_4652313a5376a6 5,8-9,11
+website/app/(crm)/settings/page.tsx
+  s_a2cb958143b1f5::t_4fae5e408c4f7f 5,8-9,11
+website/app/(crm)/tasks/page.tsx
+  s_a2cb958143b1f5::t_34b74e8401c888 5,8-9,11
+website/components/agent/agent-workspace.tsx
+  s_a2cb958143b1f5::t_34070cae9f2f3d 10,38-39,63-64,67
+website/components/agent/apps-panel.tsx
+  s_a2cb958143b1f5::t_99ff17602d3ad6 10-11,13
+website/components/app/app-mobile-navigation.tsx
+  s_a2cb958143b1f5::t_724c353539d4b8 5-6,31
+website/components/app/app-navbar.tsx
+  s_a2cb958143b1f5::t_46c18d44fd9592 3-4,7
+website/components/app/app-page.tsx
+  s_a2cb958143b1f5::t_cf75933cf28905 3-4,23,37,57
+website/components/app/app-sidebar.tsx
+  s_a2cb958143b1f5::t_df35d4644e5642 4-5,27
+website/components/crm-shell.tsx
+  s_a2cb958143b1f5::t_ddc1c7aacbbe9f 24
+website/lib/patchsmith-client.tsx
+  s_a2cb958143b1f5::t_460095dea2c68e 3,6,11-16,351-367,382,392-396,412
+website/lib/patchsmith-queries.server.ts
+  s_a2cb958143b1f5::t_79b933432b81f5 1-38
+website/lib/patchsmith-queries.ts
+  s_a2cb958143b1f5::t_804cc3240279ef 1-45
+website/lib/query-client.ts
+  s_a2cb958143b1f5::t_e8b8f45fd73d92 3,10-14
+website/package.json
+  s_a2cb958143b1f5::t_82a5acc3794e09 10
+website/scripts/patchsmith-queries.test.ts
+  s_a2cb958143b1f5::t_9603038d8f7a9a 1-180
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aacf468219067177e45763c4e369e8d846fba6fb",
+  "prompts": {},
+  "sessions": {
+    "s_a2cb958143b1f5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16316-dc41-76c2-a8b5-c70d31f4c4e3",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
