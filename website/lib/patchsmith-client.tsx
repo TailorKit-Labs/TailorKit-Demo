@@ -1,13 +1,19 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { createContext, useContext, useEffect, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { orpc } from "./orpc";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { createClient, experimental_canvasRenderer, primitives } from "patchsmith/react";
 import { contract, patchsmithTheme } from "./patchsmith";
 import { toastManager } from "@/components/ui/toast";
+import {
+  patchsmithQueryKey,
+  viewsQueryOptions,
+  type ViewSlot,
+  type ViewWorkspace,
+} from "./patchsmith-queries";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -342,7 +348,23 @@ export const patchsmithClient = createClient({
   },
 });
 
-export function PatchsmithProvider({ children }: { children: ReactNode }) {
+const WorkspaceContext = createContext<ViewWorkspace | null>(null);
+
+// This hook only builds options. React Query owns requests, caching and errors.
+export function useViewQueryOptions<TSlot extends ViewSlot>(slot: TSlot) {
+  const workspace = useContext(WorkspaceContext);
+  const pathname = usePathname();
+  if (!workspace) throw new Error("App view queries require a workspace.");
+  return viewsQueryOptions(patchsmithClient.api, workspace, slot, pathname);
+}
+
+export function PatchsmithProvider({
+  children,
+  workspace,
+}: {
+  children: ReactNode;
+  workspace: ViewWorkspace;
+}) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { setTheme } = useTheme();
@@ -357,6 +379,7 @@ export function PatchsmithProvider({ children }: { children: ReactNode }) {
           break;
         case "refresh":
           void queryClient.invalidateQueries({ queryKey: orpc.key() });
+          void queryClient.invalidateQueries({ queryKey: patchsmithQueryKey });
           break;
         case "theme":
           setTheme(detail.action.theme);
@@ -366,7 +389,11 @@ export function PatchsmithProvider({ children }: { children: ReactNode }) {
     window.addEventListener(hostActionEvent, handle);
     return () => window.removeEventListener(hostActionEvent, handle);
   }, [router, setTheme, queryClient]);
-  return <patchsmithClient.Provider>{children}</patchsmithClient.Provider>;
+  return (
+    <WorkspaceContext value={workspace}>
+      <patchsmithClient.Provider>{children}</patchsmithClient.Provider>
+    </WorkspaceContext>
+  );
 }
 
 export function usePanelAction(openApp: (appId: string) => void) {
@@ -382,4 +409,4 @@ export function usePanelAction(openApp: (appId: string) => void) {
   }, [openApp]);
 }
 
-export const { RenderSlot, useViews, useViewContext } = patchsmithClient;
+export const { RenderSlot, useViewContext } = patchsmithClient;

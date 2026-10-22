@@ -2,7 +2,8 @@
 
 import { MenuIcon, Settings2Icon, XIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useViews } from "@/lib/patchsmith-client";
+import { useQuery } from "@tanstack/react-query";
+import { useViewQueryOptions } from "@/lib/patchsmith-client";
 import { appPageHref, appPageLabel } from "@/lib/app-pages";
 import { AppLogo } from "@/components/app/app-logo";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,7 @@ import { cn } from "@/lib/utils";
 
 export function AppMobileNavigation({ onOpen }: { onOpen: () => void }) {
   const pathname = usePathname();
-  const { data: pages } = useViews({ slot: "page" });
+  const { data: pages } = useQuery(useViewQueryOptions("page"));
   const { openMobile, setOpenMobile } = useSidebar();
   return (
     <Drawer

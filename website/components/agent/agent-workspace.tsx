@@ -7,7 +7,7 @@ import { agentTransport } from "@/lib/agents/agent-transport";
 import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
 import { orpc } from "@/lib/orpc";
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import type { AgentChatSummary } from "@/lib/agents/agent-chat-types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { AgentChat } from "./agent-chat";
 import { cn } from "@/lib/utils";
-import { usePanelAction, useViews } from "@/lib/patchsmith-client";
+import { usePanelAction, useViewQueryOptions } from "@/lib/patchsmith-client";
+import { patchsmithQueryKey } from "@/lib/patchsmith-queries";
 import { DemoIntroTour } from "@/components/demo-intro/demo-intro-tour";
 import { FEATURE_PROMPT, useDemoIntro } from "@/components/demo-intro/demo-intro-provider";
 import { appPageHref } from "@/lib/app-pages";
@@ -59,15 +60,11 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     data: views,
     isPending: appsPending,
     error: appsError,
-    fetch: refreshApps,
-  } = useViews({ slot: "panel" });
-  const { data: pages, isPending: pagesPending, fetch: refreshPages } = useViews({ slot: "page" });
-  const { fetch: refreshNavbar } = useViews({ slot: "navbar" });
+  } = useQuery(useViewQueryOptions("panel"));
+  const { data: pages, isPending: pagesPending } = useQuery(useViewQueryOptions("page"));
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: orpc.key() });
-    void refreshApps();
-    void refreshPages();
-    void refreshNavbar();
+    void queryClient.invalidateQueries({ queryKey: patchsmithQueryKey });
   };
   const [appOrder, setAppOrder] = useState<string[]>([]);
   const apps = (views ?? [])

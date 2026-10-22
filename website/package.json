@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "pnpm run db:push && next build",
     "test:messages": "tsx --test scripts/messages.test.ts scripts/install-messages.test.ts",
-    "test:app-pages": "tsx --test scripts/app-pages.test.ts scripts/patchsmith-origin.test.ts",
+    "test:app-pages": "tsx --test scripts/app-pages.test.ts scripts/patchsmith-origin.test.ts scripts/patchsmith-queries.test.ts",
     "test:patchsmith-handler": "tsx --test scripts/patchsmith-handler.test.ts",
     "start": "next start",
     "lint": "vp lint .",
