@@ -17,6 +17,7 @@
     "db:push:force": "drizzle-kit push --force",
     "db:plan": "drizzle-kit push --explain --verbose",
     "test:db-push": "node --test scripts/schema-plan.test.mjs scripts/read-schema-plan.test.mjs",
+    "test:db-config": "node --test scripts/database-url.test.mjs",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
     "test:db": "tsx scripts/test-db.ts",

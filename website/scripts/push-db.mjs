@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { Client } from "pg";
+import { normalizeDatabaseUrl } from "../lib/database-url.mjs";
 import { isCompatiblePlan } from "./schema-plan.mjs";
 import { readSchemaPlan } from "./read-schema-plan.mjs";
 
@@ -20,7 +21,7 @@ if (!guarded) {
     );
   }
   const client = new Client({
-    connectionString: process.env.DATABASE_URL_UNPOOLED,
+    connectionString: normalizeDatabaseUrl(process.env.DATABASE_URL_UNPOOLED),
   });
   await client.connect();
   try {
