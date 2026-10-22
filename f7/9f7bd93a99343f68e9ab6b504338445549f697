@@ -1,0 +1,20 @@
+apps/messages/.agents/skills/patchsmith-capabilities/references/index.md
+  h_18044dd1b61a81 10
+apps/messages/.agents/skills/patchsmith-capabilities/references/views.md
+  h_18044dd1b61a81 66
+apps/messages/src/patchsmith.functions.gen.ts
+  h_18044dd1b61a81 1-3
+apps/messages/src/patchsmith.gen.ts
+  h_18044dd1b61a81 11-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f79f7bd93a99343f68e9ab6b504338445549f697",
+  "prompts": {},
+  "humans": {
+    "h_18044dd1b61a81": {
+      "author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
