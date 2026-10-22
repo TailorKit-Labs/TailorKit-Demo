@@ -1,0 +1,23 @@
+website/components/app/app-page.tsx
+  s_a2cb958143b1f5::t_f8d9a75249a134 52
+website/lib/query-client.ts
+  s_a2cb958143b1f5::t_3fdcabbaca9e6a 9-13
+website/scripts/patchsmith-queries.test.ts
+  s_a2cb958143b1f5::t_aad4dc398b78a3 129-177,198-200,205-208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b6cd938eee730b08ec64fa407cb633489c633c08",
+  "prompts": {},
+  "sessions": {
+    "s_a2cb958143b1f5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16316-dc41-76c2-a8b5-c70d31f4c4e3",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
