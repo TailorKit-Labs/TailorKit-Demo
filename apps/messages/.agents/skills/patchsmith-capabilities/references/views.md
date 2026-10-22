@@ -63,7 +63,7 @@ Instances: multiple; supply an instances resolver.
 ### Registration example
 
 Place the view under this slot's directory at the declared path. Read context with useContext() inside the view.
-Enable server: {}. Use stable instance keys and product-supported metadata.
+Use stable instance keys and product-supported metadata.
 
 ```tsx
 import "#patchsmith";
