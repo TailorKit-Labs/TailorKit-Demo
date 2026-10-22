@@ -1,0 +1,21 @@
+website/scripts/database-url.test.mjs
+  s_0655853dc471b9::t_0fbd9900212622 49-70
+website/lib/database-url.mjs
+  s_0655853dc471b9::t_4d5c74919ab62e 13-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7f02bb1507c66e2553cc393bd4e50bdd0f88da11",
+  "prompts": {},
+  "sessions": {
+    "s_0655853dc471b9": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1656b-9de4-7f83-8f17-2606ce4db43a",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
