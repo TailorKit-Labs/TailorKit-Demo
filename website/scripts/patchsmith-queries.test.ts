@@ -126,7 +126,55 @@ void test("CRM mutations refresh all active app slots along with CRM data", asyn
   }
 });
 
-void test("failed discovery can be retried and partial-response warnings remain cached", async () => {
+void test("CRM mutations wait for CRM refresh without waiting for app discovery", async () => {
+  const client = makeQueryClient();
+  const appResponse = Promise.withResolvers<typeof ready>();
+  const crmResponse = Promise.withResolvers<typeof ready>();
+  const appStarted = Promise.withResolvers<void>();
+  const crmStarted = Promise.withResolvers<void>();
+  let refreshing = false;
+  const api: ViewsApi = {
+    views: async () => {
+      if (!refreshing) return ready;
+      appStarted.resolve();
+      return appResponse.promise;
+    },
+  };
+  const appOptions = viewsQueryOptions(api, workspace, "page", "/");
+  const crmOptions = {
+    queryKey: [...orpc.key(), "test"],
+    queryFn: async () => {
+      if (!refreshing) return ready;
+      crmStarted.resolve();
+      return crmResponse.promise;
+    },
+  };
+  const unsubscribes: (() => void)[] = [];
+  try {
+    await client.fetchQuery(appOptions);
+    await client.fetchQuery(crmOptions);
+    unsubscribes.push(new QueryObserver(client, appOptions).subscribe(() => {}));
+    unsubscribes.push(new QueryObserver(client, crmOptions).subscribe(() => {}));
+    refreshing = true;
+    const mutation = client.getMutationCache().build(client, { mutationFn: async () => "saved" });
+    const pending = mutation.execute(undefined);
+    await Promise.all([appStarted.promise, crmStarted.promise]);
+    assert.equal(mutation.state.status, "pending");
+    crmResponse.resolve(ready);
+    await pending;
+    assert.equal(mutation.state.status, "success");
+    assert.equal(client.getQueryState(appOptions.queryKey)?.fetchStatus, "fetching");
+    appResponse.resolve(ready);
+    await client.fetchQuery(appOptions);
+  } finally {
+    appResponse.resolve(ready);
+    crmResponse.resolve(ready);
+    for (const unsubscribe of unsubscribes) unsubscribe();
+    client.clear();
+  }
+});
+
+void test("discovery errors retain cached pages, support retries and preserve partial-response warnings", async () => {
   const client = makeQueryClient();
   let fail = true;
   const warnings = [
@@ -146,12 +194,18 @@ void test("failed discovery can be retried and partial-response warnings remain 
   try {
     const options = viewsQueryOptions(api, workspace, "page", "/");
     await assert.rejects(client.fetchQuery(options), /Unavailable/);
-    fail = false;
     const observer = new QueryObserver(client, options);
+    assert.equal(observer.getCurrentResult().isLoadingError, true);
+    assert.equal(observer.getCurrentResult().data, undefined);
+    fail = false;
     const result = await observer.refetch();
     assert.equal(result.isSuccess, true);
     assert.deepEqual(result.data, [page]);
     assert.deepEqual(client.getQueryData(options.queryKey)?.warnings, warnings);
+    fail = true;
+    const backgroundError = await observer.refetch();
+    assert.equal(backgroundError.isRefetchError, true);
+    assert.deepEqual(backgroundError.data, [page]);
   } finally {
     client.clear();
   }

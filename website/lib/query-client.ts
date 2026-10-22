@@ -6,12 +6,11 @@ export function makeQueryClient() {
   const queryClient = new QueryClient({
     mutationCache: new MutationCache({
       // Every CRM mutation can affect counts, linked records and activity.
-      // Await the refetch so mutation pending state covers the visible update.
-      onSuccess: () =>
-        Promise.all([
-          queryClient.invalidateQueries({ queryKey: orpc.key() }),
-          queryClient.invalidateQueries({ queryKey: patchsmithQueryKey }),
-        ]),
+      // Wait for CRM data, while app discovery refreshes in the background.
+      onSuccess: () => {
+        void queryClient.invalidateQueries({ queryKey: patchsmithQueryKey });
+        return queryClient.invalidateQueries({ queryKey: orpc.key() });
+      },
     }),
     defaultOptions: {
       queries: { staleTime: 30_000, retry: false },

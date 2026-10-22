@@ -49,7 +49,7 @@ export function AppPage({
       </AppPageHeading>
       {isPending ? (
         <Skeleton className="h-64 w-full" aria-label="Loading app page" />
-      ) : error ? (
+      ) : error && pages === undefined ? (
         <Alert variant="error">
           <AlertTitle>Could not load app pages</AlertTitle>
           <AlertDescription>
