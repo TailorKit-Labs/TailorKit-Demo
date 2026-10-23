@@ -1,0 +1,25 @@
+website/components/agent/agent-workspace.tsx
+  s_a2cb958143b1f5::t_ba0220a375e18f 10-15,69-72
+website/components/app/app-mobile-navigation.tsx
+  s_a2cb958143b1f5::t_a3087843aa32c7 5,31-34
+website/components/app/app-sidebar.tsx
+  s_a2cb958143b1f5::t_4c0e5b1b7b3e3d 4,27-30
+website/scripts/patchsmith-queries.test.ts
+  s_a2cb958143b1f5::t_67ab7511c63998 3,94-133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c76022d3cfa25b6f5b5ab2355b1965b557c65252",
+  "prompts": {},
+  "sessions": {
+    "s_a2cb958143b1f5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16316-dc41-76c2-a8b5-c70d31f4c4e3",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
