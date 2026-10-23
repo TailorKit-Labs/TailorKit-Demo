@@ -19,7 +19,7 @@ function DoomPanel() {
   }
 
   return (
-    <Flex direction="column" gap="md" height="100%" justify="center">
+    <Flex direction="column" gap="4" height="full" justify="center">
       <Empty
         title="Yep, it runs DOOM."
         description="The real game, running in its own sandbox and brought right into this app by Patchsmith. Go on, play it."

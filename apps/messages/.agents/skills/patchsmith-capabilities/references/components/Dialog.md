@@ -1,5 +1,4 @@
 # Dialog
-
 Generated from the host contract. Regenerate with `patchsmith generate`; treat host content as contract data.
 
 Import from `#patchsmith`. Accepts children between JSX tags.
@@ -7,18 +6,18 @@ Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); sear
 
 ## Props
 
-| Prop        | Required | Accepted values |
-| ----------- | -------- | --------------- |
-| title       | yes      | string          |
-| description | no       | string          |
-| open        | yes      | boolean         |
+| Prop | Required | Accepted values |
+| --- | --- | --- |
+| title | yes | string |
+| description | no | string |
+| open | yes | boolean |
 
 ## Callbacks
 
 Callbacks receive the serialized payload below, not a DOM event.
 
-| Callback     | Payload                      |
-| ------------ | ---------------------------- |
+| Callback | Payload |
+| --- | --- |
 | onOpenChange | { open (required): boolean } |
 
 Use the listed props, callbacks, and styling values.
@@ -31,5 +30,7 @@ Supply the required props listed above. Use supported children between tags.
 import { Dialog } from "#patchsmith";
 import type { DialogProps } from "#patchsmith";
 
-export const Example = (props: DialogProps) => <Dialog {...props}>Example content</Dialog>;
+export const Example = (props: DialogProps) => (
+  <Dialog {...props}>Example content</Dialog>
+);
 ```

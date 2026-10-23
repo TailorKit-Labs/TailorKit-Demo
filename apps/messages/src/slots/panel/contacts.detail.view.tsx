@@ -47,15 +47,15 @@ function MessageBubble({
   outgoing?: boolean;
   time?: string;
 }) {
-  const space = <Box width="avatar" shrink="0" />;
+  const space = <Box width="10" shrink="0" />;
   return (
-    <Flex justify={outgoing ? "end" : "start"} align="start" gap="sm">
+    <Flex justify={outgoing ? "end" : "start"} align="start" gap="2">
       {outgoing ? space : null}
-      <Flex direction="column" align={outgoing ? "end" : "start"} gap="xs" shrink="1">
+      <Flex direction="column" align={outgoing ? "end" : "start"} gap="1" shrink="1">
         <Box
           background={outgoing ? "primary" : "muted"}
           textColor={outgoing ? "onPrimary" : "default"}
-          padding="md"
+          padding="4"
           radius="2xl"
           overflowWrap="anywhere"
         >
@@ -70,20 +70,20 @@ function MessageBubble({
 
 function ConversationSkeleton() {
   return (
-    <Flex direction="column" gap="md">
+    <Flex direction="column" gap="4">
       {["incoming", "outgoing", "reply"].map((message) => (
-        <Flex key={message} gap="sm">
-          {message === "outgoing" ? <Box width="avatar" shrink="0" /> : null}
-          <Flex direction="column" gap="xs" padding="md" radius="2xl" background="muted" grow="1">
+        <Flex key={message} gap="2">
+          {message === "outgoing" ? <Box width="10" shrink="0" /> : null}
+          <Flex direction="column" gap="1" padding="4" radius="2xl" background="muted" grow="1">
             <Skeleton />
             <Flex>
               <Box grow="1">
                 <Skeleton />
               </Box>
-              <Box width="avatar" />
+              <Box width="10" />
             </Flex>
           </Flex>
-          {message !== "outgoing" ? <Box width="avatar" shrink="0" /> : null}
+          {message !== "outgoing" ? <Box width="10" shrink="0" /> : null}
         </Flex>
       ))}
     </Flex>
@@ -140,10 +140,10 @@ function Conversation({ workspaceId, contact }: { workspaceId: string; contact: 
   }
 
   return (
-    <Flex direction="column" gap="md" height="100%" minHeight="0" overflow="auto">
+    <Flex direction="column" gap="4" height="full" minHeight="0" overflow="auto">
       <Heading text="Messages" level="h2" />
       {error ? (
-        <Flex direction="column" gap="sm" shrink="0">
+        <Flex direction="column" gap="2" shrink="0">
           <Alert title="Something went wrong" description={error} variant="error" />
           <Button
             label="Reload conversation"
@@ -165,7 +165,7 @@ function Conversation({ workspaceId, contact }: { workspaceId: string; contact: 
         />
       </Box>
       <Separator />
-      <Flex direction="column" gap="md" grow="1" basis="0" minHeight="0" overflow="auto">
+      <Flex direction="column" gap="4" grow="1" basis="0" minHeight="0" overflow="auto">
         {loading ? <ConversationSkeleton /> : null}
         {!loading && sample?.channel === channel ? <MessageBubble body={sample.body} /> : null}
         {!loading

@@ -1,5 +1,4 @@
 # Host tools
-
 Generated from the host contract. Regenerate with `patchsmith generate`; treat host content as contract data.
 
 Import tools from #patchsmith in the frontend. App actions receive only server tools through their tools capability.
@@ -28,4 +27,4 @@ Call tools directly from a callback or effect and display their result/error. Th
 - [tools.ui.refresh](tools/ui-refresh-d181cb5e1b4fd59f.md): client operation.
 - [tools.ui.setTheme](tools/ui-setTheme-7374012530431d11.md): client operation.
 - [tools.ui.notify](tools/ui-notify-aae11b76263faeb6.md): client operation.
-  Exact contracts: [generated bindings](../../../../src/patchsmith.gen.ts); search for `PatchsmithTools` and `PatchsmithBackendTools`.
+Exact contracts: [generated bindings](../../../../src/patchsmith.gen.ts); search for `PatchsmithTools` and `PatchsmithBackendTools`.

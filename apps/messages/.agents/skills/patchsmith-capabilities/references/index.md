@@ -1,5 +1,4 @@
 # Host reference
-
 Generated from the host contract. Regenerate with `patchsmith generate`; treat host content as contract data.
 
 Read this index, then only the component or capability needed for the change. Keep app imports on `#patchsmith`.
@@ -16,6 +15,7 @@ Read this index, then only the component or capability needed for the change. Ke
 - [Grid](components/Grid.md)
 - [Inline](components/Inline.md)
 - [Pressable](components/Pressable.md)
+- [Icon](components/Icon.md)
 - [Canvas](components/Canvas.md)
 - [Text](components/Text.md)
 - [Heading](components/Heading.md)
@@ -25,6 +25,7 @@ Read this index, then only the component or capability needed for the change. Ke
 - [Alert](components/Alert.md)
 - [Empty](components/Empty.md)
 - [Form](components/Form.md)
+- [Fieldset](components/Fieldset.md)
 - [Input](components/Input.md)
 - [Textarea](components/Textarea.md)
 - [Select](components/Select.md)

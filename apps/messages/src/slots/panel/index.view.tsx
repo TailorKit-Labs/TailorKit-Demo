@@ -24,8 +24,8 @@ const view = defineView({ view: "/", component: Inbox });
 
 function SkeletonLine() {
   return (
-    <Box height="100%" padding="2xs">
-      <Box height="100%" radius="sm" overflow="hidden">
+    <Box height="full" padding="0.5">
+      <Box height="full" radius="sm" overflow="hidden">
         <Skeleton />
       </Box>
     </Box>
@@ -45,21 +45,21 @@ function InboxRow({
   onPress?: () => void;
 }) {
   return (
-    <Flex direction="column" gap="none" shrink="0">
+    <Flex direction="column" gap="0" shrink="0">
       <Pressable
         ariaLabel={contact ? `Message ${contact.name}` : "Loading conversation"}
         disabled={!contact}
         layout="flex"
         align="center"
-        gap="sm"
-        padding="md"
+        gap="2"
+        padding="4"
         background={{ default: "transparent", ":hover": "muted", ":active": "accent" }}
-        width="100%"
+        width="full"
         onPress={onPress}
       >
         <Box
-          width="control"
-          height="control"
+          width="8"
+          height="8"
           radius="full"
           overflow="hidden"
           shrink="0"
@@ -67,34 +67,34 @@ function InboxRow({
         >
           {contact ? <Avatar name={contact.name} /> : null}
         </Box>
-        <Flex direction="column" gap="none" height="avatar" grow="1" minWidth="0">
+        <Flex direction="column" gap="0" height="10" grow="1" minWidth="0">
           <Flex
             justify="between"
             align="start"
-            gap="sm"
+            gap="2"
             grow="1"
             basis="0"
             minHeight="0"
             overflow="hidden"
           >
-            <Box grow="1" minWidth="0" height="100%" overflow="hidden">
+            <Box grow="1" minWidth="0" height="full" overflow="hidden">
               {contact ? (
                 <Text text={contact.name} size="sm" />
               ) : (
-                <Flex height="100%">
-                  <Box grow="1" minWidth="0" height="100%">
+                <Flex height="full">
+                  <Box grow="1" minWidth="0" height="full">
                     <SkeletonLine />
                   </Box>
-                  <Box width="avatar" shrink="0" />
+                  <Box width="10" shrink="0" />
                 </Flex>
               )}
             </Box>
-            <Box width="avatar" height="100%" shrink="0">
-              {contact ? <Text text={channel} size="xs" tone="muted" /> : <SkeletonLine />}
+            <Box width="10" height="full" shrink="0">
+              {contact ? <Text text={channel ?? ""} size="xs" tone="muted" /> : <SkeletonLine />}
             </Box>
           </Flex>
           <Box grow="1" basis="0" minHeight="0" overflow="hidden">
-            {contact ? <Text text={preview} size="sm" tone="muted" /> : <SkeletonLine />}
+            {contact ? <Text text={preview ?? ""} size="sm" tone="muted" /> : <SkeletonLine />}
           </Box>
         </Flex>
       </Pressable>
@@ -105,7 +105,7 @@ function InboxRow({
 
 function InboxSkeleton() {
   return (
-    <Flex direction="column" gap="none" shrink="0">
+    <Flex direction="column" gap="0" shrink="0">
       <Separator />
       {examples.map((_, index) => (
         <InboxRow key={index} />
@@ -145,18 +145,18 @@ function Inbox() {
   }
 
   return (
-    <Flex direction="column" gap="md" height="100%" overflow="auto">
-      <Flex justify="between" align="center" gap="sm" shrink="0">
+    <Flex direction="column" gap="4" height="full" overflow="auto">
+      <Flex justify="between" align="center" gap="2" shrink="0">
         <Heading text="Messages" level="h2" />
         <Button label="New message" size="sm" onClick={() => navigate("/contacts")} />
       </Flex>
       {error ? (
-        <Flex direction="column" gap="sm">
+        <Flex direction="column" gap="2">
           <Alert title="Something went wrong" description={error} variant="error" />
           <Button label="Reload inbox" variant="outline" onClick={reload} />
         </Flex>
       ) : null}
-      <Grid columns={2} gap="sm">
+      <Grid columns={2} gap="2">
         <Input
           label="Search"
           type="search"
@@ -178,7 +178,7 @@ function Inbox() {
         />
       ) : null}
       {!loading && threads.length > 0 ? (
-        <Flex direction="column" gap="none" shrink="0">
+        <Flex direction="column" gap="0" shrink="0">
           <Separator />
           {threads.map(({ contact, latest, hasSent }) => {
             const preview = `${hasSent ? "You: " : ""}${latest.body}`.replace(/\s+/g, " ");

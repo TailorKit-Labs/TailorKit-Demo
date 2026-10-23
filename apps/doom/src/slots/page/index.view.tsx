@@ -28,7 +28,7 @@ function Game({ paused }: { paused: boolean }) {
   );
 
   return (
-    <Flex direction="column" gap="sm" grow="1" minHeight="0">
+    <Flex direction="column" gap="2" grow="1" minHeight="0">
       <Box shrink="0">
         {surface.error ? (
           <Alert
@@ -56,8 +56,8 @@ function Doom() {
   const [paused, setPaused] = useState(false);
   const [revision, setRevision] = useState(0);
   return (
-    <Flex direction="column" gap="md" height="100%" minHeight="0">
-      <Flex gap="sm" align="center" wrap="wrap" shrink="0">
+    <Flex direction="column" gap="4" height="full" minHeight="0">
+      <Flex gap="2" align="center" wrap="wrap" shrink="0">
         <Text text="Yep, it runs DOOM." />
         <Box grow="1" />
         <Button

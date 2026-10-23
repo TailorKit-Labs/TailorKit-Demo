@@ -1,5 +1,4 @@
 # tools.contacts.list
-
 Generated from the host contract. Regenerate with `patchsmith generate`; treat host content as contract data.
 
 Runs on the server.

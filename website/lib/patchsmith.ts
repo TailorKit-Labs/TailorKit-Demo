@@ -24,15 +24,9 @@ const serverTool = <I extends z.ZodType, O extends z.ZodType>(schema: { input: I
   tool.server().input(schema.input).output(schema.output);
 
 // Pass the same theme to schema generation and the renderer so token names and
-// their runtime CSS values cannot drift. Semantic variables follow light/dark mode.
+// their runtime CSS values cannot drift. Use SDK defaults for layout and spacing;
+// semantic color variables follow light/dark mode.
 export const patchsmithTheme = {
-  breakpoints: {
-    sm: "640px",
-    md: "800px",
-    lg: "1024px",
-    xl: "1280px",
-    "2xl": "1536px",
-  },
   tokens: {
     background: {
       default: "var(--background)",

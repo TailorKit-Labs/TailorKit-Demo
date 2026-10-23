@@ -1,5 +1,4 @@
 # Grid
-
 Generated from the host contract. Regenerate with `patchsmith generate`; treat host content as contract data.
 
 Import from `#patchsmith`. Accepts children between JSX tags.
@@ -7,37 +6,37 @@ Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); sear
 
 ## Props
 
-| Prop          | Required | Accepted values                                                                                                                                                                                                       |
-| ------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| background    | no       | "default", "card", "popover", "primary", "secondary", "muted", "accent", "sidebar", "transparent", "success", "warning", "info", "destructive"; also accepts a responsive/state object (see [styling](../styling.md)) |
-| basis         | no       | "0", "control", "avatar", "panel", "content", "screen", "100%"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                 |
-| border        | no       | "dashed", "dotted", "double", "solid"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                                          |
-| borderColor   | no       | "default", "input", "ring", "destructive", "transparent"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                       |
-| grow          | no       | "0"; or "1"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                                                                    |
-| height        | no       | "0", "control", "avatar", "panel", "content", "screen", "100%"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                 |
-| margin        | no       | "none", "2xs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                      |
-| minHeight     | no       | "0", "control", "avatar", "panel", "content", "screen", "100%"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                 |
-| minWidth      | no       | "0", "control", "avatar", "panel", "content", "screen", "100%"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                 |
-| overflow      | no       | "auto", "clip", "hidden", "scroll", "visible"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                                  |
-| overflowWrap  | no       | "anywhere", "breakWord", "normal"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                                              |
-| padding       | no       | "none", "2xs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                      |
-| radius        | no       | "none", "sm", "md", "lg", "xl", "2xl", "full"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                                  |
-| shrink        | no       | "0"; or "1"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                                                                    |
-| textAlign     | no       | "center", "end", "justify", "left", "right", "start"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                           |
-| textColor     | no       | "default", "muted", "primary", "onPrimary", "onSecondary", "card", "popover", "success", "warning", "info", "destructive"; also accepts a responsive/state object (see [styling](../styling.md))                      |
-| textOverflow  | no       | "clip", "ellipsis"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                                                             |
-| textTransform | no       | "capitalize", "lowercase", "none", "uppercase"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                                 |
-| width         | no       | "0", "control", "avatar", "panel", "content", "screen", "100%"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                 |
-| columns       | no       | 1; or 2; or 3; or 4; or 6; or 12; also accepts a responsive/state object (see [styling](../styling.md))                                                                                                               |
-| gap           | no       | "none", "2xs", "xs", "sm", "md", "lg", "xl", "2xl", "3xl"; also accepts a responsive/state object (see [styling](../styling.md))                                                                                      |
+| Prop | Required | Accepted values |
+| --- | --- | --- |
+| background | no | "default", "card", "popover", "primary", "secondary", "muted", "accent", "sidebar", "transparent", "success", "warning", "info", "destructive"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| basis | no | "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "52", "56", "60", "64", "72", "80", "96", "0.5", "1.5", "2.5", "3.5", "px", "1/12", "1/2", "1/3", "1/4", "1/5", "1/6", "10/12", "11/12", "2/12", "2/3", "2/4", "2/5", "2/6", "3/12", "3/4", "3/5", "3/6", "4/12", "4/5", "4/6", "5/12", "5/6", "6/12", "7/12", "8/12", "9/12", "auto", "fit", "full", "max", "min"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| border | no | "dashed", "dotted", "double", "solid"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| borderColor | no | "default", "input", "ring", "destructive", "transparent"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| grow | no | "0"; or "1"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| height | no | "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "52", "56", "60", "64", "72", "80", "96", "0.5", "1.5", "2.5", "3.5", "px", "1/12", "1/2", "1/3", "1/4", "1/5", "1/6", "10/12", "11/12", "2/12", "2/3", "2/4", "2/5", "2/6", "3/12", "3/4", "3/5", "3/6", "4/12", "4/5", "4/6", "5/12", "5/6", "6/12", "7/12", "8/12", "9/12", "auto", "fit", "full", "max", "min"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| margin | no | "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "52", "56", "60", "64", "72", "80", "96", "0.5", "1.5", "2.5", "3.5", "px"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| minHeight | no | "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "52", "56", "60", "64", "72", "80", "96", "0.5", "1.5", "2.5", "3.5", "px", "1/12", "1/2", "1/3", "1/4", "1/5", "1/6", "10/12", "11/12", "2/12", "2/3", "2/4", "2/5", "2/6", "3/12", "3/4", "3/5", "3/6", "4/12", "4/5", "4/6", "5/12", "5/6", "6/12", "7/12", "8/12", "9/12", "auto", "fit", "full", "max", "min"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| minWidth | no | "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "52", "56", "60", "64", "72", "80", "96", "0.5", "1.5", "2.5", "3.5", "px", "1/12", "1/2", "1/3", "1/4", "1/5", "1/6", "10/12", "11/12", "2/12", "2/3", "2/4", "2/5", "2/6", "3/12", "3/4", "3/5", "3/6", "4/12", "4/5", "4/6", "5/12", "5/6", "6/12", "7/12", "8/12", "9/12", "auto", "fit", "full", "max", "min"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| overflow | no | "auto", "clip", "hidden", "scroll", "visible"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| overflowWrap | no | "anywhere", "breakWord", "normal"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| padding | no | "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "52", "56", "60", "64", "72", "80", "96", "0.5", "1.5", "2.5", "3.5", "px"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| radius | no | "2xl", "3xl", "4xl", "full", "lg", "md", "none", "sm", "xl", "xs"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| shrink | no | "0"; or "1"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| textAlign | no | "center", "end", "justify", "left", "right", "start"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| textColor | no | "default", "muted", "primary", "onPrimary", "onSecondary", "card", "popover", "success", "warning", "info", "destructive"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| textOverflow | no | "clip", "ellipsis"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| textTransform | no | "capitalize", "lowercase", "none", "uppercase"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| width | no | "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "52", "56", "60", "64", "72", "80", "96", "0.5", "1.5", "2.5", "3.5", "px", "1/12", "1/2", "1/3", "1/4", "1/5", "1/6", "10/12", "11/12", "2/12", "2/3", "2/4", "2/5", "2/6", "3/12", "3/4", "3/5", "3/6", "4/12", "4/5", "4/6", "5/12", "5/6", "6/12", "7/12", "8/12", "9/12", "auto", "fit", "full", "max", "min"; also accepts a responsive/state object (see [styling](../styling.md)) |
+| columns | no | 1; or 2; or 3; or 4; or 6; or 12; also accepts a responsive/state object (see [styling](../styling.md)) |
+| gap | no | "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "32", "36", "40", "44", "48", "52", "56", "60", "64", "72", "80", "96", "0.5", "1.5", "2.5", "3.5", "px"; also accepts a responsive/state object (see [styling](../styling.md)) |
 
 ## Callbacks
 
 Callbacks receive the serialized payload below, not a DOM event.
 
-| Callback | Payload                |
-| -------- | ---------------------- |
-| —        | No declared callbacks. |
+| Callback | Payload |
+| --- | --- |
+| — | No declared callbacks. |
 
 Use the listed props, callbacks, and styling values.
 
@@ -49,8 +48,11 @@ Supply the required props listed above. Use supported children between tags.
 import { Grid } from "#patchsmith";
 import type { GridProps } from "#patchsmith";
 
-export const Example = (props: GridProps) => <Grid {...props}>Example content</Grid>;
+export const Example = (props: GridProps) => (
+  <Grid {...props}>Example content</Grid>
+);
 ```
+
 
 ### Responsive styling example
 
@@ -59,6 +61,6 @@ These tokens and keys come from this prop's schema; other props may accept diffe
 ```ts
 import type { GridProps } from "#patchsmith";
 export const styles: Pick<GridProps, "background"> = {
-  background: { default: "default", sm: "card", ":active": "card" },
+  "background": { default: "default", "2xl": "card", ":active": "card" },
 };
 ```
