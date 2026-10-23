@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { dehydrate, hydrate, QueryObserver } from "@tanstack/react-query";
+import { dehydrate, hydrate, keepPreviousData, QueryObserver } from "@tanstack/react-query";
 import { makeQueryClient } from "../lib/query-client";
 import { orpc } from "../lib/orpc";
 import { viewsQueryOptions, type ViewsApi } from "../lib/patchsmith-queries";
@@ -87,6 +87,46 @@ void test("page queries vary by workspace and root URL; single slots reuse disco
       calls.filter((call) => call.slot !== "page").every((call) => call.activeView === null),
     );
   } finally {
+    client.clear();
+  }
+});
+
+void test("navigation keeps app links visible while resolving the destination URL", async () => {
+  const client = makeQueryClient();
+  const destination = Promise.withResolvers<typeof ready>();
+  const destinationPages = {
+    ...ready,
+    data: [{ ...page, metadata: { label: "Contacts report" } }],
+  };
+  const api: ViewsApi = {
+    views: async ({ activeView }) => {
+      const context = activeView?.layers[0]?.context as { page: string };
+      return context.page === "/" ? ready : destination.promise;
+    },
+  };
+  const initial = viewsQueryOptions(api, workspace, "page", "/");
+  const next = viewsQueryOptions(api, workspace, "page", "/contacts");
+  let unsubscribe: (() => void) | undefined;
+  try {
+    await client.prefetchQuery(initial);
+    const observer = new QueryObserver(client, { ...initial, placeholderData: keepPreviousData });
+    unsubscribe = observer.subscribe(() => {});
+    observer.setOptions({ ...next, placeholderData: keepPreviousData });
+    const navigating = observer.getCurrentResult();
+    assert.equal(navigating.isFetching, true);
+    assert.equal(navigating.isPlaceholderData, true);
+    assert.equal(navigating.isPending, false);
+    assert.deepEqual(navigating.data, [page]);
+    // The page renderer must not treat the previous route's placeholder as the
+    // destination's actual instance data.
+    assert.equal(client.getQueryData(next.queryKey), undefined);
+    destination.resolve(destinationPages);
+    await client.fetchQuery(next);
+    assert.deepEqual(observer.getCurrentResult().data, destinationPages.data);
+    assert.equal(observer.getCurrentResult().isPlaceholderData, false);
+  } finally {
+    destination.resolve(destinationPages);
+    unsubscribe?.();
     client.clear();
   }
 });

@@ -7,7 +7,12 @@ import { agentTransport } from "@/lib/agents/agent-transport";
 import { ChevronDownIcon, PanelsTopLeftIcon, PlusIcon } from "lucide-react";
 import type { CrmAgentMessage } from "@/lib/agents/crm-agent";
 import { orpc } from "@/lib/orpc";
-import { useQuery, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import type { AgentChatSummary } from "@/lib/agents/agent-chat-types";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
@@ -61,7 +66,10 @@ export function AgentWorkspace({ children }: { children: React.ReactNode }) {
     isPending: appsPending,
     error: appsError,
   } = useQuery(useViewQueryOptions("panel"));
-  const { data: pages, isPending: pagesPending } = useQuery(useViewQueryOptions("page"));
+  const { data: pages, isPending: pagesPending } = useQuery({
+    ...useViewQueryOptions("page"),
+    placeholderData: keepPreviousData,
+  });
   const refresh = () => {
     void queryClient.invalidateQueries({ queryKey: orpc.key() });
     void queryClient.invalidateQueries({ queryKey: patchsmithQueryKey });
