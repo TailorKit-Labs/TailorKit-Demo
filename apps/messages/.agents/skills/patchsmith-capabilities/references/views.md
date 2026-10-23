@@ -1,5 +1,4 @@
 # Slots and context
-
 Generated from the host contract. Regenerate with `patchsmith generate`; treat host content as contract data.
 
 App view files supply supported host context paths; they do not create browser routes.
@@ -9,6 +8,7 @@ Instance dataSchema accepts Standard Schema v1-compatible validators. Examples u
 
 Supported views: "/", "/overview", "/contacts", "/contacts/detail", "/pipeline", "/tasks", "/settings", "/app-pages".
 Instances: single; omit instances.
+
 
 ### Registration example
 
@@ -35,6 +35,7 @@ export default definition;
 Supported views: "/", "/overview", "/contacts", "/contacts/detail", "/pipeline", "/tasks", "/settings", "/app-pages".
 Instances: single; omit instances.
 
+
 ### Registration example
 
 Place the view under this slot's directory at the declared path. Read context with useContext() inside the view.
@@ -60,6 +61,7 @@ export default definition;
 Supported views: "/".
 Instances: multiple; supply an instances resolver.
 
+
 ### Registration example
 
 Place the view under this slot's directory at the declared path. Read context with useContext() inside the view.
@@ -82,7 +84,9 @@ const definition = defineView({
   component: Content,
   instances: {
     dataSchema: v.object({ title: v.string() }),
-    resolve: () => [{ key: "overview", metadata: {}, data: { title: "Overview" } }],
+    resolve: () => [
+      { key: "overview", metadata: {}, data: { title: "Overview" } },
+    ],
   },
 });
 

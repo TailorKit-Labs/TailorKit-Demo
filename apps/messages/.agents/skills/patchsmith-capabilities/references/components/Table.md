@@ -1,5 +1,4 @@
 # Table
-
 Generated from the host contract. Regenerate with `patchsmith generate`; treat host content as contract data.
 
 Import from `#patchsmith`. Accepts children between JSX tags.
@@ -7,17 +6,17 @@ Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); sear
 
 ## Props
 
-| Prop  | Required | Accepted values |
-| ----- | -------- | --------------- |
-| label | yes      | string          |
+| Prop | Required | Accepted values |
+| --- | --- | --- |
+| label | yes | string |
 
 ## Callbacks
 
 Callbacks receive the serialized payload below, not a DOM event.
 
-| Callback | Payload                |
-| -------- | ---------------------- |
-| —        | No declared callbacks. |
+| Callback | Payload |
+| --- | --- |
+| — | No declared callbacks. |
 
 Use the listed props, callbacks, and styling values.
 
@@ -29,5 +28,7 @@ Supply the required props listed above. Use supported children between tags.
 import { Table } from "#patchsmith";
 import type { TableProps } from "#patchsmith";
 
-export const Example = (props: TableProps) => <Table {...props}>Example content</Table>;
+export const Example = (props: TableProps) => (
+  <Table {...props}>Example content</Table>
+);
 ```

@@ -8,6 +8,7 @@ export default defineConfig({
     ignorePatterns: [
       "apps/messages/src/patchsmith.gen.ts",
       "apps/messages/.patchsmith/**",
+      "apps/messages/.agents/**",
       "apps/doom/src/patchsmith.gen.ts",
       "apps/doom/src/patchsmith.functions.gen.ts",
       "apps/doom/.patchsmith/**",
@@ -30,6 +31,7 @@ export default defineConfig({
       "website/.next/**",
       "apps/messages/src/patchsmith.gen.ts",
       "apps/messages/.patchsmith/**",
+      "apps/messages/.agents/**",
       "apps/doom/src/patchsmith.gen.ts",
       "apps/doom/src/patchsmith.functions.gen.ts",
       "apps/doom/.patchsmith/**",

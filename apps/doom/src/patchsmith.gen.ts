@@ -900,32 +900,32 @@ export const tools = {
 ,
 } as PatchsmithTools;
 
-export type Breakpoint = "sm" | "md" | "lg" | "xl" | "2xl";
+export type Breakpoint = "2xl" | "lg" | "md" | "sm" | "xl";
 export type InteractionState = ":active" | ":disabled" | ":focus-visible" | ":hover";
 export type Responsive<TValue> = TValue | Partial<Record<"default" | Breakpoint, TValue>>;
 export type Conditional<TValue> = TValue | (Partial<Record<"default" | Breakpoint, TValue>> & Partial<Record<InteractionState, Responsive<TValue>>>);
 export type Background = Conditional<"default" | "card" | "popover" | "primary" | "secondary" | "muted" | "accent" | "sidebar" | "transparent" | "success" | "warning" | "info" | "destructive">;
-export type Basis = Conditional<"0" | "control" | "avatar" | "panel" | "content" | "screen" | "100%">;
+export type Basis = Conditional<"0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "18" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96" | "0.5" | "1.5" | "2.5" | "3.5" | "px" | "1/12" | "1/2" | "1/3" | "1/4" | "1/5" | "1/6" | "10/12" | "11/12" | "2/12" | "2/3" | "2/4" | "2/5" | "2/6" | "3/12" | "3/4" | "3/5" | "3/6" | "4/12" | "4/5" | "4/6" | "5/12" | "5/6" | "6/12" | "7/12" | "8/12" | "9/12" | "auto" | "fit" | "full" | "max" | "min">;
 export type Border = Conditional<"dashed" | "dotted" | "double" | "solid">;
 export type BorderColor = Conditional<"default" | "input" | "ring" | "destructive" | "transparent">;
 export type Grow = Conditional<"0" | "1">;
-export type Height = Conditional<"0" | "control" | "avatar" | "panel" | "content" | "screen" | "100%">;
-export type Margin = Conditional<"none" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl">;
-export type MinHeight = Conditional<"0" | "control" | "avatar" | "panel" | "content" | "screen" | "100%">;
-export type MinWidth = Conditional<"0" | "control" | "avatar" | "panel" | "content" | "screen" | "100%">;
+export type Height = Conditional<"0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "18" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96" | "0.5" | "1.5" | "2.5" | "3.5" | "px" | "1/12" | "1/2" | "1/3" | "1/4" | "1/5" | "1/6" | "10/12" | "11/12" | "2/12" | "2/3" | "2/4" | "2/5" | "2/6" | "3/12" | "3/4" | "3/5" | "3/6" | "4/12" | "4/5" | "4/6" | "5/12" | "5/6" | "6/12" | "7/12" | "8/12" | "9/12" | "auto" | "fit" | "full" | "max" | "min">;
+export type Margin = Conditional<"0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "18" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96" | "0.5" | "1.5" | "2.5" | "3.5" | "px">;
+export type MinHeight = Conditional<"0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "18" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96" | "0.5" | "1.5" | "2.5" | "3.5" | "px" | "1/12" | "1/2" | "1/3" | "1/4" | "1/5" | "1/6" | "10/12" | "11/12" | "2/12" | "2/3" | "2/4" | "2/5" | "2/6" | "3/12" | "3/4" | "3/5" | "3/6" | "4/12" | "4/5" | "4/6" | "5/12" | "5/6" | "6/12" | "7/12" | "8/12" | "9/12" | "auto" | "fit" | "full" | "max" | "min">;
+export type MinWidth = Conditional<"0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "18" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96" | "0.5" | "1.5" | "2.5" | "3.5" | "px" | "1/12" | "1/2" | "1/3" | "1/4" | "1/5" | "1/6" | "10/12" | "11/12" | "2/12" | "2/3" | "2/4" | "2/5" | "2/6" | "3/12" | "3/4" | "3/5" | "3/6" | "4/12" | "4/5" | "4/6" | "5/12" | "5/6" | "6/12" | "7/12" | "8/12" | "9/12" | "auto" | "fit" | "full" | "max" | "min">;
 export type Overflow = Conditional<"auto" | "clip" | "hidden" | "scroll" | "visible">;
 export type OverflowWrap = Conditional<"anywhere" | "breakWord" | "normal">;
-export type Padding = Conditional<"none" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl">;
-export type Radius = Conditional<"none" | "sm" | "md" | "lg" | "xl" | "2xl" | "full">;
+export type Padding = Conditional<"0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "18" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96" | "0.5" | "1.5" | "2.5" | "3.5" | "px">;
+export type Radius = Conditional<"2xl" | "3xl" | "4xl" | "full" | "lg" | "md" | "none" | "sm" | "xl" | "xs">;
 export type Shrink = Conditional<"0" | "1">;
 export type TextAlign = Conditional<"center" | "end" | "justify" | "left" | "right" | "start">;
 export type TextColor = Conditional<"default" | "muted" | "primary" | "onPrimary" | "onSecondary" | "card" | "popover" | "success" | "warning" | "info" | "destructive">;
 export type TextOverflow = Conditional<"clip" | "ellipsis">;
 export type TextTransform = Conditional<"capitalize" | "lowercase" | "none" | "uppercase">;
-export type Width = Conditional<"0" | "control" | "avatar" | "panel" | "content" | "screen" | "100%">;
+export type Width = Conditional<"0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "18" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96" | "0.5" | "1.5" | "2.5" | "3.5" | "px" | "1/12" | "1/2" | "1/3" | "1/4" | "1/5" | "1/6" | "10/12" | "11/12" | "2/12" | "2/3" | "2/4" | "2/5" | "2/6" | "3/12" | "3/4" | "3/5" | "3/6" | "4/12" | "4/5" | "4/6" | "5/12" | "5/6" | "6/12" | "7/12" | "8/12" | "9/12" | "auto" | "fit" | "full" | "max" | "min">;
 export type Align = Conditional<"start" | "center" | "end" | "stretch">;
 export type Direction = Conditional<"row" | "column">;
-export type Gap = Conditional<"none" | "2xs" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl">;
+export type Gap = Conditional<"0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16" | "18" | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56" | "60" | "64" | "72" | "80" | "96" | "0.5" | "1.5" | "2.5" | "3.5" | "px">;
 export type Justify = Conditional<"start" | "center" | "end" | "between">;
 export type Wrap = Conditional<"wrap" | "nowrap" | "wrap-reverse">;
 export type Columns = Conditional<1 | 2 | 3 | 4 | 6 | 12>;
@@ -1072,11 +1072,20 @@ export const Pressable = /* @__PURE__ */ createRemoteComponent<PressableProps, t
   callbacks: { "onPress": 0 },
 });
 
+export interface IconProps {
+  name: string;
+  size?: number;
+}
+
+export const Icon = /* @__PURE__ */ createRemoteComponent<IconProps, false>("Icon", {
+  children: false,
+});
+
 export interface CanvasProps {
-  ariaLabel?: string;
-  height?: number;
-  surface?: string;
-  width?: number;
+  ariaLabel: string;
+  height: number;
+  surface: string;
+  width: number;
 }
 
 export const Canvas = /* @__PURE__ */ createRemoteComponent<CanvasProps, false>("Canvas", {
@@ -1084,7 +1093,7 @@ export const Canvas = /* @__PURE__ */ createRemoteComponent<CanvasProps, false>(
 });
 
 export interface TextProps {
-  text?: string;
+  text: string;
   tone?: "default" | "muted" | "success" | "warning" | "destructive";
   size?: "xs" | "sm" | "base" | "lg";
 }
@@ -1094,7 +1103,7 @@ export const Text = /* @__PURE__ */ createRemoteComponent<TextProps, false>("Tex
 });
 
 export interface HeadingProps {
-  text?: string;
+  text: string;
   level?: "h2" | "h3" | "h4";
 }
 
@@ -1103,7 +1112,7 @@ export const Heading = /* @__PURE__ */ createRemoteComponent<HeadingProps, false
 });
 
 export interface ButtonProps {
-  label?: string;
+  label: string;
   variant?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "destructive-outline" | "link";
   size?: "xs" | "sm" | "default" | "lg";
   disabled?: boolean;
@@ -1116,7 +1125,7 @@ export const Button = /* @__PURE__ */ createRemoteComponent<ButtonProps, false>(
 });
 
 export interface BadgeProps {
-  text?: string;
+  text: string;
   variant?: "default" | "secondary" | "outline" | "info" | "success" | "warning" | "error" | "destructive";
 }
 
@@ -1125,7 +1134,7 @@ export const Badge = /* @__PURE__ */ createRemoteComponent<BadgeProps, false>("B
 });
 
 export interface CardProps {
-  title?: string;
+  title: string;
   description?: string;
 }
 
@@ -1134,7 +1143,7 @@ export const Card = /* @__PURE__ */ createRemoteComponent<CardProps, true>("Card
 });
 
 export interface AlertProps {
-  title?: string;
+  title: string;
   description?: string;
   variant?: "default" | "info" | "success" | "warning" | "error";
 }
@@ -1144,7 +1153,7 @@ export const Alert = /* @__PURE__ */ createRemoteComponent<AlertProps, false>("A
 });
 
 export interface EmptyProps {
-  title?: string;
+  title: string;
   description?: string;
 }
 
@@ -1163,9 +1172,18 @@ export const Form = /* @__PURE__ */ createRemoteComponent<FormProps, true>("Form
   callbacks: { "onSubmit": 0 },
 });
 
+export interface FieldsetProps {
+  legend?: string;
+  disabled?: boolean;
+}
+
+export const Fieldset = /* @__PURE__ */ createRemoteComponent<FieldsetProps, true>("Fieldset", {
+  children: true,
+});
+
 export interface InputProps {
-  label?: string;
-  value?: string;
+  label: string;
+  value: string;
   placeholder?: string;
   type?: "text" | "email" | "number" | "date" | "search" | "url" | "tel";
   disabled?: boolean;
@@ -1181,8 +1199,8 @@ export const Input = /* @__PURE__ */ createRemoteComponent<InputProps, false>("I
 });
 
 export interface TextareaProps {
-  label?: string;
-  value?: string;
+  label: string;
+  value: string;
   placeholder?: string;
   submitOnEnter?: boolean;
   disabled?: boolean;
@@ -1198,9 +1216,9 @@ export const Textarea = /* @__PURE__ */ createRemoteComponent<TextareaProps, fal
 });
 
 export interface SelectProps {
-  label?: string;
-  value?: string | null;
-  options?: {
+  label: string;
+  value: string | null;
+  options: {
     label: string;
     value: string;
   }[];
@@ -1216,9 +1234,9 @@ export const Select = /* @__PURE__ */ createRemoteComponent<SelectProps, false>(
 });
 
 export interface ComboboxProps {
-  label?: string;
-  value?: string | null;
-  options?: {
+  label: string;
+  value: string | null;
+  options: {
     label: string;
     value: string;
     description?: string;
@@ -1237,8 +1255,8 @@ export const Combobox = /* @__PURE__ */ createRemoteComponent<ComboboxProps, fal
 });
 
 export interface CheckboxProps {
-  label?: string;
-  checked?: boolean;
+  label: string;
+  checked: boolean;
   disabled?: boolean;
   onCheckedChange?: (input: {
     checked: boolean;
@@ -1251,8 +1269,8 @@ export const Checkbox = /* @__PURE__ */ createRemoteComponent<CheckboxProps, fal
 });
 
 export interface SwitchProps {
-  label?: string;
-  checked?: boolean;
+  label: string;
+  checked: boolean;
   disabled?: boolean;
   onCheckedChange?: (input: {
     checked: boolean;
@@ -1265,8 +1283,8 @@ export const Switch = /* @__PURE__ */ createRemoteComponent<SwitchProps, false>(
 });
 
 export interface ProgressProps {
-  label?: string;
-  value?: number;
+  label: string;
+  value: number;
 }
 
 export const Progress = /* @__PURE__ */ createRemoteComponent<ProgressProps, false>("Progress", {
@@ -1282,7 +1300,7 @@ export const Separator = /* @__PURE__ */ createRemoteComponent<SeparatorProps, f
 });
 
 export interface AvatarProps {
-  name?: string;
+  name: string;
 }
 
 export const Avatar = /* @__PURE__ */ createRemoteComponent<AvatarProps, false>("Avatar", {
@@ -1290,7 +1308,7 @@ export const Avatar = /* @__PURE__ */ createRemoteComponent<AvatarProps, false>(
 });
 
 export interface SpinnerProps {
-  label?: string;
+  label: string;
 }
 
 export const Spinner = /* @__PURE__ */ createRemoteComponent<SpinnerProps, false>("Spinner", {
@@ -1305,7 +1323,7 @@ export const Skeleton = /* @__PURE__ */ createRemoteComponent<SkeletonProps, fal
 });
 
 export interface TableProps {
-  label?: string;
+  label: string;
 }
 
 export const Table = /* @__PURE__ */ createRemoteComponent<TableProps, true>("Table", {
@@ -1334,7 +1352,7 @@ export const TableRow = /* @__PURE__ */ createRemoteComponent<TableRowProps, tru
 });
 
 export interface TableHeadProps {
-  text?: string;
+  text: string;
 }
 
 export const TableHead = /* @__PURE__ */ createRemoteComponent<TableHeadProps, false>("TableHead", {
@@ -1349,9 +1367,9 @@ export const TableCell = /* @__PURE__ */ createRemoteComponent<TableCellProps, t
 });
 
 export interface DialogProps {
-  title?: string;
+  title: string;
   description?: string;
-  open?: boolean;
+  open: boolean;
   onOpenChange?: (input: {
     open: boolean;
   }) => void | Promise<void>;
