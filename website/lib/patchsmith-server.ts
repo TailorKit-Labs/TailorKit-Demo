@@ -75,6 +75,9 @@ function createHost(origin: string) {
     },
     projectKey: process.env.PATCHSMITH_PROJECT_KEY,
     baseUrl: new URL("/api/patchsmith", origin),
+    $internal: {
+      runtimeResolveBaseUrl: "https://patchsmith-views-worker.firstbyte.workers.dev/api/platform",
+    },
   });
 }
 
