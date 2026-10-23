@@ -123,6 +123,16 @@ The host setup lives in three files:
 - `lib/patchsmith-client.tsx`: component renderers, browser tools, provider, and hooks.
 - `lib/patchsmith-server.ts`: server tools and the Patchsmith server instance.
 
+App discovery uses `useQuery` with shared options in `lib/patchsmith-queries.ts`
+and the uncached `patchsmithClient.api.views` API. The server layout starts panel
+and navbar prefetches alongside chat history; each route prefetches page instances
+with its root workspace and URL context. `lib/patchsmith-queries.server.ts` calls
+the authenticated host handler in process, and the existing React Query hydration
+boundary streams pending results to the browser. Query keys include the workspace
+and, for page instances, the root context. CRM mutations, host refresh actions,
+and agent completion invalidate the React Query cache. `useViewContext` continues
+to supply live context to the SDK renderers.
+
 `lib/patchsmith.ts` is the browser-safe `defineContract` shared by the host server and client. It declares the `workspace` scope, workspace/page context at `/`, plus a dedicated view for every CRM page. The `navbar` slot renders app actions in each page header. Apps call `ui.openPanel` to open their own installation's panel tab. Panel views render as tabs beside the agent. The `navbar` and `panel` slots support the page views below; apps can implement a specific view or fall back to `/`. The `page` slot uses only the root view `/` and allows multiple instances per app: each instance appears under **App pages** in the sidebar and mobile navigation. The entire group is hidden when no page instances are available.
 
 Page contexts are registered by the page displaying the data and update as its query data or local controls change:

@@ -1,6 +1,7 @@
 "use client";
 
-import { RenderSlot, useViews, useViewContext } from "@/lib/patchsmith-client";
+import { useQuery } from "@tanstack/react-query";
+import { RenderSlot, useViewQueryOptions, useViewContext } from "@/lib/patchsmith-client";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { appPageHref, appPageLabel, findAppPage, type AppPageTarget } from "@/lib/app-pages";
@@ -19,7 +20,7 @@ export function AppPage({
   workspace: { id: string; name: string };
 }) {
   const pathname = usePathname();
-  const { data: pages, isPending, error, fetch } = useViews({ slot: "page" });
+  const { data: pages, isPending, error, refetch } = useQuery(useViewQueryOptions("page"));
   const page = pages ? findAppPage(pages, target) : undefined;
   const [identity, setIdentity] = useState({
     appId: "",
@@ -33,8 +34,7 @@ export function AppPage({
         : { appId: page.app.id, instanceKey: page.key },
     );
   }, [page]);
-  // Discovery refetches when context changes. Keep the resolved identity while
-  // that query reloads, rather than alternating between an ID and an empty ID.
+  // Keep the resolved identity available to panels during background refreshes.
   useViewContext("/app-pages", {
     context: { appPage: identity },
   });
@@ -49,12 +49,12 @@ export function AppPage({
       </AppPageHeading>
       {isPending ? (
         <Skeleton className="h-64 w-full" aria-label="Loading app page" />
-      ) : error ? (
+      ) : error && pages === undefined ? (
         <Alert variant="error">
           <AlertTitle>Could not load app pages</AlertTitle>
           <AlertDescription>
             <p>Please try again.</p>
-            <Button variant="outline" size="sm" onClick={() => void fetch()}>
+            <Button variant="outline" size="sm" onClick={() => void refetch()}>
               Retry
             </Button>
           </AlertDescription>

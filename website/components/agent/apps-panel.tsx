@@ -7,9 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTab, TabsPanel } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { AppLogo } from "@/components/app/app-logo";
-import { RenderSlot, useViews } from "@/lib/patchsmith-client";
+import type { PatchsmithApp } from "patchsmith/react";
+import { RenderSlot } from "@/lib/patchsmith-client";
 
-export type PanelApp = NonNullable<ReturnType<typeof useViews>["data"]>[number]["app"];
+export type PanelApp = PatchsmithApp;
 
 const tabClassName =
   "h-9 grow-0 gap-2 rounded-lg border-0 px-2 font-normal text-sm text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground data-active:bg-sidebar-accent data-active:font-medium data-active:text-sidebar-accent-foreground sm:h-9";

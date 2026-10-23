@@ -1,9 +1,10 @@
 "use client";
 
-import { RenderSlot, useViews } from "@/lib/patchsmith-client";
+import { useQuery } from "@tanstack/react-query";
+import { RenderSlot, useViewQueryOptions } from "@/lib/patchsmith-client";
 
 export function AppNavbar() {
-  const { data: items } = useViews({ slot: "navbar" });
+  const { data: items } = useQuery(useViewQueryOptions("navbar"));
   if (!items?.length) return null;
 
   return (
