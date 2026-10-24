@@ -10,7 +10,6 @@ import { AppPageHeading } from "./app-page-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "@/components/ui/empty";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export function AppPage({
   target,
@@ -48,7 +47,9 @@ export function AppPage({
         </div>
       </AppPageHeading>
       {isPending ? (
-        <Skeleton className="h-64 w-full" aria-label="Loading app page" />
+        <span role="status" className="sr-only">
+          Loading app page…
+        </span>
       ) : error && pages === undefined ? (
         <Alert variant="error">
           <AlertTitle>Could not load app pages</AlertTitle>
