@@ -1,0 +1,23 @@
+apps/stripe/src/components.tsx
+  s_976d4410a57304::t_4e23ac3c993f74 41,73
+apps/stripe/src/slots/page/index.view.tsx
+  s_976d4410a57304::t_4e23ac3c993f74 61-63
+apps/stripe/src/slots/panel/contacts.detail.view.tsx
+  s_976d4410a57304::t_4e23ac3c993f74 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "376acbbba8616298037432244dd868bb2cfb2878",
+  "prompts": {},
+  "sessions": {
+    "s_976d4410a57304": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16cda-d31a-7672-bb5c-6453ea23be6b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
