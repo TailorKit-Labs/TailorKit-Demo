@@ -1,0 +1,19 @@
+website/lib/patchsmith-server.ts
+  s_4aa902054389f1::t_09016f4a861296 25,27-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8c17ea737b625059326ea70ff8ef7d6fa135a4a3",
+  "prompts": {},
+  "sessions": {
+    "s_4aa902054389f1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16c77-c999-7842-91cd-41cf72d5d917",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
