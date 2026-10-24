@@ -1167,6 +1167,8 @@ export const Empty = /* @__PURE__ */ createRemoteComponent<EmptyProps, true>("Em
 
 export interface FormProps {
   id?: string;
+  plain?: boolean;
+  submitLabel?: string;
   disabled?: boolean;
   onSubmit?: () => void | Promise<void>;
 }
@@ -1412,7 +1414,14 @@ export interface DialogProps {
     label: string;
     variant?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "destructive-outline" | "link";
     disabled?: boolean;
-    type?: "button" | "submit";
+    type: "submit";
+    form: string;
+  } | {
+    id: string;
+    label: string;
+    variant?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "destructive-outline" | "link";
+    disabled?: boolean;
+    type?: "button";
     form?: string;
   })[];
   onOpenChange?: (input: {

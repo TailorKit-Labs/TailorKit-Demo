@@ -28,6 +28,7 @@ const buttonVariant = z.enum([
   "destructive-outline",
   "link",
 ]);
+const dialogAction = z.object({ id: label, label, variant: buttonVariant.optional(), disabled });
 const externalHref = z.string().refine((value) => {
   try {
     const url = new URL(value);
@@ -270,7 +271,12 @@ export const contract = defineContract({
       children: true,
     },
     Form: {
-      fields: z.object({ id: label.optional(), disabled }),
+      fields: z.object({
+        id: label.optional(),
+        plain: z.boolean().optional(),
+        submitLabel: label.optional(),
+        disabled,
+      }),
       children: true,
       callbacks: { onSubmit: {} },
     },
@@ -366,14 +372,10 @@ export const contract = defineContract({
         open: z.boolean(),
         actions: z
           .array(
-            z.object({
-              id: label,
-              label,
-              variant: buttonVariant.optional(),
-              disabled,
-              type: z.enum(["button", "submit"]).optional(),
-              form: label.optional(),
-            }),
+            z.union([
+              dialogAction.extend({ type: z.literal("submit"), form: label }),
+              dialogAction.extend({ type: z.literal("button").optional(), form: label.optional() }),
+            ]),
           )
           .max(6)
           .optional(),

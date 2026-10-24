@@ -9,6 +9,8 @@ Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); sear
 | Prop | Required | Accepted values |
 | --- | --- | --- |
 | id | no | string |
+| plain | no | boolean |
+| submitLabel | no | string |
 | disabled | no | boolean |
 
 ## Callbacks

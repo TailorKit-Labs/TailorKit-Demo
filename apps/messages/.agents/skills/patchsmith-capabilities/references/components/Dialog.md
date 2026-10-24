@@ -11,7 +11,7 @@ Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); sear
 | title | yes | string |
 | description | no | string |
 | open | yes | boolean |
-| actions | no | list of { id (required): string; label (required): string; variant (optional): "default", "outline", "secondary", "ghost", "destructive", "destructive-outline", "link"; disabled (optional): boolean; type (optional): "button", "submit"; form (optional): string } (maximum items: 6) |
+| actions | no | list of { id (required): string; label (required): string; variant (optional): "default", "outline", "secondary", "ghost", "destructive", "destructive-outline", "link"; disabled (optional): boolean; type (required): "submit"; form (required): string }; or { id (required): string; label (required): string; variant (optional): "default", "outline", "secondary", "ghost", "destructive", "destructive-outline", "link"; disabled (optional): boolean; type (optional): "button"; form (optional): string } (maximum items: 6) |
 
 ## Callbacks
 

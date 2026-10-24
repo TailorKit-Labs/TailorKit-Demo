@@ -19,7 +19,14 @@ type AppFormProps = z.infer<typeof contract.components.Form.fields> & {
   onSubmit?: () => unknown;
 };
 
-export function AppForm({ id, disabled, onSubmit, children }: AppFormProps) {
+export function AppForm({
+  id,
+  plain = false,
+  submitLabel,
+  disabled,
+  onSubmit,
+  children,
+}: AppFormProps) {
   return (
     <form
       id={id}
@@ -28,7 +35,16 @@ export function AppForm({ id, disabled, onSubmit, children }: AppFormProps) {
         if (!disabled) onSubmit?.();
       }}
     >
-      {children}
+      {plain ? (
+        children
+      ) : (
+        <div className="flex flex-col gap-4">
+          {children}
+          <Button type="submit" disabled={disabled}>
+            {submitLabel ?? "Save"}
+          </Button>
+        </div>
+      )}
     </form>
   );
 }
