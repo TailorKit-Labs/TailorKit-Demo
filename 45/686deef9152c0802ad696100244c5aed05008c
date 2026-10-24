@@ -1,0 +1,43 @@
+website/lib/patchsmith-client.tsx
+  s_18a9129028b79a::t_bd6f29dd8b1bc3 69,142-143,177,348
+apps/doom/src/patchsmith.gen.ts
+  s_18a9129028b79a::t_893f10bd291532 1120-1121,1168,1409-1416,1420-1422,1427
+website/lib/patchsmith.ts
+  s_18a9129028b79a::t_bd6f29dd8b1bc3 22-30,234,238-239,266,356-373,375-378
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Button.md
+  s_18a9129028b79a::t_fba7eb79f6312b 16-17
+apps/messages/src/slots/panel/contacts.detail.view.tsx
+  s_18a9129028b79a::t_23275f9b76f43e 9,194-205,207-219
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Dialog.md
+  s_18a9129028b79a::t_fba7eb79f6312b 14,23
+website/components/app-form.tsx
+  s_18a9129028b79a::t_bd6f29dd8b1bc3 1-78
+website/lib/patchsmith-server.ts
+  s_18a9129028b79a::t_bd6f29dd8b1bc3 28
+  s_18a9129028b79a::t_c6313837b0260c 27
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Form.md
+  s_18a9129028b79a::t_fba7eb79f6312b 11
+apps/messages/src/patchsmith.gen.ts
+  s_18a9129028b79a::t_fba7eb79f6312b 1120-1121,1168,1409-1416,1420-1422,1427
+website/README.md
+  s_18a9129028b79a::t_23275f9b76f43e 168-198,200-202,207,212
+  s_18a9129028b79a::t_6467296424b19f 199
+apps/stripe/src/patchsmith.gen.ts
+  s_18a9129028b79a::t_c99dd971b5bc70 1120-1121,1168,1409-1416,1420-1422,1427
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "45686deef9152c0802ad696100244c5aed05008c",
+  "prompts": {},
+  "sessions": {
+    "s_18a9129028b79a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16c7d-db8a-7f22-8317-27388e2b5a1e",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
