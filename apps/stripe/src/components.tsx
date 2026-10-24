@@ -38,7 +38,7 @@ export function LoadState({
       <Flex direction="column" gap="3">
         <Alert
           title="Couldn't load billing"
-          description="Please try loading the demo data again."
+          description="Please try loading billing again."
           variant="error"
         />
         <Button label="Try again" variant="outline" onClick={reload} />
@@ -70,10 +70,7 @@ function ContactBillingSkeleton() {
   return (
     <Flex direction="column" gap="5" height="full" overflow="auto">
       <Flex direction="column" gap="2">
-        <Flex justify="between" align="center" gap="3">
-          <Skeleton width="20" height="6" />
-          <Skeleton width="20" height="5" radius="full" />
-        </Flex>
+        <Skeleton width="20" height="6" />
         <Skeleton width="40" height="6" />
         <Skeleton width="48" height="4" />
       </Flex>
@@ -116,7 +113,6 @@ function ContactBillingSkeleton() {
         ))}
       </Flex>
       <Skeleton height="10" radius="lg" />
-      <Skeleton width="3/4" height="3" />
     </Flex>
   );
 }

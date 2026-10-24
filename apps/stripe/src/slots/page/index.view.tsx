@@ -58,12 +58,9 @@ function Analytics() {
   }
   return (
     <Flex direction="column" gap="6" height="full" overflow="auto">
-      <Flex justify="between" align="center" wrap="wrap" gap="3">
-        <Flex direction="column" gap="1">
-          <Heading text="Billing overview" />
-          <Text text="Revenue, subscriptions, and recent activity." tone="muted" size="sm" />
-        </Flex>
-        <Badge text="Demo data · USD" variant="secondary" />
+      <Flex direction="column" gap="1">
+        <Heading text="Billing overview" />
+        <Text text="Revenue, subscriptions, and recent activity in USD." tone="muted" size="sm" />
       </Flex>
       {!customers.length ? (
         <Empty
@@ -257,11 +254,6 @@ function Analytics() {
           </Card>
         </>
       )}
-      <Text
-        text="Simulated Stripe data, saved per workspace. No real payments are processed."
-        tone="muted"
-        size="xs"
-      />
     </Flex>
   );
 }
