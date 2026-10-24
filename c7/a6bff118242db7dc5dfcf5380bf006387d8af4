@@ -1,0 +1,43 @@
+apps/doom/src/patchsmith.gen.ts
+  s_ae5de7a00d0edf::t_897f1e60216011 1412,1418,1427,1432
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Dialog.md
+  s_f993d283f49003::t_91803ff6cd931f 14-15,25
+apps/messages/src/patchsmith.gen.ts
+  s_f993d283f49003::t_71af1a4ba1c7c7 1412,1418,1427,1432
+apps/stripe/src/patchsmith.gen.ts
+  s_ae5de7a00d0edf::t_fd3ba30ee31510 1412,1418,1427,1432
+website/README.md
+  s_f993d283f49003::t_7f97c484944c20 170,176-177,180-181,187-197
+website/components/app-form.tsx
+  s_f993d283f49003::t_3581a3abe6b6c5 56,63,67,72-83,97
+website/lib/patchsmith-server.ts
+  s_f993d283f49003::t_c55a6a74002ab2 29
+website/lib/patchsmith.ts
+  s_f993d283f49003::t_29fa5e15585539 373,376-379,388
+website/scripts/patchsmith-forms.test.ts
+  s_f993d283f49003::t_9a9057a6cbb0e7 38,43,48,59-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c7a6bff118242db7dc5dfcf5380bf006387d8af4",
+  "prompts": {},
+  "sessions": {
+    "s_ae5de7a00d0edf": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16c88-b0f6-79f2-ba8d-5b00fad2c3a3",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_f993d283f49003": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16c88-2647-7c23-a9f5-d28b4854bc69",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
