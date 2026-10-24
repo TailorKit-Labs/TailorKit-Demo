@@ -1,0 +1,38 @@
+website/components/app-form.tsx
+  s_adad7c4c705f80::t_e933122385798b 21,29
+  s_adad7c4c705f80::t_16bda2098971a6 39
+website/lib/patchsmith.ts
+  s_adad7c4c705f80::t_e933122385798b 273,367
+website/lib/patchsmith-server.ts
+  s_adad7c4c705f80::t_e933122385798b 29
+website/README.md
+  s_adad7c4c705f80::t_e933122385798b 168,170,174,193,198
+website/scripts/patchsmith-forms.test.ts
+  s_adad7c4c705f80::t_e933122385798b 11-12,14,30
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Dialog.md
+  s_adad7c4c705f80::t_15e3b2e509513b 4
+apps/doom/src/patchsmith.gen.ts
+  s_adad7c4c705f80::t_15e3b2e509513b 1173,1417,1421
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Form.md
+  s_adad7c4c705f80::t_15e3b2e509513b 4
+apps/messages/src/patchsmith.gen.ts
+  s_adad7c4c705f80::t_15e3b2e509513b 1173,1417,1421
+apps/stripe/src/patchsmith.gen.ts
+  s_adad7c4c705f80::t_15e3b2e509513b 1173,1417,1421
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ffe10ccaa0e3e3bf74e9d010896e937b1963154c",
+  "prompts": {},
+  "sessions": {
+    "s_adad7c4c705f80": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16d19-97d2-7f40-a3a7-bedbca51bcbe",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
