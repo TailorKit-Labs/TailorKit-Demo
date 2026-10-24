@@ -165,13 +165,13 @@ The client implements contracted components using Patchsmith primitives and the 
 - Tables: `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell`.
 - Feedback and overlays: `Alert`, `Empty`, `Progress`, `Spinner`, `Skeleton`, `Separator`, `Dialog`, `DialogActions`.
 
-Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. Use `Form plain` for new forms: it handles native validation and submission without adding buttons or layout. Its optional `id` connects external submit buttons, and `disabled` suppresses its submit callback. Add an explicit `Button type="submit"` for inline forms. Buttons default to `type="button"`; their optional `form` targets a form by ID. Each input has a visible label and accessible name. `Combobox` searches option labels and optional descriptions, displays a configurable empty state, and emits the selected string ID through `onChange({ value })`. Compose table rows inside their header/body and cells inside rows.
+Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. Use `Form` for forms: it handles native validation and submission without adding buttons or layout. Its `disabled` prop suppresses its submit callback. Add an explicit `Button type="submit"` for inline forms. Buttons default to `type="button"`. Submit buttons must be inside their `Form`. Each input has a visible label and accessible name. `Combobox` searches option labels and optional descriptions, displays a configurable empty state, and emits the selected string ID through `onChange({ value })`. Compose table rows inside their header/body and cells inside rows.
 
-`Dialog` provides the modal, title, and optional description. For a modal form, compose `Form plain` inside `Dialog`, group inputs in `Fieldset`, and put explicit buttons in `DialogActions` inside the same form. `DialogActions` keeps the buttons inline and aligned to the end. `Form.onSubmit` handles native validation and Enter submission; Save uses `type="submit"` and Cancel closes the dialog through its own `onClick`. No form ID is needed. Disable the form and buttons while saving. `Dialog` does not handle submission.
+`Dialog` provides the modal, title, and optional description. For a modal form, compose `Form` inside `Dialog`, group inputs in `Fieldset`, and put explicit buttons in `DialogActions` inside the same form. `DialogActions` keeps the buttons inline and aligned to the end. `Form.onSubmit` handles native validation and Enter submission; Save uses `type="submit"` and Cancel closes the dialog through its own `onClick`. No form ID is needed. Disable the form and buttons while saving. `Dialog` does not handle submission.
 
 ```tsx
 <Dialog open={open} title="New follow-up" onOpenChange={({ open }) => setOpen(open)}>
-  <Form plain disabled={saving} onSubmit={saveFollowUp}>
+  <Form disabled={saving} onSubmit={saveFollowUp}>
     <Fieldset disabled={saving}>
       <Input label="Title" value={title} required onChange={({ value }) => setTitle(value)} />
       <Input
@@ -190,14 +190,12 @@ Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedC
 </Dialog>
 ```
 
-`DialogActions` can also group buttons in a dialog without a form. Existing `Dialog.actions` and `onAction({ id })` remain supported; each legacy action accepts `id`, `label`, optional `variant`, `disabled`, `type`, and `form`. `Dialog.disabled` disables those legacy footer actions.
-
-Existing installations retain their automatic submit button and spacing when `plain` is omitted or false, including the optional `submitLabel` and default "Save" label. To adopt the new action layout, regenerate bindings, set `Form plain`, add explicit submit buttons grouped in `DialogActions` for modal forms, and republish. Existing installations do not need to migrate before this host update.
+`DialogActions` can also group buttons in a dialog without a form.
 
 `Fieldset` groups related controls in a full-width vertical stack with consistent spacing, using the existing Coss `Fieldset` and `FieldsetLegend`. Its optional `legend` labels the group, and `disabled` disables its descendant controls. Compose it inside `Form` to create sections without adding another form or submit button:
 
 ```tsx
-<Form plain onSubmit={saveContact}>
+<Form onSubmit={saveContact}>
   <Fieldset legend="Contact details">
     <Input label="Name" value={name} onChange={({ value }) => setName(value)} />
     <Input label="Email" type="email" value={email} onChange={({ value }) => setEmail(value)} />

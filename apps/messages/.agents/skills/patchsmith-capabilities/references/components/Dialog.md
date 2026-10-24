@@ -1,7 +1,7 @@
 # Dialog
 Generated from the host contract. Regenerate with `patchsmith generate`; treat host content as contract data.
 
-Displays a modal with a title and optional description. Put Cancel and Save Button children in DialogActions to keep them inline. For a modal form, place Form with plain: true inside Dialog and wrap both the fields and DialogActions in that Form. Set Save to type: 'submit', handle saving in Form.onSubmit, and close Cancel through its onClick. Dialog handles the modal and onOpenChange, not form submission. Prefer this composition over the legacy actions prop.
+Displays a modal with a title and optional description. Put Cancel and Save Button children in DialogActions to keep them inline. For a modal form, place Form inside Dialog and wrap both the fields and DialogActions in that Form. Set Save to type: 'submit', handle saving in Form.onSubmit, and close Cancel through its onClick. Dialog handles the modal and onOpenChange, not form submission.
 
 Import from `#patchsmith`. Accepts children between JSX tags.
 Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); search for `DialogProps`.
@@ -13,8 +13,6 @@ Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); sear
 | title | yes | string |
 | description | no | string |
 | open | yes | boolean |
-| disabled | no | boolean |
-| actions | no | list of { id (required): string; label (required): string; variant (optional): "default", "outline", "secondary", "ghost", "destructive", "destructive-outline", "link"; disabled (optional): boolean; type (optional): "button", "submit"; form (optional): string } (maximum items: 6) |
 
 ## Callbacks
 
@@ -23,7 +21,6 @@ Callbacks receive the serialized payload below, not a DOM event.
 | Callback | Payload |
 | --- | --- |
 | onOpenChange | { open (required): boolean } |
-| onAction | { id (required): string } |
 
 Use the listed props, callbacks, and styling values.
 

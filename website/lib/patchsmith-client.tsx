@@ -157,7 +157,6 @@ export const patchsmithClient = createClient({
       ) : (
         <Button
           type={props.type ?? "button"}
-          form={props.form}
           variant={props.variant}
           size={props.size}
           disabled={props.disabled}

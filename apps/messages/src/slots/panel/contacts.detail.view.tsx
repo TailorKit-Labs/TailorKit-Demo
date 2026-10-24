@@ -188,7 +188,6 @@ function Conversation({ workspaceId, contact }: { workspaceId: string; contact: 
       <Separator />
       <Box shrink="0">
         <Form
-          plain
           disabled={loading || sending || !draft.length || draft.length > MAX_MESSAGE_LENGTH}
           onSubmit={() => void send()}
         >
