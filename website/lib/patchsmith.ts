@@ -260,7 +260,14 @@ export const contract = defineContract({
     Alert: {
       fields: z.object({ title: label, description: text.optional(), variant: tone.optional() }),
     },
-    Empty: { fields: z.object({ title: label, description: text.optional() }), children: true },
+    Empty: {
+      fields: z.object({
+        title: label,
+        description: text.optional(),
+        icon: z.enum(["route", "gamepad", "users", "credit-card", "inbox", "file"]).optional(),
+      }),
+      children: true,
+    },
     Form: {
       fields: z.object({ submitLabel: label.optional(), disabled }),
       children: true,

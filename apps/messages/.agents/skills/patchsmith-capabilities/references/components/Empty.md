@@ -10,6 +10,7 @@ Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); sear
 | --- | --- | --- |
 | title | yes | string |
 | description | no | string |
+| icon | no | "route", "gamepad", "users", "credit-card", "inbox", "file" |
 
 ## Callbacks
 
