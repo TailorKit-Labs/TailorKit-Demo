@@ -1144,6 +1144,23 @@ export const Card = /* @__PURE__ */ createRemoteComponent<CardProps, true>("Card
   children: true,
 });
 
+export interface TabsProps {
+  label: string;
+  value: string;
+  options: {
+    label: string;
+    value: string;
+  }[];
+  onChange?: (input: {
+    value: string;
+  }) => void | Promise<void>;
+}
+
+export const Tabs = /* @__PURE__ */ createRemoteComponent<TabsProps, true>("Tabs", {
+  children: true,
+  callbacks: { "onChange": 1 },
+});
+
 export interface AlertProps {
   title: string;
   description?: string;

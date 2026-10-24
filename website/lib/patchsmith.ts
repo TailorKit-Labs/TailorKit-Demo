@@ -1,5 +1,5 @@
 import { defineContract, experimental_canvas, tool } from "patchsmith";
-import { primitives, type PatchsmithTheme } from "patchsmith/zod";
+import { defaultBreakpoints, primitives, type PatchsmithTheme } from "patchsmith/zod";
 import { z } from "zod";
 import { schemas, stage, status } from "../routers/schemas";
 import type { Contact, Deal, Workspace } from "./workspace";
@@ -46,6 +46,8 @@ const serverTool = <I extends z.ZodType, O extends z.ZodType>(schema: { input: I
 // their runtime CSS values cannot drift. Use SDK defaults for layout and spacing;
 // semantic color variables follow light/dark mode.
 export const patchsmithTheme = {
+  // The renderer reads these directly when emitting responsive primitive CSS.
+  breakpoints: defaultBreakpoints,
   tokens: {
     background: {
       default: "var(--background)",
@@ -257,6 +259,21 @@ export const contract = defineContract({
       }),
     },
     Card: { fields: z.object({ title: label, description: text.optional() }), children: true },
+    Tabs: {
+      fields: z.object({
+        label,
+        value: label,
+        options: z
+          .array(z.object({ label, value: label }))
+          .refine((options) => options.length >= 2 && options.length <= 7, "Use 2–7 tabs.")
+          .refine(
+            (options) => new Set(options.map(({ value }) => value)).size === options.length,
+            "Tab values must be unique.",
+          ),
+      }),
+      children: true,
+      callbacks: { onChange },
+    },
     Alert: {
       fields: z.object({ title: label, description: text.optional(), variant: tone.optional() }),
     },

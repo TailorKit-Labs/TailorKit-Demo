@@ -27,10 +27,7 @@ function Billing({ contactId }: { contactId: string }) {
   return (
     <Flex direction="column" gap="5" height="full" overflow="auto">
       <Flex direction="column" gap="2">
-        <Flex justify="between" align="center">
-          <Heading text="Stripe" />
-          <Badge text="Demo data" variant="secondary" />
-        </Flex>
+        <Heading text="Stripe" />
         <Text text={customer.name} size="lg" />
         <Text text={customer.email} tone="muted" size="sm" />
       </Flex>
@@ -112,11 +109,6 @@ function Billing({ contactId }: { contactId: string }) {
         <Text text="No invoices yet. This contact is on a trial." tone="muted" size="sm" />
       )}
       <Button label="View in Stripe" href={STRIPE_DEMO_URL} variant="outline" />
-      <Text
-        text="Simulated billing in USD. No real payments are processed."
-        tone="muted"
-        size="xs"
-      />
     </Flex>
   );
 }

@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { AppSlotButton } from "../components/app/app-slot-button";
 import { DatabaseSync } from "node:sqlite";
 import { mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -243,4 +246,52 @@ void test("Stripe analytics has a readable page URL and Button accepts safe exte
     assert.equal(fields.safeParse({ label: "Stripe", href }).success, false);
   }
   assert.equal(billingRouter.reconcile.visibility, "internal");
+});
+
+void test("app links use the shared button's SVG icon and preserve disabled link behavior", () => {
+  const props = {
+    label: "View on Stripe",
+    href: "https://dashboard.stripe.com/test/forma-demo",
+    variant: "outline" as const,
+  };
+  const html = renderToStaticMarkup(createElement(AppSlotButton, props));
+  assert.match(html, /<a[^>]+href="https:\/\/dashboard.stripe.com\/test\/forma-demo"/);
+  assert.match(html, /target="_blank"/);
+  assert.match(html, /rel="noopener noreferrer"/);
+  assert.match(html, /<svg[^>]+data-icon="inline-end"[^>]+aria-hidden="true"/);
+  assert.doesNotMatch(html, /↗/);
+
+  const disabled = renderToStaticMarkup(createElement(AppSlotButton, { ...props, disabled: true }));
+  assert.doesNotMatch(disabled, /href=/);
+  assert.match(disabled, /aria-disabled="true"/);
+  assert.match(disabled, /tabindex="-1"/);
+
+  const action = renderToStaticMarkup(createElement(AppSlotButton, { label: "Open contact" }));
+  assert.match(action, /<button/);
+  assert.doesNotMatch(action, /<svg|<a\s/);
+});
+
+void test("app tabs validate bounded, unique options across the catalog boundary", () => {
+  const fields = contract.components.Tabs.fields;
+  const props = {
+    label: "Billing activity",
+    value: "invoices",
+    options: [
+      { label: "Recent invoices", value: "invoices" },
+      { label: "Subscriptions", value: "subscriptions" },
+    ],
+  };
+  assert.equal(fields.safeParse(props).success, true);
+  assert.equal(fields.safeParse({ ...props, options: [] }).success, false);
+  assert.equal(
+    fields.safeParse({ ...props, options: [props.options[0], props.options[0]] }).success,
+    false,
+  );
+  assert.equal(
+    fields.safeParse({
+      ...props,
+      options: Array.from({ length: 8 }, (_, i) => ({ label: String(i), value: String(i) })),
+    }).success,
+    false,
+  );
 });

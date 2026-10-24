@@ -11,6 +11,7 @@ import {
   Heading,
   AreaChart,
   BarChart,
+  Tabs,
   Table,
   TableBody,
   TableCell,
@@ -43,6 +44,7 @@ function StripeAnalytics() {
 function Analytics() {
   const state = useBilling();
   const [navigationError, setNavigationError] = useState("");
+  const [table, setTable] = useState("invoices");
   if (state.loading || state.error) return <LoadState {...state} layout="page" />;
   const { customers } = state;
   const summary = summarize(customers);
@@ -56,49 +58,21 @@ function Analytics() {
   }
   return (
     <Flex direction="column" gap="6" height="full" overflow="auto">
-      <Flex justify="between" align="center" wrap="wrap" gap="3">
-        <Flex direction="column" gap="2">
-          <Heading text="Billing overview" />
-          <Text
-            text="Subscriptions and payments across all your contacts."
-            tone="muted"
-            size="sm"
-          />
-        </Flex>
+      <Flex direction="column" gap="1">
+        <Heading text="Billing overview" />
+        <Text text="Revenue, subscriptions, and recent activity in USD." tone="muted" size="sm" />
       </Flex>
-      <Grid columns={{ default: 1, sm: 2, xl: 4 }} gap="4">
-        <Stat
-          label="Collected revenue"
-          value={money(summary.revenue)}
-          description="All paid demo invoices"
-        />
-        <Stat
-          label="Monthly recurring revenue"
-          value={money(summary.mrr)}
-          description="Active and past-due subscriptions"
-        />
-        <Stat
-          label="Active subscriptions"
-          value={String(summary.active)}
-          description={`${summary.trials} on trial · ${customers.length} total contacts`}
-        />
-        <Stat
-          label="Outstanding balance"
-          value={money(summary.outstanding)}
-          description={`${summary.pastDue} past-due subscriptions`}
-        />
-      </Grid>
       {!customers.length ? (
         <Empty
           title="No contacts yet"
-          description="Add a contact in the CRM to start seeing demo billing and analytics."
+          description="Add a contact in the CRM to start seeing billing and analytics."
         />
       ) : (
         <>
-          <Grid columns={{ default: 1, lg: 2 }} gap="4">
+          <Grid columns={{ default: 1, md: 2 }} gap="4">
             <Card
               title="Revenue by month"
-              description="Paid invoices · last six months with billing activity"
+              description="Paid invoices · six most recent billing months"
             >
               <AreaChart
                 label="Collected revenue by month"
@@ -116,8 +90,8 @@ function Analytics() {
               />
             </Card>
             <Card
-              title="Plan breakdown"
-              description="All contacts, including trials and canceled subscriptions"
+              title="Customers by plan"
+              description={`${customers.length} contacts · all subscription statuses`}
             >
               <BarChart
                 label="Contacts by subscription plan"
@@ -129,108 +103,157 @@ function Analytics() {
               />
             </Card>
           </Grid>
-          <Card
-            title="Contact subscriptions"
-            description="Open a contact to see their billing details."
+          <Grid
+            columns={{ default: 2, lg: 4 }}
+            gap="5"
+            padding="5"
+            border="solid"
+            radius="xl"
+            background="card"
           >
-            {navigationError ? <Text text={navigationError} tone="destructive" size="sm" /> : null}
-            <Box overflow="auto">
-              <Table label="Contact subscriptions">
-                <TableHeader>
-                  <TableRow>
-                    {["Contact", "Plan", "Status", "Monthly amount"].map((text) => (
-                      <TableHead key={text} text={text} />
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {customers.map((customer) => (
-                    <TableRow key={customer.id}>
-                      <TableCell>
-                        <Flex direction="column" gap="1">
-                          <Button
-                            label={customer.name}
-                            variant="link"
-                            size="sm"
-                            onClick={() => openContact(customer.id)}
-                          />
-                          <Text text={customer.company} tone="muted" size="xs" />
-                        </Flex>
-                      </TableCell>
-                      <TableCell>
-                        <Text text={customer.billing.plan} size="sm" />
-                      </TableCell>
-                      <TableCell>
-                        <BillingStatus status={customer.billing.status} />
-                      </TableCell>
-                      <TableCell>
-                        <Text text={money(customer.billing.monthlyAmount)} size="sm" />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-          </Card>
-          <Card
-            title="Recent invoices"
-            description="The 10 most recent invoices across your contacts"
-          >
-            <Box overflow="auto">
-              <Table label="Recent Stripe invoices">
-                <TableHeader>
-                  <TableRow>
-                    {["Contact", "Date", "Amount", "Status"].map((text) => (
-                      <TableHead key={text} text={text} />
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {summary.invoices.map((invoice) => (
-                    <TableRow key={invoice.id}>
-                      <TableCell>
-                        <Text text={invoice.name} size="sm" />
-                      </TableCell>
-                      <TableCell>
-                        <Text text={shortDate(invoice.date)} size="sm" />
-                      </TableCell>
-                      <TableCell>
-                        <Text text={money(invoice.amount)} size="sm" />
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          text={
-                            invoice.status === "paid"
-                              ? "Paid"
-                              : invoice.status === "open"
-                                ? "Open"
-                                : "Void"
-                          }
-                          variant={
-                            invoice.status === "paid"
-                              ? "success"
-                              : invoice.status === "open"
-                                ? "warning"
-                                : "secondary"
-                          }
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Box>
-            {!summary.invoices.length ? (
-              <Text text="No invoices yet." tone="muted" size="sm" />
-            ) : null}
+            <Stat
+              label="Collected revenue"
+              value={money(summary.revenue)}
+              description="All paid invoices"
+              framed={false}
+            />
+            <Stat
+              label="Monthly recurring"
+              value={money(summary.mrr)}
+              description="Active & past-due plans"
+              framed={false}
+            />
+            <Stat
+              label="Active subscriptions"
+              value={String(summary.active)}
+              description={`${summary.trials} on trial`}
+              framed={false}
+            />
+            <Stat
+              label="Outstanding"
+              value={money(summary.outstanding)}
+              description={`${summary.pastDue} past due`}
+              framed={false}
+            />
+          </Grid>
+          <Card title="Billing activity">
+            <Tabs
+              label="Billing activity"
+              value={table}
+              options={[
+                { label: "Recent invoices", value: "invoices" },
+                { label: "Subscriptions", value: "subscriptions" },
+              ]}
+              onChange={({ value }) => setTable(value)}
+            >
+              {table === "subscriptions" ? (
+                <Flex direction="column" gap="3">
+                  <Text
+                    text="Open a contact to see their billing details."
+                    tone="muted"
+                    size="sm"
+                  />
+                  {navigationError ? (
+                    <Text text={navigationError} tone="destructive" size="sm" />
+                  ) : null}
+                  <Box overflow="auto">
+                    <Table label="Contact subscriptions">
+                      <TableHeader>
+                        <TableRow>
+                          {["Contact", "Plan", "Status", "Monthly amount"].map((text) => (
+                            <TableHead key={text} text={text} />
+                          ))}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {customers.map((customer) => (
+                          <TableRow key={customer.id}>
+                            <TableCell>
+                              <Flex direction="column" gap="1">
+                                <Button
+                                  label={customer.name}
+                                  variant="link"
+                                  size="sm"
+                                  onClick={() => openContact(customer.id)}
+                                />
+                                <Text text={customer.company} tone="muted" size="xs" />
+                              </Flex>
+                            </TableCell>
+                            <TableCell>
+                              <Text text={customer.billing.plan} size="sm" />
+                            </TableCell>
+                            <TableCell>
+                              <BillingStatus status={customer.billing.status} />
+                            </TableCell>
+                            <TableCell>
+                              <Text text={money(customer.billing.monthlyAmount)} size="sm" />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </Box>
+                </Flex>
+              ) : (
+                <Flex direction="column" gap="3">
+                  <Text
+                    text="The 10 most recent invoices across your contacts."
+                    tone="muted"
+                    size="sm"
+                  />
+                  <Box overflow="auto">
+                    <Table label="Recent Stripe invoices">
+                      <TableHeader>
+                        <TableRow>
+                          {["Contact", "Date", "Amount", "Status"].map((text) => (
+                            <TableHead key={text} text={text} />
+                          ))}
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {summary.invoices.map((invoice) => (
+                          <TableRow key={invoice.id}>
+                            <TableCell>
+                              <Text text={invoice.name} size="sm" />
+                            </TableCell>
+                            <TableCell>
+                              <Text text={shortDate(invoice.date)} size="sm" />
+                            </TableCell>
+                            <TableCell>
+                              <Text text={money(invoice.amount)} size="sm" />
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                text={
+                                  invoice.status === "paid"
+                                    ? "Paid"
+                                    : invoice.status === "open"
+                                      ? "Open"
+                                      : "Void"
+                                }
+                                variant={
+                                  invoice.status === "paid"
+                                    ? "success"
+                                    : invoice.status === "open"
+                                      ? "warning"
+                                      : "secondary"
+                                }
+                              />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </Box>
+                  {!summary.invoices.length ? (
+                    <Text text="No invoices yet." tone="muted" size="sm" />
+                  ) : null}
+                </Flex>
+              )}
+            </Tabs>
           </Card>
         </>
       )}
-      <Text
-        text="Simulated Stripe data, saved per workspace. No real payments are processed."
-        tone="muted"
-        size="xs"
-      />
     </Flex>
   );
 }

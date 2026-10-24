@@ -6,6 +6,7 @@ import type { DialogActionsProps as DoomDialogActionsProps } from "../../apps/do
 import type { DialogActionsProps as MessagesDialogActionsProps } from "../../apps/messages/src/patchsmith.gen";
 import type { DialogActionsProps as StripeDialogActionsProps } from "../../apps/stripe/src/patchsmith.gen";
 import { AppForm, AppDialogActions } from "../components/app-form";
+import { AppSlotButton } from "../components/app/app-slot-button";
 import { contract } from "../lib/patchsmith";
 
 void test("forms leave layout and submission controls to their caller", () => {
@@ -23,14 +24,16 @@ void test("dialog actions compose inside a form without adding submission contro
   const actions = createElement(
     AppDialogActions,
     null,
-    createElement("button", { type: "button" }, "Cancel"),
-    createElement("button", { type: "submit" }, "Save follow-up"),
+    createElement(AppSlotButton, { label: "Cancel" }),
+    createElement(AppSlotButton, { label: "Save follow-up", type: "submit" }),
   );
   const html = renderToStaticMarkup(
     createElement(AppForm, {}, createElement("input", { required: true }), actions),
   );
   assert.equal((html.match(/<form\b/g) ?? []).length, 1);
   assert.equal((html.match(/<button\b/g) ?? []).length, 2);
+  assert.match(html, /<button[^>]*type="button"[^>]*>Cancel<\/button>/);
+  assert.match(html, /<button[^>]*type="submit"[^>]*>Save follow-up<\/button>/);
   assert.match(html, /<form>.*<input.*data-slot="dialog-footer".*Save follow-up.*<\/form>/);
   assert.match(html, /flex-row/);
   assert.match(html, /justify-end/);
