@@ -1,0 +1,21 @@
+apps/doom/src/patchsmith.functions.gen.ts
+  s_4f3cc5ebaaf68c::t_b2b3bb137f26cc 2-3
+apps/doom/src/slots/panel/index.view.tsx
+  s_4f3cc5ebaaf68c::t_362a8db0a44cd3 1,3,13,26,28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1171e7f71c8d0925d352246f1b87e47d5b741033",
+  "prompts": {},
+  "sessions": {
+    "s_4f3cc5ebaaf68c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16ca3-8838-7e01-8f13-b793cc7f98f5",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
