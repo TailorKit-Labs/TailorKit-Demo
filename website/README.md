@@ -167,36 +167,34 @@ The client implements contracted components using Patchsmith primitives and the 
 
 Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. Use `Form plain` for new forms: it handles native validation and submission without adding buttons or layout. Its optional `id` connects external submit buttons, and `disabled` suppresses its submit callback. Add an explicit `Button type="submit"` for inline forms. Buttons default to `type="button"`; their optional `form` targets a form by ID. Each input has a visible label and accessible name. `Combobox` searches option labels and optional descriptions, displays a configurable empty state, and emits the selected string ID through `onChange({ value })`. Compose table rows inside their header/body and cells inside rows.
 
-`Dialog` always provides a title and accepts optional `actions` for a horizontal footer. Each action has an `id`, `label`, optional button `variant` and `disabled`, plus optional `type`. Submit actions require a `form` ID; other actions may optionally supply one. Regular actions invoke `onAction({ id })`; submit actions use native form submission instead, preserving required-field validation and Enter submission. Handle Cancel by closing the dialog in `onAction`. Use a unique form ID for each mounted instance, such as Preact's `useId()`:
+`Dialog` always provides a title and accepts optional `actions` for a horizontal footer. For a modal form, provide `onSubmit`: the host renders the popup itself as a native form containing its fields and footer buttons. Give Save `type: "submit"`; no nested `Form` or form ID is needed. Native validation and Enter submission run through `Dialog.onSubmit`. Regular actions invoke `onAction({ id })`; handle Cancel by closing the dialog there. `Dialog.disabled` disables footer actions and suppresses submission while saving. Each action supports `id`, `label`, optional button `variant`, `disabled`, and `type`. The optional action `form` remains available for targeting a separate form.
 
 ```tsx
-const formId = useId();
-
 <Dialog
   open={open}
   title="New follow-up"
+  disabled={saving}
+  onSubmit={saveFollowUp}
   onOpenChange={({ open }) => setOpen(open)}
   actions={[
-    { id: "cancel", label: "Cancel", variant: "outline", disabled: saving },
-    { id: "save", label: "Save follow-up", type: "submit", form: formId, disabled: saving },
+    { id: "cancel", label: "Cancel", variant: "outline" },
+    { id: "save", label: "Save follow-up", type: "submit" },
   ]}
   onAction={({ id }) => {
     if (id === "cancel") setOpen(false);
   }}
 >
-  <Form plain id={formId} disabled={saving} onSubmit={saveFollowUp}>
-    <Fieldset>
-      <Input label="Title" value={title} required onChange={({ value }) => setTitle(value)} />
-      <Input
-        label="Due date"
-        type="date"
-        value={dueDate}
-        required
-        onChange={({ value }) => setDueDate(value)}
-      />
-    </Fieldset>
-  </Form>
-</Dialog>;
+  <Fieldset>
+    <Input label="Title" value={title} required onChange={({ value }) => setTitle(value)} />
+    <Input
+      label="Due date"
+      type="date"
+      value={dueDate}
+      required
+      onChange={({ value }) => setDueDate(value)}
+    />
+  </Fieldset>
+</Dialog>
 ```
 
 Existing installations retain their automatic submit button and spacing when `plain` is omitted or false, including the optional `submitLabel` and default "Save" label. To adopt the new action layout, regenerate bindings, set `Form plain`, add explicit submit buttons or `Dialog.actions`, and republish. Existing installations do not need to migrate before this host update.

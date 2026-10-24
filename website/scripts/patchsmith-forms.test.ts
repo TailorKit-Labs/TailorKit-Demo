@@ -35,16 +35,17 @@ void test("plain forms leave submission controls to their caller", () => {
   assert.doesNotMatch(explicit, /Legacy save/);
 });
 
-void test("dialog submit actions require a nonempty form ID; regular actions keep it optional", () => {
+void test("dialog actions submit the host form without IDs and can still target external forms", () => {
   const fields = contract.components.Dialog.fields;
   const dialog = { title: "Follow-up", open: true };
   for (const action of [
-    { id: "save", label: "Save", type: "submit" },
     { id: "save", label: "Save", type: "submit", form: "" },
+    { id: "save", label: "Save", type: "reset" },
   ]) {
     assert.equal(fields.safeParse({ ...dialog, actions: [action] }).success, false);
   }
   for (const action of [
+    { id: "save", label: "Save", type: "submit" },
     { id: "save", label: "Save", type: "submit", form: "followup" },
     { id: "cancel", label: "Cancel" },
     { id: "cancel", label: "Cancel", type: "button" },
@@ -55,24 +56,21 @@ void test("dialog submit actions require a nonempty form ID; regular actions kee
   }
 });
 
-void test("AppDialog and every generated binding reject unbound submit actions", () => {
-  const missingForm = { id: "save", label: "Save", type: "submit" } as const;
-  // @ts-expect-error Host-inferred submit actions must target a form.
-  const host: NonNullable<ComponentProps<typeof AppDialog>["actions"]>[number] = missingForm;
-  // @ts-expect-error Doom's generated submit actions must target a form.
-  const doom: NonNullable<DoomDialogProps["actions"]>[number] = missingForm;
-  // @ts-expect-error Messages' generated submit actions must target a form.
-  const messages: NonNullable<MessagesDialogProps["actions"]>[number] = missingForm;
-  // @ts-expect-error Stripe's generated submit actions must target a form.
-  const stripe: NonNullable<StripeDialogProps["actions"]>[number] = missingForm;
-  for (const action of [host, doom, messages, stripe]) {
-    assert.equal(
-      contract.components.Dialog.fields.safeParse({
-        title: "Follow-up",
-        open: true,
-        actions: [action],
-      }).success,
-      false,
-    );
+void test("AppDialog and every generated binding support host-owned form submission", () => {
+  const dialog = {
+    title: "Follow-up",
+    open: true,
+    disabled: true,
+    actions: [{ id: "save", label: "Save", type: "submit" as const }],
+    onSubmit: () => {},
+  } satisfies ComponentProps<typeof AppDialog>;
+  const generated: [DoomDialogProps, MessagesDialogProps, StripeDialogProps] = [
+    dialog,
+    dialog,
+    dialog,
+  ];
+  for (const props of generated) {
+    assert.equal(contract.components.Dialog.fields.safeParse(props).success, true);
+    assert.equal(typeof props.onSubmit, "function");
   }
 });

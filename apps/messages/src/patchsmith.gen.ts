@@ -1409,19 +1409,13 @@ export interface DialogProps {
   title: string;
   description?: string;
   open: boolean;
+  disabled?: boolean;
   actions?: ({
     id: string;
     label: string;
     variant?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "destructive-outline" | "link";
     disabled?: boolean;
-    type: "submit";
-    form: string;
-  } | {
-    id: string;
-    label: string;
-    variant?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "destructive-outline" | "link";
-    disabled?: boolean;
-    type?: "button";
+    type?: "button" | "submit";
     form?: string;
   })[];
   onOpenChange?: (input: {
@@ -1430,9 +1424,10 @@ export interface DialogProps {
   onAction?: (input: {
     id: string;
   }) => void | Promise<void>;
+  onSubmit?: () => void | Promise<void>;
 }
 
 export const Dialog = /* @__PURE__ */ createRemoteComponent<DialogProps, true>("Dialog", {
   children: true,
-  callbacks: { "onOpenChange": 1, "onAction": 1 },
+  callbacks: { "onOpenChange": 1, "onAction": 1, "onSubmit": 0 },
 });

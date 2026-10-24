@@ -11,7 +11,8 @@ Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); sear
 | title | yes | string |
 | description | no | string |
 | open | yes | boolean |
-| actions | no | list of { id (required): string; label (required): string; variant (optional): "default", "outline", "secondary", "ghost", "destructive", "destructive-outline", "link"; disabled (optional): boolean; type (required): "submit"; form (required): string }; or { id (required): string; label (required): string; variant (optional): "default", "outline", "secondary", "ghost", "destructive", "destructive-outline", "link"; disabled (optional): boolean; type (optional): "button"; form (optional): string } (maximum items: 6) |
+| disabled | no | boolean |
+| actions | no | list of { id (required): string; label (required): string; variant (optional): "default", "outline", "secondary", "ghost", "destructive", "destructive-outline", "link"; disabled (optional): boolean; type (optional): "button", "submit"; form (optional): string } (maximum items: 6) |
 
 ## Callbacks
 
@@ -21,6 +22,7 @@ Callbacks receive the serialized payload below, not a DOM event.
 | --- | --- |
 | onOpenChange | { open (required): boolean } |
 | onAction | { id (required): string } |
+| onSubmit | no payload |
 
 Use the listed props, callbacks, and styling values.
 

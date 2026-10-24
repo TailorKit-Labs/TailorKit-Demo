@@ -53,20 +53,34 @@ type AppDialogProps = z.infer<typeof contract.components.Dialog.fields> & {
   children?: ReactNode;
   onOpenChange?: (event: { open: boolean }) => unknown;
   onAction?: (event: { id: string }) => unknown;
+  onSubmit?: () => unknown;
 };
 
 export function AppDialog({
   open,
   title,
   description,
+  disabled,
   actions,
   onOpenChange,
   onAction,
+  onSubmit,
   children,
 }: AppDialogProps) {
   return (
     <Dialog open={open} onOpenChange={(open) => onOpenChange?.({ open })}>
-      <DialogPopup>
+      <DialogPopup
+        render={
+          onSubmit ? (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                if (!disabled) onSubmit();
+              }}
+            />
+          ) : undefined
+        }
+      >
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description ? <DialogDescription>{description}</DialogDescription> : null}
@@ -80,7 +94,7 @@ export function AppDialog({
                 type={action.type ?? "button"}
                 form={action.form}
                 variant={action.variant}
-                disabled={action.disabled}
+                disabled={disabled || action.disabled}
                 onClick={action.type === "submit" ? undefined : () => onAction?.({ id: action.id })}
               >
                 {action.label}

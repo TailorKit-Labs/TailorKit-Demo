@@ -370,12 +370,13 @@ export const contract = defineContract({
         title: label,
         description: text.optional(),
         open: z.boolean(),
+        disabled,
         actions: z
           .array(
-            z.union([
-              dialogAction.extend({ type: z.literal("submit"), form: label }),
-              dialogAction.extend({ type: z.literal("button").optional(), form: label.optional() }),
-            ]),
+            dialogAction.extend({
+              type: z.enum(["button", "submit"]).optional(),
+              form: label.optional(),
+            }),
           )
           .max(6)
           .optional(),
@@ -384,6 +385,7 @@ export const contract = defineContract({
       callbacks: {
         onOpenChange: { input: z.object({ open: z.boolean() }) },
         onAction: { input: z.object({ id: label }) },
+        onSubmit: {},
       },
     },
   },
