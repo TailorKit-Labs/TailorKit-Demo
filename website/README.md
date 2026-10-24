@@ -165,16 +165,51 @@ The client implements contracted components using Patchsmith primitives and the 
 - Tables: `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, `TableCell`.
 - Feedback and overlays: `Alert`, `Empty`, `Progress`, `Spinner`, `Skeleton`, `Separator`, `Dialog`.
 
-Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. `Form` handles native validation and includes a submit button, with configurable `submitLabel` and `disabled` props. Each input has a visible label and accessible name. `Combobox` searches option labels and optional descriptions, displays a configurable empty state, and emits the selected string ID through `onChange({ value })`. `Dialog` always provides a title. Compose table rows inside their header/body and cells inside rows.
+Controls expose plain serializable callbacks: `onChange({ value })`, `onCheckedChange({ checked })`, `onOpenChange({ open })`, `onClick()` and `onSubmit()`. `Form` is a plain form container: it handles native validation and submission without adding buttons or layout. Its optional `id` connects external submit buttons, and `disabled` suppresses its submit callback. Add an explicit `Button type="submit"` for inline forms. Buttons default to `type="button"`; their optional `form` targets a form by ID. Each input has a visible label and accessible name. `Combobox` searches option labels and optional descriptions, displays a configurable empty state, and emits the selected string ID through `onChange({ value })`. Compose table rows inside their header/body and cells inside rows.
+
+`Dialog` always provides a title and accepts optional `actions` for a horizontal footer. Each action has an `id`, `label`, optional button `variant` and `disabled`, plus optional `type` and `form`. Regular actions invoke `onAction({ id })`; submit actions use native form submission instead, preserving required-field validation and Enter submission. Handle Cancel by closing the dialog in `onAction`. Use a unique form ID for each mounted instance, such as Preact's `useId()`:
+
+```tsx
+const formId = useId();
+
+<Dialog
+  open={open}
+  title="New follow-up"
+  onOpenChange={({ open }) => setOpen(open)}
+  actions={[
+    { id: "cancel", label: "Cancel", variant: "outline", disabled: saving },
+    { id: "save", label: "Save follow-up", type: "submit", form: formId, disabled: saving },
+  ]}
+  onAction={({ id }) => {
+    if (id === "cancel") setOpen(false);
+  }}
+>
+  <Form id={formId} disabled={saving} onSubmit={saveFollowUp}>
+    <Fieldset>
+      <Input label="Title" value={title} required onChange={({ value }) => setTitle(value)} />
+      <Input
+        label="Due date"
+        type="date"
+        value={dueDate}
+        required
+        onChange={({ value }) => setDueDate(value)}
+      />
+    </Fieldset>
+  </Form>
+</Dialog>;
+```
+
+Apps using the previous `Form.submitLabel` API must regenerate their bindings and add explicit submit buttons or `Dialog.actions` when updating to this host contract. Existing generated apps need to be edited and republished to adopt the new action layout.
 
 `Fieldset` groups related controls in a full-width vertical stack with consistent spacing, using the existing Coss `Fieldset` and `FieldsetLegend`. Its optional `legend` labels the group, and `disabled` disables its descendant controls. Compose it inside `Form` to create sections without adding another form or submit button:
 
 ```tsx
-<Form submitLabel="Save contact">
+<Form onSubmit={saveContact}>
   <Fieldset legend="Contact details">
     <Input label="Name" value={name} onChange={({ value }) => setName(value)} />
     <Input label="Email" type="email" value={email} onChange={({ value }) => setEmail(value)} />
   </Fieldset>
+  <Button type="submit" label="Save contact" />
 </Form>
 ```
 

@@ -1117,6 +1117,8 @@ export interface ButtonProps {
   size?: "xs" | "sm" | "default" | "lg";
   disabled?: boolean;
   href?: string;
+  type?: "button" | "submit" | "reset";
+  form?: string;
   onClick?: () => void | Promise<void>;
 }
 
@@ -1163,7 +1165,7 @@ export const Empty = /* @__PURE__ */ createRemoteComponent<EmptyProps, true>("Em
 });
 
 export interface FormProps {
-  submitLabel?: string;
+  id?: string;
   disabled?: boolean;
   onSubmit?: () => void | Promise<void>;
 }
@@ -1404,12 +1406,23 @@ export interface DialogProps {
   title: string;
   description?: string;
   open: boolean;
+  actions?: ({
+    id: string;
+    label: string;
+    variant?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "destructive-outline" | "link";
+    disabled?: boolean;
+    type?: "button" | "submit";
+    form?: string;
+  })[];
   onOpenChange?: (input: {
     open: boolean;
+  }) => void | Promise<void>;
+  onAction?: (input: {
+    id: string;
   }) => void | Promise<void>;
 }
 
 export const Dialog = /* @__PURE__ */ createRemoteComponent<DialogProps, true>("Dialog", {
   children: true,
-  callbacks: { "onOpenChange": 1 },
+  callbacks: { "onOpenChange": 1, "onAction": 1 },
 });

@@ -19,6 +19,15 @@ const label = z
   .string()
   .refine((value) => value.length >= 1 && value.length <= 120, "Use 1–120 characters.");
 const disabled = z.boolean().optional();
+const buttonVariant = z.enum([
+  "default",
+  "outline",
+  "secondary",
+  "ghost",
+  "destructive",
+  "destructive-outline",
+  "link",
+]);
 const externalHref = z.string().refine((value) => {
   try {
     const url = new URL(value);
@@ -222,20 +231,12 @@ export const contract = defineContract({
     Button: {
       fields: z.object({
         label,
-        variant: z
-          .enum([
-            "default",
-            "outline",
-            "secondary",
-            "ghost",
-            "destructive",
-            "destructive-outline",
-            "link",
-          ])
-          .optional(),
+        variant: buttonVariant.optional(),
         size: z.enum(["xs", "sm", "default", "lg"]).optional(),
         disabled,
         href: externalHref.optional(),
+        type: z.enum(["button", "submit", "reset"]).optional(),
+        form: label.optional(),
       }),
       callbacks: { onClick: {} },
     },
@@ -262,7 +263,7 @@ export const contract = defineContract({
     },
     Empty: { fields: z.object({ title: label, description: text.optional() }), children: true },
     Form: {
-      fields: z.object({ submitLabel: label.optional(), disabled }),
+      fields: z.object({ id: label.optional(), disabled }),
       children: true,
       callbacks: { onSubmit: {} },
     },
@@ -352,9 +353,29 @@ export const contract = defineContract({
     TableHead: { fields: z.object({ text: label }) },
     TableCell: { children: true },
     Dialog: {
-      fields: z.object({ title: label, description: text.optional(), open: z.boolean() }),
+      fields: z.object({
+        title: label,
+        description: text.optional(),
+        open: z.boolean(),
+        actions: z
+          .array(
+            z.object({
+              id: label,
+              label,
+              variant: buttonVariant.optional(),
+              disabled,
+              type: z.enum(["button", "submit"]).optional(),
+              form: label.optional(),
+            }),
+          )
+          .max(6)
+          .optional(),
+      }),
       children: true,
-      callbacks: { onOpenChange: { input: z.object({ open: z.boolean() }) } },
+      callbacks: {
+        onOpenChange: { input: z.object({ open: z.boolean() }) },
+        onAction: { input: z.object({ id: label }) },
+      },
     },
   },
   tools: {

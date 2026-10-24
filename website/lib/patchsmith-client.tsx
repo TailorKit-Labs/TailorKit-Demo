@@ -66,14 +66,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogPopup,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogPanel,
-} from "@/components/ui/dialog";
+import { AppForm, AppDialog } from "@/components/app-form";
 
 const textTones = {
   default: "text-inherit",
@@ -146,6 +139,8 @@ export const patchsmithClient = createClient({
         </a>
       ) : (
         <Button
+          type={props.type ?? "button"}
+          form={props.form}
           variant={props.variant}
           size={props.size}
           disabled={props.disabled}
@@ -179,21 +174,7 @@ export const patchsmithClient = createClient({
         {children ? <EmptyContent>{children}</EmptyContent> : null}
       </Empty>
     ),
-    Form: ({ props, children }) => (
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (!props.disabled) props.onSubmit?.();
-        }}
-      >
-        <div className="flex flex-col gap-4">
-          {children}
-          <Button type="submit" disabled={props.disabled}>
-            {props.submitLabel ?? "Save"}
-          </Button>
-        </div>
-      </form>
-    ),
+    Form: ({ props, children }) => <AppForm {...props}>{children}</AppForm>,
     Fieldset: ({ props, children }) => (
       <Fieldset className="flex w-full flex-col gap-4" disabled={props.disabled}>
         {props.legend ? <FieldsetLegend>{props.legend}</FieldsetLegend> : null}
@@ -364,17 +345,7 @@ export const patchsmithClient = createClient({
     TableRow: ({ children }) => <TableRow>{children}</TableRow>,
     TableHead: ({ props }) => <TableHead>{props.text}</TableHead>,
     TableCell: ({ children }) => <TableCell>{children}</TableCell>,
-    Dialog: ({ props, children }) => (
-      <Dialog open={props.open} onOpenChange={(open) => props.onOpenChange?.({ open })}>
-        <DialogPopup>
-          <DialogHeader>
-            <DialogTitle>{props.title}</DialogTitle>
-            {props.description ? <DialogDescription>{props.description}</DialogDescription> : null}
-          </DialogHeader>
-          <DialogPanel>{children}</DialogPanel>
-        </DialogPopup>
-      </Dialog>
-    ),
+    Dialog: ({ props, children }) => <AppDialog {...props}>{children}</AppDialog>,
   },
   tools: {
     ui: {

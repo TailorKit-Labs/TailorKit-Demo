@@ -24,7 +24,8 @@ function createHost(origin: string) {
     agent: {
       instructions: [
         "Always add a panel slot. If the app doesn't need it/have any functionality for it then just have some basic text supporting the app",
-        "When building forms or groups of inputs, wrap the inputs in our FieldGroup component and use it to handle their layout and spacing.",
+        "When building forms or groups of inputs, wrap the inputs in our Fieldset component and use it to handle their layout and spacing.",
+        "Form is a plain form container with onSubmit and an optional id; it does not add buttons or layout. Group fields with Fieldset. For modal forms, put Cancel and Save in Dialog.actions, use type: 'submit' and form: the Form id for Save, and handle Cancel through Dialog.onAction({ id }). Save must run through Form.onSubmit so native validation and Enter submission work. Outside a dialog, add an explicit Button with type: 'submit' inside Form. Give each mounted form a unique id (for example using useId).",
       ].join("\n\n"),
     },
     tools: {
