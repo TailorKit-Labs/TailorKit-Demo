@@ -1,7 +1,7 @@
 import type { PatchsmithConfig } from "patchsmith/app/config";
 
 const config: PatchsmithConfig = {
-  appId: "dc2a4b00-23d3-4230-b967-1aa11305d76e",
+  appId: "d75dfad9-8db5-49df-bb6a-3bb6c446395d",
   name: "Stripe",
   slug: "stripe",
   description: "Demo billing, subscriptions, and revenue analytics for your contacts.",

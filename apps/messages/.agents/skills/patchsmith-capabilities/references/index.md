@@ -33,6 +33,8 @@ Read this index, then only the component or capability needed for the change. Ke
 - [Checkbox](components/Checkbox.md)
 - [Switch](components/Switch.md)
 - [Progress](components/Progress.md)
+- [AreaChart](components/AreaChart.md)
+- [BarChart](components/BarChart.md)
 - [Separator](components/Separator.md)
 - [Avatar](components/Avatar.md)
 - [Spinner](components/Spinner.md)

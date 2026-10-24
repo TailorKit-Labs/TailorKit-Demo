@@ -12,6 +12,7 @@ Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); sear
 | variant | no | "default", "outline", "secondary", "ghost", "destructive", "destructive-outline", "link" |
 | size | no | "xs", "sm", "default", "lg" |
 | disabled | no | boolean |
+| href | no | string |
 
 ## Callbacks
 

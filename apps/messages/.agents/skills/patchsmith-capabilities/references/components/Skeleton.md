@@ -8,7 +8,9 @@ Exact contract: [generated bindings](../../../../../src/patchsmith.gen.ts); sear
 
 | Prop | Required | Accepted values |
 | --- | --- | --- |
-| — | — | No declared value props. |
+| width | no | "12", "16", "20", "24", "32", "40", "48", "full", "1/2", "2/3", "3/4" |
+| height | no | "3", "4", "5", "6", "8", "10", "32", "40" |
+| radius | no | "sm", "md", "lg", "full" |
 
 ## Callbacks
 

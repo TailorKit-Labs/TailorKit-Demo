@@ -1,7 +1,7 @@
 import type { PatchsmithConfig } from "patchsmith/app/config";
 
 export default {
-  appId: "d943612a-f3d1-43da-9cc6-146d713bb2a8",
+  appId: "7206608c-42ec-4877-a824-84f2a20fc547",
   name: "Doom",
   slug: "doom",
   description: "Play Doom shareware in a full-page canvas, powered by doomgeneric.",

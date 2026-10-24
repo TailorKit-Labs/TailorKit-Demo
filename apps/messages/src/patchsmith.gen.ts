@@ -1116,6 +1116,7 @@ export interface ButtonProps {
   variant?: "default" | "outline" | "secondary" | "ghost" | "destructive" | "destructive-outline" | "link";
   size?: "xs" | "sm" | "default" | "lg";
   disabled?: boolean;
+  href?: string;
   onClick?: () => void | Promise<void>;
 }
 
@@ -1291,6 +1292,36 @@ export const Progress = /* @__PURE__ */ createRemoteComponent<ProgressProps, fal
   children: false,
 });
 
+export interface AreaChartProps {
+  label: string;
+  data: {
+    label: string;
+    value: number;
+  }[];
+  valueLabel?: string;
+  valueFormat?: "number" | "currency";
+  currency?: string;
+}
+
+export const AreaChart = /* @__PURE__ */ createRemoteComponent<AreaChartProps, false>("AreaChart", {
+  children: false,
+});
+
+export interface BarChartProps {
+  label: string;
+  data: {
+    label: string;
+    value: number;
+  }[];
+  valueLabel?: string;
+  valueFormat?: "number" | "currency";
+  currency?: string;
+}
+
+export const BarChart = /* @__PURE__ */ createRemoteComponent<BarChartProps, false>("BarChart", {
+  children: false,
+});
+
 export interface SeparatorProps {
   orientation?: "horizontal" | "vertical";
 }
@@ -1316,6 +1347,9 @@ export const Spinner = /* @__PURE__ */ createRemoteComponent<SpinnerProps, false
 });
 
 export interface SkeletonProps {
+  width?: "12" | "16" | "20" | "24" | "32" | "40" | "48" | "full" | "1/2" | "2/3" | "3/4";
+  height?: "3" | "4" | "5" | "6" | "8" | "10" | "32" | "40";
+  radius?: "sm" | "md" | "lg" | "full";
 }
 
 export const Skeleton = /* @__PURE__ */ createRemoteComponent<SkeletonProps, false>("Skeleton", {
