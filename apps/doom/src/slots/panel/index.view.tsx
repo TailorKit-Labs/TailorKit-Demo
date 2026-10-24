@@ -21,10 +21,11 @@ function DoomPanel() {
   return (
     <Flex direction="column" gap="4" height="full" justify="center">
       <Empty
+        icon="gamepad"
         title="Yep, it runs DOOM."
-        description="The real game, running in its own sandbox and brought right into this app by Patchsmith. Go on, play it."
+        description="Play Doom right here in the app."
       >
-        <Button label="Play Doom" variant="link" disabled={!page.data} onClick={openGame} />
+        <Button label="Play Doom" size="sm" disabled={!page.data} onClick={openGame} />
       </Empty>
       {page.error || error ? (
         <Alert
