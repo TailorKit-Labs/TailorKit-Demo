@@ -1173,6 +1173,9 @@ export interface FormProps {
   onSubmit?: () => void | Promise<void>;
 }
 
+/**
+ * Handles native form validation and submission through onSubmit. Use plain: true with explicit submit buttons. When used inside a Dialog, wrap both the fields and DialogActions in this Form so a Button with type: 'submit' inside DialogActions submits the form. No form ID is needed when the submit button is inside the Form.
+ */
 export const Form = /* @__PURE__ */ createRemoteComponent<FormProps, true>("Form", {
   children: true,
   callbacks: { "onSubmit": 0 },
@@ -1426,6 +1429,9 @@ export interface DialogProps {
   }) => void | Promise<void>;
 }
 
+/**
+ * Displays a modal with a title and optional description. Put Cancel and Save Button children in DialogActions to keep them inline. For a modal form, place Form with plain: true inside Dialog and wrap both the fields and DialogActions in that Form. Set Save to type: 'submit', handle saving in Form.onSubmit, and close Cancel through its onClick. Dialog handles the modal and onOpenChange, not form submission. Prefer this composition over the legacy actions prop.
+ */
 export const Dialog = /* @__PURE__ */ createRemoteComponent<DialogProps, true>("Dialog", {
   children: true,
   callbacks: { "onOpenChange": 1, "onAction": 1 },
