@@ -1,0 +1,42 @@
+website/scripts/stripe.test.ts
+  s_976d4410a57304::t_e80a88a02966a1 3-5,250-287,289-292,294,296-297
+  s_976d4410a57304::t_6b89782caad9b9 288,293,295
+apps/stripe/README.md
+  s_976d4410a57304::t_5a64048dd1b272 6,17
+  s_976d4410a57304::t_5a362e22c88c21 18
+apps/stripe/src/patchsmith.gen.ts
+  s_976d4410a57304::t_3ce75717bcdbd6 1146-1162
+apps/stripe/src/components.tsx
+  s_976d4410a57304::t_f5ef70c60c2541 178-185
+  s_976d4410a57304::t_48cccf699bb638 7,170-171,174,186-193,203,208,214-217,221
+  s_976d4410a57304::t_e80a88a02966a1 172
+website/lib/patchsmith.ts
+  s_976d4410a57304::t_8e9279ffd6ab8f 2,40-41
+  s_976d4410a57304::t_c3bc0c5331b641 262-276
+website/components/app/app-slot-button.tsx
+  s_976d4410a57304::t_c3bc0c5331b641 1-49
+website/lib/patchsmith-client.tsx
+  s_976d4410a57304::t_c3bc0c5331b641 31-33,150-151
+  s_976d4410a57304::t_8dbb5b7502970d 488-495
+apps/stripe/src/slots/page/index.view.tsx
+  s_976d4410a57304::t_d1013a968fcbe6 14,47,62,64,66,71,75,78,96-97,109-115,141-153,199-201,254-256
+  s_976d4410a57304::t_f5ef70c60c2541 117-140,154-198,202-253
+website/components/app/app-slot-tabs.tsx
+  s_976d4410a57304::t_c3bc0c5331b641 1-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9dc8803c6192198d1b1bb8f30b5db8dd2123a125",
+  "prompts": {},
+  "sessions": {
+    "s_976d4410a57304": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16cda-d31a-7672-bb5c-6453ea23be6b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
