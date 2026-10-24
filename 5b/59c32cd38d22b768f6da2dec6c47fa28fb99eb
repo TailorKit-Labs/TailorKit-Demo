@@ -1,0 +1,41 @@
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/AreaChart.md
+  s_adf6c59eceb8ab::t_bcaa7b93145293 1-38
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/BarChart.md
+  s_adf6c59eceb8ab::t_ca8854b3e2979a 1-38
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Button.md
+  s_adf6c59eceb8ab::t_506f9e92cee439 15
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Skeleton.md
+  s_adf6c59eceb8ab::t_cd25b9662756de 11-13
+apps/messages/.agents/skills/patchsmith-capabilities/references/index.md
+  s_adf6c59eceb8ab::t_e9442f13ef5c20 36-37
+apps/messages/src/patchsmith.gen.ts
+  s_adf6c59eceb8ab::t_17ede46cd48ad9 1119,1295-1324,1350-1352
+apps/messages/patchsmith.config.ts
+  s_be611860bef8b6::t_8f84d5b31505f7 4
+apps/stripe/patchsmith.config.ts
+  s_be611860bef8b6::t_7d0479698f5d0d 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5b59c32cd38d22b768f6da2dec6c47fa28fb99eb",
+  "prompts": {},
+  "sessions": {
+    "s_adf6c59eceb8ab": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16c63-f376-7571-9ad7-4fee84c9eb81",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_be611860bef8b6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16c5b-0c44-7d83-87c2-17b3ff5a8360",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
