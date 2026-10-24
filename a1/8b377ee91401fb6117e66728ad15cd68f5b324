@@ -1,0 +1,29 @@
+apps/stripe/src/patchsmith.gen.ts
+  s_adad7c4c705f80::t_d28b4e896c98a5 1176-1178,1432-1434
+website/lib/patchsmith.ts
+  s_adad7c4c705f80::t_5e51fa7e619259 274-275,371-372
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Dialog.md
+  s_adad7c4c705f80::t_d28b4e896c98a5 4-5
+apps/messages/src/patchsmith.gen.ts
+  s_adad7c4c705f80::t_d28b4e896c98a5 1176-1178,1432-1434
+apps/doom/src/patchsmith.gen.ts
+  s_adad7c4c705f80::t_d28b4e896c98a5 1176-1178,1432-1434
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Form.md
+  s_adad7c4c705f80::t_d28b4e896c98a5 4-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a18b377ee91401fb6117e66728ad15cd68f5b324",
+  "prompts": {},
+  "sessions": {
+    "s_adad7c4c705f80": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16d19-97d2-7f40-a3a7-bedbca51bcbe",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
