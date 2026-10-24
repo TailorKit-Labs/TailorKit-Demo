@@ -1424,10 +1424,16 @@ export interface DialogProps {
   onAction?: (input: {
     id: string;
   }) => void | Promise<void>;
-  onSubmit?: () => void | Promise<void>;
 }
 
 export const Dialog = /* @__PURE__ */ createRemoteComponent<DialogProps, true>("Dialog", {
   children: true,
-  callbacks: { "onOpenChange": 1, "onAction": 1, "onSubmit": 0 },
+  callbacks: { "onOpenChange": 1, "onAction": 1 },
+});
+
+export interface DialogActionsProps {
+}
+
+export const DialogActions = /* @__PURE__ */ createRemoteComponent<DialogActionsProps, true>("DialogActions", {
+  children: true,
 });

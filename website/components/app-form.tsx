@@ -53,7 +53,6 @@ type AppDialogProps = z.infer<typeof contract.components.Dialog.fields> & {
   children?: ReactNode;
   onOpenChange?: (event: { open: boolean }) => unknown;
   onAction?: (event: { id: string }) => unknown;
-  onSubmit?: () => unknown;
 };
 
 export function AppDialog({
@@ -64,23 +63,11 @@ export function AppDialog({
   actions,
   onOpenChange,
   onAction,
-  onSubmit,
   children,
 }: AppDialogProps) {
   return (
     <Dialog open={open} onOpenChange={(open) => onOpenChange?.({ open })}>
-      <DialogPopup
-        render={
-          onSubmit ? (
-            <form
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (!disabled) onSubmit();
-              }}
-            />
-          ) : undefined
-        }
-      >
+      <DialogPopup>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           {description ? <DialogDescription>{description}</DialogDescription> : null}
@@ -104,5 +91,13 @@ export function AppDialog({
         ) : null}
       </DialogPopup>
     </Dialog>
+  );
+}
+
+export function AppDialogActions({ children }: { children?: ReactNode }) {
+  return (
+    <DialogFooter variant="bare" className="flex-row justify-end px-0 pb-0">
+      {children}
+    </DialogFooter>
   );
 }

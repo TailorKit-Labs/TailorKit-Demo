@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { createElement, type ComponentProps } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import type { DialogProps as DoomDialogProps } from "../../apps/doom/src/patchsmith.gen";
-import type { DialogProps as MessagesDialogProps } from "../../apps/messages/src/patchsmith.gen";
-import type { DialogProps as StripeDialogProps } from "../../apps/stripe/src/patchsmith.gen";
-import { AppForm, type AppDialog } from "../components/app-form";
+import type { DialogActionsProps as DoomDialogActionsProps } from "../../apps/doom/src/patchsmith.gen";
+import type { DialogActionsProps as MessagesDialogActionsProps } from "../../apps/messages/src/patchsmith.gen";
+import type { DialogActionsProps as StripeDialogActionsProps } from "../../apps/stripe/src/patchsmith.gen";
+import { AppForm, AppDialogActions } from "../components/app-form";
 import { contract } from "../lib/patchsmith";
 
 void test("legacy forms retain their default and custom submit buttons", () => {
@@ -35,7 +35,7 @@ void test("plain forms leave submission controls to their caller", () => {
   assert.doesNotMatch(explicit, /Legacy save/);
 });
 
-void test("dialog actions submit the host form without IDs and can still target external forms", () => {
+void test("legacy dialog actions retain submit button types and external form targets", () => {
   const fields = contract.components.Dialog.fields;
   const dialog = { title: "Follow-up", open: true };
   for (const action of [
@@ -56,21 +56,30 @@ void test("dialog actions submit the host form without IDs and can still target 
   }
 });
 
-void test("AppDialog and every generated binding support host-owned form submission", () => {
-  const dialog = {
-    title: "Follow-up",
-    open: true,
-    disabled: true,
-    actions: [{ id: "save", label: "Save", type: "submit" as const }],
-    onSubmit: () => {},
-  } satisfies ComponentProps<typeof AppDialog>;
-  const generated: [DoomDialogProps, MessagesDialogProps, StripeDialogProps] = [
-    dialog,
-    dialog,
-    dialog,
-  ];
+void test("dialog actions compose inside a form without adding submission controls", () => {
+  const actions = createElement(
+    AppDialogActions,
+    null,
+    createElement("button", { type: "button" }, "Cancel"),
+    createElement("button", { type: "submit" }, "Save follow-up"),
+  );
+  const html = renderToStaticMarkup(
+    createElement(AppForm, { plain: true }, createElement("input", { required: true }), actions),
+  );
+  assert.equal((html.match(/<form\b/g) ?? []).length, 1);
+  assert.equal((html.match(/<button\b/g) ?? []).length, 2);
+  assert.match(html, /<form>.*<input.*data-slot="dialog-footer".*Save follow-up.*<\/form>/);
+  assert.match(html, /flex-row/);
+  assert.match(html, /justify-end/);
+});
+
+void test("every generated binding exposes composable dialog actions", () => {
+  const actions = {} satisfies ComponentProps<typeof AppDialogActions>;
+  const generated: [DoomDialogActionsProps, MessagesDialogActionsProps, StripeDialogActionsProps] =
+    [actions, actions, actions];
   for (const props of generated) {
-    assert.equal(contract.components.Dialog.fields.safeParse(props).success, true);
-    assert.equal(typeof props.onSubmit, "function");
+    assert.equal(contract.components.DialogActions.fields.safeParse(props).success, true);
   }
+  assert.equal(contract.components.DialogActions.children, true);
+  assert.equal("onSubmit" in contract.components.Dialog.callbacks, false);
 });

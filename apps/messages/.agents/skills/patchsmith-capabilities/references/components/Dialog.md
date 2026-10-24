@@ -22,7 +22,6 @@ Callbacks receive the serialized payload below, not a DOM event.
 | --- | --- |
 | onOpenChange | { open (required): boolean } |
 | onAction | { id (required): string } |
-| onSubmit | no payload |
 
 Use the listed props, callbacks, and styling values.
 

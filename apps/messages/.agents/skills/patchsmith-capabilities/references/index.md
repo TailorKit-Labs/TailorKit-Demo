@@ -46,3 +46,4 @@ Read this index, then only the component or capability needed for the change. Ke
 - [TableHead](components/TableHead.md)
 - [TableCell](components/TableCell.md)
 - [Dialog](components/Dialog.md)
+- [DialogActions](components/DialogActions.md)

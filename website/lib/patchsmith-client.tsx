@@ -75,7 +75,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { AppForm, AppDialog } from "@/components/app-form";
+import { AppForm, AppDialog, AppDialogActions } from "@/components/app-form";
 
 const textTones = {
   default: "text-inherit",
@@ -371,6 +371,7 @@ export const patchsmithClient = createClient({
     TableHead: ({ props }) => <TableHead>{props.text}</TableHead>,
     TableCell: ({ children }) => <TableCell>{children}</TableCell>,
     Dialog: ({ props, children }) => <AppDialog {...props}>{children}</AppDialog>,
+    DialogActions: ({ children }) => <AppDialogActions>{children}</AppDialogActions>,
   },
   tools: {
     ui: {

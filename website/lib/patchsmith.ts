@@ -385,9 +385,9 @@ export const contract = defineContract({
       callbacks: {
         onOpenChange: { input: z.object({ open: z.boolean() }) },
         onAction: { input: z.object({ id: label }) },
-        onSubmit: {},
       },
     },
+    DialogActions: { fields: z.object({}), children: true },
   },
   tools: {
     workspace: { get: serverTool(schemas.workspace.get) },
