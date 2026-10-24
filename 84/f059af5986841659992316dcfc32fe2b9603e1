@@ -1,0 +1,30 @@
+apps/doom/src/patchsmith.gen.ts
+  h_18044dd1b61a81 1161
+apps/doom/src/slots/panel/index.view.tsx
+  h_18044dd1b61a81 24,26,28
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Empty.md
+  h_18044dd1b61a81 13
+apps/messages/src/patchsmith.gen.ts
+  h_18044dd1b61a81 1161
+apps/stripe/src/patchsmith.gen.ts
+  h_18044dd1b61a81 1161
+apps/stripe/src/slots/panel/index.view.tsx
+  h_18044dd1b61a81 10
+website/lib/patchsmith-client.tsx
+  h_18044dd1b61a81 23-30,38,88-95,185-201
+website/lib/patchsmith-server.ts
+  h_18044dd1b61a81 26-27
+website/lib/patchsmith.ts
+  h_18044dd1b61a81 264-271
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "84f059af5986841659992316dcfc32fe2b9603e1",
+  "prompts": {},
+  "humans": {
+    "h_18044dd1b61a81": {
+      "author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
