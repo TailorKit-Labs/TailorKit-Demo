@@ -1,0 +1,34 @@
+website/lib/patchsmith-client.tsx
+  s_3ac449c8b00627::t_296af1017b7f6f 23-30
+  s_3ac449c8b00627::t_6c66156c0dd901 38,95-102,190-206
+website/lib/patchsmith.ts
+  s_3ac449c8b00627::t_6c66156c0dd901 263-270
+apps/doom/src/slots/panel/index.view.tsx
+  s_3ac449c8b00627::t_6c66156c0dd901 24,26,28
+apps/stripe/src/slots/panel/index.view.tsx
+  s_3ac449c8b00627::t_6c66156c0dd901 10
+apps/doom/src/patchsmith.gen.ts
+  s_3ac449c8b00627::t_5b786a5b745763 1159
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Empty.md
+  s_3ac449c8b00627::t_68fa9204f5b11d 13
+apps/messages/src/patchsmith.gen.ts
+  s_3ac449c8b00627::t_5ed6724713bf87 1159
+apps/stripe/src/patchsmith.gen.ts
+  s_3ac449c8b00627::t_24294758a65745 1159
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fb46d2e77641ded520fba52163f19e34c05b9523",
+  "prompts": {},
+  "sessions": {
+    "s_3ac449c8b00627": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16c7c-9be8-7ee3-99ab-93377dfebbcf",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
