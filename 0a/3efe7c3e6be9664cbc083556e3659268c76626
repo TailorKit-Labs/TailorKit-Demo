@@ -1,0 +1,57 @@
+apps/doom/src/patchsmith.gen.ts
+  s_f993d283f49003::t_192e7a06fa821c 1170-1171,1417-1424
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Dialog.md
+  s_f993d283f49003::t_e8f0fa63b9777a 14
+apps/messages/.agents/skills/patchsmith-capabilities/references/components/Form.md
+  s_f993d283f49003::t_a4f26353f14205 12-13
+apps/messages/src/patchsmith.gen.ts
+  s_f993d283f49003::t_d5fb4be5f5541e 1170-1171,1417-1424
+apps/messages/src/slots/panel/contacts.detail.view.tsx
+  s_be611860bef8b6::t_fcf873756e5f68 191
+apps/stripe/src/patchsmith.gen.ts
+  s_f993d283f49003::t_ee86ce4eba5251 1170-1171,1417-1424
+website/README.md
+  s_be611860bef8b6::t_96b6e0b65a5b52 168,170,187,202,207
+website/components/app-form.tsx
+  s_be611860bef8b6::t_1ce8dc50f257ec 22-29,38-47
+website/lib/patchsmith-server.ts
+  s_be611860bef8b6::t_30fa0da259202c 29
+website/lib/patchsmith.ts
+  s_be611860bef8b6::t_f288f809ae2576 31,274-279,375-378
+website/package.json
+  s_be611860bef8b6::t_620d12ed9c042f 11
+website/scripts/patchsmith-forms.test.ts
+  s_ae5de7a00d0edf::t_fd266494943a89 1-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0a3efe7c3e6be9664cbc083556e3659268c76626",
+  "prompts": {},
+  "sessions": {
+    "s_ae5de7a00d0edf": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16c88-b0f6-79f2-ba8d-5b00fad2c3a3",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_be611860bef8b6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16c5b-0c44-7d83-87c2-17b3ff5a8360",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    },
+    "s_f993d283f49003": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16c88-2647-7c23-a9f5-d28b4854bc69",
+        "model": "unknown"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
