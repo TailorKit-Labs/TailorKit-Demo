@@ -7,6 +7,7 @@ import { createDoom, type DoomEngine } from "../../doom";
 const view = defineView({
   view: "/",
   instances: {
+    cache: "static",
     dataSchema: z.object({}),
     resolve: () => [{ key: "doom", metadata: { label: "Can it run DOOM?" }, data: {} }],
   },

@@ -1,0 +1,28 @@
+{
+  "name": "@demo/stripe",
+  "private": true,
+  "description": "Persistent simulated Stripe billing for Forma CRM contacts.",
+  "type": "module",
+  "imports": {
+    "#patchsmith": "./src/patchsmith.gen.ts"
+  },
+  "scripts": {
+    "build": "vp build",
+    "deploy": "patchsmith deploy",
+    "generate": "patchsmith generate",
+    "db:generate": "patchsmith db generate",
+    "test": "vp test",
+    "check": "vp check"
+  },
+  "dependencies": {
+    "patchsmith": "catalog:",
+    "preact": "11.0.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}

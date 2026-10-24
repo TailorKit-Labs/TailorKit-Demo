@@ -37,11 +37,15 @@ async function main() {
     assert.equal(incomplete.setupVersion, 1, "A failed install must remain retryable");
     let installs = 0;
     let doomInstalls = 0;
+    let stripeInstalls = 0;
     const install = async () => {
       installs++;
     };
     const installDoom = async () => {
       doomInstalls++;
+    };
+    const installStripe = async () => {
+      stripeInstalls++;
     };
     await assert.rejects(
       provisionDemo(payload.user.id, {
@@ -54,12 +58,27 @@ async function main() {
     );
     const [messagesReady] = await db.select().from(tenants).where(eq(tenants.id, baseTenant.id));
     assert.equal(messagesReady.setupVersion, 2, "A failed Doom install must preserve Messages");
-    const provisioned = await Promise.all(
-      Array.from({ length: 4 }, () => provisionDemo(payload.user.id, { install, installDoom })),
+    await assert.rejects(
+      provisionDemo(payload.user.id, {
+        install,
+        installDoom,
+        installStripe: async () => {
+          throw new Error("Stripe unavailable");
+        },
+      }),
+      /Stripe unavailable/,
     );
-    await provisionDemo(payload.user.id, { install, installDoom });
+    const [doomReady] = await db.select().from(tenants).where(eq(tenants.id, baseTenant.id));
+    assert.equal(doomReady.setupVersion, 3, "A failed Stripe install must preserve Doom");
+    const provisioned = await Promise.all(
+      Array.from({ length: 4 }, () =>
+        provisionDemo(payload.user.id, { install, installDoom, installStripe }),
+      ),
+    );
+    await provisionDemo(payload.user.id, { install, installDoom, installStripe });
     assert.equal(installs, 1, "Concurrent setup and retries must install only once");
     assert.equal(doomInstalls, 1, "Concurrent setup must install Doom only once");
+    assert.equal(stripeInstalls, 1, "Concurrent setup must install Stripe only once");
     assert.equal(
       new Set(provisioned.map((t) => t.id)).size,
       1,

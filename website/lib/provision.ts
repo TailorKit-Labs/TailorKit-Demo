@@ -4,18 +4,21 @@ import { tenants } from "./schema";
 import { seedWorkspace } from "./seed";
 import { installMessages } from "./install-messages";
 import { installDoom as installDoomApp } from "./install-doom";
+import { installStripe as installStripeApp } from "./install-stripe";
 
-export const CURRENT_SETUP_VERSION = 3;
+export const CURRENT_SETUP_VERSION = 4;
 export async function provisionForUser(
   userId: string,
   {
     complete = true,
     install = installMessages,
     installDoom = installDoomApp,
+    installStripe = installStripeApp,
   }: {
     complete?: boolean;
     install?: (workspaceId: string) => Promise<unknown>;
     installDoom?: (workspaceId: string) => Promise<unknown>;
+    installStripe?: (workspaceId: string) => Promise<unknown>;
   } = {},
 ) {
   const prepared = await db.transaction(async (tx) => {
@@ -60,7 +63,8 @@ export async function provisionForUser(
       return tenant;
     });
   }
-  // Commit each completed step, so a failed Doom install never repeats Messages.
+  // Commit each completed app independently so retries preserve earlier installations.
   await installStep(2, install);
-  return installStep(3, installDoom);
+  await installStep(3, installDoom);
+  return installStep(4, installStripe);
 }

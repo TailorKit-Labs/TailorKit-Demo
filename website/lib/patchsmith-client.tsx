@@ -7,6 +7,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { createClient, experimental_canvasRenderer, primitives } from "patchsmith/react";
 import { contract, patchsmithTheme } from "./patchsmith";
+import { skeletonWidths, skeletonHeights, skeletonRadii } from "./patchsmith-skeleton";
+import dynamic from "next/dynamic";
 import { toastManager } from "@/components/ui/toast";
 import {
   patchsmithQueryKey,
@@ -16,7 +18,7 @@ import {
 } from "./patchsmith-queries";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -94,6 +96,12 @@ type HostAction =
   | { type: "refresh" }
   | { type: "theme"; theme: "light" | "dark" | "system" };
 const hostActionEvent = "patchsmith:host-action";
+const AppChart = dynamic(
+  () => import("@/components/app/app-charts").then((module) => module.AppChart),
+  {
+    loading: () => <Skeleton className="h-64 w-full" aria-hidden="true" />,
+  },
+);
 function dispatch(action: HostAction) {
   const detail = { action, handled: false };
   window.dispatchEvent(new CustomEvent(hostActionEvent, { detail }));
@@ -110,6 +118,8 @@ export const patchsmithClient = createClient({
   components: {
     ...primitives,
     Canvas: experimental_canvasRenderer,
+    AreaChart: ({ props }) => <AppChart {...props} type="area" />,
+    BarChart: ({ props }) => <AppChart {...props} type="bar" />,
     Text: ({ props }) => (
       <p className={cn(textTones[props.tone ?? "default"], textSizes[props.size ?? "sm"])}>
         {props.text}
@@ -119,16 +129,32 @@ export const patchsmithClient = createClient({
       const Tag = props.level ?? "h2";
       return <Tag className="text-lg font-semibold tracking-tight">{props.text}</Tag>;
     },
-    Button: ({ props }) => (
-      <Button
-        variant={props.variant}
-        size={props.size}
-        disabled={props.disabled}
-        onClick={() => props.onClick?.()}
-      >
-        {props.label}
-      </Button>
-    ),
+    Button: ({ props }) =>
+      props.href ? (
+        <a
+          href={props.disabled ? undefined : props.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-disabled={props.disabled || undefined}
+          tabIndex={props.disabled ? -1 : undefined}
+          className={cn(
+            buttonVariants({ variant: props.variant, size: props.size }),
+            props.disabled && "pointer-events-none opacity-64",
+          )}
+        >
+          {props.label}
+          <span aria-hidden="true">↗</span>
+        </a>
+      ) : (
+        <Button
+          variant={props.variant}
+          size={props.size}
+          disabled={props.disabled}
+          onClick={() => props.onClick?.()}
+        >
+          {props.label}
+        </Button>
+      ),
     Badge: ({ props }) => <Badge variant={props.variant}>{props.text}</Badge>,
     Card: ({ props, children }) => (
       <Card>
@@ -322,7 +348,17 @@ export const patchsmithClient = createClient({
         <span className="sr-only">{props.label}</span>
       </span>
     ),
-    Skeleton: () => <Skeleton className="h-5 w-full" />,
+    Skeleton: ({ props }) => (
+      <Skeleton
+        aria-hidden="true"
+        className={cn(
+          "max-w-full shrink-0 motion-reduce:animate-none",
+          skeletonWidths[props.width ?? "full"],
+          skeletonHeights[props.height ?? "5"],
+          skeletonRadii[props.radius ?? "sm"],
+        )}
+      />
+    ),
     Table: ({ props, children }) => <Table aria-label={props.label}>{children}</Table>,
     TableHeader: ({ children }) => <TableHeader>{children}</TableHeader>,
     TableBody: ({ children }) => <TableBody>{children}</TableBody>,

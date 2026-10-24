@@ -1,6 +1,6 @@
 # Patchsmith demo — Forma CRM
 
-A pnpm workspace. The Next.js CRM lives in `website/`; the Patchsmith apps live in `apps/messages/` and `apps/doom/`.
+A pnpm workspace. The Next.js CRM lives in `website/`; the Patchsmith apps live in `apps/messages/`, `apps/doom/`, and `apps/stripe/`.
 
 [Patchsmith](https://patchsmith.io) powers the apps platform; Forma is the demo CRM. The workspace uses the Patchsmith SDK beta, published as `patchsmith` and `@patchsmith/*`, with the `patchsmith` CLI and `patchsmith.config.ts` configuration.
 
@@ -19,6 +19,8 @@ Set `PATCHSMITH_PROJECT_KEY` in `website/.env.local`; workspace setup installs t
 Publish Messages with `pnpm --filter @demo/messages deploy`; see [Messages](apps/messages/README.md) for the initial publish and version updates. New workspaces install the shared published app without uploading files.
 
 Doom uses [doomgeneric](https://github.com/ozkl/doomgeneric) and the SDK canvas API (beta.55). Open **App pages → Can it run DOOM?** or use the Doom panel's **Play Doom** link. The first level starts automatically; click the game to focus it. See [Doom](apps/doom/README.md) for controls and publishing.
+
+Stripe shows persistent simulated billing in each contact's side panel, a basic empty state elsewhere, and **App pages → Stripe analytics** for workspace-wide billing analytics. Its navbar link opens a placeholder Stripe dashboard URL. Publish [Stripe](apps/stripe/README.md) first and commit the CLI-generated app ID before deploying the website; setup version 4 installs it without reseeding CRM data.
 
 ## Checks
 
