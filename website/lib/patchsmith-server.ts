@@ -23,7 +23,8 @@ function createHost(origin: string) {
     contract,
     agent: {
       instructions: [
-        "Always add a panel slot. If the app doesn't need it/have any functionality for it then just have some basic text supporting the app",
+        "Always add a panel slot, even if the app has no functionality for it.",
+        "Whenever a page, panel, or section has nothing to display, use our Empty component. This includes missing data, no matching results, and panel slots with no functionality. Give it a clear title and a helpful description, and include a relevant action as a child when one is available.",
         "When building forms or groups of inputs, wrap the inputs in our FieldGroup component and use it to handle their layout and spacing.",
       ].join("\n\n"),
     },
