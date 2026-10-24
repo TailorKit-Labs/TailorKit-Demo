@@ -4,7 +4,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { chartFields } from "../lib/patchsmith-charts";
 import { contract } from "../lib/patchsmith";
-import { AppChart } from "../components/app/app-charts";
+import { loadAppChart } from "../lib/patchsmith-client";
 
 void test("catalog charts accept structured values and reject invalid or excessive input", () => {
   const valid = {
@@ -36,7 +36,8 @@ void test("catalog charts accept structured values and reject invalid or excessi
   }
 });
 
-void test("chart alternatives preserve exact displayed currency and escape supplied labels", () => {
+void test("chart alternatives preserve exact displayed currency and escape supplied labels", async () => {
+  const AppChart = await loadAppChart();
   const props = chartFields.parse({
     label: "<script>Revenue</script>",
     data: [{ label: "<b>Oct</b>", value: 149.5 }],
@@ -54,7 +55,8 @@ void test("chart alternatives preserve exact displayed currency and escape suppl
   }
 });
 
-void test("empty charts show a meaningful state and accept zero or negative amounts", () => {
+void test("empty charts show a meaningful state and accept zero or negative amounts", async () => {
+  const AppChart = await loadAppChart();
   assert.match(
     renderToStaticMarkup(createElement(AppChart, { type: "area", label: "Revenue", data: [] })),
     /No data to display/,
