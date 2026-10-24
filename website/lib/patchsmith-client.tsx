@@ -1,12 +1,16 @@
 "use client";
 
-import { createContext, useContext, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useId, type ReactNode } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { orpc } from "./orpc";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { createClient, experimental_canvasRenderer, primitives } from "patchsmith/react";
 import { contract, patchsmithTheme } from "./patchsmith";
+import { skeletonWidths, skeletonHeights, skeletonRadii } from "./patchsmith-skeleton";
+import dynamic from "next/dynamic";
+import type { ChartConfig } from "@/components/ui/chart";
+import type { AppChartProps } from "./patchsmith-charts";
 import { toastManager } from "@/components/ui/toast";
 import {
   patchsmithQueryKey,
@@ -16,7 +20,7 @@ import {
 } from "./patchsmith-queries";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -94,6 +98,9 @@ type HostAction =
   | { type: "refresh" }
   | { type: "theme"; theme: "light" | "dark" | "system" };
 const hostActionEvent = "patchsmith:host-action";
+const AppChart = dynamic(loadAppChart, {
+  loading: () => <Skeleton className="h-64 w-full" aria-hidden="true" />,
+});
 function dispatch(action: HostAction) {
   const detail = { action, handled: false };
   window.dispatchEvent(new CustomEvent(hostActionEvent, { detail }));
@@ -110,6 +117,8 @@ export const patchsmithClient = createClient({
   components: {
     ...primitives,
     Canvas: experimental_canvasRenderer,
+    AreaChart: ({ props }) => <AppChart {...props} type="area" />,
+    BarChart: ({ props }) => <AppChart {...props} type="bar" />,
     Text: ({ props }) => (
       <p className={cn(textTones[props.tone ?? "default"], textSizes[props.size ?? "sm"])}>
         {props.text}
@@ -119,16 +128,32 @@ export const patchsmithClient = createClient({
       const Tag = props.level ?? "h2";
       return <Tag className="text-lg font-semibold tracking-tight">{props.text}</Tag>;
     },
-    Button: ({ props }) => (
-      <Button
-        variant={props.variant}
-        size={props.size}
-        disabled={props.disabled}
-        onClick={() => props.onClick?.()}
-      >
-        {props.label}
-      </Button>
-    ),
+    Button: ({ props }) =>
+      props.href ? (
+        <a
+          href={props.disabled ? undefined : props.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-disabled={props.disabled || undefined}
+          tabIndex={props.disabled ? -1 : undefined}
+          className={cn(
+            buttonVariants({ variant: props.variant, size: props.size }),
+            props.disabled && "pointer-events-none opacity-64",
+          )}
+        >
+          {props.label}
+          <span aria-hidden="true">↗</span>
+        </a>
+      ) : (
+        <Button
+          variant={props.variant}
+          size={props.size}
+          disabled={props.disabled}
+          onClick={() => props.onClick?.()}
+        >
+          {props.label}
+        </Button>
+      ),
     Badge: ({ props }) => <Badge variant={props.variant}>{props.text}</Badge>,
     Card: ({ props, children }) => (
       <Card>
@@ -322,7 +347,17 @@ export const patchsmithClient = createClient({
         <span className="sr-only">{props.label}</span>
       </span>
     ),
-    Skeleton: () => <Skeleton className="h-5 w-full" />,
+    Skeleton: ({ props }) => (
+      <Skeleton
+        aria-hidden="true"
+        className={cn(
+          "max-w-full shrink-0 motion-reduce:animate-none",
+          skeletonWidths[props.width ?? "full"],
+          skeletonHeights[props.height ?? "5"],
+          skeletonRadii[props.radius ?? "sm"],
+        )}
+      />
+    ),
     Table: ({ props, children }) => <Table aria-label={props.label}>{children}</Table>,
     TableHeader: ({ children }) => <TableHeader>{children}</TableHeader>,
     TableBody: ({ children }) => <TableBody>{children}</TableBody>,
@@ -417,3 +452,136 @@ export function usePanelAction(openApp: (appId: string) => void) {
 }
 
 export const { RenderSlot, useViewContext } = patchsmithClient;
+
+export async function loadAppChart() {
+  const [
+    { Area, AreaChart, Bar, BarChart, CartesianGrid, XAxis, YAxis },
+    { ChartContainer, ChartTooltip, ChartTooltipContent },
+  ] = await Promise.all([import("recharts"), import("@/components/ui/chart")]);
+  return function AppChart({
+    type,
+    label,
+    data,
+    valueLabel = "Value",
+    valueFormat = "number",
+    currency = "USD",
+  }: AppChartProps & { type: "area" | "bar" }) {
+    const gradientId = `app-chart-${useId().replace(/[^a-zA-Z0-9_-]/g, "")}`;
+    const numberOptions: Intl.NumberFormatOptions =
+      valueFormat === "currency"
+        ? { style: "currency", currency, maximumFractionDigits: 2 }
+        : { maximumFractionDigits: 2 };
+    const format = new Intl.NumberFormat("en-US", numberOptions);
+    const compact = new Intl.NumberFormat("en-US", {
+      ...numberOptions,
+      notation: "compact",
+      maximumFractionDigits: 1,
+    });
+    const config = { value: { label: valueLabel, color: "var(--chart-2)" } } satisfies ChartConfig;
+    const minimum = Math.min(0, ...data.map(({ value }) => value));
+    const axes = (
+      <>
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="label" axisLine={false} tickLine={false} tickMargin={10} minTickGap={20} />
+        <YAxis
+          axisLine={false}
+          tickLine={false}
+          tickMargin={8}
+          width={56}
+          domain={[minimum, "auto"]}
+          tickFormatter={(value: number) => compact.format(value)}
+        />
+        <ChartTooltip
+          cursor={type === "area" ? false : undefined}
+          content={
+            <ChartTooltipContent
+              formatter={(value) => (
+                <div className="flex w-full items-center justify-between gap-4">
+                  <span className="text-muted-foreground">{valueLabel}</span>
+                  <span className="font-mono font-medium tabular-nums">
+                    {typeof value === "number" ? format.format(value) : ""}
+                  </span>
+                </div>
+              )}
+            />
+          }
+        />
+      </>
+    );
+
+    if (!data.length)
+      return (
+        <div
+          className="flex h-64 items-center justify-center text-sm text-muted-foreground"
+          role="status"
+        >
+          No data to display.
+        </div>
+      );
+
+    return (
+      <figure aria-label={label} className="min-w-0">
+        <ChartContainer config={config} className="h-64 w-full aspect-auto">
+          {type === "area" ? (
+            <AreaChart
+              accessibilityLayer
+              data={data}
+              margin={{ top: 12, right: 12, bottom: 0, left: 0 }}
+            >
+              <defs>
+                <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="var(--color-value)" stopOpacity={0.3} />
+                  <stop offset="100%" stopColor="var(--color-value)" stopOpacity={0.03} />
+                </linearGradient>
+              </defs>
+              {axes}
+              <Area
+                dataKey="value"
+                name={valueLabel}
+                type="monotone"
+                stroke="var(--color-value)"
+                strokeWidth={2}
+                fill={`url(#${gradientId})`}
+                dot={data.length === 1}
+                isAnimationActive={false}
+              />
+            </AreaChart>
+          ) : (
+            <BarChart
+              accessibilityLayer
+              data={data}
+              margin={{ top: 12, right: 12, bottom: 0, left: 0 }}
+            >
+              {axes}
+              <Bar
+                dataKey="value"
+                name={valueLabel}
+                fill="var(--color-value)"
+                radius={[6, 6, 0, 0]}
+                maxBarSize={64}
+                isAnimationActive={false}
+              />
+            </BarChart>
+          )}
+        </ChartContainer>
+        <table className="sr-only">
+          <caption>{label}</caption>
+          <thead>
+            <tr>
+              <th scope="col">Category</th>
+              <th scope="col">{valueLabel}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((point, index) => (
+              <tr key={index}>
+                <th scope="row">{point.label}</th>
+                <td>{format.format(point.value)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </figure>
+    );
+  };
+}

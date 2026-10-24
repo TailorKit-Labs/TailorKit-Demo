@@ -255,8 +255,8 @@ catalogs:
       specifier: ^0.4.6
       version: 0.4.6
     patchsmith:
-      specifier: 0.1.0-beta.65
-      version: 0.1.0-beta.65
+      specifier: 0.1.0-beta.66
+      version: 0.1.0-beta.66
     react:
       specifier: 19.3.1
       version: 19.3.1
@@ -324,7 +324,7 @@ importers:
     dependencies:
       patchsmith:
         specifier: 'catalog:'
-        version: 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
+        version: 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
       preact:
         specifier: 11.0.1
         version: 11.0.1
@@ -349,7 +349,32 @@ importers:
     dependencies:
       patchsmith:
         specifier: 'catalog:'
-        version: 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
+        version: 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
+      preact:
+        specifier: 11.0.1
+        version: 11.0.1
+      zod:
+        specifier: 'catalog:'
+        version: 4.6.7
+    devDependencies:
+      '@types/node':
+        specifier: 'catalog:'
+        version: 26.6.5
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+      vite:
+        specifier: 'catalog:'
+        version: '@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
+      vite-plus:
+        specifier: 'catalog:'
+        version: 1.3.0(@edge-runtime/vm@3.2.0)(@types/node@26.6.5)(@vitest/ui@5.0.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
+
+  apps/stripe:
+    dependencies:
+      patchsmith:
+        specifier: 'catalog:'
+        version: 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
       preact:
         specifier: 11.0.1
         version: 11.0.1
@@ -390,6 +415,9 @@ importers:
       '@demo/messages':
         specifier: workspace:*
         version: link:../apps/messages
+      '@demo/stripe':
+        specifier: workspace:*
+        version: link:../apps/stripe
       '@neondatabase/serverless':
         specifier: 'catalog:'
         version: 1.2.0
@@ -467,7 +495,7 @@ importers:
         version: 0.4.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       patchsmith:
         specifier: 'catalog:'
-        version: 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
+        version: 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7)
       pg:
         specifier: ^8.23.1
         version: 8.23.1
@@ -2313,37 +2341,37 @@ packages:
     resolution: {integrity: sha512-G2xbfWTrbqYRhR/vfeKNMQf/sS3/ti0iKJAAkRxHuXWZH/hne/dyIb9QKk5LuR6cJLARxsL6FMoAYmfspd74MQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@patchsmith/ai-sdk@0.1.0-beta.65':
-    resolution: {integrity: sha512-c7STcEHIsMernUltO+VJRsVwdcnFrqdXnYULV7EPHtGTZ44u8SCuQNXN59i4ErB9LPsgTO/EiioPUBx15zKpbw==}
+  '@patchsmith/ai-sdk@0.1.0-beta.66':
+    resolution: {integrity: sha512-RuaOEdhzuoi3k6y7GDxqlFqIrkS2mQiQaLOvupttLsMlt4XHsrhqoxuujhqBOWsGc+DIDHNwx3+D9GxQ58ey0g==}
     engines: {node: '>=22'}
     peerDependencies:
       ai: ^7.0.137
 
-  '@patchsmith/app-db@0.1.0-beta.65':
-    resolution: {integrity: sha512-Zk+ojngZVkozd2TGHT4mVMcAgNpSsZPUCqQ0of/wlE/akjWXvjg84dvpfBHrpE4OQyhwNkIzGaG9Y6H35X9btw==}
+  '@patchsmith/app-db@0.1.0-beta.66':
+    resolution: {integrity: sha512-4u8/j0hqyXvTfi5pTSQLlP+iZtYjuLXUJ3Gaf0tIngP0yEEhCe1MovFaL8N/XSn0cbvsljJv0YjyliV4eA1nqw==}
     engines: {node: '>=22'}
 
-  '@patchsmith/app@0.1.0-beta.65':
-    resolution: {integrity: sha512-225E3GKKrPxo82C04gULOXuOrYgtY/XYRqlgnHC5EVrE91jkwBHIpWVhGLzi6P7hw7V48aXoC5NpO+MCgoI+rw==}
+  '@patchsmith/app@0.1.0-beta.66':
+    resolution: {integrity: sha512-CDGPTqsdHjxRtbH4iiOXrkgCrpMfErCE9t/RiMbuIJNgp1GsNyyBs81WwgW/kZhdf6AJsszCleUBxEu92huJHA==}
     engines: {node: '>=22'}
     peerDependencies:
       preact: ^11.0.0
 
-  '@patchsmith/cli@0.1.0-beta.65':
-    resolution: {integrity: sha512-mP66WwsKraB4LJDyvzYa7XyG8OkDnd6/1EDYjgiXXKljm/yiBCnxskRrFzdFnNGwTYU9Xx9oXRUm47vsWqLDxQ==}
+  '@patchsmith/cli@0.1.0-beta.66':
+    resolution: {integrity: sha512-PAWCLJvJt3s3a0wYTDkfHOh2vOEcAvlmI3M0wc0PEqntiWc+TBFQ2VKf3sa18dujOPZs6GwdT1CrkYyllPHdKg==}
     engines: {node: '>=22'}
     hasBin: true
 
-  '@patchsmith/client-core@0.1.0-beta.65':
-    resolution: {integrity: sha512-TGg1oGq/o80aib44HjuAvuPph05c7mvaAcIknJWa6DRXHKk2KUGHy1SOiqZvmRSsFaCDr5pfkhSsoIfdUObakw==}
+  '@patchsmith/client-core@0.1.0-beta.66':
+    resolution: {integrity: sha512-CPUf+ubk84LXrKe0p8RoAMAbiPg+0GP5P3xS2EIB/pCOVd2xpgNj6ThkrAQQFS9GCNwz5LRpsOwal/w6rvE9QA==}
     engines: {node: '>=22'}
 
-  '@patchsmith/client-platform@0.1.0-beta.65':
-    resolution: {integrity: sha512-cc+8ZVYv81iQbe/dHEG63bb2nl9n2wSLr3rDFxiyBDagHXv32yios6+irIAX6Wl5M4b4kd1koEDAX1HE3Ylstw==}
+  '@patchsmith/client-platform@0.1.0-beta.66':
+    resolution: {integrity: sha512-NYaUv5JFF1uBkt/jnptbhPcYBMplNueAHAb3JVTRZ4nHlK63j3ms3fnf0A5Ty/Ke3A1I4QSDdfFdK0nfc87weg==}
     engines: {node: '>=22'}
 
-  '@patchsmith/core@0.1.0-beta.65':
-    resolution: {integrity: sha512-8PmkoXMXho4pK790pMF/UbUGx2V/9FD2XPl7sGWZAtQ+Caw+X7/FlPf0kbMCydqBY40JXe+9ThQV9Eg11QtT4g==}
+  '@patchsmith/core@0.1.0-beta.66':
+    resolution: {integrity: sha512-fNfEz41RLk2Kwn4hn7v8a75n0fKyemh9PGEp/WOCRNuePEyABQQ5GsA0zLWdz1U2udgF76Aark6fxQsMRlLvPw==}
     engines: {node: '>=22'}
     peerDependencies:
       arktype: '>=2.1.0'
@@ -2354,18 +2382,18 @@ packages:
       zod:
         optional: true
 
-  '@patchsmith/react@0.1.0-beta.65':
-    resolution: {integrity: sha512-Ye7y9EuhLCy9PRBOIeVCK4bYQBYgqEY2LODPh2wf9v62u2WAZSrRtqYexZ1QIeKj2ANY72Jvz5NOBmMdDWxg0Q==}
+  '@patchsmith/react@0.1.0-beta.66':
+    resolution: {integrity: sha512-pklpbr8Gu8SfGh/TnFaIDZJwxPX95WsHrO3gBDiPxoWfReU8pgF+Ax3VnKGcthA7UzqvfoaMzAqUAH9f6eeWmw==}
     engines: {node: '>=22'}
     peerDependencies:
       react: '>=19.2.6'
 
-  '@patchsmith/sandbox@0.1.0-beta.65':
-    resolution: {integrity: sha512-upgxMptpRHA0F/W+9VTbcAB1fVS2RBkX3nyHP6/2QcJfZM1cngFwGLyIsq735O5we2ZsUCtBWEENjeOK7xRF+A==}
+  '@patchsmith/sandbox@0.1.0-beta.66':
+    resolution: {integrity: sha512-w3bhySc3oLIvV03vO/nMnjsrYVS81Rk+jek/u/Q61BQanBudZPfsOCB0Dmts3WLlVApLdBNvV/7U6lSB/iLGOA==}
     engines: {node: '>=22'}
 
-  '@patchsmith/vite@0.1.0-beta.65':
-    resolution: {integrity: sha512-8g9E3UYBEh62VuZrzMW5BfFXMakv/Oit2vAwJZ+XP2fTa+6Kq3okbpZNBAf8sUhjSaZBTQwMoYxRQLA9EsXIuQ==}
+  '@patchsmith/vite@0.1.0-beta.66':
+    resolution: {integrity: sha512-f0l+Jg2QxhToD6WEJVrMq5tjxBEpqBDeqKfEi5dOk+0MX/eLIojFfG/Rm/37mPKWnK/Mr+x6f3WfgJBXzj9EYw==}
     engines: {node: '>=22'}
     peerDependencies:
       vite: ^8.0.0 || ^1.0.0
@@ -5515,8 +5543,8 @@ packages:
   parse5@7.3.0:
     resolution: {integrity: sha512-IInvU7fabl34qmi9gY8XOVxhYyMyuH2xUNpb2q8/Y+7552KlejkRvqvD19nMoUW/uQGGbqNpA6Tufu5FL5BZgw==}
 
-  patchsmith@0.1.0-beta.65:
-    resolution: {integrity: sha512-gPbzh2B9qz+MIz7CYyLrobOfinKaDCjxfCZaW06EnlGfD8gyes3lj0dhr9bl6x72SyW4u/oW4p5Cfv7DYkvp3w==}
+  patchsmith@0.1.0-beta.66:
+    resolution: {integrity: sha512-5yyZYpJ9+E77jtbezBtaLepAh2yNAh/uukSua9UYvoirflVE+9100xViEB2KvkrGkHyiGotuwQtaJOk0vA/7YA==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
@@ -7699,10 +7727,10 @@ snapshots:
 
   '@oxlint/plugins@1.88.0': {}
 
-  '@patchsmith/ai-sdk@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(ai@7.0.143(zod@4.6.7))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@patchsmith/ai-sdk@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(ai@7.0.143(zod@4.6.7))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@modelcontextprotocol/client': 2.3.1
-      '@patchsmith/core': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/core': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       '@valibot/to-json-schema': 1.8.0(valibot@1.5.0(typescript@7.0.2))
       ai: 7.0.143(zod@4.6.7)
       valibot: 1.5.0(typescript@7.0.2)
@@ -7750,7 +7778,7 @@ snapshots:
       - typescript
       - zod
 
-  '@patchsmith/app-db@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)':
+  '@patchsmith/app-db@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)':
     dependencies:
       drizzle-orm: 1.0.0-rc.4-5d5b77c(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
     transitivePeerDependencies:
@@ -7792,12 +7820,12 @@ snapshots:
       - valibot
       - zod
 
-  '@patchsmith/app@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@patchsmith/app@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@nanostores/preact': 1.1.1(nanostores@1.5.5)(preact@11.0.1)
       '@orpc/client': 2.0.0-beta.40
       '@orpc/contract': 2.0.0-beta.40
-      '@patchsmith/app-db': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+      '@patchsmith/app-db': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
       '@standard-schema/spec': 1.1.0
       nanostores: 1.5.5
       preact: 11.0.1
@@ -7841,14 +7869,14 @@ snapshots:
       - typescript
       - zod
 
-  '@patchsmith/cli@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)':
+  '@patchsmith/cli@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)':
     dependencies:
       '@ai-sdk/tui': 1.0.144(zod@4.6.7)
       '@clack/prompts': 1.8.1
       '@orpc/client': 2.0.0-beta.40
-      '@patchsmith/client-platform': 0.1.0-beta.65(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/core': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/vite': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/client-platform': 0.1.0-beta.66(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/core': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/vite': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       ai: 7.0.143(zod@4.6.7)
       cac: 7.1.0
       jose: 6.2.12
@@ -7921,12 +7949,12 @@ snapshots:
       - vue-tsc
       - yaml
 
-  '@patchsmith/client-core@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@patchsmith/client-core@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@nanostores/async': 0.1.0(nanostores@1.5.5)
-      '@patchsmith/app': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/core': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/sandbox': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/core': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/sandbox': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       nanostores: 1.5.5
       valibot: 1.5.0(typescript@7.0.2)
     transitivePeerDependencies:
@@ -7974,7 +8002,7 @@ snapshots:
       - typescript
       - zod
 
-  '@patchsmith/client-platform@0.1.0-beta.65(typescript@7.0.2)(zod@4.6.7)':
+  '@patchsmith/client-platform@0.1.0-beta.66(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@orpc/client': 2.0.0-beta.40
       ai: 7.0.143(zod@4.6.7)
@@ -7983,15 +8011,15 @@ snapshots:
       - typescript
       - zod
 
-  '@patchsmith/core@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@patchsmith/core@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@orpc/client': 2.0.0-beta.40
       '@orpc/contract': 2.0.0-beta.40
       '@orpc/experimental-effect': 2.0.0-beta.40(effect@4.0.5)
       '@orpc/openapi': 2.0.0-beta.40
       '@orpc/server': 2.0.0-beta.40
-      '@patchsmith/app': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/client-platform': 0.1.0-beta.65(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/client-platform': 0.1.0-beta.66(typescript@7.0.2)(zod@4.6.7)
       '@standard-schema/spec': 1.1.0
       effect: 4.0.5
       valibot: 1.5.0(typescript@7.0.2)
@@ -8039,15 +8067,15 @@ snapshots:
       - typebox
       - typescript
 
-  '@patchsmith/react@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@patchsmith/react@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
       '@floating-ui/react-dom': 2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@nanostores/react': 2.0.1(nanostores@1.5.5)(react@19.3.1)
-      '@patchsmith/app': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/client-core': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/client-platform': 0.1.0-beta.65(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/core': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/sandbox': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/client-core': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/client-platform': 0.1.0-beta.66(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/core': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/sandbox': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       '@standard-schema/spec': 1.1.0
       nanostores: 1.5.5
       react: 19.3.1
@@ -8097,10 +8125,10 @@ snapshots:
       - typescript
       - zod
 
-  '@patchsmith/sandbox@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@patchsmith/sandbox@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
-      '@patchsmith/app': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/core': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/core': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       valibot: 1.5.0(typescript@7.0.2)
     transitivePeerDependencies:
       - '@aws-sdk/client-rds-data'
@@ -8147,9 +8175,9 @@ snapshots:
       - typescript
       - zod
 
-  '@patchsmith/vite@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@patchsmith/vite@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
-      '@patchsmith/app': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       cosmiconfig: 10.0.1
       valibot: 1.5.0(typescript@7.0.2)
       vite: '@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
@@ -8193,9 +8221,9 @@ snapshots:
       - typescript
       - zod
 
-  '@patchsmith/vite@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
+  '@patchsmith/vite@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)':
     dependencies:
-      '@patchsmith/app': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
       cosmiconfig: 10.0.1
       valibot: 1.5.0(typescript@7.0.2)
       vite: '@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)'
@@ -11676,15 +11704,15 @@ snapshots:
     dependencies:
       entities: 6.0.1
 
-  patchsmith@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
+  patchsmith@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
     dependencies:
-      '@patchsmith/ai-sdk': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(ai@7.0.143(zod@4.6.7))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/app': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/app-db': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
-      '@patchsmith/cli': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
-      '@patchsmith/core': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/react': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/vite': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/ai-sdk': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(ai@7.0.143(zod@4.6.7))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app-db': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+      '@patchsmith/cli': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
+      '@patchsmith/core': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/react': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/vite': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
     optionalDependencies:
       ai: 7.0.143(zod@4.6.7)
       valibot: 1.5.0(typescript@7.0.2)
@@ -11755,15 +11783,15 @@ snapshots:
       - vue-tsc
       - yaml
 
-  patchsmith@0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
+  patchsmith@0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(ai@7.0.143(zod@4.6.7))(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(tsx@4.23.15)(typescript@7.0.2)(valibot@1.5.0(typescript@7.0.2))(yaml@2.9.1)(zod@4.6.7):
     dependencies:
-      '@patchsmith/ai-sdk': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(ai@7.0.143(zod@4.6.7))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/app': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/app-db': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
-      '@patchsmith/cli': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
-      '@patchsmith/core': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/react': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
-      '@patchsmith/vite': 0.1.0-beta.65(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/ai-sdk': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(ai@7.0.143(zod@4.6.7))(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/app-db': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(valibot@1.5.0(typescript@7.0.2))(zod@4.6.7)
+      '@patchsmith/cli': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/node@26.6.5)(@types/pg@8.23.1)(effect@4.0.5)(esbuild@0.28.2)(jiti@2.7.0)(pg@8.23.1)(preact@11.0.1)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1)
+      '@patchsmith/core': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/react': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(typescript@7.0.2)(zod@4.6.7)
+      '@patchsmith/vite': 0.1.0-beta.66(@neondatabase/serverless@1.2.0)(@types/pg@8.23.1)(@voidzero-dev/vite-plus-core@1.3.0(@types/node@26.6.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.15)(typescript@7.0.2)(yaml@2.9.1))(effect@4.0.5)(pg@8.23.1)(preact@11.0.1)(typescript@7.0.2)(zod@4.6.7)
     optionalDependencies:
       ai: 7.0.143(zod@4.6.7)
       valibot: 1.5.0(typescript@7.0.2)

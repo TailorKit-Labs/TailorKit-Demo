@@ -3,6 +3,8 @@ import { primitives, type PatchsmithTheme } from "patchsmith/zod";
 import { z } from "zod";
 import { schemas, stage, status } from "../routers/schemas";
 import type { Contact, Deal, Workspace } from "./workspace";
+import { skeletonWidths, skeletonHeights, skeletonRadii } from "./patchsmith-skeleton";
+import { chartFields } from "./patchsmith-charts";
 
 const siteHref = z
   .string()
@@ -17,6 +19,14 @@ const label = z
   .string()
   .refine((value) => value.length >= 1 && value.length <= 120, "Use 1–120 characters.");
 const disabled = z.boolean().optional();
+const externalHref = z.string().refine((value) => {
+  try {
+    const url = new URL(value);
+    return /^https?:\/\//i.test(value) && (url.protocol === "https:" || url.protocol === "http:");
+  } catch {
+    return false;
+  }
+}, "Use an absolute HTTP or HTTPS URL.");
 const onChange = { input: z.object({ value: z.string() }) };
 const onCheckedChange = { input: z.object({ checked: z.boolean() }) };
 const tone = z.enum(["default", "info", "success", "warning", "error"]);
@@ -225,6 +235,7 @@ export const contract = defineContract({
           .optional(),
         size: z.enum(["xs", "sm", "default", "lg"]).optional(),
         disabled,
+        href: externalHref.optional(),
       }),
       callbacks: { onClick: {} },
     },
@@ -322,10 +333,18 @@ export const contract = defineContract({
       callbacks: { onCheckedChange },
     },
     Progress: { fields: z.object({ label, value: z.number().min(0).max(100) }) },
+    AreaChart: { fields: chartFields },
+    BarChart: { fields: chartFields },
     Separator: { fields: z.object({ orientation: z.enum(["horizontal", "vertical"]).optional() }) },
     Avatar: { fields: z.object({ name: label }) },
     Spinner: { fields: z.object({ label }) },
-    Skeleton: {},
+    Skeleton: {
+      fields: z.object({
+        width: z.enum(Object.keys(skeletonWidths) as (keyof typeof skeletonWidths)[]).optional(),
+        height: z.enum(Object.keys(skeletonHeights) as (keyof typeof skeletonHeights)[]).optional(),
+        radius: z.enum(Object.keys(skeletonRadii) as (keyof typeof skeletonRadii)[]).optional(),
+      }),
+    },
     Table: { fields: z.object({ label }), children: true },
     TableHeader: { children: true },
     TableBody: { children: true },

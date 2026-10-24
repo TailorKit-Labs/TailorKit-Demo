@@ -10,6 +10,9 @@ import { db, pool } from "../lib/drizzle";
 import { user, tenants } from "../lib/schema";
 import { SETUP_BOT_CHECK_LEVEL, SETUP_PROTECTED_PATHS } from "../lib/setup-protection";
 import { CURRENT_SETUP_VERSION } from "../lib/provision";
+import stripeConfig from "../../apps/stripe/patchsmith.config";
+const originalStripeAppId = stripeConfig.appId;
+stripeConfig.appId = "test-stripe-source";
 // Configure the fixture before the router initializes the shared Patchsmith server.
 const originalProjectKey = process.env.PATCHSMITH_PROJECT_KEY;
 process.env.PATCHSMITH_PROJECT_KEY = "test-key-no-platform-spend";
@@ -147,7 +150,7 @@ async function main() {
     await browser.workspace.installApps();
     assert.equal((await tenant()).id, seeded.id);
     assert.equal((await tenant()).setupVersion, CURRENT_SETUP_VERSION);
-    assert.equal(installations, 2, "Retries must reuse both completed installations");
+    assert.equal(installations, 3, "Retries must reuse all three completed installations");
     const beforeReads = botChecks;
     assert.equal((await browser.workspace.snapshot()).contacts.length, 30);
     assert.ok(await auth.api.getSession({ headers: new Headers({ cookie }) }));
@@ -156,6 +159,7 @@ async function main() {
       "PASS: setup BotID enforcement, fail-closed errors, no rejected writes or installs, direct-call protection, human setup, and idempotent retries.",
     );
   } finally {
+    stripeConfig.appId = originalStripeAppId;
     globalThis.fetch = originalFetch;
     globals[contextSymbol] = originalContext;
     for (const [key, value] of Object.entries(savedEnv)) {

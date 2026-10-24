@@ -2,7 +2,7 @@
 
 The Patchsmith demo CRM. It uses the Patchsmith SDK beta and the `/api/patchsmith` host endpoint; see the [workspace README](../README.md) for local setup.
 
-Next.js App Router, official Coss UI components with the neutral theme and Geist font, Better Auth anonymous sessions, and Drizzle with PostgreSQL. Coss source files in `components/ui` stay unmodified; application components compose their APIs. Charts use Recharts directly.
+Next.js App Router, official Coss UI components with the neutral theme and Geist font, Better Auth anonymous sessions, and Drizzle with PostgreSQL. Coss source files in `components/ui` stay unmodified; application components compose their APIs. The CRM chart uses Recharts directly; catalog charts use the official shadcn ChartContainer and tooltips with Recharts.
 
 Refresh Coss components with `pnpm dlx shadcn@latest add @coss/ui @coss/colors-neutral --overwrite --yes` from `website`, then adapt application callers to upstream API changes. Notifications use Coss `ToastProvider` and `toastManager`; selects use Coss `Select` composition.
 
@@ -29,6 +29,10 @@ Setup creates the account, seeds CRM data, then installs the Messages app in the
 Setup uses [basic BotID protection](https://vercel.com/docs/botid/advanced-configuration) on `POST /api/auth/sign-in/anonymous`, `POST /rpc/workspace/provision`, and `POST /rpc/workspace/installApps`. Browser instrumentation and server verification share the check level in `lib/setup-protection.ts`. Better Auth verifies before creating the anonymous account; both session-authenticated setup procedures verify before seeding data or installing apps and require HTTP request context. Bots receive 403; verification outages or invalid results receive 503 without continuing setup. The setup screen displays the error and allows retries. Session reads and ordinary CRM operations do not invoke BotID. Local development uses the SDK's development behavior. Run `pnpm --filter website test:setup-protection` against local PostgreSQL for simulated deployed verification, rejected signup/provisioning/install requests, human setup, and idempotent retries. Real detection requires testing through the app on Vercel.
 
 Messages offers simulated Email, Slack, and SMS conversations with CRM contacts. Sent messages are readable contact activity notes and share the existing rolling 50-entry history. See [Messages](../apps/messages/README.md) for app development and binding generation.
+
+The app component catalog exposes reusable `AreaChart` and `BarChart` components. Each accepts a chart `label`, up to 100 `{ label, value }` data points, optional `valueLabel`, and optional currency formatting. Values use display units such as dollars. Rendering stays in the host, with shadcn tooltips, responsive plots, accessible data tables, and the existing chart theme tokens. The chart bundle loads when an app uses it. Run `test:app-pages` for catalog data-validation and accessible-output coverage.
+
+Setup version 4 installs the published Stripe app. Publish [Stripe](../apps/stripe/README.md) and commit the real app ID before deploying the website. Its panel shows saved simulated billing for the active contact, its full-page instance at `/apps/stripe/overview` aggregates the same records, and its navbar link opens a placeholder Stripe dashboard page. Billing is stored in each installation's own app database, with missing contacts seeded on demand. Retried installs preserve both completed Messages and Doom steps. The `@demo/stripe` workspace dependency makes changes to its configuration trigger website deployment.
 
 - `/`: dashboard-01 KPI cards, interactive area chart, and a full-width opportunities table.
 - `/contacts`: search, relationship filters, create and drill into contacts.
