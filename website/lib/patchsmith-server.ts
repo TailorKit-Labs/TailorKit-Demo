@@ -22,8 +22,10 @@ function createHost(origin: string) {
   return createServer({
     contract,
     agent: {
-      instructions:
+      instructions: [
         "Always add a panel slot. If the app doesn't need it/have any functionality for it then just have some basic text supporting the app",
+        "When building forms or groups of inputs, wrap the inputs in our FieldGroup component and use it to handle their layout and spacing.",
+      ].join("\n\n"),
     },
     tools: {
       workspace: {
