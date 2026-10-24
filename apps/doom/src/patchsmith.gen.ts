@@ -1158,6 +1158,7 @@ export const Alert = /* @__PURE__ */ createRemoteComponent<AlertProps, false>("A
 export interface EmptyProps {
   title: string;
   description?: string;
+  icon?: "route" | "gamepad" | "users" | "credit-card" | "inbox" | "file";
 }
 
 export const Empty = /* @__PURE__ */ createRemoteComponent<EmptyProps, true>("Empty", {

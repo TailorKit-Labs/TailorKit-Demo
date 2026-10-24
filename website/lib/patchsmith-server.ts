@@ -23,7 +23,8 @@ function createHost(origin: string) {
     contract,
     agent: {
       instructions: [
-        "Always add a panel slot. If the app doesn't need it/have any functionality for it then just have some basic text supporting the app",
+        "Always add a panel slot, even if the app has no functionality for it.",
+        "Whenever a page, panel, or section has nothing to display, use our Empty component. This includes missing data, no matching results, and panel slots with no functionality. Give it a clear title and a helpful description, and include a relevant action as a child when one is available.",
         "When building forms or groups of inputs, wrap the inputs in our Fieldset component and use it to handle their layout and spacing.",
         "Form is a plain form container with onSubmit and an optional id; it does not add buttons or layout. Group fields with Fieldset. For modal forms, put Cancel and Save in Dialog.actions, use type: 'submit' and form: the Form id for Save, and handle Cancel through Dialog.onAction({ id }). Save must run through Form.onSubmit so native validation and Enter submission work. Outside a dialog, add an explicit Button with type: 'submit' inside Form. Give each mounted form a unique id (for example using useId).",
       ].join("\n\n"),

@@ -20,6 +20,14 @@ import {
 } from "./patchsmith-queries";
 
 import { cn } from "@/lib/utils";
+import {
+  CreditCardIcon,
+  FileIcon,
+  GamepadIcon,
+  InboxIcon,
+  RouteIcon,
+  UsersIcon,
+} from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -27,6 +35,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import {
   Empty,
   EmptyHeader,
+  EmptyMedia,
   EmptyTitle,
   EmptyDescription,
   EmptyContent,
@@ -76,6 +85,14 @@ const textTones = {
   destructive: "text-destructive-foreground",
 };
 const textSizes = { xs: "text-xs", sm: "text-sm", base: "text-base", lg: "text-lg" };
+const emptyIcons = {
+  route: RouteIcon,
+  gamepad: GamepadIcon,
+  users: UsersIcon,
+  "credit-card": CreditCardIcon,
+  inbox: InboxIcon,
+  file: FileIcon,
+};
 function LabeledControl({ label, children }: { label: string; children: ReactNode }) {
   return (
     <Field>
@@ -165,15 +182,23 @@ export const patchsmithClient = createClient({
         {props.description ? <AlertDescription>{props.description}</AlertDescription> : null}
       </Alert>
     ),
-    Empty: ({ props, children }) => (
-      <Empty>
-        <EmptyHeader>
-          <EmptyTitle>{props.title}</EmptyTitle>
-          {props.description ? <EmptyDescription>{props.description}</EmptyDescription> : null}
-        </EmptyHeader>
-        {children ? <EmptyContent>{children}</EmptyContent> : null}
-      </Empty>
-    ),
+    Empty: ({ props, children }) => {
+      const Icon = props.icon ? emptyIcons[props.icon] : null;
+      return (
+        <Empty>
+          <EmptyHeader>
+            {Icon ? (
+              <EmptyMedia variant="icon">
+                <Icon aria-hidden="true" />
+              </EmptyMedia>
+            ) : null}
+            <EmptyTitle>{props.title}</EmptyTitle>
+            {props.description ? <EmptyDescription>{props.description}</EmptyDescription> : null}
+          </EmptyHeader>
+          {children ? <EmptyContent>{children}</EmptyContent> : null}
+        </Empty>
+      );
+    },
     Form: ({ props, children }) => <AppForm {...props}>{children}</AppForm>,
     Fieldset: ({ props, children }) => (
       <Fieldset className="flex w-full flex-col gap-4" disabled={props.disabled}>
