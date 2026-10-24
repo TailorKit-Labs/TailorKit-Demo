@@ -3,7 +3,7 @@
 A Patchsmith app with three slots:
 
 - **Panel**: subscription, card details, balances, and recent invoices for the current contact. Other CRM pages show “Select a contact”.
-- **Page**: one **Stripe analytics** instance at `/apps/stripe/overview`, with revenue, MRR, subscriptions, outstanding balances, a monthly revenue area chart, a plan-distribution bar chart, and contact/invoice tables.
+- **Page**: one **Stripe analytics** instance at `/apps/stripe/overview`. Revenue and plan-distribution charts lead the page, followed by a compact billing summary. Recent invoices and contact subscriptions share a tabbed activity card.
 - **Navbar**: a **View on Stripe ↗** link shown only on contact detail pages. It opens `https://dashboard.stripe.com/test/forma-demo`, an intentionally nonexistent Stripe dashboard route. The contact panel uses the same placeholder destination.
 
 All billing is simulated in USD; the app never calls Stripe or processes payments. Each installation has a separate Patchsmith database. Opening the panel or analytics fetches the authenticated workspace's contacts through the host tool, then runs an internal mutation that seeds missing contacts, refreshes names/email/company, and removes deleted contacts. Existing billing JSON is preserved on conflict, including its original seed date, invoices, subscription, and payment details. Refreshing or opening a different slot reads the same stored data. The host limits workspaces to 50 contacts, so a single unfiltered contact list covers the whole workspace.
@@ -13,6 +13,8 @@ The checked-in SQLite migration creates the app's `customers` table. Backend cod
 Loading uses separate contact-panel and analytics skeletons that follow the content layout, with no visible loading message. The host's shared `Skeleton` accepts optional width, height, and radius tokens; omitted fields retain its original defaults. Deploy the updated host along with the app to enable the new sizing options.
 
 Charts use the host catalog's `AreaChart` and `BarChart`, rendered with shadcn ChartContainer and tooltips over Recharts. Both accept a `label`, `data: { label, value }[]`, optional `valueLabel`, and optional `valueFormat: "number" | "currency"` plus a three-letter `currency` code. Numeric values are display units: Stripe converts saved cents to dollars before passing revenue points. The charts include accessible data tables, fixed-height responsive plots, and empty states. Publish the updated host catalog before the app so these components are available.
+
+The activity card uses the host's `Tabs` component: `label` names the tab list, `options` supplies 2–7 unique `{ label, value }` entries, and `value` selects the active tab. `onChange({ value })` lets the app update the selection and render that tab's content as children. The host supplies keyboard navigation and tab/panel accessibility. Publish the website catalog with `Tabs` before republishing Stripe. External app buttons now use the CRM's shared Button and a Lucide arrow, with the same icon sizing and alignment as native actions.
 
 ## Develop and publish
 

@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   Grid,
+  Heading,
   Separator,
   Skeleton,
   Text,
@@ -166,22 +167,30 @@ function ReportSkeleton({ rows = 5, chart = false }: { rows?: number; chart?: bo
 function AnalyticsSkeleton() {
   return (
     <Flex direction="column" gap="6" height="full" overflow="auto">
-      <Flex justify="between" align="center" wrap="wrap" gap="3">
-        <Flex direction="column" gap="2">
-          <Skeleton width="48" height="6" />
-          <Skeleton width="full" height="4" />
-        </Flex>
+      <Flex direction="column" gap="2">
+        <Skeleton width="48" height="6" />
+        <Skeleton width="48" height="4" />
       </Flex>
-      <Grid columns={{ default: 1, sm: 2, xl: 4 }} gap="4">
+      <Grid columns={{ default: 1, md: 2 }} gap="4">
+        <ReportSkeleton chart />
+        <ReportSkeleton chart />
+      </Grid>
+      <Grid
+        columns={{ default: 2, lg: 4 }}
+        gap="5"
+        padding="5"
+        border="solid"
+        radius="xl"
+        background="card"
+      >
         {[0, 1, 2, 3].map((stat) => (
-          <StatSkeleton key={stat} description />
+          <Flex key={stat} direction="column" gap="2" minWidth="0">
+            <Skeleton width="3/4" height="4" />
+            <Skeleton width="2/3" height="6" />
+            <Skeleton width="full" height="3" />
+          </Flex>
         ))}
       </Grid>
-      <Grid columns={{ default: 1, lg: 2 }} gap="4">
-        <ReportSkeleton chart />
-        <ReportSkeleton chart />
-      </Grid>
-      <ReportSkeleton rows={5} />
       <ReportSkeleton rows={3} />
     </Flex>
   );
@@ -191,23 +200,25 @@ export function Stat({
   label,
   value,
   description,
+  framed = true,
 }: {
   label: string;
   value: string;
   description?: string;
+  framed?: boolean;
 }) {
   return (
     <Flex
       direction="column"
       gap="2"
-      padding="4"
-      border="solid"
-      radius="xl"
-      background="card"
+      padding={framed ? "4" : undefined}
+      border={framed ? "solid" : undefined}
+      radius={framed ? "xl" : undefined}
+      background={framed ? "card" : undefined}
       minWidth="0"
     >
       <Text text={label} tone="muted" size="sm" />
-      <Text text={value} size="lg" />
+      <Heading text={value} level="h3" />
       {description ? <Text text={description} tone="muted" size="xs" /> : null}
     </Flex>
   );

@@ -28,7 +28,9 @@ import {
   RouteIcon,
   UsersIcon,
 } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { AppSlotButton } from "@/components/app/app-slot-button";
+import { AppSlotTabs } from "@/components/app/app-slot-tabs";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -145,32 +147,8 @@ export const patchsmithClient = createClient({
       const Tag = props.level ?? "h2";
       return <Tag className="text-lg font-semibold tracking-tight">{props.text}</Tag>;
     },
-    Button: ({ props }) =>
-      props.href ? (
-        <a
-          href={props.disabled ? undefined : props.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-disabled={props.disabled || undefined}
-          tabIndex={props.disabled ? -1 : undefined}
-          className={cn(
-            buttonVariants({ variant: props.variant, size: props.size }),
-            props.disabled && "pointer-events-none opacity-64",
-          )}
-        >
-          {props.label}
-          <span aria-hidden="true">↗</span>
-        </a>
-      ) : (
-        <Button
-          variant={props.variant}
-          size={props.size}
-          disabled={props.disabled}
-          onClick={() => props.onClick?.()}
-        >
-          {props.label}
-        </Button>
-      ),
+    Button: ({ props }) => <AppSlotButton {...props} />,
+    Tabs: ({ props, children }) => <AppSlotTabs {...props}>{children}</AppSlotTabs>,
     Badge: ({ props }) => <Badge variant={props.variant}>{props.text}</Badge>,
     Card: ({ props, children }) => (
       <Card>
@@ -507,7 +485,14 @@ export async function loadAppChart() {
     const axes = (
       <>
         <CartesianGrid vertical={false} />
-        <XAxis dataKey="label" axisLine={false} tickLine={false} tickMargin={10} minTickGap={20} />
+        <XAxis
+          dataKey="label"
+          axisLine={false}
+          tickLine={false}
+          tickMargin={10}
+          minTickGap={20}
+          padding={{ left: 8, right: 16 }}
+        />
         <YAxis
           axisLine={false}
           tickLine={false}
