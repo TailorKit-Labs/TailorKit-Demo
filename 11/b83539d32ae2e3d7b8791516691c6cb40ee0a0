@@ -1,0 +1,19 @@
+website/components/theme-provider.tsx
+  s_ef9efbbc9b383a::t_5eeb767162f1ae 7-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "11b83539d32ae2e3d7b8791516691c6cb40ee0a0",
+  "prompts": {},
+  "sessions": {
+    "s_ef9efbbc9b383a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16cdb-aa9c-7523-b107-4983e52802b3",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
