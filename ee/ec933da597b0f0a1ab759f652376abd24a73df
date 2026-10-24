@@ -1,0 +1,21 @@
+website/lib/patchsmith-client.tsx
+  s_3d47710c11d428::t_8c26b1cad59e09 3,12-13,101-103,455-587
+website/scripts/patchsmith-charts.test.ts
+  s_3d47710c11d428::t_8c26b1cad59e09 7,39-40,58-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "eeec933da597b0f0a1ab759f652376abd24a73df",
+  "prompts": {},
+  "sessions": {
+    "s_3d47710c11d428": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a16b9e-1850-74b1-aff9-2875a69a6a03",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Alfie Jones <alfie.jones@hotmail.co.uk>"
+    }
+  }
+}
